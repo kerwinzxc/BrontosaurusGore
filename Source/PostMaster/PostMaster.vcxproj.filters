@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Subscriber.cpp">
+      <Filter>Subscriber</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="PostMaster.cpp">
+      <Filter>PostMaster</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawCallsCount.cpp">
+      <Filter>Events\DrawCallsCount</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyPressed.cpp">
+      <Filter>Events\KeyPressed</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyReleased.cpp">
+      <Filter>Events\KeyReleased</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseClicked.cpp">
+      <Filter>Events\MouseClicked</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseMoved.cpp">
+      <Filter>Events\MouseMoved</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseReleased.cpp">
+      <Filter>Events\MouseReleased</Filter>
+    </ClCompile>
+    <ClCompile Include="PopCurrentState.cpp">
+      <Filter>Events\PopCurrentState</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowSizeChanged.cpp">
+      <Filter>Events\WindowSizeChanged</Filter>
+    </ClCompile>
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="ChangeLevel.cpp">
+      <Filter>Events\ChangeLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="Pop2States.cpp">
+      <Filter>Events\PopTop2States</Filter>
+    </ClCompile>
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="PushState.cpp">
+      <Filter>Events\PushState</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMessagePressed.cpp" />
+    <ClCompile Include="KeyCharPressed.cpp">
+      <Filter>Events\KeyCharPressed</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleCalledUpon.cpp" />
+    <ClCompile Include="FocusChange.cpp">
+      <Filter>Events\FocusChanged</Filter>
+    </ClCompile>
+    <ClCompile Include="DroppedFile.cpp">
+      <Filter>Events\DroppedFile</Filter>
+    </ClCompile>
+    <ClCompile Include="PushState.cpp">
+      <Filter>Events\PushState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEventMessageEvent.cpp">
+      <Filter>Events\GameEventMessageEvent</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Subscriber.h">
+      <Filter>Subscriber</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="PostMaster.h">
+      <Filter>PostMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="EMessageReturn.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageType.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawCallsCount.h">
+      <Filter>Events\DrawCallsCount</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPressed.h">
+      <Filter>Events\KeyPressed</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyReleased.h">
+      <Filter>Events\KeyReleased</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseMoved.h">
+      <Filter>Events\MouseMoved</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseReleased.h">
+      <Filter>Events\MouseReleased</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h">
+      <Filter>Events\PopCurrentState</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowSizeChanged.h">
+      <Filter>Events\WindowSizeChanged</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="ChangeLevel.h">
+      <Filter>Events\ChangeLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="Pop2States.h">
+      <Filter>Events\PopTop2States</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h">
+      <Filter>Events\PushState</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="InputMessagePressed.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="KeyCharPressed.h">
+      <Filter>Events\KeyCharPressed</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="ConsoleCalledUpon.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="MouseClicked.h">
+      <Filter>Events\MouseClicked</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="FocusChange.h">
+      <Filter>Events\FocusChanged</Filter>
+    </ClInclude>
+    <ClInclude Include="DroppedFile.h">
+      <Filter>Events\DroppedFile</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PushState.h">
+      <Filter>Events\PushState</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="GameEventMessageEvent.h">
+      <Filter>Events\GameEventMessageEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Events">
+      <UniqueIdentifier>{b9a419a5-3ede-4611-a526-55ba2ad69d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{2501912e-c22f-40e2-b0cf-6bea94807cc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subscriber">
+      <UniqueIdentifier>{88b0f828-6ee8-4ed8-a472-a4c90bbee1cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostMaster">
+      <UniqueIdentifier>{815c9789-bd50-4df0-a54e-735261334aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message">
+      <UniqueIdentifier>{8f4329db-8f16-4cb4-bd77-03111a6190d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\DrawCallsCount">
+      <UniqueIdentifier>{9d3d1f92-945e-42e4-a4a4-e1df91169df7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\FocusChanged">
+      <UniqueIdentifier>{4997c80e-70d9-4e26-b70b-2a02bc395942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\KeyPressed">
+      <UniqueIdentifier>{f81fd590-d30d-439d-b548-da313a2aa399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\KeyReleased">
+      <UniqueIdentifier>{75e0a5f3-8f59-4e14-a447-789b0d0427e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\MouseClicked">
+      <UniqueIdentifier>{d67e09b8-3db5-4b09-9a11-9ebb7092cf10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\MouseMoved">
+      <UniqueIdentifier>{eaf100ea-a4ff-4983-8f1a-1d07cd6a7038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\MouseReleased">
+      <UniqueIdentifier>{cb8aca13-c36b-41fe-83cd-f4738d5af9ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\PopCurrentState">
+      <UniqueIdentifier>{eab8d87d-b1c2-4485-a818-39dcfeeb91ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\WindowSizeChanged">
+      <UniqueIdentifier>{c05a9295-47ba-420c-8437-b15ba0dd1ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\ChangeLevel">
+      <UniqueIdentifier>{05022f39-b2a0-4da8-9eac-0d6341726143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\PopTop2States">
+      <UniqueIdentifier>{8d37bc54-7120-4ef6-9af6-9c26d6a05c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\KeyCharPressed">
+      <UniqueIdentifier>{a4ddbb42-71f7-432a-aecb-ff030a240365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\DroppedFile">
+      <UniqueIdentifier>{72344672-2104-4df1-bcbe-3b47f7faa274}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\GameEventMessageEvent">
+      <UniqueIdentifier>{ec19fe1a-2054-4c6c-bebe-5ca32c20c21c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

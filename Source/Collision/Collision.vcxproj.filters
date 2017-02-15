@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="GroupCollider.cpp">
+      <Filter>Collider\GroupCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleCollider.cpp">
+      <Filter>Collider\CircleCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="SquareCollider.cpp">
+      <Filter>Collider\SquareCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCollider.cpp">
+      <Filter>Collider\PointCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Intersection.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionRenderer.cpp">
+      <Filter>CollisionRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="TriangleCollider.cpp">
+      <Filter>Collider\TriangleCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionRenderMessages.cpp">
+      <Filter>CollisionRenderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ICollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupCollider.h">
+      <Filter>Collider\GroupCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleCollider.h">
+      <Filter>Collider\CircleCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SquareCollider.h">
+      <Filter>Collider\SquareCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCollider.h">
+      <Filter>Collider\PointCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersection.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionRenderer.h">
+      <Filter>CollisionRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleCollider.h">
+      <Filter>Collider\TriangleCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionRenderMessages.h">
+      <Filter>CollisionRenderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CollisionManager">
+      <UniqueIdentifier>{89967c93-6340-4073-a332-82c25e9f3bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{a0b106ac-a2b2-437b-9c9e-08a98add3d08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider\CircleCollider">
+      <UniqueIdentifier>{245d9df7-926a-4fbb-810a-f12bdbef524d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider\GroupCollider">
+      <UniqueIdentifier>{089ff87a-aecd-41e3-bab1-869af18ab9cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider\PointCollider">
+      <UniqueIdentifier>{ddbdc2bd-cb10-4f9c-8078-b554e954d021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{231b81f9-e494-4bc3-8501-617e85895313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider\SquareCollider">
+      <UniqueIdentifier>{8d4f6a13-e948-4947-947a-a2ddcf17b96d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider\TriangleCollider">
+      <UniqueIdentifier>{e442d1f9-9b62-4e86-8067-9e68cab6bb6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CollisionRenderer">
+      <UniqueIdentifier>{bdeda483-0ee9-46d9-940c-fc0350b97301}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,421 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{b850ff85-7a2e-4e56-9cc4-37a253777f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{4fd2dee8-bfbb-487a-b366-c606845b23ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{7c96f7b9-1a1b-42cd-842e-5374339f4f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{14ab1dca-9b4f-45ee-b0ff-c5d8ca73098e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelManager">
+      <UniqueIdentifier>{a928bea9-e40e-4527-a4da-87feb45abfd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelManager\Fbx">
+      <UniqueIdentifier>{503a1690-41d5-4003-b15d-f583dff8cb32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{586ffb8f-56be-4a8e-a225-6aec983b51ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{e390194c-f7be-491d-a402-cee619d514dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{fb74f8b9-4d4f-4a71-8d0e-2cf5bc3eac38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InputManager">
+      <UniqueIdentifier>{f48fd75b-4e13-496c-a609-66700b73379c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{fdd69737-7092-4c65-8c25-ddb35c4fcb09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture\DDS">
+      <UniqueIdentifier>{9d30a6f5-da28-4781-9567-dbad30fe0ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Streaks">
+      <UniqueIdentifier>{6cbcd24e-e312-4d34-ab7a-c5354fe70489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{7c401d84-94f5-420a-ace6-9f10c874bfef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DebugInfoDrawer">
+      <UniqueIdentifier>{f377173c-e223-411d-954f-7f439f309cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{f37e2488-d21c-46e7-88da-b97ff2bf1752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Number">
+      <UniqueIdentifier>{78a24218-56ea-426e-a1de-0e1127313924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bitmap">
+      <UniqueIdentifier>{74ab491c-6452-4c21-b3ef-c4f8eaead333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{389b616a-080e-495c-b71b-e04372a6c138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fire">
+      <UniqueIdentifier>{4d19949d-8af1-4814-975f-6ff6ac3be8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{aeb03320-ae0b-495c-97dc-ce8e28d81244}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInstance.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstBufferTemplate.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="dds.h">
+      <Filter>Texture\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Texture\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXHelpers.h">
+      <Filter>Texture\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformHelpers.h">
+      <Filter>Texture\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXLoader.h">
+      <Filter>ModelManager\Fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexStructs.h">
+      <Filter>ModelManager\Fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="DXFramework.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectHelper.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelShapes.h">
+      <Filter>ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h" />
+    <ClInclude Include="Lights.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightInstance.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitterInstance.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="TextureManager.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="EModelBluePrint.h" />
+    <ClInclude Include="LineDrawer.h" />
+    <ClInclude Include="StreakEmitterInstance.h">
+      <Filter>Streaks</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPackage.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="GUIModleHelper.h">
+      <Filter>ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="TextInstance.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugInfoDrawer.h">
+      <Filter>DebugInfoDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMessages.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="EDebugInfoDrawerFlags.h">
+      <Filter>DebugInfoDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="FullScreenHelper.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="NumberDrawer.h">
+      <Filter>Number</Filter>
+    </ClInclude>
+    <ClInclude Include="InstanceID.h" />
+    <ClInclude Include="StreakEmitter.h">
+      <Filter>Streaks</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterData.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="BufferStructs.h">
+      <Filter>ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelBatch.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBitmap.h">
+      <Filter>Bitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h" />
+    <ClInclude Include="AnimationController.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitterManager.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelID.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="FireEmitter.h">
+      <Filter>Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="FireEmitterInstance.h">
+      <Filter>Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="FireEmitterManager.h">
+      <Filter>Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="FireEmitterData.h">
+      <Filter>Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCamera.h" />
+    <ClInclude Include="Sprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteInstance.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteManager.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Navmesh.h" />
+    <ClInclude Include="ObjLoader.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsManager.h" />
+    <ClInclude Include="SettingsSubscriber.h" />
+    <ClInclude Include="Allignment.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInstance.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Texture\DDS</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXLoader.cpp">
+      <Filter>ModelManager\Fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="DXFramework.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightInstance.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitterInstance.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="LineDrawer.cpp" />
+    <ClCompile Include="StreakEmitterInstance.cpp">
+      <Filter>Streaks</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPackage.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="GUIModleHelper.cpp">
+      <Filter>ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="TextInstance.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugInfoDrawer.cpp">
+      <Filter>DebugInfoDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="FullScreenHelper.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="NumberDrawer.cpp">
+      <Filter>Number</Filter>
+    </ClCompile>
+    <ClCompile Include="StreakEmitter.cpp">
+      <Filter>Streaks</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelBatch.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBitmap.cpp">
+      <Filter>Bitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitterManager.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="FireEmitter.cpp">
+      <Filter>Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="FireEmitterInstance.cpp">
+      <Filter>Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="FireEmitterManager.cpp">
+      <Filter>Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderMessages.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCamera.cpp" />
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteInstance.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteManager.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Navmesh.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
+    <ClCompile Include="SettingsManager.cpp" />
+    <ClCompile Include="SettingsSubscriber.cpp" />
+    <ClCompile Include="Text.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Bin\Sprites\launcher\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Bin\Sprites\launcher\icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="BackgroundLoadingManager.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LoadingAnimation.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="LevelSelectState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditsState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseMenu.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashScreen.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLoader.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalLuaFunctions.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptHelperFunctions.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffectManager.cpp" />
+    <ClCompile Include="GameEventMessenger.cpp">
+      <Filter>GameEventMessager</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BackgroundLoadingManager.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="LoadingAnimation.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="LevelSelectState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditsState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashScreen.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptLoader.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalLuaFunctions.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptHelperFunctions.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffectManager.h" />
+    <ClInclude Include="GameEventMessenger.h">
+      <Filter>GameEventMessager</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="States">
+      <UniqueIdentifier>{e6c7f4ba-4ba3-4114-b270-6b080d89cadd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptLoader">
+      <UniqueIdentifier>{45fcaf0e-06d6-4dc1-a35e-d4ea40dfcbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleEffectManager">
+      <UniqueIdentifier>{3f3a576b-896e-4f22-b6f5-349ab51bbd89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEventMessager">
+      <UniqueIdentifier>{23f0c3e6-776a-4bc1-895e-49779b355a5a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

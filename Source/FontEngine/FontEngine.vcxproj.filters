@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FontEngineFacade">
+      <UniqueIdentifier>{444b1723-0cad-4cf4-a869-d686e60e6f79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FT_FontFacade">
+      <UniqueIdentifier>{642741cb-c199-43e0-b000-1f5a320734aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Freetype\ft2build.h" />
+    <ClInclude Include="targetver.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FontEngine.h" />
+    <ClInclude Include="FT_Font.h" />
+    <ClInclude Include="FontEngineFacade.h">
+      <Filter>FontEngineFacade</Filter>
+    </ClInclude>
+    <ClInclude Include="FT_FontFacade.h">
+      <Filter>FT_FontFacade</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FontEngine.cpp" />
+    <ClCompile Include="FT_Font.cpp" />
+    <ClCompile Include="FontEngineFacade.cpp">
+      <Filter>FontEngineFacade</Filter>
+    </ClCompile>
+    <ClCompile Include="FT_FontFacade.cpp">
+      <Filter>FT_FontFacade</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

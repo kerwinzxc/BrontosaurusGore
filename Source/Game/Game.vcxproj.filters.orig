@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="BackgroundLoadingManager.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LoadingAnimation.cpp" />
+    <ClCompile Include="PollingStation.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="LevelSelectState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditsState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseMenu.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashScreen.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestManager.cpp">
+      <Filter>QuestManager</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestDrawer.cpp">
+      <Filter>QuestManager\QuestDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="HatShopState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="HatMaker.cpp" />
+    <ClCompile Include="MasterAI.cpp" />
+    <ClCompile Include="PickerUpperComponent.cpp" />
+    <ClCompile Include="PickupComponent.cpp" />
+    <ClCompile Include="PickupManager.cpp" />
+    <ClCompile Include="PickupFactory.cpp" />
+    <ClCompile Include="ShopStorage.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
+    <ClCompile Include="EnemyFactory.cpp" />
+    <ClCompile Include="DialogState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLoader.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalLuaFunctions.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="ScriptHelperFunctions.cpp">
+      <Filter>ScriptLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffectManager.cpp" />
+=======
+    <ClCompile Include="ClickPulse.cpp" />
+>>>>>>> f1fce0477a9e70b0d2361c24f9a1343365a3c284
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BackgroundLoadingManager.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="LoadingAnimation.h" />
+    <ClInclude Include="PollingStation.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="LevelSelectState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditsState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashScreen.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestManager.h">
+      <Filter>QuestManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>QuestManager</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestDrawer.h">
+      <Filter>QuestManager\QuestDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="HatShopState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="HatMaker.h" />
+    <ClInclude Include="MasterAI.h" />
+    <ClInclude Include="PickerUpperComponent.h" />
+    <ClInclude Include="PickupComponent.h" />
+    <ClInclude Include="PickupManager.h" />
+    <ClInclude Include="PickupType.h" />
+    <ClInclude Include="PickupFactory.h" />
+    <ClInclude Include="ShopStorage.h" />
+    <ClInclude Include="ShopStructs.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="EnemyFactory.h" />
+    <ClInclude Include="DialogState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptLoader.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalLuaFunctions.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptHelperFunctions.h">
+      <Filter>ScriptLoader</Filter>
+    </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="ParticleEffectManager.h" />
+=======
+    <ClInclude Include="ClickPulse.h" />
+>>>>>>> f1fce0477a9e70b0d2361c24f9a1343365a3c284
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="States">
+      <UniqueIdentifier>{e6c7f4ba-4ba3-4114-b270-6b080d89cadd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QuestManager">
+      <UniqueIdentifier>{b29589e2-bda0-416d-8f96-aff01bf68937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="QuestManager\QuestDrawer">
+      <UniqueIdentifier>{9a07a5b7-1f30-4254-a41d-51f10733cc67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptLoader">
+      <UniqueIdentifier>{45fcaf0e-06d6-4dc1-a35e-d4ea40dfcbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleEffectManager">
+      <UniqueIdentifier>{3f3a576b-896e-4f22-b6f5-349ab51bbd89}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

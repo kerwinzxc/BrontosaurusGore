@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="External">
+      <UniqueIdentifier>{152868d3-1a26-48a3-85d1-06573648495c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SoundEngine\Win32\AkDefaultIOHookBlocking.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine\Common\AkFileLocationBase.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine\Common\AkFilePackage.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine\Common\AkFilePackageLUT.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioInterface.cpp" />
+    <ClCompile Include="WwiseManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SoundEngine\Win32\AkDefaultIOHookBlocking.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine\Common\AkFileLocationBase.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine\Common\AkFilePackage.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine\Common\AkFilePackageLUT.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioCommon.h" />
+    <ClInclude Include="AudioInterface.h" />
+    <ClInclude Include="WwiseManager.h" />
+  </ItemGroup>
+</Project>

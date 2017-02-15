@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{40f144c5-5f4a-4ae6-970c-ae1d07913cc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelViewerClass">
+      <UniqueIdentifier>{46aad22e-b733-4dce-803b-6594e9ade2a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelViewer.h">
+      <Filter>ModelViewerClass</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ModelViewer.cpp">
+      <Filter>ModelViewerClass</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,467 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{05862c91-2d13-4c6a-888f-e975cdc129a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debulogger">
+      <UniqueIdentifier>{0b73e33d-ed8b-4ab8-8848-ff560c0e8683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debulogger\Stackwalker">
+      <UniqueIdentifier>{59b84345-4ddd-4b15-9ac2-0c89e4cd0d3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{5df6b5df-1553-4dec-8d9e-6b9463e93e4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Vector">
+      <UniqueIdentifier>{0b39d27b-963d-4474-bf32-d0ce960f9780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Matrix">
+      <UniqueIdentifier>{ba80ebb4-1c51-43c6-b79c-e1b5503a0d59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Gfx">
+      <UniqueIdentifier>{9a7a6c14-5db0-4fd9-87c3-f5fcf6b9ed4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Intersection">
+      <UniqueIdentifier>{d3832232-637b-4d3d-9c4e-b12410bc6fd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RapidJSON">
+      <UniqueIdentifier>{43fda859-dbc9-4c02-9367-736ea19bd659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RapidJSON\error">
+      <UniqueIdentifier>{3de2e221-3694-42bf-bb57-31458f33e109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RapidJSON\internal">
+      <UniqueIdentifier>{65047a54-e546-4f8e-8d8f-b19cb7d63c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RapidJSON\msinttypes">
+      <UniqueIdentifier>{a8759b66-48eb-4485-bb0a-34310dca8aed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{d527ee12-7912-47c0-9d3e-8a37940cb28e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="midi">
+      <UniqueIdentifier>{c7ac801b-d980-4e79-a6b9-e9057794f3da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadPool">
+      <UniqueIdentifier>{b8127164-0ed7-4c7d-b4a0-bbfa1814d20b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostMaster">
+      <UniqueIdentifier>{9255239d-6be5-4cef-8510-66ee1c46f8e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{8f61341e-4991-40d9-99bd-8b559417bfdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{cf369f14-7b71-40e1-8e8e-4b27d36b1950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CountDown">
+      <UniqueIdentifier>{fe3f9e2c-80e6-43a6-8447-7c89ca05e5ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Queue">
+      <UniqueIdentifier>{973577ba-0a9b-4a54-b7f7-e7c748ea347c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MemoryLogger">
+      <UniqueIdentifier>{0d287868-2f89-48d6-97f1-42fdf8b5201a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MatrixInverse">
+      <UniqueIdentifier>{43bff1ff-2916-42fd-85ff-7b056de6b086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MemoryPool">
+      <UniqueIdentifier>{6d7856c4-b602-4b4f-ba08-13bf130de734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Function">
+      <UniqueIdentifier>{b56e6367-b76c-4ad9-aa1b-b1ddec1e1529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CommandLineManager">
+      <UniqueIdentifier>{a0465575-eaa9-406b-b536-f852d2cef5e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BitSet">
+      <UniqueIdentifier>{d56df7d9-58d7-4ffe-94a8-b9b80582123d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PicoJson">
+      <UniqueIdentifier>{45412c79-6444-4e53-b508-abe0a9c9403f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tweener">
+      <UniqueIdentifier>{89ab4aff-5c42-4730-aa80-030ddaeeffdf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="DL_StackWalker.h">
+      <Filter>Debulogger</Filter>
+    </ClInclude>
+    <ClInclude Include="DL_Assert.h">
+      <Filter>Debulogger</Filter>
+    </ClInclude>
+    <ClInclude Include="StackWalker.h">
+      <Filter>Debulogger\Stackwalker</Filter>
+    </ClInclude>
+    <ClInclude Include="DL_Debug.h">
+      <Filter>Debulogger</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector4.h">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix33.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix44.h">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>Math\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="line_volume.h">
+      <Filter>Math\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Math\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="plane_volume.h">
+      <Filter>Math\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersection.h">
+      <Filter>Math\Intersection</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\allocators.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\document.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\encodedstream.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\encodings.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\filereadstream.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\filewritestream.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\fwd.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\memorybuffer.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\memorystream.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\pointer.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\prettywriter.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\rapidjson.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\reader.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\schema.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\stream.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\stringbuffer.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\writer.h">
+      <Filter>RapidJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\error\en.h">
+      <Filter>RapidJSON\error</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\error\error.h">
+      <Filter>RapidJSON\error</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\biginteger.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\diyfp.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\dtoa.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\ieee754.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\itoa.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\meta.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\pow10.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\regex.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\stack.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\strfunc.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\strtod.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\internal\swap.h">
+      <Filter>RapidJSON\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\msinttypes\inttypes.h">
+      <Filter>RapidJSON\msinttypes</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidjson\msinttypes\stdint.h">
+      <Filter>RapidJSON\msinttypes</Filter>
+    </ClInclude>
+    <ClInclude Include="GrowingArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorOnStack.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="binary_tree.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Heap.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonUtilities.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="double_linked_list.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Worker.h">
+      <Filter>ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Work.h">
+      <Filter>ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="PostMasterKyle.h">
+      <Filter>PostMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="SubscriberKyle.h">
+      <Filter>PostMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageKyle.h">
+      <Filter>PostMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="CUTime.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputWrapper.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputWrapper.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicString.h">
+      <Filter>String</Filter>
+    </ClInclude>
+    <ClInclude Include="CUstring.h">
+      <Filter>String</Filter>
+    </ClInclude>
+    <ClInclude Include="EMouseButtons.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="EKeyboardKeys.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHelper.h">
+      <Filter>String</Filter>
+    </ClInclude>
+    <ClInclude Include="CountDown.h">
+      <Filter>CountDown</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="Queue.h">
+      <Filter>Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="InvertMatrix.h">
+      <Filter>MatrixInverse</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadNamer.h" />
+    <ClInclude Include="EInputMessage.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicMemoryPool.h">
+      <Filter>MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMemoryPool.h">
+      <Filter>MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Function</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryLeekLogger.h">
+      <Filter>MemoryLogger</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineManager.h">
+      <Filter>CommandLineManager</Filter>
+    </ClInclude>
+    <ClInclude Include="BitSet.h">
+      <Filter>BitSet</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSort.h" />
+    <ClInclude Include="picojson.h">
+      <Filter>PicoJson</Filter>
+    </ClInclude>
+    <ClInclude Include="PJWrapper.h">
+      <Filter>PicoJson</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonValue.h">
+      <Filter>PicoJson</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTypeTraits.h" />
+    <ClInclude Include="Line3D.h" />
+    <ClInclude Include="ReverseGrowingArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Tween.h">
+      <Filter>Tweener</Filter>
+    </ClInclude>
+    <ClInclude Include="dbtweener.h">
+      <Filter>Tweener</Filter>
+    </ClInclude>
+    <ClInclude Include="AlarmClock.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="StopWatch.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="DL_StackWalker.cpp">
+      <Filter>Debulogger</Filter>
+    </ClCompile>
+    <ClCompile Include="StackWalker.cpp">
+      <Filter>Debulogger\Stackwalker</Filter>
+    </ClCompile>
+    <ClCompile Include="DL_Debug.cpp">
+      <Filter>Debulogger</Filter>
+    </ClCompile>
+    <ClCompile Include="Intersection.cpp">
+      <Filter>Math\Intersection</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Work.cpp">
+      <Filter>ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Worker.cpp">
+      <Filter>ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="example_postMastercpp.h">
+      <Filter>PostMaster</Filter>
+    </ClCompile>
+    <ClCompile Include="PostMasterKyle.cpp">
+      <Filter>PostMaster</Filter>
+    </ClCompile>
+    <ClCompile Include="CUTime.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputWrapper.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InputWrapper.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicString.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
+    <ClCompile Include="CountDown.cpp">
+      <Filter>CountDown</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="Frustum.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="InvertMatrix.cpp">
+      <Filter>MatrixInverse</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadNamer.cpp" />
+    <ClCompile Include="StringHelper.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryLeekLogger.cpp">
+      <Filter>MemoryLogger</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineManager.cpp">
+      <Filter>CommandLineManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PJWrapper.cpp">
+      <Filter>PicoJson</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonValue.cpp">
+      <Filter>PicoJson</Filter>
+    </ClCompile>
+    <ClCompile Include="Tween.cpp">
+      <Filter>Tweener</Filter>
+    </ClCompile>
+    <ClCompile Include="dbtweener.cpp">
+      <Filter>Tweener</Filter>
+    </ClCompile>
+    <ClCompile Include="AlarmClock.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="StopWatch.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CommonUtilities.rc" />
+  </ItemGroup>
+</Project>

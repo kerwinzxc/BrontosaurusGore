@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="BarWidget.h">
+      <Filter>Widgets\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Widgets\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonAnimation.h">
+      <Filter>Widgets\Decorators</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIManager.h">
+      <Filter>GUIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelWidget.h">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteWidget.h">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetContainer.h">
+      <Filter>Widgets\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Widgets\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIPixelConstantBuffer.h">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetDecorator.h">
+      <Filter>Widgets\Decorators</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolTipDecorator.h">
+      <Filter>Widgets\Decorators</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="TextWidget.h">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="GUICursor.h">
+      <Filter>GUIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetFactory.h">
+      <Filter>Widgets\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="DraggableArea.h">
+      <Filter>Widgets\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="HatIcon.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BarWidget.cpp">
+      <Filter>Widgets\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Widgets\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonAnimation.cpp">
+      <Filter>Widgets\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIManager.cpp">
+      <Filter>GUIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelWidget.cpp">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteWidget.cpp">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetContainer.cpp">
+      <Filter>Widgets\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Widgets\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetDecorator.cpp">
+      <Filter>Widgets\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolTipDecorator.cpp">
+      <Filter>Widgets\Decorators</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="TextWidget.cpp">
+      <Filter>Widgets\RenderableWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GUICursor.cpp">
+      <Filter>GUIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetFactory.cpp">
+      <Filter>Widgets\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="DraggableArea.cpp">
+      <Filter>Widgets\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="HatIcon.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{22b891d8-d6e7-45b8-9616-c427b4500602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUIManager">
+      <UniqueIdentifier>{38550dff-e05f-4fb5-9882-f38e4f76351e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets\RenderableWidgets">
+      <UniqueIdentifier>{a3c33a6a-101a-4525-86d2-22797d1314e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets\Decorators">
+      <UniqueIdentifier>{48edca24-2103-4cfb-b4b1-9e37307a689c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets\Containers">
+      <UniqueIdentifier>{ad4c3ddf-08c0-4fba-ba16-f4dad67debf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{38650bcd-34f8-4cb8-adef-b05b5e61fea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets\Factory">
+      <UniqueIdentifier>{cb9c6ba2-425e-456d-beac-f1c31716aee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets\Misc">
+      <UniqueIdentifier>{cd6ddb7c-ed3f-488a-815b-9096c64ed699}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

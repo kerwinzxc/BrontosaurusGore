@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>VS</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>VS</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaFunctions.h">
+      <Filter>LuaFunctions</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadManager.h">
+      <Filter>LoadManager</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadObject.h">
+      <Filter>LoadObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadModel.h">
+      <Filter>LoadThings\LoadModels</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCamera.h" />
+    <ClInclude Include="LoadColliderComponent.h" />
+    <ClInclude Include="LoadSoundComponent.h" />
+    <ClInclude Include="LoadScriptComponent.h">
+      <Filter>LoadThings\LoadScriptComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadFireComponent.h">
+      <Filter>LoadThings\LoadFireComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPointLightComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>VS</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaFunctions.cpp">
+      <Filter>LuaFunctions</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadManager.cpp">
+      <Filter>LoadManager</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadObject.cpp">
+      <Filter>LoadObject</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadModel.cpp">
+      <Filter>LoadThings\LoadModels</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCamera.cpp" />
+    <ClCompile Include="LoadColliderComponent.cpp" />
+    <ClCompile Include="LoadSoundComponent.cpp" />
+    <ClCompile Include="LoadScriptComponent.cpp">
+      <Filter>LoadThings\LoadScriptComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadFireComponent.cpp">
+      <Filter>LoadThings\LoadFireComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPointLightComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="VS">
+      <UniqueIdentifier>{35f92d3f-46b3-4c23-9408-4c64a447310e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuaFunctions">
+      <UniqueIdentifier>{a33c0251-8964-432b-b372-abd7d6fcdcf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadManager">
+      <UniqueIdentifier>{f56e17b2-c60a-469e-afa0-9e5d0cc30d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadObject">
+      <UniqueIdentifier>{c4768a02-cda1-4179-aa63-bea3dbe6547c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings">
+      <UniqueIdentifier>{8ffe0ed9-1a47-4dbf-ab22-ab09a7fa988b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadModels">
+      <UniqueIdentifier>{acf9c7cc-2225-46d8-8cac-522e2bd15445}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadScriptComponent">
+      <UniqueIdentifier>{17024182-1998-45ac-a4d3-c73267c647e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadFireComponent">
+      <UniqueIdentifier>{bb50d118-6b63-4aee-9b9e-0e031cdf0ca8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
