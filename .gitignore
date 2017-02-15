@@ -398,3 +398,4 @@ Bin/Script/Documentation/ComponentMessageTypes.txt
 Bin/Script/Documentation/ExposedFunctions.txt
 Bin/Script/ExposedFunctions.txt
 *.fxc
+Bin/BrontosaurusGore_Debug.lib
