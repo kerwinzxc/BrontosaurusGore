@@ -259,13 +259,13 @@ InstanceID CScene::AddModelInstance(CModelInstance* aModelInstance)
 	return id;
 }
 
-InstanceID CScene::AddDirectionalLight(Lights::SDirectionalLight & aDirectionalLight)
+InstanceID CScene::AddDirectionalLight(const Lights::SDirectionalLight & aDirectionalLight)
 {
 	myDirectionalLight = aDirectionalLight;
 	return 0;
 }
 
-InstanceID CScene::AddPointLightInstance(CPointLightInstance aPointLight)
+InstanceID CScene::AddPointLightInstance(const CPointLightInstance& aPointLight)
 {
 	InstanceID id = 0;
 
@@ -324,9 +324,14 @@ void CScene::SetSkybox(const char* aPath)
 
 }
 
-CModelInstance& CScene::GetModelAt(InstanceID aModelID)
+CModelInstance* CScene::GetModelAt(const InstanceID aModelID)
 {
-	return *myModels[aModelID];
+	if (myModels.HasIndex(aModelID))
+	{
+		return myModels[aModelID];
+	}
+
+	return nullptr;
 }
 
 CFireEmitterInstance& CScene::GetFireEmitter(const InstanceID aFireEmitterID)

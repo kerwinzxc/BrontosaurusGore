@@ -6,7 +6,7 @@
 
 void CCameraComponent::InitOffsetPosition()
 {
-	myOffsetPosition = myCamera->GetPosition(); 
+	//myOffsetPosition = myCamera->GetPosition(); 
 }
 
 void CCameraComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -18,25 +18,19 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 
 	switch (aMessageType)
 	{
-	case eComponentMessageType::eAddComponent:
-		if (aMessageData.myComponentTypeAdded != eComponentType::eCamera) break;
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
 		if (myUnlocked == false)
 		{
-			CU::Vector3f parentPosition = GetParent()->GetWorldPosition();
-			parentPosition.y = 0.f;
-			myCamera->SetPosition(myOffsetPosition + parentPosition);
+			//CU::Vector3f parentPosition = GetParent()->GetWorldPosition();
+			//parentPosition.y = 0.f;
+			//myCamera->SetPosition(myOffsetPosition + parentPosition);
+			myCamera->SetTransformation(GetParent()->GetToWorldTransform());
 		}
 	}
 		break;
 	}
-}
-
-void CCameraComponent::Destroy()
-{
-	DL_ASSERT("Not yet implemented");
 }
 
 CCameraComponent::CCameraComponent()

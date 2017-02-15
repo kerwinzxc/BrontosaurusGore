@@ -7,7 +7,7 @@ class CPlayState;
 class CLoadState :public State
 {
 public:
-	CLoadState(StateStack& aStateStack, const int aLevelIndex, const bool aShouldReturnToLevelSelect = false);
+	CLoadState(StateStack& aStateStack, const int aLevelIndex);
 	~CLoadState();
 
 	void Init() override;
@@ -22,6 +22,5 @@ private:
 	CLoadingAnimation myLoadingAnimation;
 
 	const int myLevelIndex;
-	const bool myShouldReturnToLevelSelect;
 };
 

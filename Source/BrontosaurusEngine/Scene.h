@@ -39,15 +39,15 @@ public:
 
 	//Add shiz, camera, modeller ljus, partiklar
 	InstanceID AddModelInstance(CModelInstance* aModelInstance); //return int
-	InstanceID AddDirectionalLight(Lights::SDirectionalLight& aDirectionalLight);
-	InstanceID AddPointLightInstance(CPointLightInstance aPointLight);
+	InstanceID AddDirectionalLight(const Lights::SDirectionalLight& aDirectionalLight);
+	InstanceID AddPointLightInstance(const CPointLightInstance& aPointLight);
 	InstanceID AddParticleEmitterInstance(CParticleEmitterInstance* aParticleEmitterInstance);
 	InstanceID AddFireEmitters(const CFireEmitterInstance& aFireEmitter);
 	void AddCamera(const eCameraType aCameraType);
 
 	void SetSkybox(const char* aPath);
 
-	CModelInstance& GetModelAt(InstanceID aModelID);
+	CModelInstance* GetModelAt(const InstanceID aModelID);
 	CFireEmitterInstance& GetFireEmitter(const InstanceID aFireEmitterID);
 	CU::Camera& GetCamera(const eCameraType aCameraType);
 	CParticleEmitterInstance* GetParticleEmitterInstance(const InstanceID aParticleEmitterID);

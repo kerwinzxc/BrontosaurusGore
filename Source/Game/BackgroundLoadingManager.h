@@ -8,7 +8,7 @@ public:
 	static CBackgroundLoadingManager& GetInstance();//WHY
 	static void DestroyInstance(); //THIS ENGINE IS BROKEN WE SAID A FEW SINGLETONS!!!!!!!!!!!!!!!!!
 
-	void CreateStateToLoad(StateStack& aStateStack, const int aLevelIndex, const bool aShouldReturnToLevelSelect = false);
+	void CreateStateToLoad(StateStack& aStateStack, const int aLevelIndex);
 	CPlayState* GetPlaystate();
 
 	bool GetIfActive();

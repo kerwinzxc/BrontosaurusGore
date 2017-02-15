@@ -14,19 +14,17 @@ namespace CU
 class CCameraComponent : public CComponent
 {
 public:
-	friend class CCameraComponentManager;
+	//friend class CCameraComponentManager;
+	CCameraComponent();
+	~CCameraComponent();
 	
 	void InitOffsetPosition();
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)override;
-	void Destroy();
 
 	inline void SetCamera(CU::Camera& aCamera);
 
 private:
-	CCameraComponent();
-	~CCameraComponent();
-
 	CU::Vector3f myOffsetPosition;
 	CU::Camera* myCamera;
 	bool myUnlocked;

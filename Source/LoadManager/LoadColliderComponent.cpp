@@ -14,7 +14,7 @@ int LoadCircleCollider(KLoader::SLoadedComponentData someData)
 	CPlayState* playState = LoadManager::GetInstance().GetCurrentPLaystate();
 	if (playState == nullptr) return 0;
 
-	CCollisionComponentManager* collisionManager = playState->GetCollisionManager();
+	CCollisionComponentManager* collisionManager = nullptr;// playState->GetCollisionManager();
 	if (collisionManager == nullptr) return 0;
 
 	//collect json-data

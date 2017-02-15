@@ -74,6 +74,7 @@
     <ClCompile Include="PointLightComponentManager.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
+    <ClCompile Include="InputComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="PointLightComponentManager.h">
       <Filter>Lights</Filter>
     </ClInclude>
+    <ClInclude Include="InputComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -182,12 +184,6 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{eb3ddca2-f61c-4ef9-aee6-0de16f80d576}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Stats">
-      <UniqueIdentifier>{57b16321-6896-4bed-9386-44e6705c2103}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Activation">
-      <UniqueIdentifier>{ce907b3f-4f14-4c78-b389-0defde24c5a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ScriptComponent">
       <UniqueIdentifier>{693bd916-9e55-4c29-a108-69508fb4d6b5}</UniqueIdentifier>
     </Filter>
@@ -196,6 +192,9 @@
     </Filter>
     <Filter Include="Lights">
       <UniqueIdentifier>{a9cd968d-5a83-4a7f-89be-fa58e524ecc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InputComponent">
+      <UniqueIdentifier>{3448c6b6-4af9-41f3-a1cf-a15587da0b07}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

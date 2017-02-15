@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="targetver.h">
-      <Filter>VS</Filter>
+      <Filter>Precompiled</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>VS</Filter>
+      <Filter>Precompiled</Filter>
     </ClInclude>
     <ClInclude Include="LuaFunctions.h">
       <Filter>LuaFunctions</Filter>
@@ -19,20 +19,28 @@
     <ClInclude Include="LoadModel.h">
       <Filter>LoadThings\LoadModels</Filter>
     </ClInclude>
-    <ClInclude Include="LoadCamera.h" />
-    <ClInclude Include="LoadColliderComponent.h" />
-    <ClInclude Include="LoadSoundComponent.h" />
     <ClInclude Include="LoadScriptComponent.h">
       <Filter>LoadThings\LoadScriptComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadFireComponent.h">
       <Filter>LoadThings\LoadFireComponent</Filter>
     </ClInclude>
-    <ClInclude Include="LoadPointLightComponent.h" />
+    <ClInclude Include="LoadColliderComponent.h">
+      <Filter>LoadThings\LoadCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPointLightComponent.h">
+      <Filter>LoadThings\LoadPointLight</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadSoundComponent.h">
+      <Filter>LoadThings\LoadSoundComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCamera.h">
+      <Filter>LoadThings\LoadCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>VS</Filter>
+      <Filter>Precompiled</Filter>
     </ClCompile>
     <ClCompile Include="LuaFunctions.cpp">
       <Filter>LuaFunctions</Filter>
@@ -46,21 +54,26 @@
     <ClCompile Include="LoadModel.cpp">
       <Filter>LoadThings\LoadModels</Filter>
     </ClCompile>
-    <ClCompile Include="LoadCamera.cpp" />
-    <ClCompile Include="LoadColliderComponent.cpp" />
-    <ClCompile Include="LoadSoundComponent.cpp" />
     <ClCompile Include="LoadScriptComponent.cpp">
       <Filter>LoadThings\LoadScriptComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadFireComponent.cpp">
       <Filter>LoadThings\LoadFireComponent</Filter>
     </ClCompile>
-    <ClCompile Include="LoadPointLightComponent.cpp" />
+    <ClCompile Include="LoadColliderComponent.cpp">
+      <Filter>LoadThings\LoadCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPointLightComponent.cpp">
+      <Filter>LoadThings\LoadPointLight</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadSoundComponent.cpp">
+      <Filter>LoadThings\LoadSoundComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCamera.cpp">
+      <Filter>LoadThings\LoadCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="VS">
-      <UniqueIdentifier>{35f92d3f-46b3-4c23-9408-4c64a447310e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuaFunctions">
       <UniqueIdentifier>{a33c0251-8964-432b-b372-abd7d6fcdcf0}</UniqueIdentifier>
     </Filter>
@@ -81,6 +94,21 @@
     </Filter>
     <Filter Include="LoadThings\LoadFireComponent">
       <UniqueIdentifier>{bb50d118-6b63-4aee-9b9e-0e031cdf0ca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadCollider">
+      <UniqueIdentifier>{04529a61-ea2c-45a4-86bc-ee7de1c9ebbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadPointLight">
+      <UniqueIdentifier>{2e91866c-ac05-417e-b471-baeb15ed9802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadSoundComponent">
+      <UniqueIdentifier>{ade5bd1e-58c7-4b36-ab06-afc4059de6df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadCamera">
+      <UniqueIdentifier>{12fdeb8c-6770-4c0e-8367-30b9b0e14a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{35f92d3f-46b3-4c23-9408-4c64a447310e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@
 
 int LoadObject(KLoader::SLoadedComponentData someData)
 {
-	CGameObject* const gameObject = LoadManager::GetInstance().GetCurrentPLaystate()->GetObjectManager()->CreateGameObject();
+	CGameObject* const gameObject = LoadManager::GetInstance().GetCurrentPLaystate()->GetGameObjectManager()->CreateGameObject();
 
 	CU::Matrix44f& currentMatrix = gameObject->GetLocalTransform();
 

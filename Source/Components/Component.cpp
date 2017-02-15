@@ -20,11 +20,6 @@ void CComponent::NotifyParent(const eComponentMessageType aMessageType, const SC
 	}
 }
 
-const eComponentType CComponent::GetType() const
-{
-	return myType;
-}
-
 void CComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	aMessageType;

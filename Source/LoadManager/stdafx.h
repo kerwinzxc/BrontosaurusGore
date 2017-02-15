@@ -15,6 +15,9 @@
 
 #include "../CommonUtilities/GrowingArray.h"
 #include "../CommonUtilities/DL_Debug.h"
+#include "../CommonUtilities/vector2.h"
+#include "../CommonUtilities/vector3.h"
+#include "../CommonUtilities/vector4.h"
 
 #include "../BrontosaurusEngine/Scene.h"
 #include "../Game/PlayState.h"

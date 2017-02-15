@@ -30,10 +30,10 @@ void CBackgroundLoadingManager::DestroyInstance()
 	ourInstance = nullptr;
 }
 
-void CBackgroundLoadingManager::CreateStateToLoad(StateStack& aStateStack, const int aLevelIndex, const bool aShouldReturnToLevelSelect)
+void CBackgroundLoadingManager::CreateStateToLoad(StateStack& aStateStack, const int aLevelIndex)
 {
 	myLevelIndex = aLevelIndex;
-	myCurrentPlayState = new CPlayState(aStateStack, aLevelIndex, aShouldReturnToLevelSelect);
+	myCurrentPlayState = new CPlayState(aStateStack, aLevelIndex);
 
 	CU::Work myWork(std::bind(&CPlayState::Load, myCurrentPlayState));
 	CEngine::GetInstance()->GetThreadPool()->AddWork(myWork);

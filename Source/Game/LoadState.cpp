@@ -10,7 +10,7 @@
 #include "BackgroundLoadingManager.h"
 #include "Game/Game.h"
 
-CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex, const bool aShouldReturnToLevelSelect): State(aStateStack), myLevelIndex(aLevelIndex), myShouldReturnToLevelSelect(aShouldReturnToLevelSelect)
+CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex): State(aStateStack), myLevelIndex(aLevelIndex)
 {
 	myPlayState = nullptr;
 }
@@ -32,13 +32,13 @@ void CLoadState::Init()
 		}
 		else
 		{
-			myPlayState = new CPlayState(myStateStack, myLevelIndex, myShouldReturnToLevelSelect);
+			myPlayState = new CPlayState(myStateStack, myLevelIndex);
 			bLM.LoadAnotherState(myPlayState);
 		}
 	}
 	else
 	{
-		bLM.CreateStateToLoad(myStateStack, myLevelIndex, myShouldReturnToLevelSelect);
+		bLM.CreateStateToLoad(myStateStack, myLevelIndex);
 		myPlayState = bLM.GetPlaystate();
 	}
 	myLoadingAnimation.Init(new CSpriteInstance("Sprites/LoadingScreen/Loading.dds", { 256.f / WINDOW_SIZE.x, 64.f / WINDOW_SIZE.y }));
