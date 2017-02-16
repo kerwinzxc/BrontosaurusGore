@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="stdafx.cpp">
       <Filter>Precompiled</Filter>
     </ClCompile>
@@ -74,7 +73,6 @@
     <ClCompile Include="PointLightComponentManager.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="WeaponSystemComponent.cpp">
       <Filter>Weapon</Filter>
     </ClCompile>
@@ -96,12 +94,23 @@
     <ClCompile Include="WeaponSystemManager.cpp">
       <Filter>Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectileComponentManager.cpp" />
-    <ClCompile Include="AmmoComponentManager.cpp" />
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>InputComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>MovementComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponentManager.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoComponentManager.cpp">
+      <Filter>Ammo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled</Filter>
     </ClInclude>
@@ -183,7 +192,6 @@
     <ClInclude Include="PointLightComponentManager.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="WeaponSystemComponent.h">
       <Filter>Weapon</Filter>
     </ClInclude>
@@ -220,8 +228,27 @@
     <ClInclude Include="WeaponFactory.h">
       <Filter>Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectileComponentManager.h" />
-    <ClInclude Include="AmmoComponentManager.h" />
+    <ClInclude Include="InputComponent.h">
+      <Filter>InputComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>MovementComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponentManager.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoComponentManager.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControls.h">
+      <Filter>InputComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -268,6 +295,12 @@
     </Filter>
     <Filter Include="Ammo">
       <UniqueIdentifier>{d70ea127-4045-4714-9c65-c42d688cbbe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MovementComponent">
+      <UniqueIdentifier>{02983070-7b49-4106-b034-5f85e9c058ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{e9975db9-e15c-49a1-918b-953f9a1f8c1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

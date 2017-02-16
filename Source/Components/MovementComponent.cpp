@@ -8,7 +8,7 @@ CMovementComponent::CMovementComponent()
 {
 	myAcceleration = 50000.f;
 	myDeceleration = 40000.f;
-	myMaxSpeed = 1000.f;
+	myMaxSpeed = 1500.f;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -55,25 +55,25 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		}
 	}
 
-	if (myKeysDown[static_cast<int>(ePlayerControls::eBackward)] == true && myVelocity.z > -myMaxSpeed)
+	if (myKeysDown[static_cast<int>(ePlayerControls::eBackward)] == true && myVelocity.z >= -myMaxSpeed)
 	{
 		myVelocity.z -= myAcceleration * aDeltaTime.GetSeconds();
 	}
-	else if (myKeysDown[static_cast<int>(ePlayerControls::eForward)] == true && myVelocity.z < myMaxSpeed)
+	else if (myKeysDown[static_cast<int>(ePlayerControls::eForward)] == true && myVelocity.z <= myMaxSpeed)
 	{
 		myVelocity.z += myAcceleration * aDeltaTime.GetSeconds();
 	}
 	else
 	{
-		//if (myVelocity.z > myDeceleration * aDeltaTime.GetSeconds())
-		//{
-		//	myVelocity.z -= myDeceleration * aDeltaTime.GetSeconds();
-		//}
-		//else if (myVelocity.z < -myDeceleration * aDeltaTime.GetSeconds())
-		//{
-		//	myVelocity.z += myDeceleration * aDeltaTime.GetSeconds();
-		//}
-		//else
+		if (myVelocity.z > myDeceleration * aDeltaTime.GetSeconds())
+		{
+			myVelocity.z -= myDeceleration * aDeltaTime.GetSeconds();
+		}
+		else if (myVelocity.z < -myDeceleration * aDeltaTime.GetSeconds())
+		{
+			myVelocity.z += myDeceleration * aDeltaTime.GetSeconds();
+		}
+		else
 		{
 			myVelocity.z = 0;
 		}
@@ -87,7 +87,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	}
 
 	myVelocity.y = 0.f;
-	DL_PRINT("%f, %f, %f", myVelocity.x, myVelocity.y, myVelocity.z);
+	DL_PRINT("%d, %d, %d", (int)myVelocity.x, (int)myVelocity.y, (int)myVelocity.z);
 
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
@@ -99,7 +99,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 
 	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
 	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	//GetParent()->GetLocalTransform().Move(myVelocity);
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
