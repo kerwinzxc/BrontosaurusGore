@@ -22,6 +22,7 @@ MainMenuState::MainMenuState(StateStack& aStateStack)
 
 MainMenuState::~MainMenuState()
 {
+	Unsubscribe(*myGUIManager);
 	SAFE_DELETE(myGUIManager);
 	
 	if (mySkyBox && mySkyBox->DecRef() <= 0)
@@ -34,6 +35,7 @@ void MainMenuState::Init()
 {
 	myGUIManager = new GUI::GUIManager();
 	myGUIManager->Init("Models/mainMenu/mainMenu.fbx");
+	Subscribe(*myGUIManager);
 	
 	mySkyBox = new CSkybox();
 	mySkyBox->Init("default_cubemap.dds");

@@ -17,7 +17,7 @@ namespace CU
 		void Subscribe(IInputListener& aListener, const int aPriority);
 		void Unsubscribe(IInputListener& aListener);
 
-		eInputReturn RecieveInput(const SInputMessage& aInputMessage);
+		virtual eInputReturn RecieveInput(const SInputMessage& aInputMessage);
 
 		int GetPriority() const;
 

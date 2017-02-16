@@ -62,6 +62,8 @@ namespace GUI
 	private:
 		CU::eInputReturn TakeInput(const CU::SInputMessage & aInputMessage) override;
 
+		CU::Vector2f myMousePosition;
+
 		WidgetContainer* myWidgetContainer;
 		IWidget* myFocusedWidget;
 		IWidget* myWidgetAtMouse;

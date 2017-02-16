@@ -203,8 +203,11 @@ CU::eInputReturn GUI::GUIManager::MouseReleased(const CU::eMouseButtons aMouseBu
 
 CU::eInputReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
 {
-	SUPRESS_UNUSED_WARNING(aMousePosition);
-	CU::Vector2f mousePosition = myCursor->GetPosition();
+	myMousePosition += aMousePosition;
+	myMousePosition.Clamp(CU::Vector2f::Zero, CU::Vector2f::One);
+	myCursor->SetPosition(myMousePosition);
+
+	CU::Vector2f mousePosition = myMousePosition; //myCursor->GetPosition();
 
 	IWidget* widget = myWidgetContainer->MouseIsOver(mousePosition);
 
@@ -225,7 +228,6 @@ CU::eInputReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
 		}
 		if (widget != nullptr && widget != myWidgetContainer)
 		{
-			DL_PRINT("mouse entered %s", widget->GetName().c_str());
 			widget->OnMouseEnter(mousePosition);
 		}
 
@@ -248,8 +250,10 @@ CU::eInputReturn GUI::GUIManager::TakeInput(const CU::SInputMessage& aInputMessa
 		return MouseMoved(aInputMessage.myMouseDelta);
 		break;
 	case CU::eInputType::eMousePressed:
+		return MouseClicked(aInputMessage.myMouseButton, aInputMessage.myMousePosition);
 		break;
 	case CU::eInputType::eMouseReleased:
+		return MouseReleased(aInputMessage.myMouseButton, aInputMessage.myMousePosition);
 		break;
 	//case CU::eInputType::eKeyboardPressed:
 	//	break;
@@ -272,7 +276,7 @@ void GUI::GUIManager::PauseRenderAndUpdate()
 	}
 }
 
-void GUI::GUIManager::RestartRenderAndUpdate(const bool /*aSubscribeToSecretMessage*/, const bool aAddSecretHats)
+void GUI::GUIManager::RestartRenderAndUpdate(const bool /*aSubscribeToSecretMessage*/, const bool /*aAddSecretHats*/)
 {
 	myShouldUpdate = true;
 	myShouldRender = true;
@@ -284,4 +288,3 @@ void GUI::GUIManager::RestartRenderAndUpdate(const bool /*aSubscribeToSecretMess
 		myCursor->SetPosition(locMousePosition);
 	}
 }
-

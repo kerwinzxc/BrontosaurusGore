@@ -2,7 +2,7 @@
 
 namespace CU
 {
-	enum class eMouseButton;
+	enum class eMouseButtons;
 	enum class eKeys;
 
 	enum class eInputType
@@ -25,7 +25,7 @@ namespace CU
 
 		union
 		{
-			eMouseButton myMouseButton;
+			eMouseButtons myMouseButton;
 			eKeys myKey;
 		};
 

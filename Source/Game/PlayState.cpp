@@ -3,6 +3,7 @@
 
 #include <Engine.h>
 #include <CommonUtilities.h>
+#include <EInputReturn.h>
 #include <Lights.h>
 #include <TimerManager.h>
 #include <Scene.h>
@@ -24,11 +25,15 @@
 
 #include "LoadManager/LoadManager.h"
 #include "KevinLoader/KevinLoader.h"
+
 #include "CameraComponent.h"
+#include "InputComponent.h"
+#include <chrono>
+#include <thread>
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
-	: State(aStateStack, eInputMessengerType::ePlayState)
+	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
 	, myScene(nullptr)
 {
@@ -69,15 +74,22 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 1.f, 75000.0f);
 
-	//CCameraComponent* cameraComponent = CCameraComponentManager::GetInstance().CreateCameraComponent();
-	CCameraComponent* cameraComponent = new CCameraComponent();
-	CComponentManager::GetInstance().RegisterComponent(cameraComponent);
-	cameraComponent->SetCamera(playerCamera);
-	CGameObject* playerObject = myGameObjectManager->CreateGameObject();
-	CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-	cameraObject->GetLocalTransform().SetPosition(0.f, 200.f, 0.f);
-	cameraObject->AddComponent(cameraComponent);
-	playerObject->AddComponent(cameraObject);
+	//create player:
+	{
+		//CCameraComponent* cameraComponent = CCameraComponentManager::GetInstance().CreateCameraComponent();
+		CCameraComponent* cameraComponent = new CCameraComponent();
+		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
+		cameraComponent->SetCamera(playerCamera);
+		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
+		cameraObject->GetLocalTransform().SetPosition(0.f, 200.f, 0.f);
+		cameraObject->AddComponent(cameraComponent);
+		playerObject->AddComponent(cameraObject);
+
+		CInputComponent* inputComponent = new CInputComponent();
+		playerObject->AddComponent(inputComponent);
+	}
+	
 
 	myGameObjectManager->SendObjectsDoneMessage();
 
@@ -106,9 +118,9 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).TranslateForward(aDeltaTime.GetSeconds() * 1000.f);
-	myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).Jaw(aDeltaTime.GetSeconds() * 3.1415f / 2.f);
-
+	//myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).TranslateForward(aDeltaTime.GetSeconds() * 1000.f);
+	//myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).Jaw(aDeltaTime.GetSeconds() * 3.1415f / 2.f);
+	
 	myScene->Update(aDeltaTime);
 	return myStatus;
 }
@@ -133,6 +145,12 @@ void CPlayState::Pause()
 eMessageReturn CPlayState::Recieve(const Message& aMessage)
 {
 	return aMessage.myEvent.DoEvent(this);
+}
+
+CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	CU::CInputMessenger::RecieveInput(aInputMessage);
+	return CU::eInputReturn::eKeepSecret;
 }
 
 CGameObjectManager* CPlayState::GetGameObjectManager()

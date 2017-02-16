@@ -11,7 +11,6 @@ public:
 	~GUICursor();
 
 	void Render();
-	void SetPositionAgain(const CU::Vector2f& aPosition);
 	void SetPosition(const CU::Vector2f& aPosition);
 	const CU::Vector2f& GetPosition() const;
 

@@ -86,6 +86,7 @@ void CInputManager::Listen(CU::CInputMessenger& aMessenger, const int aPriority)
 			if (myMessengers[i]->GetPriority() < aPriority)
 			{
 				myMessengers.Insert(i, &aMessenger);
+				return;
 			}
 		}
 	}
@@ -126,29 +127,63 @@ void CInputManager::UpdateMouse()
 		CU::Vector2f mouseDelta(newWindowsMousePos - middleOfWindow);
 		CU::Vector2f mouseDeltaNormalized(mouseDelta / windowSizeF);
 
-		CU::Vector2f mousePosition = myLastMousePosition + mouseDelta;
-		mousePosition.Clamp(CU::Vector2f::Zero, windowSizeF);
-		CU::Vector2f mousePositionNormalized(mousePosition / windowSizeF);
+		CU::Vector2f mousePosition(myLastMousePosition + mouseDeltaNormalized);
+		mousePosition.Clamp(CU::Vector2f::Zero, CU::Vector2f::One);
+		//CU::Vector2f mousePositionNormalized(mousePosition / windowSizeF);
 
-		if (myLastMousePosition != mousePosition)
+		myLastMousePosition = mousePosition;
+
+		if (mouseDeltaNormalized != CU::Vector2f::Zero)
 		{
 			CU::SInputMessage mouseMoved;
 			mouseMoved.myType = CU::eInputType::eMouseMoved;
 			mouseMoved.myMouseDelta = mouseDeltaNormalized;
-			//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseMoved(mousePosition)));
-			myLastMousePosition = mousePosition;
+
+			for (CU::CInputMessenger* messenger : myMessengers)
+			{
+				if (messenger->RecieveInput(mouseMoved) == CU::eInputReturn::eKeepSecret)
+				{
+					break;
+				}
+			}
 		}
 
 		for (int i = 0; i < static_cast<int>(CU::eMouseButtons::LENGTH); ++i)
 		{
-			//if (myDInputWrapper->IsMouseButtonPressed(static_cast<CU::eMouseButtons>(i)) == true)
-			//{
-			//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
-			//}
-			//if (myDInputWrapper->IsMouseButtonReleased(static_cast<CU::eMouseButtons>(i)) == true)
-			//{
-			//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
-			//}
+			CU::eMouseButtons mouseButton = static_cast<CU::eMouseButtons>(i);
+			if (myDInputWrapper->IsMouseButtonPressed(mouseButton) == true)
+			{
+				CU::SInputMessage mousePressed;
+				mousePressed.myType = CU::eInputType::eMousePressed;
+				mousePressed.myMousePosition = myLastMousePosition;
+				mousePressed.myMouseButton = mouseButton;
+
+				for (CU::CInputMessenger* messenger : myMessengers)
+				{
+					if (messenger->RecieveInput(mousePressed) == CU::eInputReturn::eKeepSecret)
+					{
+						break;
+					}
+				}
+
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
+			}
+			if (myDInputWrapper->IsMouseButtonReleased(static_cast<CU::eMouseButtons>(i)) == true)
+			{
+				CU::SInputMessage mouseReleased;
+				mouseReleased.myType = CU::eInputType::eMouseReleased;
+				mouseReleased.myMousePosition = myLastMousePosition;
+				mouseReleased.myMouseButton = mouseButton;
+
+				for (CU::CInputMessenger* messenger : myMessengers)
+				{
+					if (messenger->RecieveInput(mouseReleased) == CU::eInputReturn::eKeepSecret)
+					{
+						break;
+					}
+				}
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
+			}
 		}
 
 		//if (myDInputWrapper->IsMouseButtonPressed(CU::eMouseButtons::LBUTTON) == true)
@@ -178,19 +213,17 @@ void CInputManager::UpdateKeyboard()
 	{
 		for (unsigned int i = 0; i < myKeys.Size(); ++i)
 		{
-			CU::SInputMessage message;
-			message.myType = CU::eInputType::eKeyboardPressed;
-			message.myKey = myKeys[i];
+			CU::SInputMessage keyPressed;
+			keyPressed.myType = CU::eInputType::eKeyboardPressed;
+			keyPressed.myKey = myKeys[i];
 
 			for (CU::CInputMessenger* messenger : myMessengers)
 			{
-				if (messenger->RecieveInput(message) == CU::eInputReturn::eKeepSecret)
+				if (messenger->RecieveInput(keyPressed) == CU::eInputReturn::eKeepSecret)
 				{
 					break;
 				}
 			}
-
-			//PostMaster::GetInstance().SendLetter(Message(eMessageType::eKeyboardMessage, KeyPressed(myKeys[i])));
 		}
 	}
 
@@ -198,7 +231,17 @@ void CInputManager::UpdateKeyboard()
 	{
 		for (unsigned int i = 0; i < myKeys.Size(); ++i)
 		{
-			//PostMaster::GetInstance().SendLetter(Message(eMessageType::eKeyboardMessage, KeyReleased(myKeys[i])));
+			CU::SInputMessage keyReleased;
+			keyReleased.myType = CU::eInputType::eKeyboardReleased;
+			keyReleased.myKey = myKeys[i];
+
+			for (CU::CInputMessenger* messenger : myMessengers)
+			{
+				if (messenger->RecieveInput(keyReleased) == CU::eInputReturn::eKeepSecret)
+				{
+					break;
+				}
+			}
 		}
 	}
 }

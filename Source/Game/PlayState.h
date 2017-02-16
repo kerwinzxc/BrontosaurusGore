@@ -28,6 +28,7 @@ public:
 	void Pause();
 
 	eMessageReturn Recieve(const Message& aMessage);
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 	CGameObjectManager* GetGameObjectManager();
 
