@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AmmoComponent.h"
-
+#include "AmmoData.h"
 
 AmmoComponent::AmmoComponent()
 {
@@ -32,4 +32,12 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 
 void AmmoComponent::Destroy()
 {
+}
+
+void AmmoComponent::Update(float aDeltaTime)
+{
+	if(myElapsedRealodingTime < myAmmoData->realoadDuration)
+	{
+		myElapsedRealodingTime += aDeltaTime;
+	}
 }

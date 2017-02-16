@@ -90,7 +90,14 @@
     <ClCompile Include="ProjectileFactory.cpp">
       <Filter>Projectile</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponFactory.cpp" />
+    <ClCompile Include="WeaponFactory.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSystemManager.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponentManager.cpp" />
+    <ClCompile Include="AmmoComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -204,10 +211,17 @@
     <ClInclude Include="ProjectileComponent.h">
       <Filter>Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponFactory.h" />
     <ClInclude Include="Defines.h">
       <Filter>Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponSystemManager.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponFactory.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponentManager.h" />
+    <ClInclude Include="AmmoComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

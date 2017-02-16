@@ -2,17 +2,20 @@
 #include "ProjectileFactory.h"
 #include "ProjectileComponent.h"
 #include "GameObjectManager.h"
+#include "ProjectileComponentManager.h"
 
 ProjectileFactory* ProjectileFactory::ourInstance = nullptr;
 
-ProjectileFactory::ProjectileFactory()
+ProjectileFactory::ProjectileFactory(ProjectileComponentManager* aProjectileComponentManager)
 {
 	ourInstance = this;
+	myProjectileComponentManager = aProjectileComponentManager;
 }
 
 
 ProjectileFactory::~ProjectileFactory()
 {
+	ourInstance = nullptr;
 }
 
 void ProjectileFactory::ShootProjectile(ProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition)
@@ -51,7 +54,7 @@ void ProjectileFactory::Init(CGameObjectManager* aGameObjectManager)
 void ProjectileFactory::CreateProjectile()
 {
 	CGameObject* aNewProjectileObject = myGameObjectManagerPointer->CreateGameObject();
-	ProjectileComponent* tempProjectileComponent = new ProjectileComponent();
+	ProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	aNewProjectileObject->AddComponent(tempProjectileComponent);
 	myPassiveProjectiles.Add(tempProjectileComponent);
 }

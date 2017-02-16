@@ -2,10 +2,11 @@
 class CGameObjectManager;
 class ProjectileComponent;
 struct ProjectileData;
+class ProjectileComponentManager;
 class ProjectileFactory
 {
 public:
-	ProjectileFactory();
+	ProjectileFactory(ProjectileComponentManager* aProjectileComponentManager);
 	~ProjectileFactory();
 	inline static ProjectileFactory& GetInstance();
 	void ShootProjectile(ProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition);
@@ -13,10 +14,11 @@ public:
 	void Init(CGameObjectManager* aGameObjectManager);
 	void CreateProjectile();
 private:
-	static ProjectileFactory* ourInstance;
 	CU::GrowingArray<ProjectileComponent*> myActiveProjectiles;
 	CU::GrowingArray<ProjectileComponent*> myPassiveProjectiles;
+	static ProjectileFactory* ourInstance;
 	CGameObjectManager* myGameObjectManagerPointer;
+	ProjectileComponentManager* myProjectileComponentManager;
 };
 
 inline ProjectileFactory& ProjectileFactory::GetInstance()

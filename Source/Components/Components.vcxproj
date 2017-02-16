@@ -342,6 +342,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AmmoComponent.h" />
+    <ClInclude Include="AmmoComponentManager.h" />
     <ClInclude Include="AmmoData.h" />
     <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="AudioSourceComponentManager.h" />
@@ -358,6 +359,7 @@
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="PointLightComponentManager.h" />
     <ClInclude Include="ProjectileComponent.h" />
+    <ClInclude Include="ProjectileComponentManager.h" />
     <ClInclude Include="ProjectileData.h" />
     <ClInclude Include="ProjectileFactory.h" />
     <ClInclude Include="ScriptComponent.h" />
@@ -378,9 +380,11 @@
     <ClInclude Include="WeaponData.h" />
     <ClInclude Include="WeaponFactory.h" />
     <ClInclude Include="WeaponSystemComponent.h" />
+    <ClInclude Include="WeaponSystemManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AmmoComponent.cpp" />
+    <ClCompile Include="AmmoComponentManager.cpp" />
     <ClCompile Include="AudioSourceComponent.cpp" />
     <ClCompile Include="AudioSourceComponentManager.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
@@ -393,6 +397,7 @@
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
     <ClCompile Include="ProjectileComponent.cpp" />
+    <ClCompile Include="ProjectileComponentManager.cpp" />
     <ClCompile Include="ProjectileFactory.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="ScriptComponentManager.cpp" />
@@ -420,6 +425,7 @@
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponFactory.cpp" />
     <ClCompile Include="WeaponSystemComponent.cpp" />
+    <ClCompile Include="WeaponSystemManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,6 +10,7 @@ public:
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Destroy() override;
+	void Update(float aDeltaTime);
 private:
 	AmmoData* myAmmoData;
 	float myElapsedRealodingTime;
