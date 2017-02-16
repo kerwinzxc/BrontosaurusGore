@@ -53,6 +53,11 @@ enum class eComponentMessageType
 	eKeyPressed,
 	eKeyReleased,
 	eLength
+	eTryToShoot,
+	eCheckIfHaveAmmoForShooting,
+	eShoot,
+	eAddWeapon,
+	eLength,
 };
 
 #ifndef STATIC_SIZEOF
