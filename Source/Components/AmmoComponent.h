@@ -16,5 +16,7 @@ private:
 	float myElapsedRealodingTime;
 	unsigned short myCurrentAmmoInClip;
 	unsigned short myCurrentAmmo;
+
+	bool myIsReloding;
 };
 

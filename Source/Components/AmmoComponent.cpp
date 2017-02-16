@@ -7,6 +7,7 @@ AmmoComponent::AmmoComponent()
 	myCurrentAmmoInClip = 0;
 	myCurrentAmmo = 0;
 	myElapsedRealodingTime = 0.0f;
+	myIsReloding = false;
 }
 
 
@@ -36,8 +37,28 @@ void AmmoComponent::Destroy()
 
 void AmmoComponent::Update(float aDeltaTime)
 {
-	if(myElapsedRealodingTime < myAmmoData->realoadDuration)
+	if(myIsReloding == true)
 	{
 		myElapsedRealodingTime += aDeltaTime;
+		if(myElapsedRealodingTime >= myAmmoData->realoadDuration)
+		{
+			myIsReloding = false;
+			if(myCurrentAmmo >= myAmmoData->ammoClip)
+			{
+				myCurrentAmmoInClip += myAmmoData->ammoClip;
+				if(myCurrentAmmoInClip > myAmmoData->ammoClip)
+				{
+					myCurrentAmmoInClip = myAmmoData->ammoClip;
+				}
+			}
+			else
+			{
+				myCurrentAmmoInClip += myCurrentAmmo;
+				if (myCurrentAmmoInClip > myAmmoData->ammoClip)
+				{
+					myCurrentAmmoInClip = myAmmoData->ammoClip;
+				}
+			}
+		}
 	}
 }
