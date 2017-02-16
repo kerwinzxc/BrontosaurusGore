@@ -52,6 +52,7 @@ enum class eComponentMessageType
 	eSetPointLightToLastState,
 	eKeyPressed,
 	eKeyReleased,
+	ePitch,
 	eTryToShoot,
 	eCheckIfHaveAmmoForShooting,
 	eShoot,

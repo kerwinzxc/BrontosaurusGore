@@ -73,21 +73,9 @@ void CInputComponent::MouseMoved(const CU::Vector2f aMouseDeltaNormalized)
 
 	parentTransform.RotateAroundAxis(yaw, CU::Axees::Y);
 
-	const float PitchCap = 0.999f;
-
-	float lookAtHeight = parentTransform.myForwardVector.y;
-	if (lookAtHeight < PitchCap && lookAtHeight > -PitchCap)
-	{
-		parentTransform.Rotate(pitch, CU::Axees::X);
-	}
-	else if (lookAtHeight > PitchCap && pitch > 0.f)
-	{
-		parentTransform.Rotate(pitch, CU::Axees::X);
-	}
-	else if (lookAtHeight < -PitchCap && pitch < 0.f)
-	{
-		parentTransform.Rotate(pitch, CU::Axees::X);
-	}
+	SComponentMessageData data;
+	data.myFloat = pitch;
+	NotifyParent(eComponentMessageType::ePitch, data);
 }
 
 void CInputComponent::KeyPressed(const CU::eKeys aKey)

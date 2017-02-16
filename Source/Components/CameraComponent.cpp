@@ -4,6 +4,16 @@
 #include "../CommonUtilities/matrix44.h"
 #include "../CommonUtilities/Camera.h"
 
+CCameraComponent::CCameraComponent()
+{
+	myType = eComponentType::eCamera;
+	myUnlocked = false;
+}
+
+CCameraComponent::~CCameraComponent()
+{
+}
+
 void CCameraComponent::InitOffsetPosition()
 {
 	//myOffsetPosition = myCamera->GetPosition(); 
@@ -20,7 +30,6 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 	{
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
-	{
 		if (myUnlocked == false)
 		{
 			//CU::Vector3f parentPosition = GetParent()->GetWorldPosition();
@@ -28,17 +37,30 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 			//myCamera->SetPosition(myOffsetPosition + parentPosition);
 			myCamera->SetTransformation(GetParent()->GetToWorldTransform());
 		}
-	}
+		break;
+	case eComponentMessageType::ePitch:
+		Pitch(aMessageData.myFloat);
 		break;
 	}
 }
 
-CCameraComponent::CCameraComponent()
+void CCameraComponent::Pitch(const float aPitch)
 {
-	myType = eComponentType::eCamera;
-	myUnlocked = false;
-}
+	const float PitchCap = 0.999f;
 
-CCameraComponent::~CCameraComponent()
-{
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+
+	float lookAtHeight = parentTransform.myForwardVector.y;
+	if (lookAtHeight < PitchCap && lookAtHeight > -PitchCap)
+	{
+		parentTransform.Rotate(aPitch, CU::Axees::X);
+	}
+	else if (lookAtHeight > PitchCap && aPitch > 0.f)
+	{
+		parentTransform.Rotate(aPitch, CU::Axees::X);
+	}
+	else if (lookAtHeight < -PitchCap && aPitch < 0.f)
+	{
+		parentTransform.Rotate(aPitch, CU::Axees::X);
+	}
 }
