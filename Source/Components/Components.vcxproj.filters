@@ -75,6 +75,7 @@
       <Filter>Lights</Filter>
     </ClCompile>
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="WeaponSystemComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -161,6 +162,7 @@
       <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="WeaponSystemComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
