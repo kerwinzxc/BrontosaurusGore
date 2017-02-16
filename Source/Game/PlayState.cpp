@@ -3,6 +3,7 @@
 
 #include <Engine.h>
 #include <CommonUtilities.h>
+#include <StopWatch.h>
 #include <EInputReturn.h>
 #include <Lights.h>
 #include <TimerManager.h>
@@ -30,20 +31,25 @@
 #include "InputComponent.h"
 #include <chrono>
 #include <thread>
+#include "MovementComponent.h"
+#include "ModelComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
+	, myGameObjectManager(nullptr)
 	, myScene(nullptr)
+	, myMovementComponent(nullptr)
+	, myIsLoaded(false)
 {
-	myIsLoaded = false;
 }
 
 CPlayState::~CPlayState()
 {
-	SAFE_DELETE(myScene);
 	SAFE_DELETE(myGameObjectManager);
+	SAFE_DELETE(myScene);
+
 	CComponentManager::DestroyInstance();
 }
 
@@ -52,14 +58,19 @@ void CPlayState::Load()
 	CU::TimerManager timerMgr;
 	CU::TimerHandle handle = timerMgr.CreateTimer();
 	timerMgr.StartTimer(handle);
+	CU::CStopWatch loadPlaystateTimer;
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	LoadManagerGuard loadManagerGuard;
 
 	CComponentManager::CreateInstance();
+
 	myScene = new CScene();
 	myGameObjectManager = new CGameObjectManager();
+	
+	CModelComponentManager::Create();
+	CModelComponentManager::GetInstance().SetScene(myScene);
 
 	LoadManager::GetInstance().SetCurrentPlayState(this);
 	LoadManager::GetInstance().SetCurrentScene(myScene);
@@ -76,7 +87,6 @@ void CPlayState::Load()
 
 	//create player:
 	{
-		//CCameraComponent* cameraComponent = CCameraComponentManager::GetInstance().CreateCameraComponent();
 		CCameraComponent* cameraComponent = new CCameraComponent();
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
@@ -88,6 +98,9 @@ void CPlayState::Load()
 
 		CInputComponent* inputComponent = new CInputComponent();
 		playerObject->AddComponent(inputComponent);
+
+		myMovementComponent = new CMovementComponent();
+		playerObject->AddComponent(myMovementComponent);
 	}
 	
 
@@ -95,13 +108,13 @@ void CPlayState::Load()
 
 	myScene->SetSkybox("default_cubemap.dds");
 	
-	//KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
-	//
-	//const KLoader::eError loadError = loader.LoadFile(levelPath);
-	//if (loadError != KLoader::eError::NO_LOADER_ERROR)
-	//{
-	//	DL_ASSERT("Loading Failed");
-	//}
+	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+
+	const KLoader::eError loadError = loader.LoadFile("Json/HubWorld/LevelData.json");
+	if (loadError != KLoader::eError::NO_LOADER_ERROR)
+	{
+		DL_MESSAGE_BOX("Loading Failed");
+	}
 
 	myIsLoaded = true;
 
@@ -118,10 +131,9 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	//myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).TranslateForward(aDeltaTime.GetSeconds() * 1000.f);
-	//myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).Jaw(aDeltaTime.GetSeconds() * 3.1415f / 2.f);
-	
+	myMovementComponent->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+
 	return myStatus;
 }
 

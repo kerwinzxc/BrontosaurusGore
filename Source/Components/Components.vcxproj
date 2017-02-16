@@ -351,6 +351,8 @@
     <ClInclude Include="ComponentMessageTypeToLua.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="MovementComponent.h" />
+    <ClInclude Include="PlayerControls.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="PointLightComponentManager.h" />
     <ClInclude Include="ScriptComponent.h" />
@@ -379,6 +381,7 @@
     <ClCompile Include="ComponentMessageTypeToLua.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />

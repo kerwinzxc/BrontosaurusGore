@@ -29,6 +29,7 @@ namespace CU
 		iterator end();
 		const_iterator end() const;
 
+		inline int Find(const Type& aObject) const;
 		inline const void* AsVoidPointer() const;
 
 		inline void Insert(int aIndex,Type& aObject);
@@ -37,10 +38,12 @@ namespace CU
 		__forceinline int ByteSize() const;
 		__forceinline int Size() const;
 
+		static const int FoundNone = -1;
+
 	private:
 		Type myStaticArray[ArraySize];
 
-	}; 
+	};
 
 	template <typename Type, int ArraySize>
 	StaticArray<Type, ArraySize>::StaticArray()
@@ -134,6 +137,20 @@ namespace CU
 	inline typename StaticArray<Type, ArraySize>::const_iterator StaticArray<Type, ArraySize>::end() const
 	{
 		return (myStaticArray + ArraySize);
+	}
+
+	template<typename Type, int ArraySize>
+	inline int StaticArray<Type, ArraySize>::Find(const Type& aObject) const
+	{
+		for (int i = 0; i < ArraySize; ++i)
+		{
+			if (myStaticArray[i] == aObject)
+			{
+				return i;
+			}
+		}
+
+		return FoundNone;
 	}
 
 	template<typename Type, int ArraySize>

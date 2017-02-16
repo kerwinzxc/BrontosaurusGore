@@ -12,6 +12,8 @@ class CCollisionComponentManager;
 class CGameObjectManager;
 class CScene;
 
+class CMovementComponent;
+
 class CPlayState : public State , public Subscriber
 {
 public:
@@ -37,6 +39,8 @@ public:
 private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
+
+	CMovementComponent* myMovementComponent;
 
 	std::atomic_bool  myIsLoaded;
 	int myLevelIndex;

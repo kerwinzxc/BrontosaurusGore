@@ -6,10 +6,13 @@
 #include "..\CommonUtilities\EKeyboardKeys.h"
 #include "..\CommonUtilities\EInputReturn.h"
 
+#ifdef INTIFY
+#error "You are breaking windows API"
+#endif // INTIFY
+#define INTIFY(ENUM_TYPE) (static_cast<int>(ENUM_TYPE))
 
 CInputComponent::CInputComponent()
 {
-	int br = 0;
 	CU::CInputMessenger* inputMessenger = CU::CInputMessenger::GetInstance(eInputMessengerType::ePlayState);
 	assert(inputMessenger != nullptr && "maybe create a init if input messenger (playstate?) is not created yet");
 
@@ -17,57 +20,17 @@ CInputComponent::CInputComponent()
 	{
 		inputMessenger->Subscribe(*this);
 	}
+
+	myControlMap[INTIFY(ePlayerControls::eForward)] = CU::eKeys::W;
+	myControlMap[INTIFY(ePlayerControls::eLeft)] = CU::eKeys::A;
+	myControlMap[INTIFY(ePlayerControls::eBackward)] = CU::eKeys::S;
+	myControlMap[INTIFY(ePlayerControls::eRight)] = CU::eKeys::D;
+	myControlMap[INTIFY(ePlayerControls::eJump)] = CU::eKeys::SPACE;
+	myControlMap[INTIFY(ePlayerControls::eActivate)] = CU::eKeys::E;
 }
 
 CInputComponent::~CInputComponent()
 {
-	// if (CommonUtilities::InputWrapper::GetKeyDown(DIK_D) == true && myVelocity.x > -myMaxSpeed)
-	// {
-		// myVelocity.x += myAcceleration * aDeltaTime.GetSeconds();
-	// }
-	// else if (CommonUtilities::InputWrapper::GetKeyDown(DIK_A) == true && myVelocity.x < myMaxSpeed)
-	// {
-		// myVelocity.x -= myAcceleration * aDeltaTime.GetSeconds();
-	// }
-	// else
-	// {
-		// if (myVelocity.x > myDeceleration * aDeltaTime.GetSeconds())
-		// {
-			// myVelocity.x -= myDeceleration * aDeltaTime.GetSeconds();
-		// }
-		// else if (myVelocity.x < -myDeceleration * aDeltaTime.GetSeconds())
-		// {
-			// myVelocity.x += myDeceleration * aDeltaTime.GetSeconds();
-		// }
-		// else
-		// {
-			// myVelocity.x = 0;
-		// }
-	// }
-
-	// if (CommonUtilities::InputWrapper::GetKeyDown(DIK_S) == true && myVelocity.y > -myMaxSpeed)
-	// {
-		// myVelocity.y += myAcceleration * aDeltaTime.GetSeconds();
-	// }
-	// else if (CommonUtilities::InputWrapper::GetKeyDown(DIK_W) == true && myVelocity.y < myMaxSpeed)
-	// {
-		// myVelocity.y -= myAcceleration * aDeltaTime.GetSeconds();
-	// }
-	// else
-	// {
-		// if (myVelocity.y > myDeceleration * aDeltaTime.GetSeconds())
-		// {
-			// myVelocity.y -= myDeceleration * aDeltaTime.GetSeconds();
-		// }
-		// else if (myVelocity.y < -myDeceleration * aDeltaTime.GetSeconds())
-		// {
-			// myVelocity.y += myDeceleration * aDeltaTime.GetSeconds();
-		// }
-		// else
-		// {
-			// myVelocity.y = 0;
-		// }
-	// }
 }
 
 void CInputComponent::Receive(const eComponentMessageType /*aMessageType*/, const SComponentMessageData& /*aMessageData*/)
@@ -79,12 +42,10 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 	switch (aInputMessage.myType)
 	{
 	case CU::eInputType::eMouseMoved:
-		DL_PRINT("mouse delta: %f, %f", aInputMessage.myMouseDelta.x, aInputMessage.myMouseDelta.y);
 		MouseMoved(aInputMessage.myMouseDelta);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 		break;
 	case CU::eInputType::eMousePressed:
-		DL_PRINT("mouse pressed, pos: %f, %f, button: %s", aInputMessage.myMousePosition.x, aInputMessage.myMousePosition.y, (aInputMessage.myMouseButton == CU::eMouseButtons::LBUTTON ? "left" : "right"));
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;
 		break;
@@ -93,10 +54,10 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 		aInputMessage.myMousePosition;
 		break;
 	case CU::eInputType::eKeyboardPressed:
-		aInputMessage.myKey;
+		KeyPressed(aInputMessage.myKey);
 		break;
 	case CU::eInputType::eKeyboardReleased:
-		aInputMessage.myKey;
+		KeyReleased(aInputMessage.myKey);
 		break;
 	}
 
@@ -112,19 +73,41 @@ void CInputComponent::MouseMoved(const CU::Vector2f aMouseDeltaNormalized)
 
 	parentTransform.RotateAroundAxis(yaw, CU::Axees::Y);
 
-	const float BegränsadVertikalVy = 0.999f;
+	const float PitchCap = 0.999f;
 
 	float lookAtHeight = parentTransform.myForwardVector.y;
-	if (lookAtHeight < BegränsadVertikalVy && lookAtHeight > -BegränsadVertikalVy)
+	if (lookAtHeight < PitchCap && lookAtHeight > -PitchCap)
 	{
 		parentTransform.Rotate(pitch, CU::Axees::X);
 	}
-	else if (lookAtHeight > BegränsadVertikalVy && pitch > 0.f)
+	else if (lookAtHeight > PitchCap && pitch > 0.f)
 	{
 		parentTransform.Rotate(pitch, CU::Axees::X);
 	}
-	else if (lookAtHeight < -BegränsadVertikalVy && pitch < 0.f)
+	else if (lookAtHeight < -PitchCap && pitch < 0.f)
 	{
 		parentTransform.Rotate(pitch, CU::Axees::X);
+	}
+}
+
+void CInputComponent::KeyPressed(const CU::eKeys aKey)
+{
+	int index = myControlMap.Find(aKey);
+	if (index != myControlMap.FoundNone)
+	{
+		SComponentMessageData data;
+		data.myPlayerControl = static_cast<ePlayerControls>(index);
+		NotifyParent(eComponentMessageType::eKeyPressed, data);
+	}
+}
+
+void CInputComponent::KeyReleased(const CU::eKeys aKey)
+{
+	int index = myControlMap.Find(aKey);
+	if (index != myControlMap.FoundNone)
+	{
+		SComponentMessageData data;
+		data.myPlayerControl = static_cast<ePlayerControls>(index);
+		NotifyParent(eComponentMessageType::eKeyReleased, data);
 	}
 }
