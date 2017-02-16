@@ -25,15 +25,11 @@ CCollisionComponentManager::CCollisionComponentManager()
 #ifdef _DEBUG
 	myShouldRender = true;
 #endif // _DEBUG
-
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage);
 }
 
 
 CCollisionComponentManager::~CCollisionComponentManager()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
-
 	//myCollisionComponents.DeleteAll();
 	SAFE_DELETE(myCollisionManager);
 }

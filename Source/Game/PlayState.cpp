@@ -28,7 +28,7 @@
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
-	: State(aStateStack)
+	: State(aStateStack, eInputMessengerType::ePlayState)
 	, myLevelIndex(aLevelIndex)
 	, myScene(nullptr)
 {

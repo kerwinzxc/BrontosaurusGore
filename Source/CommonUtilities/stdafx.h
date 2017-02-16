@@ -23,6 +23,10 @@
 #include "EMouseButtons.h"
 #include "GrowingArray.h"
 
+#include "vector2.h"
+#include "vector3.h"
+#include "vector4.h"
+
 #include "MemoryLeekLogger.h"
 
 // TODO: reference additional headers your program requires here

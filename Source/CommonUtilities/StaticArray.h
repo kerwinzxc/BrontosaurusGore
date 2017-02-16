@@ -16,6 +16,7 @@ namespace CU
 		StaticArray(const StaticArray& aStaticArray);
 		StaticArray(Type (&aArray)[ArraySize]);
 		StaticArray(const Type& aObject);
+		StaticArray(std::nullptr_t);
 		~StaticArray();
 
 		StaticArray& operator=(const StaticArray& aStaticArray);
@@ -70,6 +71,15 @@ namespace CU
 		for (int i = 0; i < ArraySize; ++i)
 		{
 			myStaticArray[i] = aObject;
+		}
+	}
+
+	template<typename Type, int ArraySize>
+	inline StaticArray<Type, ArraySize>::StaticArray(std::nullptr_t)
+	{
+		for (int i = 0; i < ArraySize; ++i)
+		{
+			myStaticArray[i] = nullptr;
 		}
 	}
 

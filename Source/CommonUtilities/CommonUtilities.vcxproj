@@ -388,12 +388,17 @@
     <ClInclude Include="DynamicMemoryPool.h" />
     <ClInclude Include="DynamicString.h" />
     <ClInclude Include="EInputMessage.h" />
+    <ClInclude Include="EInputMessengerType.h" />
+    <ClInclude Include="EInputReturn.h" />
     <ClInclude Include="EKeyboardKeys.h" />
     <ClInclude Include="EMouseButtons.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GrowingArray.h" />
     <ClInclude Include="Heap.h" />
+    <ClInclude Include="InputListener.h" />
+    <ClInclude Include="InputMessage.h" />
+    <ClInclude Include="InputMessenger.h" />
     <ClInclude Include="InputWrapper.h" />
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="InvertMatrix.h" />
@@ -484,6 +489,8 @@
     <ClCompile Include="DynamicString.cpp" />
     <ClCompile Include="example_postMastercpp.h" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="InputListener.cpp" />
+    <ClCompile Include="InputMessenger.cpp" />
     <ClCompile Include="InputWrapper.cpp" />
     <ClCompile Include="Intersection.cpp" />
     <ClCompile Include="InvertMatrix.cpp" />

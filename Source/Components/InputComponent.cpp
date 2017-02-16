@@ -4,6 +4,7 @@
 
 CInputComponent::CInputComponent()
 {
+	
 }
 
 CInputComponent::~CInputComponent()

@@ -21,7 +21,6 @@
 #include "../PostMaster/Message.h"
 #include "../PostMaster/PushState.h"
 #include "../PostMaster/PopCurrentState.h"
-#include "../PostMaster/Pop2States.h"
 
 #include "../CommonUtilities/JsonValue.h"
 #include "Components/GameObject.h"
@@ -267,7 +266,7 @@ namespace GUI
 		}
 		else if (widgetName.find("Return") != std::string::npos)
 		{
-			auto popStateMessage = [] {	PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, Pop2States())); };
+			auto popStateMessage = nullptr;//[] {	PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, Pop2States())); };
 			Button* button = new Button(popStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
