@@ -52,6 +52,10 @@ enum class eComponentMessageType
 	eSetPointLightRange,
 	eSetPointLightColor,
 	eSetPointLightToLastState,
+	eTryToShoot,
+	eCheckIfHaveAmmoForShooting,
+	eShoot,
+	eAddWeapon,
 	eLength,
 };
 

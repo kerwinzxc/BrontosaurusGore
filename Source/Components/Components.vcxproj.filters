@@ -75,7 +75,22 @@
       <Filter>Lights</Filter>
     </ClCompile>
     <ClCompile Include="InputComponent.cpp" />
-    <ClCompile Include="WeaponSystemComponent.cpp" />
+    <ClCompile Include="WeaponSystemComponent.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoComponent.cpp">
+      <Filter>Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponent.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileFactory.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -162,7 +177,37 @@
       <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="WeaponSystemComponent.h" />
+    <ClInclude Include="WeaponSystemComponent.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponData.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthPoint.h">
+      <Filter>Health</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileData.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoComponent.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoData.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileFactory.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponent.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponFactory.h" />
+    <ClInclude Include="Defines.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -197,6 +242,18 @@
     </Filter>
     <Filter Include="InputComponent">
       <UniqueIdentifier>{3448c6b6-4af9-41f3-a1cf-a15587da0b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{bc0fd7cc-75b0-4bed-9635-e94087ecbe28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Health">
+      <UniqueIdentifier>{9b8ee388-3e83-4b73-8054-5c485f6802b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Projectile">
+      <UniqueIdentifier>{9334c820-a410-4439-92da-bdd98ec6e994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ammo">
+      <UniqueIdentifier>{d70ea127-4045-4714-9c65-c42d688cbbe3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
