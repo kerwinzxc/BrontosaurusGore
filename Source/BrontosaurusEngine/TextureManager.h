@@ -14,7 +14,8 @@ public:
 	void DestroyTexture(const CTexture* aTexture);
 	
 private:
-	void CreateTexture(const wchar_t* aTexturePath, CTexture * aNewTexture);
+	void CreateTexture(const wchar_t* aTexturePath, CTexture& aNewTexture);
+
 private:
 	std::unordered_map<std::wstring, CTexture> myTextures;
 };

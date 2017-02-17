@@ -1,14 +1,27 @@
 #include "stdafx.h"
 #include "MovementComponent.h"
 #include "PlayerControls.h"
+#include "../CommonUtilities/JsonValue.h"
 
 #define vodi void
 
 CMovementComponent::CMovementComponent()
 {
-	myAcceleration = 50000.f;
-	myDeceleration = 40000.f;
-	myMaxSpeed = 1500.f;
+	CU::CJsonValue playerControls;
+	std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+	if (!errorMessage.empty())
+	{
+		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
+
+		myAcceleration = 20000.f;
+		myDeceleration = 20000.f;
+		myMaxSpeed = 1500.f;
+		return;
+	}
+
+	myAcceleration = playerControls["Acceleration"].GetFloat();
+	myDeceleration = playerControls["Deceleration"].GetFloat();
+	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
 }
 
 CMovementComponent::~CMovementComponent()
@@ -87,8 +100,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	}
 
 	myVelocity.y = 0.f;
-	DL_PRINT("%d, %d, %d", (int)myVelocity.x, (int)myVelocity.y, (int)myVelocity.z);
-
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	

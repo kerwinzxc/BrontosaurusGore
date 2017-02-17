@@ -68,6 +68,7 @@ struct SInitEngineParams
 	std::function<void()>  myRenderCallbackFunction;
 	unsigned int myDebugFlags;
 	bool myThreadRender;
+	bool myUseVsync;
 };
 
 class CEngine

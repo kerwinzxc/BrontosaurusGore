@@ -84,7 +84,7 @@ void CPlayState::Load()
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 1.f, 75000.0f);
-
+	
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
@@ -92,7 +92,7 @@ void CPlayState::Load()
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 200.f, 0.f);
+		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 

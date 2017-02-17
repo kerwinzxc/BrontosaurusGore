@@ -8,7 +8,7 @@ CDXFramework::CDXFramework()
 	myDeviceContext				= nullptr;
 	myRenderTargetView			= nullptr;
 	myDepthStencilView			= nullptr;
-
+	myUseVsync					= false;
 }
 
 CDXFramework::~CDXFramework()
@@ -17,7 +17,6 @@ CDXFramework::~CDXFramework()
 }
 
 #define INFO_PRINT DL_PRINT
-#define ENABLE_VSYNC true
 
 bool CDXFramework::CollectAdapters(CU::Vector2<unsigned int> aWindowSize, CU::Vector2<int>& aNumDenumerator, IDXGIAdapter*& outAdapter)
 {
@@ -148,7 +147,7 @@ bool CDXFramework::CollectAdapters(CU::Vector2<unsigned int> aWindowSize, CU::Ve
 	factory->Release();
 	factory = 0;
 
-	if (ENABLE_VSYNC)
+	if (myUseVsync)
 	{
 		aNumDenumerator.x = numerator;
 		aNumDenumerator.y = denominator;
@@ -163,8 +162,9 @@ bool CDXFramework::CollectAdapters(CU::Vector2<unsigned int> aWindowSize, CU::Ve
 	return true;
 }
 
-bool CDXFramework::Initialize(const int aWidth, const int aHeight, const bool aIsFullScreen, HWND aHWND)
+bool CDXFramework::Initialize(const int aWidth, const int aHeight, const bool aIsFullScreen, const bool aUseVsync, HWND aHWND)
 {
+	myUseVsync = aUseVsync;
 	HRESULT result;
 	
 	//Create device and swapchain
@@ -179,7 +179,7 @@ bool CDXFramework::Initialize(const int aWidth, const int aHeight, const bool aI
 	CU::Vector2<unsigned int> windowSize(aWidth, aHeight);
 	if (CollectAdapters(windowSize, numDenum, adapter))
 	{
-		INFO_PRINT("%s%s", "VSYNC Compatible: Yes, Enabled: ", (ENABLE_VSYNC ? "Yes" : "No"));
+		INFO_PRINT("%s%s", "VSYNC Compatible: Yes, Enabled: ", (myUseVsync ? "Yes" : "No"));
 	}
 
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -300,7 +300,7 @@ void CDXFramework::SetViewPort(const unsigned int aWidth, const unsigned int aHe
 
 void CDXFramework::Render()
 {
-	if (ENABLE_VSYNC)
+	if (myUseVsync)
 	{
 		mySwapchain->Present(1, 0);
 	}
