@@ -4,24 +4,19 @@
 #include "Engine.h"
 
 //STATES
-#include "PlayState.h"
+#include "LoadState.h"
 #include "MainMenuState.h"
 #include "SplashScreen.h" //rename to state?
-//
 
 
-//Should these stuffs be here?
 #include "CommonUtilities/CommandLineManager.h"
-#include "LoadManager/LuaFunctions.h"
 #include "LuaWrapper/SSlua/SSlua.h"
 #include "ScriptLoader.h"
-#include "KevinLoader/KLoaderError.h"  // PLZ not the kevin prefix
-#include "KevinLoader/KevinLoader.h"   // PLZ not the kevin prefix
+#include "KevinLoader/KevinLoader.h"
 
 CGame::CGame()
 {
 }
-
 
 CGame::~CGame()
 {
@@ -40,14 +35,15 @@ void CGame::Init()
 	 luaWrapper.RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
 	 
 
-	if (CommandLineManager::GetInstance()->HasParameter("-skipMainMenu") == true)
-	{
-		myStateStack.PushState(new CPlayState(myStateStack, 0));
-	}
-	else
-	{
-		myStateStack.PushState(new MainMenuState(myStateStack));
-	}
+	myStateStack.PushState(new CLoadState(myStateStack, 0));
+	//if (CommandLineManager::GetInstance()->HasParameter("-skipMainMenu") == true)
+	//{
+	//	myStateStack.PushState(new CLoadState(myStateStack, 0));
+	//}
+	//else
+	//{
+	//	myStateStack.PushState(new MainMenuState(myStateStack));
+	//}
 	
 	if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
 	{

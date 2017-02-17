@@ -12,10 +12,14 @@ CModelComponentManager::CModelComponentManager(CScene& aScene)
 	: myModels(16u)
 	, myScene(aScene)
 {
+	assert(ourInstance == nullptr);
+	ourInstance = this;
 }
 
 CModelComponentManager::~CModelComponentManager()
 {
+	assert(ourInstance == this);
+	ourInstance = nullptr;
 }
 
 void CModelComponentManager::DeleteModelComponent(CModelComponent* aComponent)
