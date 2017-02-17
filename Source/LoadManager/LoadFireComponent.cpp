@@ -9,13 +9,14 @@ int LoadFireFromJson(const std::string& aJsonPath, CScene& aScene);
 
 int LoadFireComponent(KLoader::SLoadedComponentData someData)
 {
-	CScene* scene = LoadManager::GetInstance().GetCurrentScene();
-	if (!scene) return NULL_COMPONENT;
+	LoadManager* loadManager = LoadManager::GetInstance();
+	if (!loadManager) return NULL_COMPONENT;
+	CScene& scene = loadManager->GetCurrentScene();
 
 	if (someData.myData.HasKey("jsonPath"))
 	{
 		const std::string& jsonPath = someData.myData["jsonPath"].GetString();
-		return LoadFireFromJson(jsonPath, *scene);
+		return LoadFireFromJson(jsonPath, scene);
 	}
 
 	CFireEmitterInstance fireEmitter;
@@ -49,9 +50,9 @@ int LoadFireComponent(KLoader::SLoadedComponentData someData)
 	fireEmitter.GetTransformation().m22 *= /*2.f;*/ scale;
 	fireEmitter.GetTransformation().m33 *= /*2.f;*/ scale;
 
-	InstanceID id = scene->AddFireEmitters(fireEmitter);
+	InstanceID id = scene.AddFireEmitters(fireEmitter);
 
-	CFireComponent* component = new CFireComponent(*scene, id);
+	CFireComponent* component = new CFireComponent(scene, id);
 
 	return component->GetId();
 }

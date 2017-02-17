@@ -34,7 +34,7 @@ CPointLight::~CPointLight()
 }
 
 
-void CPointLight::RenderShadowMap(const CU::Vector4f & aPosition)
+void CPointLight::RenderShadowMap(const CU::Vector4f& /*aPosition*/)
 {
 	//SAFE_RELEASE(myShadowCubeMap);
 

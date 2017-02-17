@@ -141,7 +141,6 @@ CPath CNavmesh::CalculatePath(const SNavmeshNode & aStartPoint, const SNavmeshNo
 
 				waypoint.myPosition = current->myPosition;
 
-				SNavmeshEdge* portal = nullptr;
 				bool doAdd = true;
 
 				if (i < tempRetrack.Size() - 2 && current != end && current != start)

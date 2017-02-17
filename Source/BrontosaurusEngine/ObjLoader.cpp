@@ -50,7 +50,7 @@ bool ObjLoader::LoadFromFile(const char * const aModelPath, SObjLoaderModel& aMo
 
 		else if (strcmp(lineHeader, "f") == 0)
 		{
-			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			unsigned int vertexIndex[3];// , uvIndex[3], normalIndex[3];
 			int matches = fscanf(file, "%d %d %d "/* %d/%d/%d %d/%d/%d\n"*/,
 				&vertexIndex[0], /*&uvIndex[0], &normalIndex[0],*/
 				&vertexIndex[1], /*&uvIndex[1], &normalIndex[1],*/

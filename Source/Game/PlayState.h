@@ -8,9 +8,10 @@ namespace CU
 	class Time;
 }
 
-class CCollisionComponentManager;
 class CGameObjectManager;
 class CScene;
+class CModelComponentManager;
+class CCollisionComponentManager;
 class AmmoComponentManager;
 class WeaponSystemManager;
 class WeaponFactory;
@@ -45,6 +46,9 @@ public:
 private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
+
+	CModelComponentManager* myModelComponentManager;
+
 	AmmoComponentManager* myAmmoComponentManager;
 	WeaponSystemManager* myWeaponSystemManager;
 	WeaponFactory* myWeaponFactory;
@@ -53,8 +57,8 @@ private:
 
 	CMovementComponent* myMovementComponent;
 
-	std::atomic_bool  myIsLoaded;
 	int myLevelIndex;
+	std::atomic_bool myIsLoaded;
 };
 
 inline bool CPlayState::IsLoaded() const

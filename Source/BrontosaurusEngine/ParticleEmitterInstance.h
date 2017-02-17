@@ -24,7 +24,7 @@ public:
 	void Render(const CU::Camera& aCamera); // needs the camera to sort by
 	void Activate();
 	void Deactivate();
-	static void DistanceSort(CU::GrowingArray<SParticle, unsigned short, false>& aParticleList, const CU::Camera & aCamera);
+	static void DistanceSort(CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, const CU::Camera & aCamera);
 	inline void SetPosition(CU::Vector3f aPosition);
 	inline void SetVisibility(bool);
 	inline bool IsVisible() const;
@@ -44,7 +44,7 @@ private:
 	SEmitterData	myEmitterData;
 
 
-	CU::GrowingArray<SParticle, unsigned short, false> myParticles;
+	CU::GrowingArray<SParticle, unsigned int, false> myParticles;
 	CU::GrowingArray<SParticleLogic> myParticleLogic;
 
 	float myEmitDelta;

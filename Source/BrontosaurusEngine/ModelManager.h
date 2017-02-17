@@ -24,7 +24,7 @@ class CSpriteInstance;
 class CModelManager
 {
 public:
-	typedef unsigned int ModelId;
+	typedef int ModelId;
 	
 	CModelManager();
 	~CModelManager();

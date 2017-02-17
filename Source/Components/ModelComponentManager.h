@@ -10,23 +10,19 @@ class CModelComponentManager
 {
 public:
 	static CModelComponentManager& GetInstance();
-	static void Create();
-	static void Destroy();
+
+	CModelComponentManager(CScene& aScene);
+	~CModelComponentManager();
 
 	CModelComponent* CreateComponent(const char* aModelPath);
-	CModelComponent* CreateComponent(SShape aShape);
-	void SetScene(CScene* aScene);
+	//CModelComponent* CreateComponent(SShape aShape);
 
 	void DeleteModelComponent(CModelComponent* aComponent);
-
-private:
-	CModelComponentManager();
-	~CModelComponentManager();
 
 private:
 	static CModelComponentManager* ourInstance;
 
 	CU::GrowingArray<CModelComponent*> myModels;
-	CScene* myScene;
+	CScene& myScene;
 };
 

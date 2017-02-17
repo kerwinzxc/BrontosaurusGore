@@ -2,10 +2,6 @@
 #include "SSArgument.h"
 #include "CommonUtilities/DL_Debug.h"
 
-#ifdef new
-#undef new
-#endif // new
-
 SSArgument::SSArgument(const SSArgument& anArgument) :SSArgument()
 {
 	myType = anArgument.GetType();
@@ -318,6 +314,38 @@ void* SSArgument::GetUserData() const
 	}
 
 	return *static_cast<void**>(myData);
+}
+
+std::string SSArgument::AsString() const
+{
+	std::string str;
+
+	switch (myType)
+	{
+	case eSSType::NIL:
+		str = "nil";
+		break;
+	case eSSType::NUMBER:
+		str = std::to_string(GetNumber());
+		break;
+	case eSSType::STRING:
+		str = GetString();
+		break;
+	case eSSType::BOOL:
+		str = (GetBool()) ? "true" : "false";
+		break;
+	case eSSType::TABLE:
+		str = "table";
+		break;
+	case eSSType::LIGHTUSERDATA:
+		str = std::to_string(reinterpret_cast<unsigned long long>(*static_cast<void**>(myData)));
+		break;
+	default:
+		str = "Uninitialized";
+		break;
+	}
+
+	return str;
 }
 
 void SSArgument::SetToNil()

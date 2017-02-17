@@ -136,7 +136,7 @@ bool CDXFramework::CollectAdapters(CU::Vector2<unsigned int> aWindowSize, CU::Ve
 
 	// Store the dedicated video card memory in megabytes.
 	int myVideoCardMemory = (int)(usingAdapterDesc.DedicatedVideoMemory / 1024 / 1024);
-
+	DL_PRINT("Video card memory: %d", myVideoCardMemory);
 	// Release the display mode list.
 	delete[] displayModeList;
 	displayModeList = 0;

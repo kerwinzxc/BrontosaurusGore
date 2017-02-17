@@ -663,7 +663,7 @@ namespace CU
 	inline void CU::GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::QuickSort(std::function<bool(ObjectType, ObjectType)> aCompareFunction)
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
-		CU::QuickSort(*this, 0, mySize, aCompareFunction);
+		CU::QuickSort(*this, static_cast<SizeType>(0), mySize, aCompareFunction);
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>

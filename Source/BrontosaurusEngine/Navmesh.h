@@ -155,7 +155,7 @@ struct SNavmeshNode
 	}
 
 	SNavmeshNode* myParent;
-	CU::VectorOnStack<SNavmeshNode*, 5, unsigned short, false> myNeighbours;
+	CU::VectorOnStack<SNavmeshNode*, 5, unsigned int, false> myNeighbours;
 
 	CU::Vector3f myPosition;
 

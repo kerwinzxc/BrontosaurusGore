@@ -306,7 +306,6 @@ namespace GUI
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
-		return nullptr;
 	}
 
 	CU::Camera* WidgetFactory::ParseCamera(const CLoaderCamera* aCamera)

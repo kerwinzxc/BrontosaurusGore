@@ -93,7 +93,7 @@ void CText::Render(const CU::GrowingArray<CU::DynamicString>& someStrings, const
 
 	ActivateEffect();
 
-	for (int j = 0; j < someStrings.Size(); ++j)
+	for (unsigned int j = 0; j < someStrings.Size(); ++j)
 	{
 
 		const std::string tempString = someStrings[j].c_str();

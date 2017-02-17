@@ -56,7 +56,7 @@ struct SSArgument
 	const bool GetBool() const;
 	void* GetUserData() const;
 
-
+	std::string AsString() const;
 	
 	void SetToNil();
 

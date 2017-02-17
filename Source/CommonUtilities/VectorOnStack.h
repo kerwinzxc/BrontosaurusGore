@@ -6,7 +6,7 @@
 
 namespace CU
 {
-	template <typename ObjectType, int Capacity, typename SizeType = unsigned short, bool UseSafeModeFlag = true>
+	template <typename ObjectType, int Capacity, typename SizeType = unsigned int, bool UseSafeModeFlag = true>
 	class VectorOnStack
 	{
 	public:
@@ -115,7 +115,7 @@ namespace CU
 	template <typename ObjectType, int Capacity, typename SizeType, bool UseSafeModeFlag>
 	VectorOnStack<ObjectType, Capacity, SizeType, UseSafeModeFlag>& VectorOnStack<ObjectType, Capacity, SizeType, UseSafeModeFlag>::operator=(const VectorOnStack& aVectorOnStack)
 	{
-		if (UseSafeModeFlag == false)
+		if (!UseSafeModeFlag)
 		{
 			memcpy(myVectorOnStack, aVectorOnStack.myVectorOnStack, sizeof(VectorOnStack));
 		}

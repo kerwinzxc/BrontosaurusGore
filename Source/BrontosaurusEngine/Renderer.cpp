@@ -798,7 +798,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		msg->CameraRenderPackage.Clear();
 		msg->CameraRenderPackage.Activate();
-		for (int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
+		for (unsigned int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
 		{
 			HandleRenderMessage(msg->CameraRenderQueue[i], aDrawCallCount);
 		}

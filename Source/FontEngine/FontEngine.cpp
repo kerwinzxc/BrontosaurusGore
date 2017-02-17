@@ -59,7 +59,7 @@ void CFontEngine::LoadFonts(std::string aFontJsonFile)
 	}
 
 	const CU::CJsonValue fontsArray = fontJsonFile.at("fonts");
-	for (unsigned i = 0; i < fontsArray.Size(); ++i)
+	for (int i = 0; i < fontsArray.Size(); ++i)
 	{
 		const CU::CJsonValue fontValue = fontsArray[i];
 

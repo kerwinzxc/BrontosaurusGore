@@ -152,7 +152,7 @@ CEffect* CFT_Font::GetEffect() const
 float CFT_Font::GetlineHeight() const
 {
 	//return myFace->height / 64;
-	return myLineHeight;
+	return static_cast<float>(myLineHeight);
 }
 
 FT_Error CFT_Font::LoadGlyph(FT_UInt aGlyphIndex)

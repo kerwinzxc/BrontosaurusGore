@@ -12,7 +12,7 @@ CSettingsManager::~CSettingsManager()
 {
 }
 
-void CSettingsManager::Init(CommandLineManager& aCommandLineManager)
+void CSettingsManager::Init(CommandLineManager& /*aCommandLineManager*/)
 {
 	//if (!aCommandLineManager.HasParameter("-windowed"))
 	//{
@@ -50,13 +50,13 @@ void CSettingsManager::UpdateSettings()
 	}
 }
 
-bool CSettingsManager::GetSetting(const eSetting aSetting) const
+bool CSettingsManager::GetSetting(const eSetting /*aSetting*/) const
 {
 	//return myBools[aSetting];
 	return false;
 }
 
-void CSettingsManager::ChangeSetting(const eSetting aSetting, const bool aNewValue)
+void CSettingsManager::ChangeSetting(const eSetting /*aSetting*/, const bool /*aNewValue*/)
 {
 	//myBools[aSetting] = aNewValue;
 }

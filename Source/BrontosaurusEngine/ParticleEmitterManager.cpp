@@ -96,6 +96,6 @@ void CParticleEmitterManager::RemoveRef(const ParticleEmitterID aID)
 
 bool CParticleEmitterManager::SParticleEmitterComparer::operator==(const SEmitterData & aEmitterData)
 {
-	return	aEmitterData.NumOfParticles == myNumOfParticles &&
+	return	static_cast<unsigned int>(aEmitterData.NumOfParticles) == myNumOfParticles &&
 		aEmitterData.TexturePath == myTexturePath;
 }

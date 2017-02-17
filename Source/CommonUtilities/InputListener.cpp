@@ -14,7 +14,7 @@ namespace CU
 
 	void IInputListener::SetPriority(const int aPriority)
 	{
-		myPriority = 0;
+		myPriority = aPriority;
 	}
 
 	int IInputListener::GetPriority() const

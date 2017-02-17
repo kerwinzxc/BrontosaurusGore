@@ -95,8 +95,8 @@ void CConsole::Render()
 
 void CConsole::UpdateCommandSuggestions(const std::string & aStringToCompare)
 {
-	int finalResultDifferance = 9999;
-	int result = 0;
+	size_t finalResultDifferance = 9999;
+	size_t result = 0;
 
 	std::map<std::string, SSlua::LuaCallbackFunction>::iterator it;
 	for (it = myLuaFunctions.begin(); it != myLuaFunctions.end(); it++)
@@ -388,7 +388,7 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 
 	const SSlua::ArgumentList returnArguments = myLuaFunctions[commandName.c_str()](arguments);
 
-	CU::DynamicString resultString("");
+	std::string resultString("");
 	if (returnArguments.Size() > 0)
 	{
 		resultString += "RESULT-> ";
@@ -396,10 +396,13 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 		for (unsigned int i = 0; i < returnArguments.Size(); ++i)
 		{
 			const SSArgument& currentArgument = returnArguments[i];
+			resultString += currentArgument.AsString().c_str();
+			resultString += ", ";
 		}
+		resultString -= ", ";
 	}
 
-	return resultString;
+	return CU::DynamicString(resultString.c_str());
 }
 
 

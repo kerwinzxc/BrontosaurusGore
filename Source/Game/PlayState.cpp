@@ -45,7 +45,12 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myLevelIndex(aLevelIndex)
 	, myGameObjectManager(nullptr)
 	, myScene(nullptr)
+	, myModelComponentManager(nullptr)
 	, myMovementComponent(nullptr)
+	, myAmmoComponentManager(nullptr)
+	, myWeaponFactory(nullptr)
+	, myProjectileComponentManager(nullptr)
+	, myProjectileFactory(nullptr)
 	, myIsLoaded(false)
 {
 }
@@ -54,6 +59,14 @@ CPlayState::~CPlayState()
 {
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myScene);
+
+	SAFE_DELETE(myModelComponentManager);
+
+	SAFE_DELETE(myAmmoComponentManager);
+	SAFE_DELETE(myAmmoComponentManager);
+	SAFE_DELETE(myWeaponFactory);
+	SAFE_DELETE(myProjectileComponentManager);
+	SAFE_DELETE(myProjectileFactory);
 
 	CComponentManager::DestroyInstance();
 }
@@ -67,18 +80,8 @@ void CPlayState::Load()
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	LoadManagerGuard loadManagerGuard;
-
-	CComponentManager::CreateInstance();
-
-	myScene = new CScene();
+	LoadManagerGuard loadManagerGuard(*this, *myScene);
 	CreateManagersAndFactories();
-
-	CModelComponentManager::Create();
-	CModelComponentManager::GetInstance().SetScene(myScene);
-
-	LoadManager::GetInstance().SetCurrentPlayState(this);
-	LoadManager::GetInstance().SetCurrentScene(myScene);
 
 	Lights::SDirectionalLight dirLight;
 	dirLight.color = { .25f, .25f, .25f, 1.0f };
@@ -88,7 +91,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 1.f, 75000.0f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	//create player:
 	{
@@ -115,7 +118,7 @@ void CPlayState::Load()
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	const KLoader::eError loadError = loader.LoadFile("Json/HubWorld/LevelData.json");
+	const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
 	if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
@@ -177,7 +180,17 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 
 void CPlayState::CreateManagersAndFactories()
 {
+	CComponentManager::CreateInstance();
+
+	myScene = new CScene();
+
+	//LoadManager::GetInstance().SetCurrentPlayState(this);
+	//LoadManager::GetInstance().SetCurrentScene(myScene);
+
+
 	myGameObjectManager = new CGameObjectManager();
+	myModelComponentManager = new CModelComponentManager(*myScene);
+
 	myAmmoComponentManager = new AmmoComponentManager();
 	myWeaponFactory = new WeaponFactory();
 	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);

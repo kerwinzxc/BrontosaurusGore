@@ -48,7 +48,7 @@ void CTextBox::Clear()
 
 void CTextBox::Render()
 {
-	for (int i = 0; i < myTextInstances.Size(); ++i)
+	for (unsigned int i = 0; i < myTextInstances.Size(); ++i)
 	{
 		myTextInstances[i]->Render();
 	}
@@ -57,7 +57,7 @@ void CTextBox::Render()
 void CTextBox::SetPosition(const CU::Vector2f& aPosition)
 {
 	const CU::Vector2f positionDelta = aPosition - myPosition;
-	for (int i = 0; i < myTextInstances.Size(); ++i)
+	for (unsigned int i = 0; i < myTextInstances.Size(); ++i)
 	{
 		CTextInstance& textInstance = *myTextInstances[i];
 		textInstance.SetPosition(textInstance.GetPosition() + positionDelta);

@@ -403,8 +403,8 @@ namespace SSlua
 			size_t second = sub1.find("'");
 			std::string sub2 = sub1.substr(0, second);
 
-			int difference = 99;
-			int resultDifference = 0;
+			size_t difference = 99;
+			size_t resultDifference = 0;
 			std::string didYouMean;
 			std::map<std::string, std::string>::iterator it;
 			for (it = LuaWrapper::GetInstance().myExposedFunctions.begin(); it != LuaWrapper::GetInstance().myExposedFunctions.end(); it++)
@@ -547,11 +547,7 @@ namespace SSlua
 		lua_State* newState = luaL_newstate();
 		luaL_openlibs(newState);
 
-		//CheckErrors(luaL_loadfile(myState, aFileName.c_str()),myState);
-		const wchar_t* help = aFileName.c_str();
-		char* helpMePlease;
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
-		//std::wcstombs(helpMePlease, help, 100);
 		CheckError(luaL_dofile(newState, convert.to_bytes(aFileName).c_str()), newState);
 
 		lua_close(myState);
