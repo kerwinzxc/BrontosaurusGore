@@ -11,6 +11,11 @@ namespace CU
 class CCollisionComponentManager;
 class CGameObjectManager;
 class CScene;
+class AmmoComponentManager;
+class WeaponSystemManager;
+class WeaponFactory;
+class ProjectileComponentManager;
+class ProjectileFactory;
 
 class CMovementComponent;
 
@@ -28,6 +33,7 @@ public:
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
 	void Pause();
+	void CreateManagersAndFactories();
 
 	eMessageReturn Recieve(const Message& aMessage);
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
@@ -39,6 +45,11 @@ public:
 private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
+	AmmoComponentManager* myAmmoComponentManager;
+	WeaponSystemManager* myWeaponSystemManager;
+	WeaponFactory* myWeaponFactory;
+	ProjectileComponentManager* myProjectileComponentManager;
+	ProjectileFactory* myProjectileFactory;
 
 	CMovementComponent* myMovementComponent;
 
