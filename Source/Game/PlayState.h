@@ -11,6 +11,11 @@ namespace CU
 class CCollisionComponentManager;
 class CGameObjectManager;
 class CScene;
+class AmmoComponentManager;
+class WeaponSystemManager;
+class WeaponFactory;
+class ProjectileComponentManager;
+class ProjectileFactory;
 
 class CPlayState : public State , public Subscriber
 {
@@ -36,6 +41,11 @@ public:
 private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
+	AmmoComponentManager* myAmmoComponentManager;
+	WeaponSystemManager* myWeaponSystemManager;
+	WeaponFactory* myWeaponFactory;
+	ProjectileComponentManager* myProjectileComponentManager;
+	ProjectileFactory* myProjectileFactory;
 
 	std::atomic_bool  myIsLoaded;
 	int myLevelIndex;
