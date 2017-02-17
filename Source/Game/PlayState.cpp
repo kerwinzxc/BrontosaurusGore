@@ -22,6 +22,11 @@
 #include "Components/GameObject.h"
 #include "Components/GameObjectManager.h"
 #include "Components/ComponentManager.h"
+#include "Components/AmmoComponentManager.h"
+#include "Components//WeaponSystemManager.h"
+#include "Components/WeaponFactory.h"
+#include "Components/ProjectileComponentManager.h"
+#include "Components/ProjectileFactory.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -67,8 +72,8 @@ void CPlayState::Load()
 	CComponentManager::CreateInstance();
 
 	myScene = new CScene();
-	myGameObjectManager = new CGameObjectManager();
-	
+	CreateManagersAndFactories();
+
 	CModelComponentManager::Create();
 	CModelComponentManager::GetInstance().SetScene(myScene);
 
@@ -168,4 +173,14 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 CGameObjectManager* CPlayState::GetGameObjectManager()
 {
 	return myGameObjectManager;
+}
+
+void CPlayState::CreateManagersAndFactories()
+{
+	myGameObjectManager = new CGameObjectManager();
+	myAmmoComponentManager = new AmmoComponentManager();
+	myWeaponFactory = new WeaponFactory();
+	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new ProjectileComponentManager();
+	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
 }

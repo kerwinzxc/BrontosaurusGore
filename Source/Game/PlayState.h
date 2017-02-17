@@ -33,6 +33,7 @@ public:
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
 	void Pause();
+	void CreateManagersAndFactories();
 
 	eMessageReturn Recieve(const Message& aMessage);
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
