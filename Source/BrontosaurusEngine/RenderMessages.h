@@ -180,6 +180,7 @@ struct SRenderGUIModelMessage : SRenderMessage
 struct SRenderParticlesMessage : SRenderMessage
 {
 	SRenderParticlesMessage();
+	~SRenderParticlesMessage();
 	ParticleEmitterID particleEmitter;
 	CU::GrowingArray<SParticle, unsigned short, false> particleList;
 	CU::Matrix44f toWorld;

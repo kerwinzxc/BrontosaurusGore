@@ -10,7 +10,9 @@
 #include "BackgroundLoadingManager.h"
 #include "Game/Game.h"
 
-CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex): State(aStateStack), myLevelIndex(aLevelIndex)
+CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
+	: State(aStateStack, eInputMessengerType::eLoadState)
+	, myLevelIndex(aLevelIndex)
 {
 	myPlayState = nullptr;
 }

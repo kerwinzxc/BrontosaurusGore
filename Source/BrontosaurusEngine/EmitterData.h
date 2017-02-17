@@ -4,7 +4,9 @@
 #include <Vector4.h>
 #include <DynamicString.h>
 
+#ifndef STATIC_SIZEOF
 #define STATIC_SIZEOF(x) {char STATIC_SIZEOF_TEMP[(x)]; STATIC_SIZEOF_TEMP = 1;}
+#endif // !STATIC_SIZEOF
 
 enum class eLerpCurve : char
 {

@@ -2,6 +2,7 @@
 #include "RenderMessages.h"
 #include "Renderer.h"
 #include "Skybox.h"
+#include "EmitterData.h"
 
 SRenderMessage::SRenderMessage(const eRenderMessageType aRenderMessageType)
 	: myType(aRenderMessageType)
@@ -24,6 +25,10 @@ SRenderGUIModelMessage::SRenderGUIModelMessage()
 
 SRenderParticlesMessage::SRenderParticlesMessage()
 	: SRenderMessage(eRenderMessageType::eRenderParticles)
+{
+}
+
+SRenderParticlesMessage::~SRenderParticlesMessage()
 {
 }
 

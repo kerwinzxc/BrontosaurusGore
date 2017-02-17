@@ -6,7 +6,7 @@
 #include "PostMaster/Event.h"
 
 LevelSelectState::LevelSelectState(StateStack& aStateStack)
-	: State(aStateStack)
+	: State(aStateStack, eInputMessengerType::eLevelSelect)
 	, myGUIManager(nullptr)
 {
 }
@@ -34,15 +34,13 @@ void LevelSelectState::Render()
 	myGUIManager->Render();
 }
 
-void LevelSelectState::OnEnter(const bool aLetThroughRender)
+void LevelSelectState::OnEnter(const bool /*aLetThroughRender*/)
 {
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eMouseMessage);
 	myGUIManager->RestartRenderAndUpdate(false, false);
 }
 
 void LevelSelectState::OnExit(const bool /*aLetThroughRender*/)
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eMouseMessage);
 	myGUIManager->PauseRenderAndUpdate();
 }
 

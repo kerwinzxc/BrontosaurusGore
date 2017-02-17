@@ -1,4 +1,5 @@
 #pragma once
+#include "..\CommonUtilities\InputMessenger.h"
 
 class StateStack;
 
@@ -13,11 +14,13 @@ enum class eStateStatus : unsigned char
 	ePop
 };
 
-class State
+enum class eInputMessengerType;
+
+class State : protected CU::CInputMessenger
 {
 public:
-	State(StateStack& aStateStack);
-
+	State(StateStack& aStateStack, const eInputMessengerType aMessengerType, const int aPriority = 0);
+	State(const State& aCopy) = delete;
 	virtual ~State();
 
 	virtual void Init() = 0;

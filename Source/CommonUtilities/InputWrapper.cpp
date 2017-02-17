@@ -239,7 +239,7 @@ namespace CU
 		return myMouseState.lZ / 120;
 	}
 
-	bool InputWrapper::GetKeysDown(GrowingArray<eKeys, unsigned int, false>& aKeysDown)
+	bool InputWrapper::GetKeysDown(GrowingArray<eKeys>& aKeysDown)
 	{
 		bool hasAddedKey = false;
 		aKeysDown.RemoveAll();
@@ -256,7 +256,7 @@ namespace CU
 		return hasAddedKey;
 	}
 
-	bool InputWrapper::GetKeysPressed(GrowingArray<eKeys, unsigned int, false>& aKeysPressed)
+	bool InputWrapper::GetKeysPressed(GrowingArray<eKeys>& aKeysPressed)
 	{
 		bool hasAddedKey = false;
 		aKeysPressed.RemoveAll();
@@ -273,7 +273,7 @@ namespace CU
 		return hasAddedKey;
 	}
 
-	bool InputWrapper::GetKeysReleased(GrowingArray<eKeys, unsigned int, false>& aKeysPressed)
+	bool InputWrapper::GetKeysReleased(GrowingArray<eKeys>& aKeysPressed)
 	{
 		bool hasAddedKey = false;
 		aKeysPressed.RemoveAll();

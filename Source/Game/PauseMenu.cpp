@@ -15,7 +15,7 @@
 #include "Game.h"
 
 PauseMenu::PauseMenu(StateStack& aStateStack)
-	: State(aStateStack)
+	: State(aStateStack, eInputMessengerType::ePauseMenu)
 	, myGUIManager(nullptr)
 {
 }
@@ -44,18 +44,18 @@ void PauseMenu::Render()
 	myGUIManager->Render();
 }
 
-void PauseMenu::OnEnter(const bool aLetThroughRender)
+void PauseMenu::OnEnter(const bool /*aLetThroughRender*/)
 {
 	myGUIManager->RestartRenderAndUpdate();
 	//PostMaster::GetInstance().Subscribe(this, eMessageType::eStateMessage);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage);
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage);
 }
 
 void PauseMenu::OnExit(const bool /*aLetThroughRender*/)
 {
 	myGUIManager->PauseRenderAndUpdate();
 	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eStateMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
 }
 
 

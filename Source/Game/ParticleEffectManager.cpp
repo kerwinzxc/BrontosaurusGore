@@ -72,7 +72,7 @@ void CParticleEffectManager::SpawnParticle(const std::string& aEffectName, const
 
 void CParticleEffectManager::DespawnParticle(const InstanceID aEmitterIndex, const unsigned int aParticleDataIndex)
 {
-	SParticleData& particle = myActiveParticleEmitters[aParticleDataIndex];
+	//SParticleData& particle = myActiveParticleEmitters[aParticleDataIndex];
 	//myScene.DeleteParticleEmitterInstance(aEmitterIndex); //don't delete, just stop spawning and move to to-be-deleted-list
 	CParticleEmitterInstance* emitter = myScene.GetParticleEmitterInstance(aEmitterIndex);
 	if (emitter)

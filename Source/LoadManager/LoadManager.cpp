@@ -63,12 +63,12 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
-	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
-	loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
-	loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
-	loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
-	loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
-	loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
+	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
+	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
+	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
+	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
+	//loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
+	//loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
 }
 
 LoadManager::LoadManager()

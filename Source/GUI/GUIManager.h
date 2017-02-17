@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../PostMaster/Subscriber.h"
+#include "CommonUtilities/InputListener.h"
 
 enum class eMessageReturn;
 
@@ -25,7 +26,7 @@ namespace GUI
 	class WidgetContainer;
 	class HatContainer;
 
-	class GUIManager : public Subscriber
+	class GUIManager : public Subscriber, public CU::IInputListener
 	{
 	public:
 		GUIManager();
@@ -49,10 +50,9 @@ namespace GUI
 		void PauseRenderAndUpdate();
 		void RestartRenderAndUpdate(const bool aSubscribeToSecretMessage = true, const bool aAddSecretHats = true);
 
-		eMessageReturn MouseClicked(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
-		eMessageReturn MouseReleased(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
-		eMessageReturn MouseMoved(const CU::Vector2f& aMousePosition);
-		eMessageReturn MouseDragged(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition, const CU::Vector2f& aLastMousePosition);
+		CU::eInputReturn MouseClicked(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
+		CU::eInputReturn MouseReleased(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
+		CU::eInputReturn MouseMoved(const CU::Vector2f& aMousePosition);
 
 		eMessageReturn Recieve(const Message& aMessage) override;
 
@@ -60,6 +60,10 @@ namespace GUI
 
 
 	private:
+		CU::eInputReturn TakeInput(const CU::SInputMessage & aInputMessage) override;
+
+		CU::Vector2f myMousePosition;
+
 		WidgetContainer* myWidgetContainer;
 		IWidget* myFocusedWidget;
 		IWidget* myWidgetAtMouse;
@@ -70,7 +74,6 @@ namespace GUI
 		bool myShouldUpdate;
 		bool myShouldRender;
 		bool myShouldRenderMouse;
-
 	};
 }
 

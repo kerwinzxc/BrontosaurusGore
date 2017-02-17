@@ -4,8 +4,9 @@ namespace CU
 {
 	enum class eMouseButtons
 	{
-		LBUTTON = 0,
+		LBUTTON,
 		RBUTTON,
-		MIDBUTTON
+		MIDBUTTON,
+		LENGTH
 	};
 }

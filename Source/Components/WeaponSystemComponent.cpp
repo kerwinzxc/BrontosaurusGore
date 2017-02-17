@@ -7,7 +7,7 @@ WeaponSystemComponent::WeaponSystemComponent(WeaponFactory& aWeaponFactoryThatIs
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
 {
 
-	myActiveWeaponIndex = 0.0f;
+	myActiveWeaponIndex = 0;
 	myWeapons.Init(5);
 }
 

@@ -17,6 +17,8 @@ class WeaponFactory;
 class ProjectileComponentManager;
 class ProjectileFactory;
 
+class CMovementComponent;
+
 class CPlayState : public State , public Subscriber
 {
 public:
@@ -33,6 +35,7 @@ public:
 	void Pause();
 
 	eMessageReturn Recieve(const Message& aMessage);
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 	CGameObjectManager* GetGameObjectManager();
 
@@ -46,6 +49,8 @@ private:
 	WeaponFactory* myWeaponFactory;
 	ProjectileComponentManager* myProjectileComponentManager;
 	ProjectileFactory* myProjectileFactory;
+
+	CMovementComponent* myMovementComponent;
 
 	std::atomic_bool  myIsLoaded;
 	int myLevelIndex;

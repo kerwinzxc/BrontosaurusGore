@@ -14,8 +14,7 @@
 
 CConsole::CConsole()
 {
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage, 10);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eMouseMessage, 100);
+	PostMaster::GetInstance().Subscribe(this, eMessageType::eCharPressed, 10);
 	myIsActive = false;
 	myHaveIAfterCurrentText = false;
 	myElapsedAnimationTimer = 0.0f;
@@ -34,8 +33,7 @@ CConsole::CConsole()
 
 CConsole::~CConsole()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eMouseMessage);
+	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eCharPressed);
 }
 
 void CConsole::Init()
@@ -301,7 +299,7 @@ const CU::DynamicString CConsole::CheckIfTextIsCommand(const CU::DynamicString& 
 
 			return aText + " could not be parsed by lua: " + luaError.c_str();
 		}
-		PostMaster::GetInstance().SendLetter(eMessageType::eKeyboardMessage, KeyCharPressed('§'));
+		//PostMaster::GetInstance().SendLetter(eMessageType::eKeyboardMessage, KeyCharPressed('§'));
 		return "Success";
 	}
 	else
@@ -395,7 +393,7 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 	{
 		resultString += "RESULT-> ";
 
-		for (int i = 0; i < returnArguments.Size(); ++i)
+		for (unsigned int i = 0; i < returnArguments.Size(); ++i)
 		{
 			const SSArgument& currentArgument = returnArguments[i];
 		}
