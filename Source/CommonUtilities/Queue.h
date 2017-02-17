@@ -59,7 +59,7 @@ namespace CU
 			myData = tempArray;
 			myTail = 0;
 			mySize = tempArray.Size();
-			for (int i = 0; i < mySize; ++i)
+			for (SIZE_TYPE i = 0; i < mySize; ++i)
 			{
 				myData.Add(TYPE());
 			}

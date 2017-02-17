@@ -25,20 +25,18 @@ public:
 	CParticleEmitter(const CParticleEmitter& aParticleEmitter);
 	~CParticleEmitter();
 	void Init(const SEmitterData& EmitterData);
-	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned short, false>& aParticleList);
+	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList);
 	void Destroy();
 
 	CParticleEmitter& operator=(const CParticleEmitter& aParticleEmitter);
 	CParticleEmitter& operator=(CParticleEmitter&& aParticleEmitter);
 
 private:
-	void ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsigned short, false>& aParticleList);
+	void ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList);
 	void UpdateCBuffers(const CU::Matrix44f& aToWorldSpace);
 	bool InitBuffers();
 
 private:
-	unsigned short myMaxNrOfParticles;
-
 	CTexture*		myTexture;
 	CEffect*		myEffect;
 
@@ -46,4 +44,5 @@ private:
 	ID3D11Buffer*	myVertexBuffer;
 	ID3D11Buffer*	myModelBuffer;
 
+	unsigned int myMaxNrOfParticles;
 };

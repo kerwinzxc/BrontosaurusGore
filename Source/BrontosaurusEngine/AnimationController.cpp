@@ -87,7 +87,7 @@ unsigned int CAnimEvaluator::GetFrameIndexAt(float ptime, bool loop)
 
 
 	unsigned int chosenIndex = static_cast<unsigned int>((static_cast<float>(Transforms.size()) * percent));
-	return (chosenIndex < Transforms.size()) ? chosenIndex : Transforms.size() - 1;
+	return (chosenIndex < Transforms.size()) ? chosenIndex : static_cast<unsigned int>(Transforms.size() - 1);
 }
 
 // ------------------------------------------------------------------------------------------------

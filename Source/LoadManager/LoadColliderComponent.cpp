@@ -11,11 +11,12 @@
 
 int LoadCircleCollider(KLoader::SLoadedComponentData someData)
 {
-	CPlayState* playState = LoadManager::GetInstance().GetCurrentPLaystate();
-	if (playState == nullptr) return 0;
+	LoadManager* loadManager = LoadManager::GetInstance();
+	if (loadManager == nullptr) return NULL_COMPONENT;
+	CPlayState& playState = loadManager->GetCurrentPLaystate();
 
 	CCollisionComponentManager* collisionManager = nullptr;// playState->GetCollisionManager();
-	if (collisionManager == nullptr) return 0;
+	if (collisionManager == nullptr) return NULL_COMPONENT;
 
 	//collect json-data
 	float circleRadius = someData.myData.at("Radius").GetFloat();

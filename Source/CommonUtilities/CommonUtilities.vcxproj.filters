@@ -85,6 +85,12 @@
     <Filter Include="Tweener">
       <UniqueIdentifier>{89ab4aff-5c42-4730-aa80-030ddaeeffdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input\Wrappers">
+      <UniqueIdentifier>{61927335-b7fb-4095-a5dd-b5ef7709bc11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\Recieving">
+      <UniqueIdentifier>{59267a83-3d43-4a17-9acd-7413750948d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -283,23 +289,11 @@
     <ClInclude Include="CUTime.h">
       <Filter>Timer</Filter>
     </ClInclude>
-    <ClInclude Include="XInputWrapper.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="InputWrapper.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicString.h">
       <Filter>String</Filter>
     </ClInclude>
     <ClInclude Include="CUstring.h">
       <Filter>String</Filter>
-    </ClInclude>
-    <ClInclude Include="EMouseButtons.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="EKeyboardKeys.h">
-      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="StringHelper.h">
       <Filter>String</Filter>
@@ -321,9 +315,6 @@
       <Filter>MatrixInverse</Filter>
     </ClInclude>
     <ClInclude Include="ThreadNamer.h" />
-    <ClInclude Include="EInputMessage.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicMemoryPool.h">
       <Filter>MemoryPool</Filter>
     </ClInclude>
@@ -342,7 +333,6 @@
     <ClInclude Include="BitSet.h">
       <Filter>BitSet</Filter>
     </ClInclude>
-    <ClInclude Include="QuickSort.h" />
     <ClInclude Include="picojson.h">
       <Filter>PicoJson</Filter>
     </ClInclude>
@@ -370,6 +360,36 @@
       <Filter>Timer</Filter>
     </ClInclude>
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="XInputWrapper.h">
+      <Filter>Input\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="InputWrapper.h">
+      <Filter>Input\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="EInputMessage.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
+    <ClInclude Include="EInputReturn.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
+    <ClInclude Include="InputListener.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMessage.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMessenger.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
+    <ClInclude Include="EMouseButtons.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="EKeyboardKeys.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="EInputMessengerType.h">
+      <Filter>Input\Recieving</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -411,12 +431,6 @@
     </ClCompile>
     <ClCompile Include="CUTime.cpp">
       <Filter>Timer</Filter>
-    </ClCompile>
-    <ClCompile Include="XInputWrapper.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="InputWrapper.cpp">
-      <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="DynamicString.cpp">
       <Filter>String</Filter>
@@ -460,6 +474,18 @@
       <Filter>Timer</Filter>
     </ClCompile>
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="InputWrapper.cpp">
+      <Filter>Input\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputWrapper.cpp">
+      <Filter>Input\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputListener.cpp">
+      <Filter>Input\Recieving</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMessenger.cpp">
+      <Filter>Input\Recieving</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CommonUtilities.rc" />

@@ -92,8 +92,7 @@ void CComponentManager::DeleteComponent(ComponentId anId)
 {
 	if (anId != NULL_COMPONENT)
 	{
-		delete myComponents[anId];
-		myComponents[anId] = nullptr;
+		SAFE_DELETE(myComponents[anId]);
 		myEmptySpaces.Push(anId);
 	}
 }

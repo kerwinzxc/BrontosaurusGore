@@ -1,10 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="BackgroundLoadingManager.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="LoadingAnimation.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="LevelSelectState.cpp">
       <Filter>States</Filter>
     </ClCompile>
@@ -32,20 +29,27 @@
     <ClCompile Include="ScriptHelperFunctions.cpp">
       <Filter>ScriptLoader</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleEffectManager.cpp" />
     <ClCompile Include="GameEventMessenger.cpp">
       <Filter>GameEventMessager</Filter>
     </ClCompile>
     <ClCompile Include="PlayState.cpp">
       <Filter>States</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEffectManager.cpp">
+      <Filter>ParticleEffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingAnimation.cpp">
+      <Filter>Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="BackgroundLoadingManager.cpp">
+      <Filter>Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BackgroundLoadingManager.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="LoadingAnimation.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="LevelSelectState.h">
       <Filter>States</Filter>
     </ClInclude>
@@ -73,12 +77,26 @@
     <ClInclude Include="ScriptHelperFunctions.h">
       <Filter>ScriptLoader</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleEffectManager.h" />
     <ClInclude Include="GameEventMessenger.h">
       <Filter>GameEventMessager</Filter>
     </ClInclude>
     <ClInclude Include="PlayState.h">
       <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffectManager.h">
+      <Filter>ParticleEffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingAnimation.h">
+      <Filter>Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundLoadingManager.h">
+      <Filter>Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +111,12 @@
     </Filter>
     <Filter Include="GameEventMessager">
       <UniqueIdentifier>{23f0c3e6-776a-4bc1-895e-49779b355a5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Loading">
+      <UniqueIdentifier>{7cfc3396-df0f-428b-8d0e-7254177f5ebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{baa7496d-d8de-4d76-809e-14d5c5b72ae5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

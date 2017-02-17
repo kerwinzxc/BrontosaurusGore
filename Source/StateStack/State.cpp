@@ -5,8 +5,9 @@
 #include "../BrontosaurusEngine/Renderer.h"
 
 
-State::State(StateStack& aStateStack)
-	: myStateStack(aStateStack)
+State::State(StateStack& aStateStack, const eInputMessengerType aMessengerType, const int aPriority)
+	: CInputMessenger(aMessengerType, aPriority)
+	, myStateStack(aStateStack)
 	, myStatus(eStateStatus::eKeep)
 {
 }

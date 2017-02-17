@@ -104,7 +104,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 	{
 		char keyPressed = static_cast<char>(wParam);
-		PostMaster::GetInstance().SendLetter(Message(eMessageType::eKeyboardMessage, KeyCharPressed(keyPressed)));
+		PostMaster::GetInstance().SendLetter(Message(eMessageType::eCharPressed, KeyCharPressed(keyPressed)));
 	}
 	break;
 	case WM_SIZE:

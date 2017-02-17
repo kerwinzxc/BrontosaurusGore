@@ -46,8 +46,8 @@ void Init(int argc, char* argv[])
 		engineParams.myWindowParams.Name = L"Hat 'n' Slash";
 		engineParams.myWindowParams.Title = L"Hat 'n' Slash";
 		engineParams.myWindowParams.Fullscreen = false;
-
 		engineParams.myThreadRender = true;
+		engineParams.myUseVsync = false;
 
 		int Iwidth;
 		int Iheight;

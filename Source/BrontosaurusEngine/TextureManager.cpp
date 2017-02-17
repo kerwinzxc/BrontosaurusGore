@@ -25,7 +25,7 @@ CTexture & CTextureManager::LoadTexture(const wchar_t* aWideTexturePath)
 	if (myTextures.find(aWideTexturePath) == myTextures.end())
 	{
 		myTextures[aWideTexturePath] = CTexture();
-		CreateTexture(aWideTexturePath, &myTextures[aWideTexturePath]);
+		CreateTexture(aWideTexturePath, myTextures[aWideTexturePath]);
 	}
 
 	myTextures[aWideTexturePath].AddRef();
@@ -68,36 +68,37 @@ void CTextureManager::DestroyTexture(const CTexture* aTexture)
 	}
 }
 
-void CTextureManager::CreateTexture(const wchar_t* aTexturePath, CTexture* aNewTexture)
+void CTextureManager::CreateTexture(const wchar_t* aTexturePath, CTexture& aNewTexture)
 {
 	HRESULT result = S_OK;
-	ID3D11ShaderResourceView* texture = nullptr;
-	ID3D11Texture2D *pTextureInterface = nullptr;
-	ID3D11Resource *res = nullptr;
+
 	//exists?
+#ifndef _RETAIL_BUILD
 	std::ifstream infile(aTexturePath);
 	if (!infile.good())
 	{
 		aTexturePath = L"error.dds";
 	}
+#endif // !_RETAIL_BUILD
 
-	result = DirectX::CreateDDSTextureFromFile(DEVICE, aTexturePath, &res, &texture);
+	ID3D11Resource *textureResource = nullptr;
+	ID3D11ShaderResourceView* shaderResourceView = nullptr;
+	result = DirectX::CreateDDSTextureFromFile(DEVICE, aTexturePath, &textureResource, &shaderResourceView);
 	if (FAILED(result))
 	{
 		RESOURCES_LOG("Could not create or load texture: %ls", aTexturePath);
 		DL_PRINT_WARNING("Could not create or load texture: %ls", aTexturePath);
-		aNewTexture->myTexture = nullptr;
-		aNewTexture->myMipMapCount = 0;
-		aNewTexture->mySize.x = 0;
-		aNewTexture->mySize.y = 0;
+		aNewTexture.myTexture = nullptr;
+		aNewTexture.myMipMapCount = 0;
+		aNewTexture.mySize.x = 0;
+		aNewTexture.mySize.y = 0;
 		return;
 	}
-	
-	//CHECK_RESULT(result, "Could not create or load texture: %s", aTexturePath);
 
-	texture->GetResource(&res);
-	result = res->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
-	//CHECK_RESULT(result, "Could not get texture interface: %s", aTexturePath);
+	aNewTexture.myTexture = shaderResourceView;
+
+	ID3D11Texture2D *pTextureInterface = nullptr;
+	result = textureResource->QueryInterface<ID3D11Texture2D>(&pTextureInterface);
 	if (FAILED(result))
 	{
 		RESOURCES_LOG("Could not get texture interface: %ls", aTexturePath);
@@ -106,12 +107,10 @@ void CTextureManager::CreateTexture(const wchar_t* aTexturePath, CTexture* aNewT
 	D3D11_TEXTURE2D_DESC desc;
 	pTextureInterface->GetDesc(&desc);
 
-	aNewTexture->myTexture = texture;
-	aNewTexture->myMipMapCount = desc.MipLevels;
-	aNewTexture->mySize.x = desc.Width;
-	aNewTexture->mySize.y = desc.Height;
+	aNewTexture.myMipMapCount = desc.MipLevels;
+	aNewTexture.mySize.x = desc.Width;
+	aNewTexture.mySize.y = desc.Height;
 
-	res->Release();
-	pTextureInterface->Release();
-
+	SAFE_RELEASE(textureResource);
+	SAFE_RELEASE(pTextureInterface);
 }

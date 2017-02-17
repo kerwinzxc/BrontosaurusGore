@@ -13,7 +13,7 @@
 #include "BackgroundLoadingManager.h"
 
 MainMenuState::MainMenuState(StateStack& aStateStack)
-	: State(aStateStack)
+	: State(aStateStack, eInputMessengerType::eMainMenu)
 	, myGUIManager(nullptr)
 	, mySkyBox(nullptr)
 	, myIsGoingToLevelSelect(false)
@@ -22,6 +22,7 @@ MainMenuState::MainMenuState(StateStack& aStateStack)
 
 MainMenuState::~MainMenuState()
 {
+	Unsubscribe(*myGUIManager);
 	SAFE_DELETE(myGUIManager);
 	
 	if (mySkyBox && mySkyBox->DecRef() <= 0)
@@ -34,6 +35,7 @@ void MainMenuState::Init()
 {
 	myGUIManager = new GUI::GUIManager();
 	myGUIManager->Init("Models/mainMenu/mainMenu.fbx");
+	Subscribe(*myGUIManager);
 	
 	mySkyBox = new CSkybox();
 	mySkyBox->Init("default_cubemap.dds");
@@ -65,20 +67,14 @@ void MainMenuState::Render()
 	myGUIManager->Render();
 }
 
-void MainMenuState::OnEnter(const bool aLetThroughRender)
+void MainMenuState::OnEnter(const bool /*aLetThroughRender*/)
 {
-	//bool result;
 	Audio::CAudioInterface::GetInstance()->LoadBank("Audio/mainMenu.bnk");
 	Audio::CAudioInterface::GetInstance()->PostEvent("PlayBasSong");
 	
 	if (myIsGoingToLevelSelect == false)
 	{
 		myGUIManager->RestartRenderAndUpdate(false, false);
-	}
-	else
-	{
-		PostMaster::GetInstance().Subscribe(myGUIManager, eMessageType::eMouseMessage, 5);
-		PostMaster::GetInstance().Subscribe(myGUIManager, eMessageType::eKeyboardMessage);
 	}
 	
 	myIsGoingToLevelSelect = false;
@@ -96,11 +92,6 @@ void MainMenuState::OnExit(const bool /*aLetThroughRender*/)
 	if (myIsGoingToLevelSelect == false)
 	{
 		myGUIManager->PauseRenderAndUpdate();
-	}
-	else
-	{
-		PostMaster::GetInstance().UnSubscribe(myGUIManager, eMessageType::eMouseMessage);
-		PostMaster::GetInstance().UnSubscribe(myGUIManager, eMessageType::eKeyboardMessage);
 	}
 	
 	myGUIManager->SetRenderMouse(false);

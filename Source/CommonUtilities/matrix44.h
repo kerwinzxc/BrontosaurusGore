@@ -452,12 +452,41 @@ namespace CU
 				break;
 			}
 
-			Vector4<TYPE> tempLoc = Vector4<TYPE>(GetPosition().x , GetPosition().y, GetPosition().z , 1);
+			Vector4<TYPE> tempLoc = Vector4<TYPE>(GetPosition().x, GetPosition().y, GetPosition().z, 1);
 			m41 = 0;
 			m42 = 0;
 			m43 = 0;
 
 			*this = temp * *this;
+			SetPosition(Vector3<TYPE>(tempLoc.x, tempLoc.y, tempLoc.z));
+
+			return *this;
+		}
+		Matrix44<TYPE>& RotateAroundAxis(float anAngle, Axees anAxis)
+		{
+			Matrix44<TYPE> temp;
+
+			switch (anAxis)
+			{
+			case Axees::X:
+				temp = CreateRotateAroundX(anAngle);
+				break;
+
+			case Axees::Y:
+				temp = CreateRotateAroundY(anAngle);
+				break;
+
+			case Axees::Z:
+				temp = CreateRotateAroundZ(anAngle);
+				break;
+			}
+
+			Vector4<TYPE> tempLoc = Vector4<TYPE>(GetPosition().x, GetPosition().y, GetPosition().z, 1);
+			m41 = 0;
+			m42 = 0;
+			m43 = 0;
+
+			*this = *this * temp;
 			SetPosition(Vector3<TYPE>(tempLoc.x, tempLoc.y, tempLoc.z));
 
 			return *this;

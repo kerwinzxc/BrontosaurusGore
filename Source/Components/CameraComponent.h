@@ -25,6 +25,8 @@ public:
 	inline void SetCamera(CU::Camera& aCamera);
 
 private:
+	void Pitch(const float aPitch);
+
 	CU::Vector3f myOffsetPosition;
 	CU::Camera* myCamera;
 	bool myUnlocked;

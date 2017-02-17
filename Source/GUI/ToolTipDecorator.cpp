@@ -87,7 +87,7 @@ namespace GUI
 		myGetTextFunction = aGetTextFunction;
 	}
 
-	void CToolTipDecorator::Update(const CU::Time& aDeltaTime)
+	void CToolTipDecorator::Update(const CU::Time& /*aDeltaTime*/)
 	{
 		if (myGetTextFunction)
 		{

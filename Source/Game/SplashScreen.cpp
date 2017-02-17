@@ -5,12 +5,13 @@
 #include "BrontosaurusEngine\SpriteInstance.h"
 #include "PostMaster\Message.h"
 #include "PostMaster\Event.h"
-//#include "PostMaster\EMessageReturn.h"
 
 #define MAX_ALPHA 1.0f
 #define MIN_APLHA 0.0f
 
-CSplashScreen::CSplashScreen(StateStack& aStateStack) : State(aStateStack) , myStayTime(1.5f)
+CSplashScreen::CSplashScreen(StateStack& aStateStack)
+	: State(aStateStack, eInputMessengerType::eSplashScreen)
+	, myStayTime(1.5f)
 {
 	mySprites.Init(4);
 	myFadeState = eFadeState::eFadingIn;
@@ -117,8 +118,6 @@ bool CSplashScreen::CheckIfMorePicsInArray()
 
 void CSplashScreen::OnEnter(const bool /*aLetThroughRender*/)
 {
-	POSTMASTER.Subscribe(this, eMessageType::eKeyboardMessage);
-	POSTMASTER.Subscribe(this, eMessageType::eMouseMessage);
 	if (mySprites.Size() == 0) return;
 	assert(mySprites.Size() > 0 && "You need to add something to the splashScreen");
 
@@ -131,21 +130,9 @@ void CSplashScreen::OnEnter(const bool /*aLetThroughRender*/)
 
 void CSplashScreen::OnExit(const bool /*aLetThroughRender*/)
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eMouseMessage);
-
 }
 
 eMessageReturn CSplashScreen::Recieve(const Message& aMessage)
 {
 	return aMessage.myEvent.DoEvent(this);
-	//if (aMessage.myMessageType == eMessageType::eKeyboardMessage || aMessage.myMessageType == eMessageType::eMouseMessage)
-	//{
-	//	if (CheckIfMorePicsInArray() == true)
-	//		SetNextPic();
-	//	else
-	//		myIsDone = true;
-	//}
-	//
-	//return eMessageReturn::eContinue;
 }

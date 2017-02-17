@@ -198,15 +198,6 @@ namespace GUI
 						return it->second;
 					}
 				}
-				IWidget* whirl = FindWidget("WhirlwindHat");
-				if (whirl && hoveredWidgets.Find(whirl) != hoveredWidgets.FoundNone)
-				{
-					int br = 0;
-				}
-				for (IWidget* widg : hoveredWidgets)
-				{
-					DL_PRINT("%s", widg->GetName().c_str());
-				}
 
 				return hoveredWidgets.GetFirst();
 			}

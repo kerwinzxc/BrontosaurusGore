@@ -13,20 +13,15 @@
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
-void LoadManager::CreateInstance()
+void LoadManager::CreateInstance(CPlayState& aPlayState, CScene& aScene)
 {
 	assert(ourInstance == nullptr && "Load manager already created");
-	ourInstance = new LoadManager;
+	ourInstance = new LoadManager(aPlayState, aScene);
 }
 
-LoadManager& LoadManager::GetInstance()
+LoadManager* LoadManager::GetInstance()
 {
-	if (ourInstance == nullptr)
-	{
-		DL_ASSERT("Trying to get load manager but load manager isn't created");
-	}
-
-	return *ourInstance;
+	return ourInstance;
 }
 
 void LoadManager::DestroyInstance()
@@ -35,22 +30,22 @@ void LoadManager::DestroyInstance()
 	SAFE_DELETE(ourInstance);
 }
 
-void LoadManager::SetCurrentScene(CScene* aScene)
-{
-	myCurrentScene = aScene;
-}
+//void LoadManager::SetCurrentScene(CScene* aScene)
+//{
+//	myCurrentScene = aScene;
+//}
 
-CScene* LoadManager::GetCurrentScene() const
+CScene& LoadManager::GetCurrentScene() const
 {
 	return myCurrentScene;
 }
 
-void LoadManager::SetCurrentPlayState(CPlayState* aPlaystate)
-{
-	myCurrentPlaystate = aPlaystate;
-}
+//void LoadManager::SetCurrentPlayState(CPlayState* aPlaystate)
+//{
+//	myCurrentPlaystate = aPlaystate;
+//}
 
-CPlayState* LoadManager::GetCurrentPLaystate() const
+CPlayState& LoadManager::GetCurrentPLaystate() const
 {
 	return myCurrentPlaystate;
 }
@@ -63,18 +58,20 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
-	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
-	loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
-	loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
-	loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
-	loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
-	loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
+	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
+	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
+	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
+	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
+	//loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
+	//loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
 }
 
-LoadManager::LoadManager()
+LoadManager::LoadManager(CPlayState& aPlayState, CScene& aScene)
+	: myCurrentPlaystate(aPlayState)
+	, myCurrentScene(aScene)
 {
-	myCurrentScene = nullptr;
-	myCurrentPlaystate = nullptr;
+	//myCurrentScene = nullptr;
+	//myCurrentPlaystate = nullptr;
 
 	RegisterFunctions();
 }
@@ -82,6 +79,6 @@ LoadManager::LoadManager()
 
 LoadManager::~LoadManager()
 {
-	myCurrentScene = nullptr;
-	myCurrentPlaystate = nullptr;
+	//myCurrentScene = nullptr;
+	//myCurrentPlaystate = nullptr;
 }

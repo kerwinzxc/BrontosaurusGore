@@ -217,7 +217,7 @@ void CParticleEmitterInstance::Render(const CU::Camera& aCamera)
 
 void CParticleEmitterInstance::EmitParticle()
 {
-	if (myParticles.Size() < myEmitterData.NumOfParticles)
+	if (myParticles.Size() < static_cast<unsigned int>(myEmitterData.NumOfParticles))
 	{
 
 		SParticle particle;
@@ -257,7 +257,7 @@ void CParticleEmitterInstance::Deactivate()
 	myIsActive = false;
 }
 
-void CParticleEmitterInstance::DistanceSort(CU::GrowingArray<SParticle, unsigned short, false>& aParticleList, const CU::Camera& aCamera)
+void CParticleEmitterInstance::DistanceSort(CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, const CU::Camera& aCamera)
 {
 	CU::Vector4f cameraPosition(aCamera.GetPosition());
 

@@ -10,15 +10,8 @@
 #include "ShaderManager.h"
 #include "Surface.h"
 
-const wchar_t* ConvertStringToWideString(const std::string& aString, std::wstring& aWideString) //remove or move when found real one
-{
-	aWideString = std::wstring(aString.cbegin(), aString.cend());
-	return aWideString.c_str();
-}
-
 CModelLoader::CModelLoader()
 {
-
 }	
 
 CModelLoader::~CModelLoader()
@@ -109,68 +102,6 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 
 	return true;
 }
-
-//void CModelLoader::CreateTriangle(CModel* /*aModel*/)
-//{
-//	CU::GrowingArray<SVertexData>& modelVertices = aModel->GetVertices();
-//	CU::GrowingArray<unsigned int>& modelIndices = aModel->GetIndices();
-//
-//
-//	modelVertices.Init(36);
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[0].position.x = 0.0f;
-//	modelVertices[0].position.y = -0.8f;
-//	modelVertices[0].position.z = 0.5f;
-//	modelVertices[0].position.w = 1.0f;
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[1].position.x = -0.8f;
-//	modelVertices[1].position.y = 0.8f;
-//	modelVertices[1].position.z = 0.5f;
-//	modelVertices[1].position.w = 1.0f;
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[2].position.x = 0.8f;
-//	modelVertices[2].position.y = 0.8f;
-//	modelVertices[2].position.z = 0.5f;
-//	modelVertices[2].position.w = 1.0f;
-//
-//	modelIndices.Add(0);
-//	modelIndices.Add(1);
-//	modelIndices.Add(2);
-//}
-
-//void CModelLoader::CreateQuad(CModel* /*aModel*/)
-//{
-//	CU::GrowingArray<SVertexData>& modelVertices = aModel->GetVertices();
-//	CU::GrowingArray<unsigned int>& modelIndices = aModel->GetIndices();
-//
-//	CU::Vector4f topLeft = {-0.5f, -0.5f, 0.5f, 1.0f};
-//	CU::Vector4f topRight = { 0.5f, -0.5f, 0.5f, 1.0f };
-//	CU::Vector4f botLeft = { -0.5f, 0.5f, 0.5f, 1.0f };
-//	CU::Vector4f botRight = { 0.5f, 0.5f, 0.5f, 1.0f };
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[0].position = topLeft;
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[1].position = botLeft;
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[2].position = botRight;
-//
-//	modelVertices.Add(SVertexData());
-//	modelVertices[3].position = topRight;
-//
-//	modelIndices.Add(0);
-//	modelIndices.Add(1);
-//	modelIndices.Add(3);
-//
-//	modelIndices.Add(3);
-//	modelIndices.Add(1);
-//	modelIndices.Add(2);
-//}
 
 void CModelLoader::CreateCube(CModel* aModel)
 {

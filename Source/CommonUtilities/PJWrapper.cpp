@@ -336,13 +336,13 @@ CU::CPJWrapper CU::CPJWrapper::at(std::string aKey) const
 unsigned CU::CPJWrapper::count(std::string aKey)
 {
 	GetJsonObject();
-	return myValue.get<picojson::object>().count(aKey);
+	return static_cast<unsigned>(myValue.get<picojson::object>().count(aKey));
 }
 
 unsigned CU::CPJWrapper::count(std::string aKey) const
 {
 	GetJsonObject();
-	return myValue.get<picojson::object>().count(aKey);
+	return static_cast<unsigned>(myValue.get<picojson::object>().count(aKey));
 }
 
 CU::CPJWrapper::CPJWrapper(const picojson::value& aValue)

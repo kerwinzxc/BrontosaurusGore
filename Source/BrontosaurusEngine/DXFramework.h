@@ -22,7 +22,7 @@ public:
 	void Resize(const unsigned int aWidth, const unsigned int aHeight);
 	void SetViewPort(const unsigned int aWidth, const unsigned int aHeight, const float aMinDepth, const float aMaxDepth, const float aTopLeftX, const float aTopLeftY);
 	void Render();
-	bool Initialize(const int aWidth, const int aHeight, const bool aIsFullScreen, HWND aHWND);
+	bool Initialize(const int aWidth, const int aHeight, const bool aIsFullScreen, const bool aUseVsync, HWND aHWND);
 
 
 	void DisableDepthStencil();
@@ -45,6 +45,8 @@ private:
 	ID3D11RenderTargetView* myRenderTargetView;
 
 	ID3D11DepthStencilView* myDepthStencilView;
+
+	bool myUseVsync;
 };
 
 ID3D11Device* CDXFramework::GetDevice()

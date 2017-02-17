@@ -25,7 +25,7 @@ public:
 private:
 	CU::Camera myCamera;
 	CRenderPackage myRenderPackage;
-	CU::GrowingArray<SRenderMessage*, unsigned short, false> myRenderQueue;
+	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
 };
 
 inline CRenderPackage & CRenderCamera::GetRenderPackage() 

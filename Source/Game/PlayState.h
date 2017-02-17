@@ -8,9 +8,17 @@ namespace CU
 	class Time;
 }
 
-class CCollisionComponentManager;
 class CGameObjectManager;
 class CScene;
+class CModelComponentManager;
+class CCollisionComponentManager;
+class AmmoComponentManager;
+class WeaponSystemManager;
+class WeaponFactory;
+class ProjectileComponentManager;
+class ProjectileFactory;
+
+class CMovementComponent;
 
 class CPlayState : public State , public Subscriber
 {
@@ -26,8 +34,10 @@ public:
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
 	void Pause();
+	void CreateManagersAndFactories();
 
 	eMessageReturn Recieve(const Message& aMessage);
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 	CGameObjectManager* GetGameObjectManager();
 
@@ -37,8 +47,18 @@ private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
 
-	std::atomic_bool  myIsLoaded;
+	CModelComponentManager* myModelComponentManager;
+
+	AmmoComponentManager* myAmmoComponentManager;
+	WeaponSystemManager* myWeaponSystemManager;
+	WeaponFactory* myWeaponFactory;
+	ProjectileComponentManager* myProjectileComponentManager;
+	ProjectileFactory* myProjectileFactory;
+
+	CMovementComponent* myMovementComponent;
+
 	int myLevelIndex;
+	std::atomic_bool myIsLoaded;
 };
 
 inline bool CPlayState::IsLoaded() const

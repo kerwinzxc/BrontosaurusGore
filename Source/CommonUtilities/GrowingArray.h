@@ -76,8 +76,8 @@ namespace CU
 		inline void DeleteAtIndex(const SizeType aIndex);
 		inline void DeleteCyclic(const ObjectType& aObject);
 		inline void DeleteCyclicAtIndex(const SizeType aIndex);
-		inline SizeType Find(const ObjectType& aObject);
-		inline bool Find(const ObjectType& aObject, SizeType& aReturnIndex);
+		inline SizeType Find(const ObjectType& aObject) const;
+		inline bool Find(const ObjectType& aObject, SizeType& aReturnIndex) const;
 
 		inline ObjectType& GetLast();
 		inline const ObjectType& GetLast() const;
@@ -521,7 +521,7 @@ namespace CU
 
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
-	inline SizeType GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Find(const ObjectType& aObject)
+	inline SizeType GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Find(const ObjectType& aObject) const
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 		for (SizeType i = 0; i < mySize; ++i)
@@ -536,7 +536,7 @@ namespace CU
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
-	bool GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Find(const ObjectType& aObject, SizeType& aReturnIndex)
+	bool GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Find(const ObjectType& aObject, SizeType& aReturnIndex) const
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 
@@ -663,7 +663,7 @@ namespace CU
 	inline void CU::GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::QuickSort(std::function<bool(ObjectType, ObjectType)> aCompareFunction)
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
-		CU::QuickSort(*this, 0, mySize, aCompareFunction);
+		CU::QuickSort(*this, static_cast<SizeType>(0), mySize, aCompareFunction);
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>

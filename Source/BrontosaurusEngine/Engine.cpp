@@ -67,7 +67,7 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myWindowSize = actualDrawSize;
 
 
-	myDXFramework->Initialize(actualDrawSize.x, actualDrawSize.y, aInitEngineParams.myWindowParams.Fullscreen ,myWindowsWindow->GetHWND());
+	myDXFramework->Initialize(actualDrawSize.x, actualDrawSize.y, aInitEngineParams.myWindowParams.Fullscreen, aInitEngineParams.myUseVsync ,myWindowsWindow->GetHWND());
 	myInputManager = new CInputManager();
 	myModelManager = new CModelManager();
 	mySpriteManager = new CSpriteManager();

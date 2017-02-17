@@ -23,18 +23,8 @@ void GUICursor::Render()
 	mySprite->Render();
 }
 
-void GUICursor::SetPositionAgain(const CU::Vector2f& aPosition)
-{
-	mySprite->SetPosition(aPosition);
-	myHasRealPos = true;
-}
-
 void GUICursor::SetPosition(const CU::Vector2f& aPosition)
 {
-	if (myHasRealPos)
-	{
-		return;
-	}
 	//const CU::Vector2f windowSize(WINDOW_SIZE);
 
 	//CU::Vector2f position = aPosition;

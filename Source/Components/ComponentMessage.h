@@ -6,7 +6,7 @@ class CPath;
 class ICollider;
 class CComponent;
 class CGameObject;
-
+enum class ePlayerControls;
 
 namespace CU
 {
@@ -42,16 +42,21 @@ enum class eComponentMessageType
 	eOnCollisionExit,
 	eSetIsColliderActive,
 	eObjectDone,
-	//eActivate,
 	eAddMessageSubscription,
 	eSetHighlight,
-	//eActivate2,
 	eTurnOnThePointLight,
 	eTurnOffThePointLight,
 	eSetPointLightIntensity,
 	eSetPointLightRange,
 	eSetPointLightColor,
 	eSetPointLightToLastState,
+	eKeyPressed,
+	eKeyReleased,
+	ePitch,
+	eTryToShoot,
+	eCheckIfHaveAmmoForShooting,
+	eShoot,
+	eAddWeapon,
 	eLength,
 };
 
@@ -69,6 +74,7 @@ struct SComponentMessageData
 		CComponent* myComponent;
 		CGameObject* myGameObject;
 		struct SComponentMessageCallback* myComponentMessageCallback;
+		ePlayerControls myPlayerControl;
 		int myInt;
 		unsigned short myUShort;
 		unsigned char myUChar;
@@ -83,3 +89,4 @@ struct SComponentMessageData
 	};
 };
 
+static_assert(sizeof(SComponentMessageData) <= sizeof(CU::Vector4f), "Don't put so big things in the component message data :((");

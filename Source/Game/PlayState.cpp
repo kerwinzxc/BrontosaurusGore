@@ -3,6 +3,8 @@
 
 #include <Engine.h>
 #include <CommonUtilities.h>
+#include <StopWatch.h>
+#include <EInputReturn.h>
 #include <Lights.h>
 #include <TimerManager.h>
 #include <Scene.h>
@@ -20,25 +22,52 @@
 #include "Components/GameObject.h"
 #include "Components/GameObjectManager.h"
 #include "Components/ComponentManager.h"
+#include "Components/AmmoComponentManager.h"
+#include "Components//WeaponSystemManager.h"
+#include "Components/WeaponFactory.h"
+#include "Components/ProjectileComponentManager.h"
+#include "Components/ProjectileFactory.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
 #include "KevinLoader/KevinLoader.h"
+
 #include "CameraComponent.h"
+#include "InputComponent.h"
+#include <chrono>
+#include <thread>
+#include "MovementComponent.h"
+#include "ModelComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
-	: State(aStateStack)
+	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
+	, myGameObjectManager(nullptr)
 	, myScene(nullptr)
+	, myModelComponentManager(nullptr)
+	, myMovementComponent(nullptr)
+	, myAmmoComponentManager(nullptr)
+	, myWeaponFactory(nullptr)
+	, myProjectileComponentManager(nullptr)
+	, myProjectileFactory(nullptr)
+	, myIsLoaded(false)
 {
-	myIsLoaded = false;
 }
 
 CPlayState::~CPlayState()
 {
-	SAFE_DELETE(myScene);
 	SAFE_DELETE(myGameObjectManager);
+	SAFE_DELETE(myScene);
+
+	SAFE_DELETE(myModelComponentManager);
+
+	SAFE_DELETE(myAmmoComponentManager);
+	SAFE_DELETE(myAmmoComponentManager);
+	SAFE_DELETE(myWeaponFactory);
+	SAFE_DELETE(myProjectileComponentManager);
+	SAFE_DELETE(myProjectileFactory);
+
 	CComponentManager::DestroyInstance();
 }
 
@@ -47,17 +76,12 @@ void CPlayState::Load()
 	CU::TimerManager timerMgr;
 	CU::TimerHandle handle = timerMgr.CreateTimer();
 	timerMgr.StartTimer(handle);
+	CU::CStopWatch loadPlaystateTimer;
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	LoadManagerGuard loadManagerGuard;
-
-	CComponentManager::CreateInstance();
-	myScene = new CScene();
-	myGameObjectManager = new CGameObjectManager();
-
-	LoadManager::GetInstance().SetCurrentPlayState(this);
-	LoadManager::GetInstance().SetCurrentScene(myScene);
+	LoadManagerGuard loadManagerGuard(*this, *myScene);
+	CreateManagersAndFactories();
 
 	Lights::SDirectionalLight dirLight;
 	dirLight.color = { .25f, .25f, .25f, 1.0f };
@@ -67,29 +91,39 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 1.f, 75000.0f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	
+	Sleep(5000);
+	//create player:
+	{
+		CCameraComponent* cameraComponent = new CCameraComponent();
+		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
+		cameraComponent->SetCamera(playerCamera);
+		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
+		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+		cameraObject->AddComponent(cameraComponent);
+		playerObject->AddComponent(cameraObject);
 
-	//CCameraComponent* cameraComponent = CCameraComponentManager::GetInstance().CreateCameraComponent();
-	CCameraComponent* cameraComponent = new CCameraComponent();
-	CComponentManager::GetInstance().RegisterComponent(cameraComponent);
-	cameraComponent->SetCamera(playerCamera);
-	CGameObject* playerObject = myGameObjectManager->CreateGameObject();
-	CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-	cameraObject->GetLocalTransform().SetPosition(0.f, 200.f, 0.f);
-	cameraObject->AddComponent(cameraComponent);
-	playerObject->AddComponent(cameraObject);
+		CInputComponent* inputComponent = new CInputComponent();
+		playerObject->AddComponent(inputComponent);
+
+		myMovementComponent = new CMovementComponent();
+		playerObject->AddComponent(myMovementComponent);
+	}
+	
 
 	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	
-	//KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
-	//
-	//const KLoader::eError loadError = loader.LoadFile(levelPath);
-	//if (loadError != KLoader::eError::NO_LOADER_ERROR)
-	//{
-	//	DL_ASSERT("Loading Failed");
-	//}
+	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+
+	const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
+	if (loadError != KLoader::eError::NO_LOADER_ERROR)
+	{
+		DL_MESSAGE_BOX("Loading Failed");
+	}
 
 	myIsLoaded = true;
 
@@ -106,10 +140,9 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).TranslateForward(aDeltaTime.GetSeconds() * 1000.f);
-	myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera).Jaw(aDeltaTime.GetSeconds() * 3.1415f / 2.f);
-
+	myMovementComponent->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+
 	return myStatus;
 }
 
@@ -135,7 +168,33 @@ eMessageReturn CPlayState::Recieve(const Message& aMessage)
 	return aMessage.myEvent.DoEvent(this);
 }
 
+CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	CU::CInputMessenger::RecieveInput(aInputMessage);
+	return CU::eInputReturn::eKeepSecret;
+}
+
 CGameObjectManager* CPlayState::GetGameObjectManager()
 {
 	return myGameObjectManager;
+}
+
+void CPlayState::CreateManagersAndFactories()
+{
+	CComponentManager::CreateInstance();
+
+	myScene = new CScene();
+
+	//LoadManager::GetInstance().SetCurrentPlayState(this);
+	//LoadManager::GetInstance().SetCurrentScene(myScene);
+
+
+	myGameObjectManager = new CGameObjectManager();
+	myModelComponentManager = new CModelComponentManager(*myScene);
+
+	myAmmoComponentManager = new AmmoComponentManager();
+	myWeaponFactory = new WeaponFactory();
+	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new ProjectileComponentManager();
+	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
 }

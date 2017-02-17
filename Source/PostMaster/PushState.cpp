@@ -29,7 +29,7 @@ eMessageReturn PushState::DoEvent(StateStack* aStateStack) const
 			aStateStack->PushState(new CLoadState(*aStateStack, myLevelIndex));
 			break;
 		case eState::eCreditScreen:
-			aStateStack->PushState(new CreditsState(*aStateStack, static_cast<bool>(myLevelIndex)));
+			aStateStack->PushState(new CreditsState(*aStateStack, myLevelIndex != 0));
 			break;
 		case eState::ePauseScreen:
 			aStateStack->PushState(new PauseMenu(*aStateStack));

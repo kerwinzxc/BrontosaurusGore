@@ -125,17 +125,17 @@ SSlua::ArgumentList LuaFunctions::CreateModel(SSlua::ArgumentList anArgumentList
 SSlua::ArgumentList LuaFunctions::SetCubeMap(SSlua::ArgumentList anArgumentList)
 {
 	SSlua::LuaWrapper::CheckArguments("SetCubeMap", { eSSType::STRING }, anArgumentList);
-
-	CScene* currentScene = LoadManager::GetInstance().GetCurrentScene();
-	if (currentScene == nullptr)
-	{
-		DL_ASSERT("No Scene active for loading, plaes set a current scene in load manager");
-	}
-
-	currentScene->SetSkybox(anArgumentList[0].GetString());
+	LoadManager* loadManager = LoadManager::GetInstance();
 
 	SSlua::ArgumentList tempList;
-	tempList.Init(1);
+
+	if (!loadManager)
+	{
+		return tempList;
+	}
+	CScene& currentScene = LoadManager::GetInstance()->GetCurrentScene();
+
+	currentScene.SetSkybox(anArgumentList[0].GetString());
 
 	return tempList;
 }

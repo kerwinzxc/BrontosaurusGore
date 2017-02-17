@@ -8,34 +8,27 @@
 
 CModelComponentManager* CModelComponentManager::ourInstance = nullptr;
 
-
-void CModelComponentManager::Destroy()
+CModelComponentManager::CModelComponentManager(CScene& aScene)
+	: myModels(16u)
+	, myScene(aScene)
 {
-	assert(ourInstance != nullptr && "Model component manager not created (is NULL)");
-	SAFE_DELETE(ourInstance);
+	assert(ourInstance == nullptr);
+	ourInstance = this;
 }
-
-CModelComponentManager::CModelComponentManager()
-{
-	myModels.Init(16);
-}
-
 
 CModelComponentManager::~CModelComponentManager()
 {
-	//myModels.DeleteAll();
-}
-
-void CModelComponentManager::SetScene(CScene * aScene)
-{
-	myScene = aScene;
+	assert(ourInstance == this);
+	ourInstance = nullptr;
 }
 
 void CModelComponentManager::DeleteModelComponent(CModelComponent* aComponent)
 {
 	CModelInstance* const modelInstance = aComponent->GetAndReleaseModel();
-	myScene->DeleteModelInstance(modelInstance);
-	myModels.DeleteCyclic(aComponent);
+	myScene.DeleteModelInstance(modelInstance);
+
+	CComponentManager::GetInstance().DeleteComponent(aComponent->GetId());
+	myModels.RemoveCyclic(aComponent);
 }
 
 CModelComponentManager& CModelComponentManager::GetInstance()
@@ -44,30 +37,26 @@ CModelComponentManager& CModelComponentManager::GetInstance()
 	return *ourInstance;
 }
 
-void CModelComponentManager::Create()
-{
-	assert(ourInstance == nullptr && "Model component manager already created (is NULL)");
-	ourInstance = new CModelComponentManager();
-}
-
-CModelComponent* CModelComponentManager::CreateComponent(const char * aModelPath)
+CModelComponent* CModelComponentManager::CreateComponent(const char* aModelPath)
 {
 	CModelInstance* instance = new CModelInstance(aModelPath);
-	InstanceID modelID = myScene->AddModelInstance(instance);
-	CModelComponent* modelComp = new CModelComponent(*instance);
+	/*InstanceID modelID = */(void)myScene.AddModelInstance(instance);
+	CModelComponent* modelComp = new CModelComponent(*instance); // send in the id and a reference to the scene instead?
 	myModels.Add(modelComp);
+	
 	CComponentManager::GetInstance().RegisterComponent(myModels.GetLast());
+
 	return myModels.GetLast();
 }
 
-CModelComponent* CModelComponentManager::CreateComponent(SShape aShape)
-{
-	CModelInstance* instance = new CModelInstance(aShape);
-
-	//InstanceID modelID = myScene->AddDebugObjectInstance(instance);
-			//later add the shape to the scene (and make sure it's not col info)
-	CModelComponent* modelComp = new CModelComponent(*instance, true);
-
-	myModels.Add(modelComp);
-	return myModels.GetLast();
-}
+//CModelComponent* CModelComponentManager::CreateComponent(SShape aShape)
+//{
+//	CModelInstance* instance = new CModelInstance(aShape);
+//
+//	//InstanceID modelID = myScene.AddDebugObjectInstance(instance);
+//			//later add the shape to the scene (and make sure it's not col info)
+//	CModelComponent* modelComp = new CModelComponent(*instance, true);
+//
+//	myModels.Add(modelComp);
+//	return myModels.GetLast();
+//}

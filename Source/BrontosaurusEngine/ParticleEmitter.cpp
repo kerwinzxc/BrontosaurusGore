@@ -53,7 +53,7 @@ void CParticleEmitter::Init(const SEmitterData& aEmitterData)
 	InitBuffers();
 }
 
-void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned short, false>& aParticleList)
+void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList)
 {
 	if (!myEffect) return;
 
@@ -126,7 +126,7 @@ CParticleEmitter& CParticleEmitter::operator=(CParticleEmitter&& aParticleEmitte
 	return *this;
 }
 
-void CParticleEmitter::ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsigned short, false>& aParticleList)
+void CParticleEmitter::ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList)
 {
 	if (aParticleList.Empty()) return;
 

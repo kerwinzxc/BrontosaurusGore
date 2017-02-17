@@ -1,0 +1,51 @@
+#pragma once
+
+#include "SerializeHelper.h"
+
+
+struct SNetworkPackageHeader
+{
+	__int8 myPackageType;
+	__int32 myTimeStamp;
+	__int16 mySenderID;
+	__int16 myTargetID;
+};
+
+
+class CNetworkMessage
+{
+public:
+	CNetworkMessage();
+	virtual ~CNetworkMessage();
+
+	void PackMessage();
+	void UnpackMessage();
+
+	template <typename TYPE>
+	TYPE* CastTo();
+
+	void SetData(const char* someData, unsigned int dataSize);
+	void SetData(StreamType aStream);
+	void SetHeader(SNetworkPackageHeader aHeader);
+
+	const SNetworkPackageHeader& GetHeader() const;
+	const StreamType& GetSerializedData() const;
+
+protected:
+	StreamType myStream;
+
+	virtual void DoSerialize(StreamType& aStream);
+	virtual void DoDeserialize(StreamType& aStream);
+
+	SNetworkPackageHeader myHeader;
+};
+
+template <typename TYPE>
+TYPE* CNetworkMessage::CastTo()
+{
+	CNetworkMessage* tempMessage = static_cast<CNetworkMessage*>(new TYPE);
+	tempMessage->SetData(myStream);
+	tempMessage->SetHeader(myHeader);
+	tempMessage->UnpackMessage();
+	return static_cast<TYPE*>(tempMessage);
+}

@@ -472,14 +472,7 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		aiReturn result = scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (result != aiReturn_SUCCESS)
 		{
-			//DL_ASSERT("Failed to get diffuse/albedo texture from fbx scene: %s", aFilePath);
-			aiReturn result = scene->mMaterials[1]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-			if (result != aiReturn_SUCCESS)
-			{
-				int br = 0;
-				br++;
-			}
-			//return false;
+			DL_MESSAGE_BOX("Found no albedo texture at path %s", aFilePath);
 		}
 
 		aSceneOut.myAlbedoTexture = path.C_Str();

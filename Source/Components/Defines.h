@@ -1,0 +1,2 @@
+#pragma once
+#define WeaponFactoryPointer myWeaponFactoryPointerBecauseApparentlyWeNotDoingSingletonsAnymoreAndThatMakesMeIncrediblySad

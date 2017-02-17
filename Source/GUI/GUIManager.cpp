@@ -13,6 +13,8 @@
 #include "../BrontosaurusEngine/Renderer.h"
 
 #include "../Audio/AudioInterface.h"
+#include "CommonUtilities/InputMessage.h"
+#include "CommonUtilities/EInputReturn.h"
 
 static CU::Vector2f locMousePosition;
 
@@ -31,15 +33,10 @@ GUI::GUIManager::GUIManager()
 
 GUI::GUIManager::~GUIManager()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eMouseMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
-
 	myFocusedWidget = nullptr;
 	myWidgetAtMouse = nullptr;
 	SAFE_DELETE(myWidgetContainer);
 
-	PostMaster::GetInstance().UnSubscribe(myCursor, eMessageType::eMouseMessage);
-	PostMaster::GetInstance().UnSubscribe(myCursor, eMessageType::eSecretMouseMessageMvhCarl);
 	SAFE_DELETE(myCursor);
 	SAFE_DELETE(myCamera);
 }
@@ -49,8 +46,6 @@ void GUI::GUIManager::Init()
 	myWidgetContainer = new WidgetContainer(CU::Vector2f::Zero, CU::Vector2f::One, "BaseWidget", true);
 
 	myCursor = new GUICursor();
-	PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eMouseMessage, 6);
-	PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eSecretMouseMessageMvhCarl);
 }
 
 void GUI::GUIManager::Init(const char* aGUIScenePath)
@@ -58,8 +53,6 @@ void GUI::GUIManager::Init(const char* aGUIScenePath)
 	myWidgetContainer = WidgetFactory::CreateGUIScene(aGUIScenePath, myCamera);
 
 	myCursor = new GUICursor();
-	PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eMouseMessage, 6);
-	PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eSecretMouseMessageMvhCarl);
 }
 
 #include "ToolTipDecorator.h"
@@ -159,7 +152,7 @@ void GUI::GUIManager::RestartRender()
 {
 }
 
-eMessageReturn GUI::GUIManager::MouseClicked(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition)
+CU::eInputReturn GUI::GUIManager::MouseClicked(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition)
 {
 	SUPRESS_UNUSED_WARNING(aMousePosition);
 	CU::Vector2f mousePosition = myCursor->GetPosition();
@@ -175,19 +168,18 @@ eMessageReturn GUI::GUIManager::MouseClicked(const CU::eMouseButtons aMouseButto
 
 	if (myFocusedWidget == nullptr || myFocusedWidget == myWidgetContainer)
 	{
-		return eMessageReturn::eContinue;
+		return CU::eInputReturn::ePassOn;
 	}
 	else
 	{
-		//Audio::CAudioInterface::GetInstance()->PostEvent("ButtonClick");
 		myFocusedWidget->OnGotFocus();
 		myFocusedWidget->OnMousePressed(mousePosition, aMouseButton);
 
-		return eMessageReturn::eStop;
+		return CU::eInputReturn::eKeepSecret;
 	}
 }
 
-eMessageReturn GUI::GUIManager::MouseReleased(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition)
+CU::eInputReturn GUI::GUIManager::MouseReleased(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition)
 {
 	SUPRESS_UNUSED_WARNING(aMousePosition);
 	CU::Vector2f mousePosition = myCursor->GetPosition();
@@ -206,13 +198,16 @@ eMessageReturn GUI::GUIManager::MouseReleased(const CU::eMouseButtons aMouseButt
 		widget->OnMouseReleased(mousePosition, aMouseButton);
 	}
 
-	return (stoleInput == true) ? eMessageReturn::eStop : eMessageReturn::eContinue;
+	return (stoleInput == true) ? CU::eInputReturn::eKeepSecret : CU::eInputReturn::ePassOn;
 }
 
-eMessageReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
+CU::eInputReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
 {
-	SUPRESS_UNUSED_WARNING(aMousePosition);
-	CU::Vector2f mousePosition = myCursor->GetPosition();
+	myMousePosition += aMousePosition;
+	myMousePosition.Clamp(CU::Vector2f::Zero, CU::Vector2f::One);
+	myCursor->SetPosition(myMousePosition);
+
+	CU::Vector2f mousePosition = myMousePosition; //myCursor->GetPosition();
 
 	IWidget* widget = myWidgetContainer->MouseIsOver(mousePosition);
 
@@ -233,26 +228,13 @@ eMessageReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
 		}
 		if (widget != nullptr && widget != myWidgetContainer)
 		{
-			DL_PRINT("mouse entered %s", widget->GetName().c_str());
 			widget->OnMouseEnter(mousePosition);
 		}
 
 		myWidgetAtMouse = widget;
 	}
 
-	return eMessageReturn::eContinue;
-}
-
-eMessageReturn GUI::GUIManager::MouseDragged(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition, const CU::Vector2f& aLastMousePosition)
-{
-	IWidget* widget = myWidgetContainer->MouseIsOver(aMousePosition);
-	if (widget != nullptr && widget != myWidgetContainer)
-	{
-		widget->OnMouseDrag(aMousePosition - aLastMousePosition, aMouseButton);
-		return eMessageReturn::eStop;
-	}
-
-	return eMessageReturn::eContinue;
+	return CU::eInputReturn::ePassOn;
 }
 
 eMessageReturn GUI::GUIManager::Recieve(const Message& aMessage)
@@ -260,14 +242,30 @@ eMessageReturn GUI::GUIManager::Recieve(const Message& aMessage)
 	return aMessage.myEvent.DoEvent(this);
 }
 
+CU::eInputReturn GUI::GUIManager::TakeInput(const CU::SInputMessage& aInputMessage)
+{
+	switch (aInputMessage.myType)
+	{
+	case CU::eInputType::eMouseMoved:
+		return MouseMoved(aInputMessage.myMouseDelta);
+		break;
+	case CU::eInputType::eMousePressed:
+		return MouseClicked(aInputMessage.myMouseButton, aInputMessage.myMousePosition);
+		break;
+	case CU::eInputType::eMouseReleased:
+		return MouseReleased(aInputMessage.myMouseButton, aInputMessage.myMousePosition);
+		break;
+	//case CU::eInputType::eKeyboardPressed:
+	//	break;
+	//case CU::eInputType::eKeyboardReleased:
+	//	break;
+	}
+
+	return CU::eInputReturn::ePassOn;
+}
+
 void GUI::GUIManager::PauseRenderAndUpdate()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::ePlayerGotHat);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eMouseMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
-	PostMaster::GetInstance().UnSubscribe(myCursor, eMessageType::eMouseMessage);
-	PostMaster::GetInstance().UnSubscribe(myCursor, eMessageType::eSecretMouseMessageMvhCarl);
-
 	myShouldUpdate = false;
 	myShouldRender = false;
 
@@ -276,30 +274,17 @@ void GUI::GUIManager::PauseRenderAndUpdate()
 		myWidgetContainer->SetVisibility(false);
 		myWidgetContainer->RemoveDebugLines();
 	}
-	
 }
 
-void GUI::GUIManager::RestartRenderAndUpdate(const bool aSubscribeToSecretMessage, const bool aAddSecretHats)
+void GUI::GUIManager::RestartRenderAndUpdate(const bool /*aSubscribeToSecretMessage*/, const bool /*aAddSecretHats*/)
 {
 	myShouldUpdate = true;
 	myShouldRender = true;
 
 	myWidgetContainer->SetVisibility(true);
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::ePlayerGotHat);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eMouseMessage, 5);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage, 5);
-	PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eMouseMessage, 6);
-
-	if (aSubscribeToSecretMessage)
-	{
-		PostMaster::GetInstance().Subscribe(myCursor, eMessageType::eSecretMouseMessageMvhCarl);
-	}
-
-
 	if (locMousePosition != CU::Vector2f::Zero && myCursor != nullptr)
 	{
 		myCursor->SetPosition(locMousePosition);
 	}
 }
-

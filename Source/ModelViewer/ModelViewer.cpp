@@ -49,9 +49,9 @@ void CModelViewer::Update(const CU::Time& aDeltaTime)
 	myScene->Update(aDeltaTime);
 	if (myCurrentModel != NoModel)
 	{
-		CU::Matrix44f transform = myScene->GetModelAt(myCurrentModel).GetTransformation();
+		CU::Matrix44f transform = myScene->GetModelAt(myCurrentModel)->GetTransformation();
 		transform.Rotate(2.5f * aDeltaTime.GetSeconds(), CU::Axees::Y);
-		myScene->GetModelAt(myCurrentModel).SetTransformation(transform);
+		myScene->GetModelAt(myCurrentModel)->SetTransformation(transform);
 	}
 }
 

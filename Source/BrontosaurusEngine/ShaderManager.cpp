@@ -335,7 +335,7 @@ std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, st
 
 ID3D11InputLayout* CShaderManager::CreateInputLayout(ID3D11InputLayout* aLayout, ID3D10Blob* aVertexBlob, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
 {
-	return CreateInputLayout(aLayout, aVertexBlob->GetBufferPointer(), aVertexBlob->GetBufferSize(), aInputLayout);
+	return CreateInputLayout(aLayout, aVertexBlob->GetBufferPointer(), static_cast<unsigned int>(aVertexBlob->GetBufferSize()), aInputLayout);
 }
 
 ID3D11InputLayout * CShaderManager::CreateInputLayout(ID3D11InputLayout * aLayout, const void * aVertexBlobPointer, const unsigned int aVertexBufferSize, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)

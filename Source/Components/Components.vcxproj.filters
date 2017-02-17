@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="stdafx.cpp">
       <Filter>Precompiled</Filter>
     </ClCompile>
@@ -74,11 +73,44 @@
     <ClCompile Include="PointLightComponentManager.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="WeaponSystemComponent.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoComponent.cpp">
+      <Filter>Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponent.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileFactory.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponFactory.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSystemManager.cpp">
+      <Filter>Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>InputComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>MovementComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileComponentManager.cpp">
+      <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoComponentManager.cpp">
+      <Filter>Ammo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled</Filter>
     </ClInclude>
@@ -160,7 +192,63 @@
     <ClInclude Include="PointLightComponentManager.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="WeaponSystemComponent.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponData.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthPoint.h">
+      <Filter>Health</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileData.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoComponent.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoData.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileFactory.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponent.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSystemManager.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponFactory.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="InputComponent.h">
+      <Filter>InputComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>MovementComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileComponentManager.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoComponentManager.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControls.h">
+      <Filter>InputComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -195,6 +283,24 @@
     </Filter>
     <Filter Include="InputComponent">
       <UniqueIdentifier>{3448c6b6-4af9-41f3-a1cf-a15587da0b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon">
+      <UniqueIdentifier>{bc0fd7cc-75b0-4bed-9635-e94087ecbe28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Health">
+      <UniqueIdentifier>{9b8ee388-3e83-4b73-8054-5c485f6802b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Projectile">
+      <UniqueIdentifier>{9334c820-a410-4439-92da-bdd98ec6e994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ammo">
+      <UniqueIdentifier>{d70ea127-4045-4714-9c65-c42d688cbbe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MovementComponent">
+      <UniqueIdentifier>{02983070-7b49-4106-b034-5f85e9c058ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompiled">
+      <UniqueIdentifier>{e9975db9-e15c-49a1-918b-953f9a1f8c1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

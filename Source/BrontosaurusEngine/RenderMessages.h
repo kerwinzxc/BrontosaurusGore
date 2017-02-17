@@ -141,7 +141,7 @@ struct SRenderCameraQueueMessage : SRenderMessage
 	SRenderCameraQueueMessage();
 	CU::Camera myCamera;
 	CRenderPackage CameraRenderPackage;
-	CU::GrowingArray < SRenderMessage*, unsigned short, false> CameraRenderQueue;
+	CU::GrowingArray < SRenderMessage*, unsigned int, false> CameraRenderQueue;
 	bool RenderDepth;
 };
 
@@ -180,8 +180,9 @@ struct SRenderGUIModelMessage : SRenderMessage
 struct SRenderParticlesMessage : SRenderMessage
 {
 	SRenderParticlesMessage();
+	~SRenderParticlesMessage();
 	ParticleEmitterID particleEmitter;
-	CU::GrowingArray<SParticle, unsigned short, false> particleList;
+	CU::GrowingArray<SParticle, unsigned int, false> particleList;
 	CU::Matrix44f toWorld;
 };
 

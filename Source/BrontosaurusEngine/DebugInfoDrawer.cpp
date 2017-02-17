@@ -59,7 +59,6 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	myUpdateTextTimer_RenderThread = myRenderThreadTimers->CreateTimer();
 	myFPSTimer = myRenderThreadTimers->CreateTimer();
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage);
 	PostMaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
 
 #endif // !_RETAIL_BUILD
@@ -72,7 +71,6 @@ CDebugInfoDrawer::~CDebugInfoDrawer()
 	SAFE_DELETE(myRenderThreadTimers);
 	SAFE_DELETE(myCountDown);
 
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
 	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDrawCallsThisFrame);
 
 	myOutputTexts.DeleteAll();

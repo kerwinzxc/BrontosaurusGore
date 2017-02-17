@@ -438,7 +438,7 @@ std::vector<mat4>& CModel::GetBones(float aTime, const char * aAnimationState, c
 	return locNullBones;
 }
 
-SLodData & CModel::GetCurrentLODModel(const CU::Vector3f& aModelPosition)
+SLodData& CModel::GetCurrentLODModel(const CU::Vector3f& /*aModelPosition*/)
 {
 	if (myLODModels.Size() > 1)
 	{

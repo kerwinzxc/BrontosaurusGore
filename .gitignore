@@ -399,3 +399,5 @@ Bin/Script/Documentation/ExposedFunctions.txt
 Bin/Script/ExposedFunctions.txt
 *.fxc
 Bin/BrontosaurusGore_Debug.lib
+Bin/BrontosaurusGore_Release.lib
+Bin/BrontosaurusGore_Retail.lib
