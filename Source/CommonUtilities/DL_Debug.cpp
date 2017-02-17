@@ -93,33 +93,38 @@ namespace DL_Debug
 		}
 
 		myLogFiles[logType] = new Log();
-		const char* fileName;
+		std::string fileName;
+		const char* suffix = ".loggo";
 		switch (aLogType)
 		{
 		case DL_Debug::eLogTypes::eEngine:
-			fileName = "LOG_ENGINE.loggo";
+			fileName = "LOG_ENGINE";
 			break;
 		case DL_Debug::eLogTypes::eGamePlay:
-			fileName = "LOG_GAMEPLAY.loggo";
+			fileName = "LOG_GAMEPLAY";
 			break;
 		case DL_Debug::eLogTypes::eResource:
-			fileName = "LOG_RESOURCES.loggo";
+			fileName = "LOG_RESOURCES";
 			break;
 		case DL_Debug::eLogTypes::eCrash:
-			fileName = "LOG_CRASH.loggo";
+			fileName = "LOG_CRASH";
 			break;
 		case DL_Debug::eLogTypes::eThreadedModels:
-			fileName = "LOG_THREADED_MODELS.loggo";
+			fileName = "LOG_THREADED_MODELS";
 			break;
 		case DL_Debug::eLogTypes::eThreadPool:
-			fileName = "LOG_THREADPOOL.loggo";
+			fileName = "LOG_THREADPOOL";
+			break;
+
+		case DL_Debug::eLogTypes::ePhysics:
+			fileName = "LOG_PHYSICS";
 			break;
 		default:
-			fileName = "LOG_DEFAULT.loggo";
+			fileName = "LOG_DEFAULT";
 			break;
 		}
-
-		myLogFiles[logType]->CreateLog(fileName);
+		fileName += suffix;
+		myLogFiles[logType]->CreateLog(fileName.c_str());
 	}
 
 	void Debug::CreateInstance()
@@ -145,29 +150,33 @@ namespace DL_Debug
 		CommandLineManager* commandLineManager = CommandLineManager::GetInstance();
 		if (commandLineManager != nullptr)
 		{
-			if (commandLineManager->HasArgument("-activatelog", "gameplay"))
+			if (commandLineManager->HasArgument("-log", "gameplay"))
 			{
 				Activate(DL_Debug::eLogTypes::eGamePlay);
 			}
-			if (commandLineManager->HasArgument("-activatelog", "resource"))
+			if (commandLineManager->HasArgument("-log", "resource"))
 			{
 				Activate(DL_Debug::eLogTypes::eResource);
 			}
-			if (commandLineManager->HasArgument("-activatelog", "engine"))
+			if (commandLineManager->HasArgument("-log", "engine"))
 			{
 				Activate(DL_Debug::eLogTypes::eEngine);
 			}
-			if (commandLineManager->HasArgument("-activatelog", "crash"))
+			if (commandLineManager->HasArgument("-log", "crash"))
 			{
 				Activate(DL_Debug::eLogTypes::eCrash);
 			}
-			if (commandLineManager->HasArgument("-activatelog", "threadedModels"))
+			if (commandLineManager->HasArgument("-log", "threadedModels"))
 			{
 				Activate(DL_Debug::eLogTypes::eThreadedModels);
 			}
-			if (commandLineManager->HasArgument("-activatelog", "threadPool"))
+			if (commandLineManager->HasArgument("-log", "threadPool"))
 			{
 				Activate(DL_Debug::eLogTypes::eThreadPool);
+			}
+			if (commandLineManager->HasArgument("-log", "physics"))
+			{
+				Activate(DL_Debug::eLogTypes::ePhysics);
 			}
 		}
 	}
