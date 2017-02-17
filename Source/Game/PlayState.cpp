@@ -93,6 +93,7 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
+	Sleep(5000);
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();

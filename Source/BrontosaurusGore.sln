@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "BrontosaurusEngine\Brontosaurus.vcxproj", "{C5AC5F58-5B84-4A09-8E0A-0FFBA117FADE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -417,7 +417,6 @@ Global
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.ModelViewerRelease|x86.ActiveCfg = ModelViewerRelease|Win32
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.ModelViewerRelease|x86.Build.0 = ModelViewerRelease|Win32
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.Release|x64.ActiveCfg = Release|x64
-		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.Release|x64.Build.0 = Release|x64
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.Release|x86.ActiveCfg = Release|Win32
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.Release|x86.Build.0 = Release|Win32
 		{260FBFDC-EF70-4D4A-AE87-D0F46C5426BA}.Retail|x64.ActiveCfg = Release|x64
