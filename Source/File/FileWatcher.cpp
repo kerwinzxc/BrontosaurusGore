@@ -4,7 +4,6 @@
 #include <mutex>
 #include <tchar.h>
 #include <minwinbase.h>
-#include <minwinbase.h>
 
 System::File::CFileWatcher::CFileWatcher(): CFileWatcher(1000)
 {
@@ -17,6 +16,7 @@ System::File::CFileWatcher::CFileWatcher(unsigned aBufferSize) : myIsRunning(tru
 
 System::File::CFileWatcher::~CFileWatcher()
 {
+	Stop();
 }
 
 void System::File::CFileWatcher::Start()
