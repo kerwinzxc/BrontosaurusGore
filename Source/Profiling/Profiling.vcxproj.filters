@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Profiler">
+      <UniqueIdentifier>{1ec8e525-cc7a-4404-baa5-86392903197c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternalProcessProfiler">
+      <UniqueIdentifier>{7aa539cb-d047-47e5-a375-5fd6991389e3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Profiler.cpp">
+      <Filter>Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpternalProcessProfiler.cpp">
+      <Filter>ExternalProcessProfiler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Profiler.h">
+      <Filter>Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpternalProcessProfiler.h">
+      <Filter>ExternalProcessProfiler</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
