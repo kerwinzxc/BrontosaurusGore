@@ -24,12 +24,18 @@ namespace Postmaster
 			static void Destroy();
 			static CPostmaster& GetInstance();
 
-			void WaitForMessages();
+			//Run the postmaster. This does not start a separate thread
 			void Run();
+			//Makes a new thread that runs "Run"
+			void Start();
+			//Deliver messages to the associated postoffices. Call this function if you don't call "Run"
 			void HandleMessages();
 			void Stop();
+			void StopThread();
 
+			//Create a local post office (for that thread)
 			CPostOffice& AddThreadOffice();
+			//Get the post office (for that thread)
 			CPostOffice& GetThreadOffice();
 
 			//Broadcast message to all threads.
@@ -50,6 +56,7 @@ namespace Postmaster
 			void Unsubscribe(ISubscriber* aSubscriber);
 			bool ShouldRun() const;
 		protected:
+			void WaitForMessages();
 			void HandleBroadcastMessages();
 			void HandleNarrowcastMessages();
 
@@ -62,6 +69,7 @@ namespace Postmaster
 			std::mutex myOfficeLock;
 			std::mutex myMessageWaitLock;
 			std::condition_variable myMessageWaitCondition;
+			std::thread* myThread;
 		private:
 			CPostmaster();
 			~CPostmaster();
@@ -115,7 +123,7 @@ inline void Postmaster::Threaded::CPostmaster::Stop()
 }
 
 
-inline Postmaster::Threaded::CPostmaster::CPostmaster() : myIsRunning(true)
+inline Postmaster::Threaded::CPostmaster::CPostmaster() : myIsRunning(true), myThread(nullptr)
 {
 }
 

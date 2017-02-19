@@ -11,10 +11,26 @@ void Postmaster::Threaded::CPostmaster::WaitForMessages()
 	myMessageWaitCondition.wait(lock, [this] { return this->ShouldRun(); });
 }
 
+void Postmaster::Threaded::CPostmaster::Start()
+{
+	myThread = new std::thread(Postmaster::Threaded::CPostmaster::Run());
+}
+
 void Postmaster::Threaded::CPostmaster::HandleMessages()
 {
 	HandleBroadcastMessages();
 	HandleNarrowcastMessages();
+}
+
+void Postmaster::Threaded::CPostmaster::StopThread()
+{
+	Stop();
+	if(myThread != nullptr)
+	{
+		myThread->join();
+		delete myThread;
+		myThread = nullptr;
+	}
 }
 
 Postmaster::Threaded::CPostOffice&  Postmaster::Threaded::CPostmaster::AddThreadOffice()
