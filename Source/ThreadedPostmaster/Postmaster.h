@@ -32,15 +32,21 @@ namespace Postmaster
 			CPostOffice& AddThreadOffice();
 			CPostOffice& GetThreadOffice();
 
+			//Broadcast message to all threads.
 			void Broadcast(Message::IMessage* aMessage);
+			//Broadcast message to this thread.
 			void BroadcastLocal(Message::IMessage* aMessage);
 
+			//Narrowcast message to all threads.
 			void Narrowcast(Message::IMessage* aMessage, IObject* aSourceObject);
+			//Narrowcast message to this thread.
 			void NarrowcastLocal(Message::IMessage* aMessage, IObject* aSourceObject);
 
-
+			
 			void Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType);
+			//Subscribe to messages from the given object
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
+			//Unsubscribe from all your subscriptions
 			void Unsubscribe(ISubscriber* aSubscriber);
 			bool ShouldRun() const;
 		protected:

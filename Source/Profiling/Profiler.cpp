@@ -37,6 +37,7 @@ Profiling::CProfiler::~CProfiler()
 
 void Profiling::CProfiler::SetStartTime()
 {
+	
 	myStartTime = GetCurrentTime();
 }
 
