@@ -25,8 +25,6 @@ public:
 	PushState(const eState aState, const int aLevelIndex);
 	~PushState();
 
-	//eMessageReturn DoEvent(StateStack* aStateStack) const override;
-
 	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
 	eState GetStateType() const;
 	int GetLevelIndex() const;

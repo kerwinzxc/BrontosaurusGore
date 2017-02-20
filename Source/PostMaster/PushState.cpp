@@ -38,30 +38,3 @@ Postmaster::Message::IMessage* PushState::Copy()
 {
 	return new PushState(*this);
 }
-
-//eMessageReturn PushState::DoEvent(StateStack* aStateStack) const
-//{
-//	if (aStateStack != nullptr)
-//	{
-//		switch (myState)
-//		{
-//		case eState::ePlayState:
-//			aStateStack->PushState(new CLoadState(*aStateStack, myLevelIndex));
-//			break;
-//		case eState::eCreditScreen:
-//			aStateStack->PushState(new CreditsState(*aStateStack, myLevelIndex != 0));
-//			break;
-//		case eState::ePauseScreen:
-//			aStateStack->PushState(new PauseMenu(*aStateStack));
-//			break;
-//		case eState::eLevelSelect:
-//			static_cast<MainMenuState*>(aStateStack->GetCurrentState())->SetIsGoingToLevelSelect(true);
-//			aStateStack->PushState(new LevelSelectState(*aStateStack));
-//			break;
-//		default: 
-//			break;
-//		}
-//	}
-//
-//	return eMessageReturn::eStop;
-//}

@@ -119,11 +119,11 @@ void CPlayState::Load()
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	//const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
-	/*if (loadError != KLoader::eError::NO_LOADER_ERROR)
+	const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
+	if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
-	}*/
+	}
 
 	myIsLoaded = true;
 
