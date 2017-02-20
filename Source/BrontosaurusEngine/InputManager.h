@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -16,14 +17,13 @@ namespace CU
 	enum class eKeys;
 }
 
-class CInputManager : public Subscriber
+class CInputManager : public Postmaster::ISubscriber
 {
 public:
 	CInputManager();
 	~CInputManager();
 
 	void Update();
-	eMessageReturn Recieve(const Message & aMessage) override;
 	void SetMousePosition(const CU::Vector2f& aMousePosition);
 	void LockUnlockMouse(const bool aHasFocus);
 
@@ -31,10 +31,13 @@ public:
 	void Neglect(CU::CInputMessenger& aMessenger);
 	static CInputManager* GetInstance();
 
+	eMessageReturn DoEvent(const FocusChange& aDroppedFile) override;
+
 private:
 	void UpdateMouse();
 	void UpdateKeyboard();
 	void UpdateGamePad();
+
 
 	CU::GrowingArray<CU::eKeys> myKeys;
 	CU::GrowingArray<CU::CInputMessenger*> myMessengers;

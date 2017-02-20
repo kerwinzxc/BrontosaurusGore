@@ -1,13 +1,14 @@
 #pragma once
 #include "Event.h"
+#include "ThreadedPostmaster/Message.h"
 
-class PopCurrentState : public Event
+class PopCurrentState : public Postmaster::Message::IMessage
 {
 public:
 	PopCurrentState();
 	~PopCurrentState();
 
-	//eMessageReturn DoEvent(State* aCurrentState) const override;
-	eMessageReturn DoEvent(StateStack* aStateStack) const override;
+	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
+	IMessage* Copy() override;
 };
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "StateStack\State.h"
-#include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
+#include "../StateStack/State.h"
 
 class CSpriteInstance;
 
 
-class CreditsState : public State, public Subscriber
+class CreditsState : public State, public Postmaster::ISubscriber
 {
 public:
 	CreditsState(StateStack& aStateStack,const bool aInGame = false);
@@ -20,7 +20,6 @@ public:
 	void OnExit(const bool aLetThroughRender) override;
 	void GoToMainMenu();
 
-	eMessageReturn Recieve(const Message& aMessage) override;
 private:
 	CSpriteInstance* mysprite;
 	const bool myInGame;

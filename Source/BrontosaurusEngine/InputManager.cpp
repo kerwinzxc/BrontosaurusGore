@@ -17,6 +17,8 @@
 #include "../CommonUtilities/InputMessenger.h"
 #include "../CommonUtilities/InputMessage.h"
 #include "../CommonUtilities/EInputReturn.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/FocusChange.h"
 
 CInputManager* CInputManager::ourInstance(nullptr);
 
@@ -47,7 +49,8 @@ CInputManager::CInputManager()
 
 	myHasFocus = true;
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
 }
 
 CInputManager::~CInputManager()
@@ -58,12 +61,9 @@ CInputManager::~CInputManager()
 
 	SAFE_DELETE(myDInputWrapper);
 	SAFE_DELETE(myXInputWrapper);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
-}
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
 
-eMessageReturn CInputManager::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CInputManager::SetMousePosition(const CU::Vector2f& aMousePosition)
@@ -102,6 +102,12 @@ void CInputManager::Neglect(CU::CInputMessenger& aMessenger)
 CInputManager* CInputManager::GetInstance()
 {
 	return ourInstance;
+}
+
+eMessageReturn CInputManager::DoEvent(const FocusChange& aFocusChange)
+{
+	LockUnlockMouse(aFocusChange.GetHasFocus());
+	return eMessageReturn::eContinue;
 }
 
 void CInputManager::Update()

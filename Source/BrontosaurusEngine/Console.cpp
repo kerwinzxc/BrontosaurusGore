@@ -11,10 +11,11 @@
 #include "../PostMaster/ConsoleCalledUpon.h"
 #include "../PostMaster/KeyCharPressed.h"
 #include "../CommonUtilities/EKeyboardKeys.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 CConsole::CConsole()
 {
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eCharPressed, 10);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eCharPressed);
 	myIsActive = false;
 	myHaveIAfterCurrentText = false;
 	myElapsedAnimationTimer = 0.0f;
@@ -33,7 +34,8 @@ CConsole::CConsole()
 
 CConsole::~CConsole()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eCharPressed);
+	//TODO: change how unsubscribe works?
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eCharPressed);
 }
 
 void CConsole::Init()
@@ -48,12 +50,14 @@ void CConsole::GetLuaFunctions()
 
 void CConsole::Activate()
 {
-	PostMaster::GetInstance().SendLetter(Message(eMessageType::eConsoleCalledUpon, ConsoleCalledUpon(true)));
+	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eConsoleCalledUpon, ConsoleCalledUpon(true)));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new ConsoleCalledUpon(true));
 }
 
 void CConsole::Deactivate()
 {
-	PostMaster::GetInstance().SendLetter(Message(eMessageType::eConsoleCalledUpon, ConsoleCalledUpon(false)));
+	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eConsoleCalledUpon, ConsoleCalledUpon(false)));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new ConsoleCalledUpon(false));
 }
 
 bool CConsole::Update(float aDeltaTime)
@@ -91,6 +95,12 @@ void CConsole::Render()
 			myTextLog[i]->Render();
 		}
 	}
+}
+
+eMessageReturn CConsole::DoEvent(const KeyCharPressed& aCharPressed)
+{
+	TakeKeyBoardInputPressedChar(aCharPressed.GetKey());
+	return eMessageReturn::eContinue;
 }
 
 void CConsole::UpdateCommandSuggestions(const std::string & aStringToCompare)
@@ -150,11 +160,6 @@ size_t CConsole::MakeCommandSuggestions(const std::string& aStringToCompare, con
 	delete[] costs;
 
 	return result;
-}
-
-eMessageReturn CConsole::Recieve(const Message & aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
 }
 
 eMessageReturn CConsole::TakeKeyBoardInputPressedChar(const char aKey)

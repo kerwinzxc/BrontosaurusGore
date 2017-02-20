@@ -48,8 +48,3 @@ bool LevelSelectState::GetLetThroughRender() const
 {
 	return true;
 }
-
-eMessageReturn LevelSelectState::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}

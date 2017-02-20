@@ -1,7 +1,8 @@
 #pragma once
 #include "Event.h"
+#include "../ThreadedPostmaster/Message.h"
 
-class PushState : public Event
+class PushState : public Postmaster::Message::IMessage
 {
 public:
 	enum class eState
@@ -24,8 +25,12 @@ public:
 	PushState(const eState aState, const int aLevelIndex);
 	~PushState();
 
-	eMessageReturn DoEvent(StateStack* aStateStack) const override;
+	//eMessageReturn DoEvent(StateStack* aStateStack) const override;
 
+	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
+	eState GetStateType() const;
+	int GetLevelIndex() const;
+	IMessage* Copy() override;
 private:
 	const eState myState;
 	const int myLevelIndex;

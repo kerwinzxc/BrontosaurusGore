@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <array>
-#include "MessageTypes.h"
+#include "../PostMaster/MessageType.h"
 #include "../Container/LocklessQueue.h"
 #include "NarrowcastStruct.h"
 #include <map>
@@ -44,8 +44,8 @@ namespace Postmaster
 
 			typedef std::vector<ISubscriber*> SubscriberList;
 			typedef std::map<IObject*, SubscriberList> NarrowSubscriberList;
-			typedef std::array<SubscriberList, static_cast<unsigned>(eMessageType::Size)> SubscriberMessageList;
-			typedef std::array<NarrowSubscriberList, static_cast<unsigned>(eMessageType::Size)> NarrowSubscriberMessageList;
+			typedef std::array<SubscriberList, static_cast<unsigned>(eMessageType::eLength)> SubscriberMessageList;
+			typedef std::array<NarrowSubscriberList, static_cast<unsigned>(eMessageType::eLength)> NarrowSubscriberMessageList;
 			SubscriberMessageList mySubscribers;
 			NarrowSubscriberMessageList myNarrowSubstribers;
 

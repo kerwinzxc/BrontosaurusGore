@@ -1,5 +1,5 @@
 #pragma once
-#include "StateStack\State.h"
+#include "../StateStack\State.h"
 #include "../PostMaster/Subscriber.h"
 
 namespace GUI
@@ -7,7 +7,7 @@ namespace GUI
 	class GUIManager;
 }
 
-class PauseMenu : public State, public Subscriber
+class PauseMenu : public State/*, public Subscriber*/
 {
 public:
 	PauseMenu(StateStack& aStateStack);

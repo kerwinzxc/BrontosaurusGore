@@ -1,5 +1,6 @@
 #pragma once
-#include "MessageTypes.h"
+#include "../PostMaster/EMessageReturn.h"
+enum class eMessageType;
 
 namespace Postmaster
 {
@@ -13,7 +14,8 @@ namespace Postmaster
 			virtual ~IMessage();
 
 			virtual IMessage* Copy() = 0;
-			virtual void DoMessage(::Postmaster::ISubscriber& aSubscriber) = 0;
+
+			virtual eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const = 0;
 			eMessageType GetType() const;
 		private:
 			eMessageType myType;
@@ -27,6 +29,11 @@ inline Postmaster::Message::IMessage::IMessage(eMessageType aType) : myType(aTyp
 
 inline Postmaster::Message::IMessage::~IMessage()
 {
+}
+
+inline Postmaster::Message::IMessage* Postmaster::Message::IMessage::Copy()
+{
+	return nullptr;
 }
 
 inline eMessageType Postmaster::Message::IMessage::GetType() const

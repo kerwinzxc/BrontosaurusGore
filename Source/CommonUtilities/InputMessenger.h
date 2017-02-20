@@ -11,7 +11,7 @@ namespace CU
 	{
 	public:
 		CInputMessenger(const eInputMessengerType aMessengerType, const int aPriority = 0);
-		~CInputMessenger();
+		virtual ~CInputMessenger();
 
 		void Subscribe(IInputListener& aListener);
 		void Subscribe(IInputListener& aListener, const int aPriority);

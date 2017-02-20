@@ -13,7 +13,7 @@ void Postmaster::Threaded::CPostmaster::WaitForMessages()
 
 void Postmaster::Threaded::CPostmaster::Start()
 {
-	myThread = new std::thread(Postmaster::Threaded::CPostmaster::Run());
+	myThread = new std::thread(&Postmaster::Threaded::CPostmaster::Run, this);
 }
 
 void Postmaster::Threaded::CPostmaster::HandleMessages()

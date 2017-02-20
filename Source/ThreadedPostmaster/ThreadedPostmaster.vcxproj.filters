@@ -20,14 +20,8 @@
     <Filter Include="Subscriber\Base">
       <UniqueIdentifier>{b0fb210e-51ee-479e-97e1-7911c284d0cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Subscriber\PrintConsole">
-      <UniqueIdentifier>{aba1f639-d693-4b53-a4f0-8f69d8d2d9cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Message\Base">
       <UniqueIdentifier>{190b67dc-6618-405b-b9e3-9d986ad5d990}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Message\PrintMessage">
-      <UniqueIdentifier>{d61e7c8e-e972-48b9-abb9-4e0a3056e467}</UniqueIdentifier>
     </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{8f1ea0bb-9cf2-45ef-902c-91b21997b2a3}</UniqueIdentifier>
@@ -46,12 +40,6 @@
     <ClCompile Include="Subscriber.cpp">
       <Filter>Subscriber\Base</Filter>
     </ClCompile>
-    <ClCompile Include="PrintConsole.cpp">
-      <Filter>Subscriber\PrintConsole</Filter>
-    </ClCompile>
-    <ClCompile Include="PrintMessage.cpp">
-      <Filter>Message\PrintMessage</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -63,17 +51,8 @@
     <ClInclude Include="Subscriber.h">
       <Filter>Subscriber\Base</Filter>
     </ClInclude>
-    <ClInclude Include="PrintConsole.h">
-      <Filter>Subscriber\PrintConsole</Filter>
-    </ClInclude>
     <ClInclude Include="Message.h">
       <Filter>Message\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="PrintMessage.h">
-      <Filter>Message\PrintMessage</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageTypes.h">
-      <Filter>Message</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Object</Filter>

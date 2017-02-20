@@ -16,6 +16,8 @@
 //TEMP INCLUDES
 #include "..\PostMaster\ChangeLevel.h"
 #include "../CommonUtilities/BitSet.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/DrawCallsCount.h"
 
 template class CU::CBitSet<3>;
 
@@ -59,8 +61,8 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	myUpdateTextTimer_RenderThread = myRenderThreadTimers->CreateTimer();
 	myFPSTimer = myRenderThreadTimers->CreateTimer();
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
-
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
 #endif // !_RETAIL_BUILD
 }
 
@@ -71,7 +73,7 @@ CDebugInfoDrawer::~CDebugInfoDrawer()
 	SAFE_DELETE(myRenderThreadTimers);
 	SAFE_DELETE(myCountDown);
 
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDrawCallsThisFrame);
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDrawCallsThisFrame);
 
 	myOutputTexts.DeleteAll();
 #endif // !_RETAIL_BUILD
@@ -115,10 +117,7 @@ void CDebugInfoDrawer::Update()
 #endif // !_RETAIL_BUILD
 }
 
-eMessageReturn CDebugInfoDrawer::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
+
 
 void CDebugInfoDrawer::PressedKey(const CU::eKeys& aKey)
 {
@@ -209,6 +208,12 @@ void CDebugInfoDrawer::UpdateFPSCounter()
 	}
 
 #endif // !_RETAIL_BUILD
+}
+
+eMessageReturn CDebugInfoDrawer::DoEvent(const DrawCallsCount& aConsoleCalledupon)
+{
+	SetDrawCalls(aConsoleCalledupon.GetDrawCalls());
+	return eMessageReturn::eContinue;
 }
 
 void CDebugInfoDrawer::UpdateLogicFPSCounter()

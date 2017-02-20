@@ -2,6 +2,7 @@
 #include "../StateStack/State.h"
 #include "../PostMaster/Subscriber.h"
 #include <atomic>
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -20,7 +21,7 @@ class ProjectileFactory;
 
 class CMovementComponent;
 
-class CPlayState : public State , public Subscriber
+class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
 public:
 	CPlayState(StateStack& aStateStack, const int aLevelIndex);

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "DroppedFile.h"
-#include "../ModelViewer/ModelViewer.h"
+#include "ThreadedPostmaster/Subscriber.h"
 
-DroppedFile::DroppedFile(const std::string& aFilePath)
-	: myFilePath(aFilePath)
+DroppedFile::DroppedFile(const std::string& aFilePath) : IMessage(eMessageType::eDroppedFile)
+, myFilePath(aFilePath)
 {
 }
 
@@ -11,23 +11,17 @@ DroppedFile::~DroppedFile()
 {
 }
 
-eMessageReturn DroppedFile::DoEvent(CModelViewer* aModelViewer) const
+eMessageReturn DroppedFile::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
-	if (aModelViewer != nullptr)
-	{
-		if (myFilePath.rfind(".fbx") != std::string::npos)
-		{
-#ifdef _MODEL_VIEWER
+	return aSubscriber.DoEvent(*this);
+}
 
-			aModelViewer->LoadModel(myFilePath);
+const std::string& DroppedFile::GetFilePath() const
+{
+	return myFilePath;
+}
 
-#endif // _MODEL_VIEWER
-		}
-		else
-		{
-			DL_PRINT_WARNING("file is not fbx: %s", myFilePath.c_str());
-		}
-	}
-
-	return eMessageReturn::eContinue;
+Postmaster::Message::IMessage* DroppedFile::Copy()
+{
+	return new DroppedFile(*this);
 }

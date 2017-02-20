@@ -122,20 +122,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Message.h" />
-    <ClInclude Include="MessageTypes.h" />
     <ClInclude Include="NarrowcastStruct.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Postmaster.h" />
     <ClInclude Include="PostOffice.h" />
-    <ClInclude Include="PrintConsole.h" />
-    <ClInclude Include="PrintMessage.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
-    <ClCompile Include="PrintConsole.cpp" />
-    <ClCompile Include="PrintMessage.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

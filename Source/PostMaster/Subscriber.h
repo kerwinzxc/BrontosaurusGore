@@ -6,7 +6,8 @@ enum class eMessageReturn;
 class Subscriber
 {
 public:
-	Subscriber();
+	//Subscriber();
+	Subscriber(int i);
 	virtual ~Subscriber();
 
 	virtual eMessageReturn Recieve(const Message& aMessage) = 0;

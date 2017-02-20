@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "ModelViewer.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/DroppedFile.h"
 
 const InstanceID NoModel = 1337u;
 
@@ -11,8 +13,8 @@ CModelViewer::CModelViewer()
 
 CModelViewer::~CModelViewer()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDroppedFile);
-	
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDroppedFile);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 	SAFE_DELETE(myScene);
 }
 
@@ -41,7 +43,7 @@ void CModelViewer::Init(const char aStartModelPath[])
 		LoadModel(aStartModelPath);
 	}
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eDroppedFile);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eDroppedFile);
 }
 
 void CModelViewer::Update(const CU::Time& aDeltaTime)
@@ -71,7 +73,18 @@ void CModelViewer::LoadModel(const std::string& aModelPath)
 	myCurrentModel = myScene->AddModelInstance(newModelInstance);
 }
 
-eMessageReturn CModelViewer::Recieve(const Message& aMessage)
+eMessageReturn CModelViewer::DoEvent(const DroppedFile& aDroppedFile)
 {
-	return aMessage.myEvent.DoEvent(this);
+	const std::string& filePath = aDroppedFile.GetFilePath();
+
+	if(filePath.rfind(".fbx") != std::string::npos)
+	{
+		LoadModel(filePath);
+	}
+	else
+	{
+		DL_PRINT_WARNING("File is not fbx: %s", filePath.c_str());
+	}
+
+	return eMessageReturn::eContinue;
 }

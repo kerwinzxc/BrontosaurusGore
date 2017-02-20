@@ -37,7 +37,7 @@ void Postmaster::Threaded::CPostOffice::HandleBroadcastMessages()
 		const std::array<std::vector<ISubscriber*>, 1>::value_type& subscribers = mySubscribers[static_cast<unsigned>(message->GetType())];
 		for (int i = 0; i < subscribers.size(); ++i)
 		{
-			message->DoMessage(*subscribers[i]);
+			message->DoEvent(*subscribers[i]);
 		}
 		delete message;
 	}
@@ -71,7 +71,7 @@ void Postmaster::Threaded::CPostOffice::HandleNarrowcastMessages()
 			{
 				ISubscriber* subscriber = *it;
 
-				nMessage.message->DoMessage(*subscriber);
+				nMessage.message->DoEvent(*subscriber);
 			}
 		}
 

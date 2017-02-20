@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "PopCurrentState.h"
-
-#include "../StateStack/State.h"
 #include "../StateStack/StateStack.h"
 
-PopCurrentState::PopCurrentState()
+PopCurrentState::PopCurrentState() : IMessage(eMessageType::eStateStackMessage)
 {
 }
 
@@ -12,22 +10,12 @@ PopCurrentState::~PopCurrentState()
 {
 }
 
-//eMessageReturn PopCurrentState::DoEvent(State* aCurrentState) const
-//{
-//	if (aCurrentState != nullptr)
-//	{
-//		aCurrentState->SetStateStatus(eStateStatus::ePop);
-//	}
-//
-//	return eMessageReturn::eStop;
-//}
-
-eMessageReturn PopCurrentState::DoEvent(StateStack* aStateStack) const
+eMessageReturn PopCurrentState::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
-	if (aStateStack != nullptr)
-	{
-		aStateStack->GetCurrentState()->SetStateStatus(eStateStatus::ePop);
-	}
+	return aSubscriber.DoEvent(*this);
+}
 
-	return eMessageReturn::eStop;
+Postmaster::Message::IMessage* PopCurrentState::Copy()
+{
+	return new PopCurrentState(*this);
 }
