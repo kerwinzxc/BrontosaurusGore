@@ -6,6 +6,7 @@
 Weapon::Weapon(WeaponData* aWeaponData)
 {
 	myElapsedFireTimer = 0.0f;
+	myWeaponData = aWeaponData;
 }
 
 

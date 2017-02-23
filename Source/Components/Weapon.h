@@ -10,6 +10,7 @@ public:
 	void TryToShoot(const CU::Vector3f& aDirection);
 	void Shoot(const CU::Vector3f& aDirection);
 	void Update(float aDeltaTime);
+	inline void SetUser(CGameObject* aUser);
 private:
 
 	WeaponData* myWeaponData;
@@ -18,3 +19,7 @@ private:
 
 };
 
+inline void Weapon::SetUser(CGameObject* aUser)
+{
+	myUser = aUser;
+}

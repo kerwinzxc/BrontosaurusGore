@@ -5,6 +5,7 @@
 
 ProjectileComponent::ProjectileComponent()
 {
+	myIsActive = false;
 }
 
 
@@ -26,10 +27,14 @@ void ProjectileComponent::Activate(ProjectileData* someData, const CU::Vector3f&
 	myDirection = aDirection;
 	GetParent()->GetLocalTransform().SetPosition(aPosition);
 	GetParent()->GetLocalTransform().LookAt(GetParent()->GetLocalTransform().GetPosition() + aDirection);
+	myIsActive = true;
 }
 
 void ProjectileComponent::Update(float aDeltaTime)
 {
-	GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, myData->movementSpeed * aDeltaTime));
-	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	if(myIsActive == true)
+	{
+		GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, myData->movementSpeed * aDeltaTime));
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 }

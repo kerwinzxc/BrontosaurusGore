@@ -31,6 +31,7 @@ void WeaponSystemComponent::Receive(const eComponentMessageType aMessageType, co
 		break;
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
 		myWeapons.Add(aMessageData.myWeapon);
+		myWeapons.GetLast()->SetUser(GetParent());
 		break;
 	default:
 		break;

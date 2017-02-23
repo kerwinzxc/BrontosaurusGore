@@ -16,5 +16,6 @@ public:
 private:
 	ProjectileData* myData;
 	CU::Vector3f myDirection;
+	bool myIsActive;
 };
 

@@ -120,6 +120,10 @@ void CPlayState::Load()
 		SComponentMessageData addHandGunData;
 		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		SComponentMessageData giveAmmoData;
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
 
@@ -167,6 +171,9 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+	myWeaponSystemManager->Update(aDeltaTime);
+	myProjectileComponentManager->Update(aDeltaTime);
+	myAmmoComponentManager->Update(aDeltaTime);
 
 	return myStatus;
 }
@@ -222,4 +229,5 @@ void CPlayState::CreateManagersAndFactories()
 	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new ProjectileComponentManager();
 	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 }

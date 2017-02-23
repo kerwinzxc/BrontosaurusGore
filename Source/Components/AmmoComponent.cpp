@@ -6,6 +6,7 @@
 AmmoComponent::AmmoComponent()
 {
 	mySelectedAmmoType = -1;
+	myGeneralAmmoDataList.Init(5);
 }
 
 
@@ -36,6 +37,7 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 		GeneralAmmoData* newGeneralAmmoData = new GeneralAmmoData();
 		newGeneralAmmoData->currentAmmoAmount = 0;
 		newGeneralAmmoData->ammoTypeData = aMessageData.myAmmoData;
+		myGeneralAmmoDataList.Add(newGeneralAmmoData);
 		break;
 	}
 	case eComponentMessageType::eChangeSelectedAmmoType:
@@ -48,6 +50,18 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 				break;
 			}
 		}	
+		break;
+	}
+	case eComponentMessageType::eGiveAmmo:
+	{
+		if(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myInt > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
+		{
+			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
+		}
+		else
+		{
+			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myInt;
+		}
 		break;
 	}
 	default:
