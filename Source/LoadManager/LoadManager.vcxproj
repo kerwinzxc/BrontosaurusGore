@@ -342,6 +342,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LoadCamera.h" />
+    <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadManager.h" />
     <ClInclude Include="LoadModel.h" />
@@ -356,6 +357,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LoadCamera.cpp" />
+    <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
     <ClCompile Include="LoadModel.cpp" />

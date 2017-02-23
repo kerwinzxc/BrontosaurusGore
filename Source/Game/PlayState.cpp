@@ -38,6 +38,8 @@
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
+#include "EnemyComponentManager.h"
+#include "Enemy.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -93,13 +95,14 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
-	Sleep(5000);
+	//Sleep(5000);
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
 		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
 		cameraObject->AddComponent(cameraComponent);
@@ -119,7 +122,7 @@ void CPlayState::Load()
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	//const KLoader::eError loadError = loader.LoadFile("Json/Levels/HubWorld/LevelData.json");
+	const KLoader::eError loadError = loader.LoadFile("Json/Levels/Test/LevelData.json");
 	/*if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
@@ -142,6 +145,7 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
 
 	return myStatus;
@@ -192,6 +196,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
+	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
 	myAmmoComponentManager = new AmmoComponentManager();
 	myWeaponFactory = new WeaponFactory();

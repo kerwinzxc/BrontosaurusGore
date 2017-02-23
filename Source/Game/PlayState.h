@@ -2,6 +2,7 @@
 #include "../StateStack/State.h"
 #include "../PostMaster/Subscriber.h"
 #include <atomic>
+#include "../Components/EnemyComponentManager.h"
 
 namespace CU
 {
@@ -54,11 +55,13 @@ private:
 	WeaponFactory* myWeaponFactory;
 	ProjectileComponentManager* myProjectileComponentManager;
 	ProjectileFactory* myProjectileFactory;
+	CEnemyComponentManager* myEnemyComponentManager;
 
 	CMovementComponent* myMovementComponent;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+	
 };
 
 inline bool CPlayState::IsLoaded() const

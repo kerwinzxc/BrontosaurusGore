@@ -169,10 +169,10 @@ void CScene::Render()
 		{
 			continue;
 		}
-		if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
+		/*if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
 		{
 			continue;
-		}
+		}*/
 
 		myModels[i]->Render(nullptr, culledPointlights, myShadowCamera);
 	}
@@ -192,10 +192,10 @@ void CScene::Render()
 			continue;
 		}
 
-		if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingBox()) == false)
+		/*if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingBox()) == false)
 		{
 			continue;
-		}
+		}*/
 
 		myModels[i]->Render(&myDirectionalLight, culledPointlights);
 	}
