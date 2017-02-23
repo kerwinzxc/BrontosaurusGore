@@ -1,6 +1,6 @@
 #pragma once
 #include "HealthPoint.h"
-struct ProjectileData
+struct SProjectileData
 {
 	healthPoint damage;
 	float movementSpeed;

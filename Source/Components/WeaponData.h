@@ -1,8 +1,8 @@
 #pragma once
-struct ProjectileData;
-struct WeaponData 
+struct SProjectileData;
+struct SWeaponData 
 {
-	ProjectileData* projectileData;
+	SProjectileData* projectileData;
 	std::string name;
 	float fireRate;
 };

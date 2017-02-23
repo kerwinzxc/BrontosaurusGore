@@ -6,8 +6,8 @@ class CPath;
 class ICollider;
 class CComponent;
 class CGameObject;
-class AmmoData;
-class Weapon;
+class SAmmoData;
+class CWeapon;
 enum class ePlayerControls;
 
 namespace CU
@@ -93,8 +93,8 @@ struct SComponentMessageData
 
 		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
-		AmmoData* myAmmoData;
-		Weapon* myWeapon;
+		SAmmoData* myAmmoData;
+		CWeapon* myWeapon;
 	};
 };
 

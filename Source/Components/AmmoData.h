@@ -1,5 +1,5 @@
 #pragma once
-struct AmmoData
+struct SAmmoData
 {
 	unsigned short maxAmmo;
 	std::string ammoForWeaponName;

@@ -3,18 +3,18 @@
 #include "AmmoData.h"
 #include "GeneralAmmoData.h"
 
-AmmoComponent::AmmoComponent()
+CAmmoComponent::CAmmoComponent()
 {
 	mySelectedAmmoType = -1;
 	myGeneralAmmoDataList.Init(5);
 }
 
 
-AmmoComponent::~AmmoComponent()
+CAmmoComponent::~CAmmoComponent()
 {
 }
 
-void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -34,7 +34,7 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 		break;
 	case eComponentMessageType::eAddNewAmmoType:
 	{
-		GeneralAmmoData* newGeneralAmmoData = new GeneralAmmoData();
+		SGeneralAmmoData* newGeneralAmmoData = new SGeneralAmmoData();
 		newGeneralAmmoData->currentAmmoAmount = 0;
 		newGeneralAmmoData->ammoTypeData = aMessageData.myAmmoData;
 		myGeneralAmmoDataList.Add(newGeneralAmmoData);
@@ -69,11 +69,11 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 	}
 }
 
-void AmmoComponent::Destroy()
+void CAmmoComponent::Destroy()
 {
 }
 
-void AmmoComponent::Update(float aDeltaTime)
+void CAmmoComponent::Update(float aDeltaTime)
 {
 	aDeltaTime;
 	//this function doesn't do anthing anymore :/;

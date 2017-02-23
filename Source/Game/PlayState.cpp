@@ -113,8 +113,8 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
-		WeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
-		AmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
 		SComponentMessageData addHandGunData;
@@ -224,10 +224,10 @@ void CPlayState::CreateManagersAndFactories()
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 
-	myAmmoComponentManager = new AmmoComponentManager();
-	myWeaponFactory = new WeaponFactory();
-	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
-	myProjectileComponentManager = new ProjectileComponentManager();
-	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
+	myAmmoComponentManager = new CAmmoComponentManager();
+	myWeaponFactory = new CWeaponFactory();
+	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new CProjectileComponentManager();
+	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 }

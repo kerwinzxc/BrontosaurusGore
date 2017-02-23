@@ -1,7 +1,7 @@
 #pragma once
-struct AmmoData;
-struct GeneralAmmoData
+struct SAmmoData;
+struct SGeneralAmmoData
 {
-	AmmoData* ammoTypeData;
+	SAmmoData* ammoTypeData;
 	unsigned short currentAmmoAmount;
 };

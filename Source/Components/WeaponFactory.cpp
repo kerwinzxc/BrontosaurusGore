@@ -6,14 +6,14 @@
 #include "AmmoData.h"
 #include "../CommonUtilities/JsonValue.h"
 
-WeaponFactory::WeaponFactory()
+CWeaponFactory::CWeaponFactory()
 {
 	myWeaponDataList.Init(10);
 	myAmmoDataList.Init(10);
 }
 
 
-WeaponFactory::~WeaponFactory()
+CWeaponFactory::~CWeaponFactory()
 {
 	for(unsigned int i = 0; i < myWeaponDataList.Size(); i++)
 	{
@@ -25,7 +25,7 @@ WeaponFactory::~WeaponFactory()
 	myAmmoDataList.Destroy();
 }
 
-void WeaponFactory::LoadWeapons()
+void CWeaponFactory::LoadWeapons()
 {
 	CU::CJsonValue weaponBluePrint;
 	std::string filePath = "Json/Weapons/WeaponStats.json";
@@ -34,9 +34,9 @@ void WeaponFactory::LoadWeapons()
 
 	for (int i = 0; i < levelsArray.Size(); ++i)
 	{
-		WeaponData* newWeaponData = new WeaponData();
-		ProjectileData* newProjectileData = new ProjectileData();
-		AmmoData* newAmmoData = new AmmoData();
+		SWeaponData* newWeaponData = new SWeaponData();
+		SProjectileData* newProjectileData = new SProjectileData();
+		SAmmoData* newAmmoData = new SAmmoData();
 		newWeaponData->projectileData = newProjectileData;
 		std::string weaponName = levelsArray[i].at("WeaponName").GetString();
 		newWeaponData->name = weaponName.c_str();
@@ -50,14 +50,14 @@ void WeaponFactory::LoadWeapons()
 		myAmmoDataList.Add(newAmmoData);
 	}
 }
-void WeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
+void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
 {
 	for(unsigned short i = 0; i < myWeaponDataList.Size(); i++)
 	{
 		if(myWeaponDataList[i]->name == aWeaponName)
 		{
-			Weapon* newWeapon = new Weapon(myWeaponDataList[i]);
-			AmmoData* newAmmoData = myAmmoDataList[i];
+			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i]);
+			SAmmoData* newAmmoData = myAmmoDataList[i];
 			SComponentMessageData newAmmoTypeMessage;
 			newAmmoTypeMessage.myAmmoData = newAmmoData;
 			aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eAddNewAmmoType, newAmmoTypeMessage);

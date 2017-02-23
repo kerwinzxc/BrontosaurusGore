@@ -3,25 +3,25 @@
 #include "ProjectileData.h"
 
 
-ProjectileComponent::ProjectileComponent()
+CProjectileComponent::CProjectileComponent()
 {
 	myIsActive = false;
 }
 
 
-ProjectileComponent::~ProjectileComponent()
+CProjectileComponent::~CProjectileComponent()
 {
 }
 
-void ProjectileComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CProjectileComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 }
 
-void ProjectileComponent::Destroy()
+void CProjectileComponent::Destroy()
 {
 }
 
-void ProjectileComponent::Activate(ProjectileData* someData, const CU::Vector3f& aDirection, const CU::Vector3f& aPosition)
+void CProjectileComponent::Activate(SProjectileData* someData, const CU::Vector3f& aDirection, const CU::Vector3f& aPosition)
 {
 	myData = someData;
 	myDirection = aDirection;
@@ -30,7 +30,7 @@ void ProjectileComponent::Activate(ProjectileData* someData, const CU::Vector3f&
 	myIsActive = true;
 }
 
-void ProjectileComponent::Update(float aDeltaTime)
+void CProjectileComponent::Update(float aDeltaTime)
 {
 	if(myIsActive == true)
 	{

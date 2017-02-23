@@ -3,20 +3,20 @@
 #include "WeaponSystemComponent.h"
 
 
-WeaponSystemManager::WeaponSystemManager(WeaponFactory* aWeaponFactoryPointer)
+CWeaponSystemManager::CWeaponSystemManager(CWeaponFactory* aWeaponFactoryPointer)
 {
 	myWeaponFactoryPointer = aWeaponFactoryPointer;
 	myComponents.Init(100);
 }
 
 
-WeaponSystemManager::~WeaponSystemManager()
+CWeaponSystemManager::~CWeaponSystemManager()
 {
 }
 
-WeaponSystemComponent * WeaponSystemManager::CreateAndRegisterComponent()
+CWeaponSystemComponent * CWeaponSystemManager::CreateAndRegisterComponent()
 {
-	WeaponSystemComponent* component = new WeaponSystemComponent(*myWeaponFactoryPointer);
+	CWeaponSystemComponent* component = new CWeaponSystemComponent(*myWeaponFactoryPointer);
 
 	CComponentManager::GetInstance().RegisterComponent(component);
 
@@ -25,7 +25,7 @@ WeaponSystemComponent * WeaponSystemManager::CreateAndRegisterComponent()
 	return component;
 }
 
-void WeaponSystemManager::Update(const CU::Time& aDeltaTime)
+void CWeaponSystemManager::Update(const CU::Time& aDeltaTime)
 {
 	for (unsigned short i = 0; i < myComponents.Size(); i++)
 	{
