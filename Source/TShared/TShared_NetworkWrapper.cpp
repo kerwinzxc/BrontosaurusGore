@@ -193,7 +193,7 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 	CNetworkMessage* newMessage = new CNetworkMessage();
 
 	newMessage->SetData(data, dataSize);
-	newMessage->SetHeader(header);
+	newMessage->SetExplicitHeader(header);
 
 	delete[] data;
 	return  newMessage;

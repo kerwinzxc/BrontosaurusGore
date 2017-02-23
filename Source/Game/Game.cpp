@@ -50,11 +50,15 @@ void CGame::Init()
 		mySplashScreen = new CSplashScreen(myStateStack);
 		myStateStack.PushState(mySplashScreen);
 	}
+
+	myClient.StartClient();
+	myClient.Connect("127.0.0.1", "InsertName");
 }
 
 void CGame::Update(const CU::Time& aDeltaTime)
 {
 	bool isRunning = myStateStack.Update(aDeltaTime);
+	myClient.Update();
 	if (isRunning == false)
 	{
 		CEngine::GetInstance()->Shutdown();

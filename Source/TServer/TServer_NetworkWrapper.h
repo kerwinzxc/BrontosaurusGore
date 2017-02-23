@@ -1,5 +1,5 @@
 #pragma once
-#include "TShared_NetworkWrapper.h"
+#include "../TShared/TShared_NetworkWrapper.h"
 
 class TServer_NetworkWrapper: public TShared_NetworkWrapper
 {

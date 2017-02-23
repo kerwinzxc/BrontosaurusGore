@@ -40,6 +40,7 @@ void Init(int argc, char* argv[])
 
 	{
 		CGame game;
+		
 		SInitEngineParams engineParams;
 		engineParams.myWindowParams.Width = 1920;
 		engineParams.myWindowParams.Height = 1080;

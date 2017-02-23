@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "NetworkMessage.h"
 #include "TShared_NetworkWrapper.h"
+#include "../CommonUtilities/picojson.h"
 
 
 CNetworkMessage::CNetworkMessage()
@@ -35,9 +36,15 @@ void CNetworkMessage::SetData(StreamType aStream)
 	myStream = aStream;
 }
 
+void CNetworkMessage::SetExplicitHeader(SNetworkPackageHeader& aHeader)
+{
+	myHeader = aHeader;
+}
+
 void CNetworkMessage::SetHeader(SNetworkPackageHeader aHeader)
 {
 	myHeader = aHeader;
+	myHeader.myPackageType = static_cast<char>(GetPackageType());
 }
 
 const SNetworkPackageHeader& CNetworkMessage::GetHeader() const
@@ -48,6 +55,11 @@ const SNetworkPackageHeader& CNetworkMessage::GetHeader() const
 const StreamType& CNetworkMessage::GetSerializedData() const
 {
 	return myStream;
+}
+
+ePackageType CNetworkMessage::GetPackageType() const
+{
+	return ePackageType::eZero;
 }
 
 void CNetworkMessage::DoSerialize(StreamType& aStream)

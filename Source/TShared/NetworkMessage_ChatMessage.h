@@ -8,6 +8,8 @@ public:
 	CNetworkMessage_ChatMessage();
 	~CNetworkMessage_ChatMessage();
 
+	ePackageType GetPackageType()const override;
+
 	std::string myChatMessage;
 private:
 
