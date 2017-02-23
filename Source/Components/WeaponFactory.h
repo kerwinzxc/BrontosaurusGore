@@ -1,5 +1,6 @@
 #pragma once
 struct WeaponData;
+struct AmmoData;
 class Weapon;
 class WeaponFactory
 {
@@ -12,5 +13,6 @@ public:
 	
 private:
 	CU::GrowingArray<WeaponData*> myWeaponDataList;
+	CU::GrowingArray<AmmoData*> myAmmoDataList;
 };
 

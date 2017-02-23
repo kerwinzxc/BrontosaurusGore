@@ -219,9 +219,6 @@
     <ClInclude Include="ProjectileComponent.h">
       <Filter>Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="Defines.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponSystemManager.h">
       <Filter>Weapon</Filter>
     </ClInclude>
@@ -248,6 +245,9 @@
     </ClInclude>
     <ClInclude Include="PlayerControls.h">
       <Filter>InputComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponDefines.h">
+      <Filter>Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

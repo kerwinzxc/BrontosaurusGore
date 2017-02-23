@@ -124,7 +124,7 @@ void CPlayState::Load()
 	{
 		DL_MESSAGE_BOX("Loading Failed");
 	}
-
+	myWeaponFactory->LoadWeapons();
 	myIsLoaded = true;
 
 	// Get time to load the level:
