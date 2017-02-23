@@ -3,6 +3,6 @@ struct ProjectileData;
 struct WeaponData 
 {
 	ProjectileData* projectileData;
-	const char* name;
+	std::string name;
 	float fireRate;
 };

@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "AmmoComponent.h"
 #include "AmmoData.h"
+#include "GeneralAmmoData.h"
 
 AmmoComponent::AmmoComponent()
 {
-	myCurrentAmmo = 0;
+	mySelectedAmmoType = -1;
 }
 
 
@@ -17,12 +18,38 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eCheckIfHaveAmmoForShooting:
-		if (myCurrentAmmo > 0)
-		{
-			myCurrentAmmo--;
-			GetParent()->NotifyComponents(eComponentMessageType::eShoot, aMessageData);
-		}
+			if(mySelectedAmmoType >= 0 && mySelectedAmmoType < myGeneralAmmoDataList.Size())
+			{
+				if (myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount > 0)
+				{
+					myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount--;
+					GetParent()->NotifyComponents(eComponentMessageType::eShoot, aMessageData);
+				}	
+			}
+			else
+			{
+				DL_PRINT("Something went wrong when trying to shoot. Tell Marcus and ask him to fix it");
+			}
 		break;
+	case eComponentMessageType::eAddNewAmmoType:
+	{
+		GeneralAmmoData* newGeneralAmmoData = new GeneralAmmoData();
+		newGeneralAmmoData->currentAmmoAmount = 0;
+		newGeneralAmmoData->ammoTypeData = aMessageData.myAmmoData;
+		break;
+	}
+	case eComponentMessageType::eChangeSelectedAmmoType:
+	{
+		for(unsigned int i = 0; i < myGeneralAmmoDataList.Size(); i++)
+		{
+			if(myGeneralAmmoDataList[i]->ammoTypeData->ammoForWeaponName == aMessageData.myString)
+			{
+				mySelectedAmmoType = i;
+				break;
+			}
+		}	
+		break;
+	}
 	default:
 		break;
 	}

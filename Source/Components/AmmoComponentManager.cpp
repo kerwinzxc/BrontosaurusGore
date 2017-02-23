@@ -5,6 +5,7 @@
 
 AmmoComponentManager::AmmoComponentManager()
 {
+	myComponents.Init(100);
 }
 
 

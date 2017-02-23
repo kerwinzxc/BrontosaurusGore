@@ -249,6 +249,9 @@
     <ClInclude Include="WeaponDefines.h">
       <Filter>Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="GeneralAmmoData.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

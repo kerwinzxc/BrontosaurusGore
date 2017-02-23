@@ -46,9 +46,20 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 		break;
 	case CU::eInputType::eMousePressed:
+	{
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;
+
+		/*CU::Matrix44f localMatrix = GetParent()->GetLocalTransform();
+		localMatrix.Move(CU::Vector3f(0.0f, 0.0f, 10.0f));
+		CU::Vector3f direction = localMatrix.GetPosition() - GetParent()->GetLocalTransform().GetPosition();
+		direction.Normalize();
+		SComponentMessageData shootData;
+		shootData.myVector3f = direction;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eTryToShoot, shootData);*/
 		break;
+	}
+		
 	case CU::eInputType::eMouseReleased:
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;

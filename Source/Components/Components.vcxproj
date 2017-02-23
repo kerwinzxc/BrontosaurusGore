@@ -352,6 +352,7 @@
     <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="ComponentMessageCallback.h" />
     <ClInclude Include="ComponentMessageTypeToLua.h" />
+    <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />

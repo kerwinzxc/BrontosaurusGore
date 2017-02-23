@@ -27,7 +27,10 @@ void WeaponSystemComponent::Receive(const eComponentMessageType aMessageType, co
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 		break;
 	case eComponentMessageType::eAddWeapon:
-		myWeapons.Add(WeaponFactoryPointer->CreateWeapon(aMessageData.myString));
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		break;
+	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
+		myWeapons.Add(aMessageData.myWeapon);
 		break;
 	default:
 		break;

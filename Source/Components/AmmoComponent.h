@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 
-struct AmmoData;
+struct GeneralAmmoData; //Names are hard :/
 class AmmoComponent : public CComponent
 {
 public:
@@ -12,7 +12,7 @@ public:
 	void Destroy() override;
 	void Update(float aDeltaTime);
 private:
-	AmmoData* myAmmoData;
-	unsigned short myCurrentAmmo;
+	CU::GrowingArray<GeneralAmmoData*> myGeneralAmmoDataList;
+	unsigned int mySelectedAmmoType;
 };
 

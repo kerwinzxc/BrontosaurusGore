@@ -38,7 +38,9 @@
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
-
+#include "WeaponSystemComponent.h"
+#include "AmmoComponent.h"
+#include "ComponentMessage.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -93,7 +95,8 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
-	Sleep(5000);
+	myWeaponFactory->LoadWeapons();
+
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
@@ -110,6 +113,13 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
+		WeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		AmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		playerObject->AddComponent(weaponSystenComponent);
+		playerObject->AddComponent(ammoComponent);
+		SComponentMessageData addHandGunData;
+		addHandGunData.myString = "Handgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	}
 	
 
@@ -118,13 +128,28 @@ void CPlayState::Load()
 	myScene->SetSkybox("default_cubemap.dds");
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+	CU::CJsonValue levelsFile;
 
-	const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+#ifdef _DEBUGq
+	myLevelIndex = levelsArray.Size() - 1;
+#else
+	const int levelIndex = 0;
+#endif
+
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
+
+	const KLoader::eError loadError = loader.LoadFile(levelPath);
 	if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
 	}
-	myWeaponFactory->LoadWeapons();
 	myIsLoaded = true;
 
 	// Get time to load the level:

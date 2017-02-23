@@ -2,6 +2,7 @@
 struct WeaponData;
 struct AmmoData;
 class Weapon;
+class CGameObject;
 class WeaponFactory
 {
 public:
@@ -9,7 +10,7 @@ public:
 	~WeaponFactory();
 
 	void LoadWeapons();
-	Weapon* CreateWeapon(const char* aWeaponName);
+	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
 	
 private:
 	CU::GrowingArray<WeaponData*> myWeaponDataList;
