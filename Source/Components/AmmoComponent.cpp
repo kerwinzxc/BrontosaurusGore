@@ -4,10 +4,7 @@
 
 AmmoComponent::AmmoComponent()
 {
-	myCurrentAmmoInClip = 0;
 	myCurrentAmmo = 0;
-	myElapsedRealodingTime = 0.0f;
-	myIsReloding = false;
 }
 
 
@@ -20,9 +17,9 @@ void AmmoComponent::Receive(const eComponentMessageType aMessageType, const SCom
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eCheckIfHaveAmmoForShooting:
-		if (myCurrentAmmoInClip > 0)
+		if (myCurrentAmmo > 0)
 		{
-			myCurrentAmmoInClip--;
+			myCurrentAmmo--;
 			GetParent()->NotifyComponents(eComponentMessageType::eShoot, aMessageData);
 		}
 		break;
@@ -37,28 +34,6 @@ void AmmoComponent::Destroy()
 
 void AmmoComponent::Update(float aDeltaTime)
 {
-	if(myIsReloding == true)
-	{
-		myElapsedRealodingTime += aDeltaTime;
-		if(myElapsedRealodingTime >= myAmmoData->realoadDuration)
-		{
-			myIsReloding = false;
-			if(myCurrentAmmo >= myAmmoData->ammoClip)
-			{
-				myCurrentAmmoInClip += myAmmoData->ammoClip;
-				if(myCurrentAmmoInClip > myAmmoData->ammoClip)
-				{
-					myCurrentAmmoInClip = myAmmoData->ammoClip;
-				}
-			}
-			else
-			{
-				myCurrentAmmoInClip += myCurrentAmmo;
-				if (myCurrentAmmoInClip > myAmmoData->ammoClip)
-				{
-					myCurrentAmmoInClip = myAmmoData->ammoClip;
-				}
-			}
-		}
-	}
+	aDeltaTime;
+	//this function doesn't do anthing anymore :/;
 }

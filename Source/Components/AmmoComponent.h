@@ -13,10 +13,6 @@ public:
 	void Update(float aDeltaTime);
 private:
 	AmmoData* myAmmoData;
-	float myElapsedRealodingTime;
-	unsigned short myCurrentAmmoInClip;
 	unsigned short myCurrentAmmo;
-
-	bool myIsReloding;
 };
 
