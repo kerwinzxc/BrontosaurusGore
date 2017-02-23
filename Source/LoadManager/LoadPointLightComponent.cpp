@@ -9,8 +9,8 @@
 int LoadPointLightComponent(KLoader::SLoadedComponentData someData)
 {
 	PointLightComponent* pointLight = CPointLightComponentManager::GetInstance().CreateAndRegisterComponent();
-	pointLight->SetColor(someData.myData.at("Color").GetVector3f());
-	pointLight->SetIntensity(someData.myData.at("Intensity").GetFloat());
-	pointLight->SetRange(someData.myData.at("Range").GetFloat());
+	pointLight->SetColor(CU::Vector3f(someData.myData.at("color").GetVector4f()) / 255.f);
+	pointLight->SetIntensity(someData.myData.at("intensity").GetFloat());
+	pointLight->SetRange(someData.myData.at("range").GetFloat());
 	return pointLight->GetId();
 }

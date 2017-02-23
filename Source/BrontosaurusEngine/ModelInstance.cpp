@@ -82,10 +82,10 @@ void CModelInstance::Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack
 		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
 		msg->myRenderParams.myRenderToDepth = false;
 
-		msg->myRenderParams.myDirectionalLight = *aLight;
-		msg->myRenderParams.myNumLights = 0;
+		//msg->myRenderParams.myDirectionalLight = *aLight;
+		//msg->myRenderParams.myNumLights = 0;
 		
-		for (unsigned short i = 0; i < aPointLightList.Size(); ++i)
+		/*for (unsigned short i = 0; i < aPointLightList.Size(); ++i)
 		{
 			if (msg->myRenderParams.myPointLightList.SafeAdd(Lights::SPointLight()) == true)
 			{
@@ -95,7 +95,7 @@ void CModelInstance::Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack
 				msg->myRenderParams.myPointLightList.GetLast().range = aPointLightList[i].GetRange();
 				msg->myRenderParams.myNumLights++;
 			}
-		}
+		}*/
 
 		
 		if (myHasAnimations != false)
@@ -134,7 +134,7 @@ void CModelInstance::Render(Lights::SDirectionalLight * aLight, CU::VectorOnStac
 			msg->myRenderParams.myNumLights = 0;
 
 
-			for (unsigned short i = 0; i < aPointLightList.Size(); ++i)
+			/*for (unsigned short i = 0; i < aPointLightList.Size(); ++i)
 			{
 				if (aPointLightList[i].GetIsActive() == true)
 				{
@@ -152,7 +152,7 @@ void CModelInstance::Render(Lights::SDirectionalLight * aLight, CU::VectorOnStac
 						msg->myRenderParams.myNumLights++;
 					}
 				}
-			}
+			}*/
 		}
 	
 		if (myHasAnimations != false)

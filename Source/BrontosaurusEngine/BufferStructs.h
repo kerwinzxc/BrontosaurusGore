@@ -19,6 +19,8 @@ struct SCameraViewProjection
 {
 	CU::Matrix44f myCameraSpaceInverse;
 	CU::Matrix44f myProjectionSpace;
+	CU::Matrix44f myCameraSpace;
+	CU::Matrix44f myProjectionInverse;
 }; 
 
 struct SToWorldSpace
@@ -48,6 +50,11 @@ struct SOncePerFrameBuffer
 	float fogEnd;
 };
 
+struct SPointLightBuffer
+{
+	Lights::SPointLight pointLight;
+};
+
 struct SAnimationBoneStruct 
 {
 	CU::Matrix44f boneMatrices[32];
@@ -56,9 +63,9 @@ struct SAnimationBoneStruct
 struct SRenderModelParams
 {
 	CU::Matrix44f myTransform;
-	CU::Matrix44f myTransformLastFrame;
+	CU::Matrix44f myTransformLastFrame;/*
 	Lights::SDirectionalLight myDirectionalLight;
-	CU::VectorOnStack<Lights::SPointLight, 8> myPointLightList;
+	CU::VectorOnStack<Lights::SPointLight, 8> myPointLightList;*/
 	unsigned char myNumLights;
 
 	const char* aAnimationState = nullptr;

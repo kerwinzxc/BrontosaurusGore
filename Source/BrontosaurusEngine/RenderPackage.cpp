@@ -142,6 +142,31 @@ void CRenderPackage::operator=(const CRenderPackage& aLeft)
 		myViewport = new D3D11_VIEWPORT(*aLeft.myViewport);
 }
 
+ID3D11RenderTargetView* CRenderPackage::GetTarget() const
+{
+	return myTarget;
+}
+
+ID3D11DepthStencilView* CRenderPackage::GetDepth()
+{
+	return myDepth;
+}
+
+const D3D11_VIEWPORT* CRenderPackage::GetViewport()
+{
+	return myViewport;
+}
+
+void CRenderPackage::SetResource(int aIndex)
+{
+	DEVICE_CONTEXT->PSSetShaderResources(aIndex, 1, &myResource); // Send in renderpackage 
+}
+
+void CRenderPackage::SetDepthAsResource(int aI)
+{
+	DEVICE_CONTEXT->PSSetShaderResources(aI, 1, &myDepthResource); // Send in renderpackage 
+}
+
 void CRenderPackage::CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat)
 {
 	D3D11_TEXTURE2D_DESC textureDesc;

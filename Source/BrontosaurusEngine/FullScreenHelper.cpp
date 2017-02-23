@@ -26,6 +26,7 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* tneShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/tonemap.fx", ShaderType);
 	ID3D11PixelShader* mBlShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/motionBlur.fx", ShaderType);
 	ID3D11PixelShader* CLDShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/cubicLensDistortion.fx", ShaderType);
+	ID3D11PixelShader* pblShader = SHADERMGR->LoadPixelShader(L"Shaders/pbl_pixel_shader.fx", ShaderType);
 
 	// LightShafts
 	//
@@ -43,7 +44,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eToneMap)]					= new CEffect(vertexShader, tneShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMotionBlur)]				= new CEffect(vertexShader, mBlShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCubicLensDistortion)]		= new CEffect(vertexShader, CLDShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	myEffects[static_cast<int>(eEffectType::ePBL)]						= new CEffect(vertexShader, pblShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -58,6 +59,11 @@ CFullScreenHelper::~CFullScreenHelper()
 	myVertexBuffer->Release();
 }
 
+void CFullScreenHelper::DoEffect(const eEffectType aEffectType, CRenderPackage* aRenderPackage)
+{
+	DoEffect(aEffectType, aRenderPackage, nullptr);
+}
+
 void CFullScreenHelper::DoEffect(const eEffectType aEffectType, CRenderPackage * aRenderPackage, CRenderPackage * aSecondRenderPackage)
 {
 	DoEffect(aEffectType, aRenderPackage->myResource, aSecondRenderPackage != nullptr ? aSecondRenderPackage->myResource : nullptr);
@@ -68,6 +74,11 @@ void CFullScreenHelper::DoEffect(const eEffectType aEffectType, const CU::Vector
 	DoEffect(aEffectType, aRect, aRenderPackage->myResource, aSecondRenderPackage != nullptr ? aSecondRenderPackage->myResource : nullptr);
 }
 
+void CFullScreenHelper::DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView* aRenderPackage)
+{
+	DoEffect(aEffectType, aRenderPackage, nullptr);
+}
+
 void CFullScreenHelper::DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView * aRenderPackageResource, ID3D11ShaderResourceView * aSecondRenderPackageResource)
 {
 	myEffects[static_cast<int>(aEffectType)]->Activate();
@@ -75,7 +86,10 @@ void CFullScreenHelper::DoEffect(const eEffectType aEffectType, ID3D11ShaderReso
 	UINT offset = 0;
 
 	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &myVertexBuffer, &stride, &offset);
-	DEVICE_CONTEXT->PSSetShaderResources(1, 1, &aRenderPackageResource); // Send in renderpackage 
+	if(aRenderPackageResource != nullptr)
+	{
+		DEVICE_CONTEXT->PSSetShaderResources(1, 1, &aRenderPackageResource); // Send in renderpackage 
+	}
 
 	if (aSecondRenderPackageResource != nullptr)
 	{
@@ -109,6 +123,11 @@ void CFullScreenHelper::DoEffect(const eEffectType aEffectType, const CU::Vector
 		DEVICE_CONTEXT->RSSetViewports(1, &viewport);
 	}
 	DoEffect(aEffectType, aRenderPackageResource, aSecondRenderPackageResource);
+}
+
+void CFullScreenHelper::Activate(eEffectType aPbl)
+{
+	myEffects[static_cast<int>(aPbl)]->Activate();
 }
 
 void CFullScreenHelper::CreateQuad()

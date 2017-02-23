@@ -43,7 +43,11 @@ public:
 
 	inline bool IsInit();
 	void operator= (const CRenderPackage& aLeft);
-
+	ID3D11RenderTargetView* GetTarget() const;
+	ID3D11DepthStencilView* GetDepth();
+	const D3D11_VIEWPORT* GetViewport();
+	void SetResource(int aIndex);
+	void SetDepthAsResource(int aI);
 private:
 	void CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat);
 

@@ -33,19 +33,22 @@ public:
 		eCubicLensDistortion,
 		eToneMap,
 		eMotionBlur, //ooh
-		eSize
+		ePBL,
+		eSize,
 	};
 
 public:
 	CFullScreenHelper();
 	~CFullScreenHelper();
 
-	void DoEffect(const eEffectType aEffectType, CRenderPackage* aRenderPackage, CRenderPackage* aSecondRenderPackage = nullptr);
+	void DoEffect(const eEffectType aEffectType, CRenderPackage* aRenderPackage);
+	void DoEffect(const eEffectType aEffectType, CRenderPackage* aRenderPackage, CRenderPackage* aSecondRenderPackage);
 	void DoEffect(const eEffectType aEffectType, const CU::Vector4f & aRect, CRenderPackage* aRenderPackage, CRenderPackage* aSecondRenderPackage = nullptr);
 
-	void DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView* aRenderPackage, ID3D11ShaderResourceView* aSecondRenderPackage = nullptr);
+	void DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView* aRenderPackage);
+	void DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView* aRenderPackage, ID3D11ShaderResourceView* aSecondRenderPackage);
 	void DoEffect(const eEffectType aEffectType, const CU::Vector4f & aRect, ID3D11ShaderResourceView* aRenderPackage, ID3D11ShaderResourceView* aSecondRenderPackage = nullptr);
-
+	void Activate(eEffectType aPbl);
 
 private: 
 	void CreateQuad();

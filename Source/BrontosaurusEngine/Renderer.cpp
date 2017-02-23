@@ -78,6 +78,7 @@ CRenderer::~CRenderer()
 	}
 
 	mySynchronizer.ClearAll();
+	myLightSynchronizer.ClearAll();
 }
 
 void CRenderer::Shutdown()
@@ -90,17 +91,93 @@ void CRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)
 	mySynchronizer << aRenderMessage;
 }
 
+void CRenderer::DoDefered()
+{
+	gBuffer.Clear();
+	gBuffer.SetBuffer();
+	DoRenderQueue();
+}
+
+void CRenderer::GBuffer::Init()
+{
+	
+		const CU::Vector2ui size(1920, 1080);
+		albedoPackage.Init(size, nullptr);
+		normalPackage.Init(size, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+		depthPackage.Init(size, nullptr, DXGI_FORMAT_R32_FLOAT);
+	
+}
+
+void CRenderer::GBuffer::SetBuffer()
+{
+	
+		ID3D11DeviceContext* context = DEVICE_CONTEXT;
+		
+		ID3D11RenderTargetView* targets[3]{ albedoPackage.GetTarget(), normalPackage.GetTarget(), depthPackage.GetTarget() };
+		context->OMSetRenderTargets(3, targets, albedoPackage.GetDepth());
+		context->RSSetViewports(1, albedoPackage.GetViewport());
+	
+}
+
+void CRenderer::GBuffer::Clear()
+{
+	albedoPackage.Clear();
+	normalPackage.Clear();
+	depthPackage.Clear();
+}
+
+void CRenderer::GBuffer::SetAsResource()
+{
+	albedoPackage.SetResource(1);
+	normalPackage.SetResource(2);
+	albedoPackage.SetDepthAsResource(3);
+}
+
+CRenderPackage& CRenderer::GBuffer::GetAlbedo()
+{
+	return albedoPackage;
+}
+
+CRenderPackage& CRenderer::GBuffer::GetNormal()
+{
+	return normalPackage;
+}
+
+ID3D11ShaderResourceView* CRenderer::GBuffer::GetDepth()
+{
+	return albedoPackage.GetDepthResource();
+}
+
+void CRenderer::DoLight()
+{
+	if(!myLightSynchronizer == 0)
+	{
+		return;
+	}
+	myFullScreenHelper.Activate(CFullScreenHelper::eEffectType::ePBL);
+	gBuffer.SetAsResource();
+	ID3D11ShaderResourceView* pckg = nullptr;
+
+	const int numberOfLights = myLightSynchronizer[0]->Size();
+	for(int i = 0; i < numberOfLights; ++i)
+	{
+		UpdatePointlightBuffer((*myLightSynchronizer[0])[i]);
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::ePBL, pckg);
+	}
+}
+
 void CRenderer::Render()
 {
 
-
+	myLightSynchronizer.SwapRead();
 	myTimers.UpdateTimers();
 	UpdateBuffer();
-
 
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
 	myGUIData.myInputPackage.Clear();
+
+	DoDefered();
 
 	renderTo = (mySettings.HDR == true) ? &myHDRData.myInputPackage : &myIntermediatePackage;
 	renderTo->Clear();
@@ -116,7 +193,8 @@ void CRenderer::Render()
 		renderTo->Activate();
 	}
 
-	DoRenderQueue();
+	DoLight();
+	
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
@@ -137,11 +215,17 @@ void CRenderer::Render()
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
 
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0,0,0.33,0.33), &gBuffer.GetAlbedo());
+
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.33, 0., 0.66, 0.33), &gBuffer.GetNormal());
+
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.66, 0., 1.0, 0.33), gBuffer.GetDepth());
 }
 
 void CRenderer::SwapWrite()
 {
 	mySynchronizer.SwapWrite();
+	myLightSynchronizer.SwapWrite();
 }
 
 void CRenderer::Bloom()
@@ -254,6 +338,7 @@ void CRenderer::LensDistortion(CRenderPackage & aRenderMessage)
 void CRenderer::ClearRenderQueue()
 {
 	mySynchronizer.ClearAll();
+	myLightSynchronizer.ClearAll();
 }
 
 void CRenderer::Downsample(CRenderPackage & aRenderPackage)
@@ -384,13 +469,17 @@ void CRenderer::InitPackages()
 		CHECK_RESULT(result, "Failed to fetch backbuffer in renderer");
 		myBackBufferPackage.Init(ENGINE->GetWindowSize(), backBuffer);
 	}
+
+	gBuffer.Init();
 }
 
 void CRenderer::CreateBuffer()
 {
 	SOncePerFrameBuffer buffer;
+	buffer.myCameraMatrices.myCameraSpace = myCamera.GetTransformation();
 	buffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
 	buffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
+	buffer.myCameraMatrices.myProjectionInverse = myCamera.GetProjection().GetInverted();
 	buffer.myShadowCameraMatrices.myCameraSpaceInverse = CU::Matrix44f::Zero;
 	buffer.myShadowCameraMatrices.myProjectionSpace = CU::Matrix44f::Zero;
 
@@ -403,6 +492,14 @@ void CRenderer::CreateBuffer()
 	buffer.fogEnd = 0.0f;
 
 	myOncePerFrameBuffer = BSR::CreateCBuffer<SOncePerFrameBuffer>(&buffer);
+
+	SPointLightBuffer pointLightBuffer;
+	pointLightBuffer.pointLight.color = CU::Vector3f(1, 1, 1);
+	pointLightBuffer.pointLight.intensity = 1;
+	pointLightBuffer.pointLight.position = CU::Vector3f(0, 0, 0);
+	pointLightBuffer.pointLight.range = 1;
+
+	myPointlightBuffer = BSR::CreateCBuffer<SPointLightBuffer>(&pointLightBuffer);
 }
 
 void CRenderer::UpdateBuffer()
@@ -413,23 +510,51 @@ void CRenderer::UpdateBuffer()
 
 	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
+	updatedBuffer.myCameraMatrices.myCameraSpace = myCamera.GetTransformation();
+	updatedBuffer.myCameraMatrices.myProjectionInverse = myCamera.GetProjectionInverse();
 
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
 	
 	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = myCamera.GetProjection();
 
-	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
+	updatedBuffer.deltaTime = 0;//myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
+	if(!myLightSynchronizer > 0)
+	{
+		updatedBuffer.deltaTime = myLightSynchronizer[0]->Size();
+	}
+
 	updatedBuffer.fogStart = 0.0f;
 	updatedBuffer.fogEnd = 0.0f;
+
+	
 	
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	
 	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
 	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
+
+}
+
+void CRenderer::UpdatePointlightBuffer(const CPointLightInstance& aPointLightInstance)
+{
+	D3D11_MAPPED_SUBRESOURCE subresource;
+	ZeroMemory(&subresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	SPointLightBuffer lightBuffer;
+	lightBuffer.pointLight.position = aPointLightInstance.GetPosition();
+	lightBuffer.pointLight.color = aPointLightInstance.GetColor();
+	lightBuffer.pointLight.intensity = aPointLightInstance.GetInstensity();
+	lightBuffer.pointLight.range = aPointLightInstance.GetRange();
+
+	DEVICE_CONTEXT->Map(myPointlightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);
+	memcpy(subresource.pData, &lightBuffer, sizeof(SPointLightBuffer));
+	DEVICE_CONTEXT->Unmap(myPointlightBuffer, 0);
+
+
+	DEVICE_CONTEXT->PSSetConstantBuffers(0, 2, &myPointlightBuffer);
 
 }
 
@@ -441,12 +566,19 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 
 	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
+	updatedBuffer.myCameraMatrices.myCameraSpace = myCamera.GetTransformation();
+	updatedBuffer.myCameraMatrices.myProjectionInverse = myCamera.GetProjectionInverse();
 	
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = msg->myCameraTransformation;
 	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = msg->myCameraProjection;
 
-	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
+	updatedBuffer.deltaTime = 0;//myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
+	if (!myLightSynchronizer > 0)
+	{
+		updatedBuffer.deltaTime = myLightSynchronizer[0]->Size();
+	}
+
 	updatedBuffer.fogStart = 0.0f;
 	updatedBuffer.fogEnd = 0.0f;
 
@@ -546,8 +678,8 @@ void CRenderer::CreateBlendStates()
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
@@ -728,7 +860,6 @@ void CRenderer::DoRenderQueue()
 			break;
 		}
 		HandleRenderMessage(renderMessage, drawCalls);
-
 	}
 
 	PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
@@ -759,13 +890,19 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 	//}
 }
 
+void CRenderer::SetLights(CU::GrowingArray<CPointLightInstance>& aGrowings)
+{
+	myLightSynchronizer << &aGrowings;
+}
+
 void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
 {
 	switch (aRenderMesage->myType)
 	{
 	case SRenderMessage::eRenderMessageType::eActivateRenderTo:
 	{
-		renderTo->Activate();
+		//renderTo->Activate();
+		gBuffer.SetBuffer();
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eClearRenderPackage:
@@ -804,7 +941,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		}
 		//msg->CameraRenderQueue.DeleteAll();
 		myCamera = previousCam;
-		renderTo->Activate();
+		gBuffer.SetBuffer();
 		UpdateBuffer();
 		break;
 	}
@@ -861,9 +998,8 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		++aDrawCallCount;
 
-		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
-		else renderTo->Activate();
 
+		gBuffer.SetBuffer();
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderSprite:
@@ -873,8 +1009,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRect, msg->myColor);
 		++aDrawCallCount;
 
-		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
-		else renderTo->Activate();
+		//if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		//else renderTo->Activate();
+		gBuffer.SetBuffer();
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderText:
@@ -884,8 +1021,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement);
 		aDrawCallCount += msg->myStrings.Size();
 
-		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
-		else renderTo->Activate();
+		//if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		//else renderTo->Activate();
+		gBuffer.SetBuffer();
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eChangeStates:
@@ -993,8 +1131,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		lineDrawer.RenderLineChunk(msg->myLineBuffer);
 		++aDrawCallCount;
 
-		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
-		else renderTo->Activate();
+		/*if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		else renderTo->Activate();*/
+		gBuffer.SetBuffer();
 		break;
 	}
 	}

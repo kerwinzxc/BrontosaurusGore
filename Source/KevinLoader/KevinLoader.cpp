@@ -117,6 +117,10 @@ namespace KLoader
 
 		const CU::CJsonValue currentComponent = componentsObject[aIdString];
 		const std::string& type = currentComponent["type"].GetString();
+		if(type == "Light")
+		{
+			int i = 0;
+		}
 		if (myLoadFunctions.count(type) == 0)
 		{
 			PrintMissingComponents(type);

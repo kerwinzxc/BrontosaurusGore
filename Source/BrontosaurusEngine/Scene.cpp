@@ -143,6 +143,7 @@ void CScene::Render()
 
 	CU::VectorOnStack<CPointLightInstance, 8> culledPointlights;
 
+	RENDERER.SetLights(*(new CU::GrowingArray<CPointLightInstance, InstanceID>(myPointLights)));
 
 	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
@@ -169,10 +170,10 @@ void CScene::Render()
 		{
 			continue;
 		}
-		if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
+		/*if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
 		{
 			continue;
-		}
+		}*/
 
 		myModels[i]->Render(nullptr, culledPointlights, myShadowCamera);
 	}
@@ -192,10 +193,10 @@ void CScene::Render()
 			continue;
 		}
 
-		if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingBox()) == false)
+		/*if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingBox()) == false)
 		{
 			continue;
-		}
+		}*/
 
 		myModels[i]->Render(&myDirectionalLight, culledPointlights);
 	}

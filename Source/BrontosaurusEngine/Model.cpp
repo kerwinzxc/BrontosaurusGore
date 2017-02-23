@@ -374,12 +374,12 @@ void CModel::UpdateCBuffer(SRenderModelParams & aParamObj)
 
 		Lights::SLightsBuffer updatedLights;
 		updatedLights.myCameraPos = RENDERER.GetCamera().GetPosition();
-		updatedLights.myDirectionalLight = aParamObj.myDirectionalLight;
+		//updatedLights.myDirectionalLight = aParamObj.myDirectionalLight;
 
-		for (unsigned int i = 0; i < aParamObj.myPointLightList.Size(); ++i)
+		/*for (unsigned int i = 0; i < aParamObj.myPointLightList.Size(); ++i)
 		{
 			updatedLights.myPointLights[i] = aParamObj.myPointLightList[i];
-		}
+		}*/
 
 		updatedLights.cubeMap_mipCount = 11; // TODO FIX WTH?!
 		updatedLights.highlightColor = { 1.f, 0.f, 0.f, aParamObj.aHighlightIntencity };

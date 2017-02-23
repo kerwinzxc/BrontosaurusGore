@@ -9,6 +9,10 @@
 
 //temp includes
 #include "../PostMaster/Subscriber.h" //mvh carl
+#include "InstanceID.h"
+#include "binary_tree.h"
+#include "binary_tree.h"
+#include "binary_tree.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -36,6 +40,8 @@ public:
 	~CRenderer();
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
+
+	void DoLight();
 	void Render();
 	void SwapWrite();
 	void ClearRenderQueue();
@@ -43,10 +49,12 @@ public:
 	inline SRendererSettings& GetSettings();
 
 	inline const CU::Camera& GetCamera();
-
+	void SetLights(CU::GrowingArray<CPointLightInstance>&);
 private:
 	void HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount);
 	
+	void DoDefered();
+
 	void Bloom();
 	void HDR();
 	void MotionBlur();
@@ -60,6 +68,8 @@ private:
 	void CreateBuffer();
 	void UpdateBuffer();
 
+
+	void UpdatePointlightBuffer(const CPointLightInstance& aPointLightInstance);
 	void UpdateBuffer(SSetShadowBuffer * msg);
 
 	void CreateRasterizerStates();
@@ -72,6 +82,22 @@ private:
 
 	void SetStates(const SChangeStatesMessage* aState);
 private:
+	class GBuffer
+	{
+	public:
+		void Init();
+		
+		void SetBuffer();
+		void Clear();
+		void SetAsResource();
+		CRenderPackage& GetAlbedo();
+		CRenderPackage& GetNormal();
+		ID3D11ShaderResourceView* GetDepth();
+	protected:
+		CRenderPackage albedoPackage;
+		CRenderPackage normalPackage;
+		CRenderPackage depthPackage;
+	}gBuffer;
 	struct SHDRData
 	{
 		CRenderPackage myInputPackage;
@@ -112,7 +138,7 @@ private:
 
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;
-
+	CSynchronizer<CU::GrowingArray<CPointLightInstance, InstanceID>*> myLightSynchronizer;
 	CRenderPackage* renderTo;
 
 	CU::StaticArray< ID3D11RasterizerState*, static_cast<int>(eRasterizerState::eSize)> myRasterizerStates;
@@ -135,7 +161,7 @@ private:
 	CU::TimerHandle myOncePerFrameBufferTimer;
 	CU::TimerHandle myFireTimer;
 	bool myIsRunning;
-
+	ID3D11Buffer* myPointlightBuffer;
 	// Inherited via Subscriber
 	eMessageReturn Recieve(const Message& aMessage) override;
 };

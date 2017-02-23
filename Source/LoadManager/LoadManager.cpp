@@ -58,6 +58,8 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
+
+	loader.RegisterComponentLoadFunction("Light", LoadPointLightComponent);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
