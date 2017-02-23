@@ -63,6 +63,7 @@ enum class eComponentMessageType
 	eWeaponFactoryGiveWeaponToWeaponSystem,
 	eChangeSelectedAmmoType,
 	eGiveAmmo,
+	eSetDirectionForShooting,
 	eLength,
 };
 

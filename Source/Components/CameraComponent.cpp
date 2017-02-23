@@ -41,6 +41,15 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::ePitch:
 		Pitch(aMessageData.myFloat);
 		break;
+	case eComponentMessageType::eSetDirectionForShooting:
+		CU::Matrix44f localMatrix = GetParent()->GetToWorldTransform();
+		localMatrix.Move(CU::Vector3f(0.0f, 0.0f, 10.0f));
+		CU::Vector3f direction = localMatrix.GetPosition() - GetParent()->GetWorldPosition();
+		direction.Normalize();
+		SComponentMessageData shootData;
+		shootData.myVector3f = direction;
+		GetParent()->NotifyComponents(eComponentMessageType::eTryToShoot, shootData);
+		break;
 	}
 }
 
