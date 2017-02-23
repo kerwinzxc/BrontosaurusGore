@@ -41,8 +41,6 @@
 #include "EnemyComponentManager.h"
 #include "Enemy.h"
 
-
-
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
@@ -69,7 +67,6 @@ CPlayState::~CPlayState()
 
 	SAFE_DELETE(myModelComponentManager);
 
-	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);

@@ -18,8 +18,12 @@ class CWeaponSystemManager;
 class CWeaponFactory;
 class CProjectileComponentManager;
 class CProjectileFactory;
-
+class CAmmoComponentManager;
+class CWeaponSystemManager;
 class CMovementComponent;
+class CWeaponFactory;
+class CProjectileComponentManager;
+class CProjectileFactory;
 
 class CPlayState : public State , public Subscriber
 {
@@ -50,16 +54,11 @@ private:
 
 	CModelComponentManager* myModelComponentManager;
 
-	AmmoComponentManager* myAmmoComponentManager;
-	WeaponSystemManager* myWeaponSystemManager;
-	WeaponFactory* myWeaponFactory;
-	ProjectileComponentManager* myProjectileComponentManager;
-	ProjectileFactory* myProjectileFactory;
-	AmmoComponentManager* myAmmoComponentManager;
-	WeaponSystemManager* myWeaponSystemManager;
-	WeaponFactory* myWeaponFactory;
-	ProjectileComponentManager* myProjectileComponentManager;
-	ProjectileFactory* myProjectileFactory;
+	CAmmoComponentManager* myAmmoComponentManager;
+	CWeaponSystemManager* myWeaponSystemManager;
+	CWeaponFactory* myWeaponFactory;
+	CProjectileComponentManager* myProjectileComponentManager;
+	CProjectileFactory* myProjectileFactory;
 	CEnemyComponentManager* myEnemyComponentManager;
 
 	CMovementComponent* myMovementComponent;
