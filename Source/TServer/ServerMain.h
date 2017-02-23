@@ -43,6 +43,8 @@ private:
 
 	TShared_NetworkWrapper myNetworkWrapper;
 
+	std::map<__int16, CImportantNetworkMessage*> myImportantMessages;
+
 	std::map<ClientID, SClientAdress> myClients;
 	ClientID currentFreeId;
 
