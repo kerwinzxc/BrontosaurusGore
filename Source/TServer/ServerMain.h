@@ -1,13 +1,13 @@
 #pragma once
-#include <CommonNetworkIncludes.h>
-#include "TShared_NetworkWrapper.h"
+#include "../TShared/CommonNetworkIncludes.h"
+#include "../TShared/TShared_NetworkWrapper.h"
 #include <map>
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
 #include "../CommonUtilities/GrowingArray.h"
 #include <string>
-#include "MessageManager.h"
-#include "NetworkMessage_ChatMessage.h"
+#include "../TShared/MessageManager.h"
+#include "../TShared/NetworkMessage_ChatMessage.h"
 
 struct SClientAdress
 {
@@ -31,6 +31,8 @@ public:
 	void Ping();
 	void DisconectClient(ClientID aClient);
 	void UpdatePing(CU::Time aDeltaTime);
+
+	void SendTo(CNetworkMessage* aNetworkMessage);
 
 	void HandleChatMessage(CNetworkMessage_ChatMessage* aNetworkMessageChatMessage);
 	bool Update();

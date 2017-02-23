@@ -23,6 +23,7 @@ class CMouseComponent;
 class CModelViewer;
 class CCollisionComponentManager;
 class CGameEventMessenger;
+class CClient;
 
 class CRenderer;
 
@@ -47,6 +48,7 @@ public:
 	virtual eMessageReturn DoEvent(CMouseComponent*) const { return eMessageReturn::eContinue; }
 	virtual eMessageReturn DoEvent(CModelViewer*) const { return  eMessageReturn::eContinue; }
 	virtual eMessageReturn DoEvent(CCollisionComponentManager*) const { return  eMessageReturn::eContinue; }
+	virtual eMessageReturn DoEvent(CClient*) const { return eMessageReturn::eContinue; }
 	
 	virtual eMessageReturn DoEvent(CGameEventMessenger*) const { return eMessageReturn::eContinue; }
 

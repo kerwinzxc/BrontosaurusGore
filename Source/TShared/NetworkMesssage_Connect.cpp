@@ -5,12 +5,17 @@
 
 CNetworkMessage_Connect::CNetworkMessage_Connect()
 {
-	myHeader.myPackageType = static_cast<char>(ePackageType::CONNECT);
+	myHeader.myPackageType = static_cast<char>(ePackageType::eConnect);
 }
 
 
 CNetworkMessage_Connect::~CNetworkMessage_Connect()
 {
+}
+
+ePackageType CNetworkMessage_Connect::GetPackageType() const
+{
+	return ePackageType::eConnect;
 }
 
 void CNetworkMessage_Connect::DoSerialize(StreamType& aStream)

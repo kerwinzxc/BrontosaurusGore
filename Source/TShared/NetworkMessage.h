@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SerializeHelper.h"
+#include "PackageType.h"
 
 
 struct SNetworkPackageHeader
@@ -26,11 +27,14 @@ public:
 
 	void SetData(const char* someData, unsigned int dataSize);
 	void SetData(StreamType aStream);
-	void SetHeader(SNetworkPackageHeader aHeader);
+
+	void SetExplicitHeader(SNetworkPackageHeader& aHeader);
+	virtual void SetHeader(SNetworkPackageHeader aHeader);
 
 	const SNetworkPackageHeader& GetHeader() const;
 	const StreamType& GetSerializedData() const;
 
+	virtual ePackageType GetPackageType()const;
 protected:
 	StreamType myStream;
 

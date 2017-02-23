@@ -4,6 +4,7 @@
 #include "../CommonUtilities/TimerManager.h"
 #include "../TShared/MessageManager.h"
 #include "Chat.h"
+#include "../PostMaster/Subscriber.h"
 
 enum class eClientState
 {
@@ -12,8 +13,9 @@ enum class eClientState
 	CONECTED,
 };
 
-class CClient
+class CClient : public Subscriber
 {
+	friend class CClientMessageManager;
 public:
 	CClient();
 	~CClient();
@@ -23,10 +25,13 @@ public:
 	void UpdatePing(const CU::Time& aTime);
 	void Ping();
 	void Update();
+	void Send(CNetworkMessage* aNetworkMessage);
+
+	eMessageReturn Recieve(const Message& aMessage) override;
 
 	bool Connect(const char* anIp, std::string aClientName);
 
-	CMessageManager myMessageManager;
+	CClientMessageManager* myMessageManager;
 
 private:
 	CChat myChat;

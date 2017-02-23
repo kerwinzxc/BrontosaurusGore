@@ -1,5 +1,6 @@
 #include "../StateStack/StateStack.h"
 #include "BackgroundLoadingManager.h"
+#include "../TClient/Client.h"
 
 namespace CU
 {
@@ -21,5 +22,6 @@ public:
 private:
 	StateStack myStateStack;
 	CSplashScreen* mySplashScreen;
+	CClient myClient;
 
 };

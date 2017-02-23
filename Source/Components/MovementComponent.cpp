@@ -2,6 +2,8 @@
 #include "MovementComponent.h"
 #include "PlayerControls.h"
 #include "../CommonUtilities/JsonValue.h"
+#include "../PostMaster/SendNetworkMessage.h"
+#include "../TShared/NetworkMessage_Position.h"
 
 #define vodi void
 
@@ -110,6 +112,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 
 	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
 	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)

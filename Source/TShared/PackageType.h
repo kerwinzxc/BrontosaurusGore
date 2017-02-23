@@ -2,11 +2,12 @@
 
 enum class ePackageType
 {
-	ZERO = 0,
-	CONNECT,
-	PING,
-	PING_RESPONSE,
-	CONNECT_RESPONSE,
+	eZero = 0,
+	eConnect,
+	ePing,
+	ePingResponse,
+	eConnectResponse,
 	eChat,
-	SIZE,
+	ePosition,
+	eSize,
 };

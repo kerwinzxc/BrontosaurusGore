@@ -11,6 +11,11 @@ CNetworkMessage_ConectResponse::~CNetworkMessage_ConectResponse()
 {
 }
 
+ePackageType CNetworkMessage_ConectResponse::GetPackageType() const
+{
+	return ePackageType::eConnectResponse;
+}
+
 void CNetworkMessage_ConectResponse::DoSerialize(StreamType& aStream)
 {
 	serialize(myClientId, aStream);
