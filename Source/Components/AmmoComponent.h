@@ -1,18 +1,18 @@
 #pragma once
 #include "Component.h"
 
-struct GeneralAmmoData; //Names are hard :/
-class AmmoComponent : public CComponent
+struct SGeneralAmmoData; //Names are hard :/
+class CAmmoComponent : public CComponent
 {
 public:
-	AmmoComponent();
-	~AmmoComponent();
+	CAmmoComponent();
+	~CAmmoComponent();
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Destroy() override;
 	void Update(float aDeltaTime);
 private:
-	CU::GrowingArray<GeneralAmmoData*> myGeneralAmmoDataList;
+	CU::GrowingArray<SGeneralAmmoData*> myGeneralAmmoDataList;
 	unsigned int mySelectedAmmoType;
 };
 

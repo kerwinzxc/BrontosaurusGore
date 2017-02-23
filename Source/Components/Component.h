@@ -72,7 +72,7 @@ public:
 protected:
 	eComponentType myType;
 
-private:
+protected:
 	CGameObject* myParent;
 	ComponentId myId;
 };

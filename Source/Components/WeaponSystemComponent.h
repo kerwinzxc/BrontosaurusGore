@@ -2,21 +2,21 @@
 #include "Component.h"
 #include "WeaponDefines.h"
 
-class Weapon;
-class WeaponFactory;
-class WeaponSystemComponent : public CComponent
+class CWeapon;
+class CWeaponFactory;
+class CWeaponSystemComponent : public CComponent
 {
 public:
-	WeaponSystemComponent(WeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain);
-	~WeaponSystemComponent();
+	CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain);
+	~CWeaponSystemComponent();
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Destroy() override;
 
 	void Update(float aDelta);
 
 private:
-	CU::GrowingArray<Weapon*> myWeapons;
-	WeaponFactory* WeaponFactoryPointer;
+	CU::GrowingArray<CWeapon*> myWeapons;
+	CWeaponFactory* WeaponFactoryPointer;
 	unsigned short myActiveWeaponIndex;
 
 };

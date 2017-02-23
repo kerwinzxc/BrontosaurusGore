@@ -1,16 +1,16 @@
 #pragma once
-class WeaponSystemComponent;
-class WeaponFactory;
-class WeaponSystemManager
+class CWeaponSystemComponent;
+class CWeaponFactory;
+class CWeaponSystemManager
 {
 public:
-	WeaponSystemManager(WeaponFactory* aWeaponFactoryPointer);
-	~WeaponSystemManager();
-	WeaponSystemComponent* CreateAndRegisterComponent();
+	CWeaponSystemManager(CWeaponFactory* aWeaponFactoryPointer);
+	~CWeaponSystemManager();
+	CWeaponSystemComponent* CreateAndRegisterComponent();
 	void Update(const CU::Time& aDeltaTime);
 
 private:
-	CU::GrowingArray<WeaponSystemComponent*> myComponents;
-	WeaponFactory* myWeaponFactoryPointer;
+	CU::GrowingArray<CWeaponSystemComponent*> myComponents;
+	CWeaponFactory* myWeaponFactoryPointer;
 };
 

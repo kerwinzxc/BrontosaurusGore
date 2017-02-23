@@ -38,6 +38,9 @@
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
+#include "EnemyComponentManager.h"
+#include "Enemy.h"
+
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
@@ -64,7 +67,6 @@ CPlayState::~CPlayState()
 
 	SAFE_DELETE(myModelComponentManager);
 
-	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
@@ -103,6 +105,7 @@ void CPlayState::Load()
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
 		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
 		cameraObject->AddComponent(cameraComponent);
@@ -113,13 +116,17 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
-		WeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
-		AmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
 		SComponentMessageData addHandGunData;
 		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		SComponentMessageData giveAmmoData;
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
 
@@ -166,7 +173,11 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+	myWeaponSystemManager->Update(aDeltaTime);
+	myProjectileComponentManager->Update(aDeltaTime);
+	myAmmoComponentManager->Update(aDeltaTime);
 
 	return myStatus;
 }
@@ -216,10 +227,12 @@ void CPlayState::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
+	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
-	myAmmoComponentManager = new AmmoComponentManager();
-	myWeaponFactory = new WeaponFactory();
-	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
-	myProjectileComponentManager = new ProjectileComponentManager();
-	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
+	myAmmoComponentManager = new CAmmoComponentManager();
+	myWeaponFactory = new CWeaponFactory();
+	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new CProjectileComponentManager();
+	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 }

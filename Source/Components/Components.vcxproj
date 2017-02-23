@@ -352,6 +352,8 @@
     <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="ComponentMessageCallback.h" />
     <ClInclude Include="ComponentMessageTypeToLua.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyComponentManager.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
@@ -395,6 +397,8 @@
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="ComponentMessageTypeToLua.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyComponentManager.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />

@@ -37,6 +37,9 @@
     <ClInclude Include="LoadCamera.h">
       <Filter>LoadThings\LoadCamera</Filter>
     </ClInclude>
+    <ClInclude Include="LoadEnemy.h">
+      <Filter>LoadThings\LoadEnemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="LoadCamera.cpp">
       <Filter>LoadThings\LoadCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadEnemy.cpp">
+      <Filter>LoadThings\LoadEnemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
     </Filter>
     <Filter Include="Precompiled">
       <UniqueIdentifier>{35f92d3f-46b3-4c23-9408-4c64a447310e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy">
+      <UniqueIdentifier>{f06f623b-8cf2-4b99-abc2-e9d286d72ec8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
