@@ -26,32 +26,39 @@ cbuffer ConstantBuffer : register( b0 ) //to vertex
 	float3 garbage;
 }
 
-#define NUMBER_POINTLIGHTS 8
+ #define NUMBER_POINTLIGHTS 8
 cbuffer PixelShaderBuffer : register(b1) //to pixel
+ {
+ 	float4 crap;
+
+ 	struct DirectionalLight
+ 	{
+ 		float4 direction;
+ 		float4 color;
+ 	} otherCrap;
+
+ 	struct PointLight
+ 	{
+ 		float3 position;
+ 		float range;
+ 		float3 color;
+ 		float intensity;
+ 	} mostCrap[NUMBER_POINTLIGHTS];
+
+ 	float4 highlightColor;
+
+ 	uint numberOfPointLights;
+ 	uint alsocrap;
+ 	float2 trash;
+ }
+
+cbuffer PointLightBuffer : register(b2)
 {
 	float4 cameraPos;
-
-	struct DirectionalLight
-	{
-		float4 direction;
-		float4 color;
-	} myDirectionalLight;
-
-	struct PointLight
-	{
-		float3 position;
-		float range;
-		float3 color;
-		float intensity;
-	} myPointLights[NUMBER_POINTLIGHTS];
-
-	PointLight pointLight;
-
-	float4 highlightColor;
-
-	uint numberOfPointLights;
+ 	struct DirectionalLight myDirectionalLight;
+	struct PointLight pointLight;
 	uint CubeMap_MipCount;
-	float2 trash;
+	float3 soMuchCrap;
 }
 
 float PS_Depth(PosTex_InputPixel input)
@@ -457,42 +464,7 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 	{
 		directionDiffuse.rgb = 0.0f;
 		directionSpecularity.rgb = 0.0f;
-	}
-
-
-// PointLight
-
-	// for(uint i = 0; i < numberOfPointLights; ++i)
-	// {
-    // 	float3 difference = (myPointLights[i].position.xyz) - worldPosition.xyz;
-    // 	float l = length(difference);
-
-    // 	float lightRange = l / myPointLights[i].range;
-	// 	lightRange = saturate(lightRange);
-	// 	lightRange = 1.0f - lightRange;
-
-
-    // 	float3 direction = normalize(difference);
-    // 	float4 color = (float4)0;
-    // 	lightColor = myPointLights[i].color.rgb;
-    // 	lambert = PS_Lambert(input, normal, -direction).color.xyz;
-    // 	toLight = direction;
-    // 	halfvec = normalize(toLight + toEye);
-    // 	LdotH = dot(toLight, halfvec);
-    // 	LdotH = saturate(LdotH);
-    // 	LdotH = 1.0f - LdotH;
-    // 	LdotH = pow(LdotH, 5);
-    // 	Dirrfresnel = LdotH * (1.f - substance);
-    // 	Dirrfresnel = substance + Dirrfresnel;
-    // 	color = float4(metalnessAlbedo * myPointLights[i].color.rgb * lambert * (one - Dirrfresnel), 1.0f);
-    // 	directionDiffuse += color.rgb * myPointLights[i].intensity * lightRange;
-    // 	distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
-    // 	visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
-    // 	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * myPointLights[i].intensity * lightRange;
-
-
-	// }
-	
+	}	
 
 		float3 difference = (pointLight.position.xyz) - worldPosition.xyz;
     	float l = length(difference);
@@ -515,10 +487,10 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
     	Dirrfresnel = LdotH * (1.f - substance);
     	Dirrfresnel = substance + Dirrfresnel;
     	color = float4(metalnessAlbedo * pointLight.color.rgb * lambert * (one - Dirrfresnel), 1.0f);
-    	directionDiffuse += color.rgb * pointLight.intensity * lightRange;
+    	directionDiffuse = color.rgb * pointLight.intensity * lightRange;
     	distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
     	visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
-    	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
+    	directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
 
 	
 
@@ -531,10 +503,7 @@ PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
 	PixelOutput output = (PixelOutput)0;
 	output.color = PS_PBL(input).color;
-	if(numberOfLights > 0)
-	{
-		output.color.w = 1.f/ numberOfLights;
-	}
+	output.color.w = 1.f/ numberOfLights;
 
 	return output;
 }

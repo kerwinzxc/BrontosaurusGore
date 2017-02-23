@@ -544,17 +544,20 @@ void CRenderer::UpdatePointlightBuffer(const CPointLightInstance& aPointLightIns
 	ZeroMemory(&subresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	SPointLightBuffer lightBuffer;
+	lightBuffer.cameraPos = myCamera.GetPosition();
+	lightBuffer.directionalLight;
 	lightBuffer.pointLight.position = aPointLightInstance.GetPosition();
 	lightBuffer.pointLight.color = aPointLightInstance.GetColor();
 	lightBuffer.pointLight.intensity = aPointLightInstance.GetInstensity();
 	lightBuffer.pointLight.range = aPointLightInstance.GetRange();
+	lightBuffer.cubemapMipcount = 11;
 
 	DEVICE_CONTEXT->Map(myPointlightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);
 	memcpy(subresource.pData, &lightBuffer, sizeof(SPointLightBuffer));
 	DEVICE_CONTEXT->Unmap(myPointlightBuffer, 0);
 
 
-	DEVICE_CONTEXT->PSSetConstantBuffers(0, 2, &myPointlightBuffer);
+	DEVICE_CONTEXT->PSSetConstantBuffers(2, 1, &myPointlightBuffer);
 
 }
 

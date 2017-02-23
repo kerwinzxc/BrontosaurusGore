@@ -52,7 +52,11 @@ struct SOncePerFrameBuffer
 
 struct SPointLightBuffer
 {
+	CU::Vector4f cameraPos;
+	Lights::SDirectionalLight directionalLight;
 	Lights::SPointLight pointLight;
+	unsigned int cubemapMipcount;
+	CU::Vector3f crap;
 };
 
 struct SAnimationBoneStruct 

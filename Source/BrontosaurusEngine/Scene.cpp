@@ -145,7 +145,7 @@ void CScene::Render()
 
 	RENDERER.SetLights(*(new CU::GrowingArray<CPointLightInstance, InstanceID>(myPointLights)));
 
-	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
+	/*for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
 		if (myPointLights[i].GetIsActive() == false)
 		{
@@ -162,7 +162,7 @@ void CScene::Render()
 		}
 		culledPointlights.SafeAdd(myPointLights[i]);
 	}
-
+*/
 
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{
