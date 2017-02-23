@@ -3,33 +3,38 @@
 #include "ProjectileData.h"
 
 
-ProjectileComponent::ProjectileComponent()
+CProjectileComponent::CProjectileComponent()
 {
+	myIsActive = false;
 }
 
 
-ProjectileComponent::~ProjectileComponent()
+CProjectileComponent::~CProjectileComponent()
 {
 }
 
-void ProjectileComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CProjectileComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 }
 
-void ProjectileComponent::Destroy()
+void CProjectileComponent::Destroy()
 {
 }
 
-void ProjectileComponent::Activate(ProjectileData* someData, const CU::Vector3f& aDirection, const CU::Vector3f& aPosition)
+void CProjectileComponent::Activate(SProjectileData* someData, const CU::Vector3f& aDirection, const CU::Vector3f& aPosition)
 {
 	myData = someData;
 	myDirection = aDirection;
 	GetParent()->GetLocalTransform().SetPosition(aPosition);
 	GetParent()->GetLocalTransform().LookAt(GetParent()->GetLocalTransform().GetPosition() + aDirection);
+	myIsActive = true;
 }
 
-void ProjectileComponent::Update(float aDeltaTime)
+void CProjectileComponent::Update(float aDeltaTime)
 {
-	GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, myData->movementSpeed * aDeltaTime));
-	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	if(myIsActive == true)
+	{
+		GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, myData->movementSpeed * aDeltaTime));
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 }

@@ -6,6 +6,8 @@ class CPath;
 class ICollider;
 class CComponent;
 class CGameObject;
+class SAmmoData;
+class CWeapon;
 enum class ePlayerControls;
 
 namespace CU
@@ -57,6 +59,11 @@ enum class eComponentMessageType
 	eCheckIfHaveAmmoForShooting,
 	eShoot,
 	eAddWeapon,
+	eAddNewAmmoType,
+	eWeaponFactoryGiveWeaponToWeaponSystem,
+	eChangeSelectedAmmoType,
+	eGiveAmmo,
+	eSetDirectionForShooting,
 	eLength,
 };
 
@@ -86,6 +93,8 @@ struct SComponentMessageData
 
 		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
+		SAmmoData* myAmmoData;
+		CWeapon* myWeapon;
 	};
 };
 

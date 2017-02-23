@@ -354,6 +354,7 @@
     <ClInclude Include="ComponentMessageTypeToLua.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />

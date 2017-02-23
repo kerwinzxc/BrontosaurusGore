@@ -1,18 +1,19 @@
 #pragma once
-struct WeaponData;
-struct AmmoData;
-class Weapon;
-class WeaponFactory
+struct SWeaponData;
+struct SAmmoData;
+class CWeapon;
+class CGameObject;
+class CWeaponFactory
 {
 public:
-	WeaponFactory();
-	~WeaponFactory();
+	CWeaponFactory();
+	~CWeaponFactory();
 
 	void LoadWeapons();
-	Weapon* CreateWeapon(const char* aWeaponName);
+	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
 	
 private:
-	CU::GrowingArray<WeaponData*> myWeaponDataList;
-	CU::GrowingArray<AmmoData*> myAmmoDataList;
+	CU::GrowingArray<SWeaponData*> myWeaponDataList;
+	CU::GrowingArray<SAmmoData*> myAmmoDataList;
 };
 

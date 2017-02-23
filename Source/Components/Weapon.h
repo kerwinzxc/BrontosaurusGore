@@ -1,20 +1,25 @@
 #pragma once
-struct WeaponData;
+struct SWeaponData;
 class CGameObject;
-class Weapon
+class CWeapon
 {
 public:
-	Weapon(WeaponData* aWeaponData);
-	~Weapon();
+	CWeapon(SWeaponData* aWeaponData);
+	~CWeapon();
 
 	void TryToShoot(const CU::Vector3f& aDirection);
 	void Shoot(const CU::Vector3f& aDirection);
 	void Update(float aDeltaTime);
+	inline void SetUser(CGameObject* aUser);
 private:
 
-	WeaponData* myWeaponData;
+	SWeaponData* myWeaponData;
 	CGameObject* myUser;
 	float myElapsedFireTimer;
 
 };
 
+inline void CWeapon::SetUser(CGameObject* aUser)
+{
+	myUser = aUser;
+}

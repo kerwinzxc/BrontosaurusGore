@@ -46,9 +46,14 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 		break;
 	case CU::eInputType::eMousePressed:
+	{
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;
+
+		GetParent()->NotifyComponents(eComponentMessageType::eSetDirectionForShooting, SComponentMessageData());
 		break;
+	}
+		
 	case CU::eInputType::eMouseReleased:
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;

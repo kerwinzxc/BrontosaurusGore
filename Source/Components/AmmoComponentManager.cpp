@@ -3,18 +3,19 @@
 #include "AmmoComponent.h"
 
 
-AmmoComponentManager::AmmoComponentManager()
+CAmmoComponentManager::CAmmoComponentManager()
 {
+	myComponents.Init(100);
 }
 
 
-AmmoComponentManager::~AmmoComponentManager()
+CAmmoComponentManager::~CAmmoComponentManager()
 {
 }
 
-AmmoComponent * AmmoComponentManager::CreateAndRegisterComponent()
+CAmmoComponent * CAmmoComponentManager::CreateAndRegisterComponent()
 {
-	AmmoComponent* component = new AmmoComponent();
+	CAmmoComponent* component = new CAmmoComponent();
 
 	CComponentManager::GetInstance().RegisterComponent(component);
 
@@ -23,7 +24,7 @@ AmmoComponent * AmmoComponentManager::CreateAndRegisterComponent()
 	return component;
 }
 
-void AmmoComponentManager::Update(const CU::Time& aDeltaTime)
+void CAmmoComponentManager::Update(const CU::Time& aDeltaTime)
 {
 	for (unsigned short i = 0; i < myComponents.Size(); i++)
 	{

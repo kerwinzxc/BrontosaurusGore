@@ -42,6 +42,11 @@
 #include "Enemy.h"
 
 
+
+#include "WeaponSystemComponent.h"
+#include "AmmoComponent.h"
+#include "ComponentMessage.h"
+
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
@@ -95,7 +100,8 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
-	//Sleep(5000);
+	myWeaponFactory->LoadWeapons();
+
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
@@ -113,6 +119,17 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
+		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		playerObject->AddComponent(weaponSystenComponent);
+		playerObject->AddComponent(ammoComponent);
+		SComponentMessageData addHandGunData;
+		addHandGunData.myString = "Handgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		SComponentMessageData giveAmmoData;
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
 
@@ -121,14 +138,28 @@ void CPlayState::Load()
 	myScene->SetSkybox("default_cubemap.dds");
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+	CU::CJsonValue levelsFile;
 
-	const KLoader::eError loadError = loader.LoadFile("Json/Levels/Test/LevelData.json");
-	/*if (loadError != KLoader::eError::NO_LOADER_ERROR)
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+#ifdef _DEBUGq
+	myLevelIndex = levelsArray.Size() - 1;
+#else
+	const int levelIndex = 0;
+#endif
+
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
+
+	const KLoader::eError loadError = loader.LoadFile(levelPath);
+	if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
-	}*/
-
-	myWeaponFactory->LoadWeapons();
+	}
 	myIsLoaded = true;
 
 	// Get time to load the level:
@@ -147,6 +178,9 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myMovementComponent->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+	myWeaponSystemManager->Update(aDeltaTime);
+	myProjectileComponentManager->Update(aDeltaTime);
+	myAmmoComponentManager->Update(aDeltaTime);
 
 	return myStatus;
 }
@@ -198,9 +232,10 @@ void CPlayState::CreateManagersAndFactories()
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
-	myAmmoComponentManager = new AmmoComponentManager();
-	myWeaponFactory = new WeaponFactory();
-	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
-	myProjectileComponentManager = new ProjectileComponentManager();
-	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
+	myAmmoComponentManager = new CAmmoComponentManager();
+	myWeaponFactory = new CWeaponFactory();
+	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new CProjectileComponentManager();
+	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 }

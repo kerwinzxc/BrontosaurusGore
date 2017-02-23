@@ -260,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="EnemyComponentManager.h">
       <Filter>Enemy</Filter>
+	</ClInclude>
+    <ClInclude Include="GeneralAmmoData.h">
+      <Filter>Ammo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

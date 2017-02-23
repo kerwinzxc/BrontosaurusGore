@@ -1,14 +1,14 @@
 #pragma once
-class AmmoComponent;
-class AmmoComponentManager
+class CAmmoComponent;
+class CAmmoComponentManager
 {
 public:
-	AmmoComponentManager();
-	~AmmoComponentManager();
-	AmmoComponent* CreateAndRegisterComponent();
+	CAmmoComponentManager();
+	~CAmmoComponentManager();
+	CAmmoComponent* CreateAndRegisterComponent();
 	void Update(const CU::Time& aDeltaTime);
 
 private:
-	CU::GrowingArray<AmmoComponent*> myComponents;
+	CU::GrowingArray<CAmmoComponent*> myComponents;
 };
 

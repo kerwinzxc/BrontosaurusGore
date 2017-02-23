@@ -2,19 +2,19 @@
 #include "ProjectileComponentManager.h"
 #include "ProjectileComponent.h"
 
-ProjectileComponentManager::ProjectileComponentManager()
+CProjectileComponentManager::CProjectileComponentManager()
 {
 	myComponents.Init(1000);
 }
 
 
-ProjectileComponentManager::~ProjectileComponentManager()
+CProjectileComponentManager::~CProjectileComponentManager()
 {
 }
 
-ProjectileComponent * ProjectileComponentManager::CreateAndRegisterComponent()
+CProjectileComponent * CProjectileComponentManager::CreateAndRegisterComponent()
 {
-	ProjectileComponent* component = new ProjectileComponent();
+	CProjectileComponent* component = new CProjectileComponent();
 
 	CComponentManager::GetInstance().RegisterComponent(component);
 
@@ -23,7 +23,7 @@ ProjectileComponent * ProjectileComponentManager::CreateAndRegisterComponent()
 	return component;
 }
 
-void ProjectileComponentManager::Update(const CU::Time& aDeltaTime)
+void CProjectileComponentManager::Update(const CU::Time& aDeltaTime)
 {
 	for (unsigned short i = 0; i < myComponents.Size(); i++)
 	{

@@ -3,35 +3,39 @@
 #include "ProjectileFactory.h"
 #include "WeaponData.h"
 
-Weapon::Weapon(WeaponData* aWeaponData)
+CWeapon::CWeapon(SWeaponData* aWeaponData)
 {
 	myElapsedFireTimer = 0.0f;
+	myWeaponData = aWeaponData;
 }
 
 
-Weapon::~Weapon()
+CWeapon::~CWeapon()
 {
 }
 
-void Weapon::TryToShoot(const CU::Vector3f& aDirection)
+void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
+		SComponentMessageData selectAmmoTypeData;
+		selectAmmoTypeData.myString = myWeaponData->name.c_str();
+		myUser->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, selectAmmoTypeData);
 		SComponentMessageData directionData;
 		directionData.myVector3f = aDirection;
 		myUser->NotifyComponents(eComponentMessageType::eCheckIfHaveAmmoForShooting, directionData);
 	
 	}
 }
-void Weapon::Shoot(const CU::Vector3f& aDirection)
+void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		ProjectileFactory::GetInstance().ShootProjectile(myWeaponData->projectileData, aDirection, myUser->GetWorldPosition());
+		CProjectileFactory::GetInstance().ShootProjectile(myWeaponData->projectileData, aDirection, myUser->GetWorldPosition());
 		myElapsedFireTimer = 0.0f;
 	}
 }
-void Weapon::Update(float aDeltaTime)
+void CWeapon::Update(float aDeltaTime)
 {
 	if(myElapsedFireTimer < myWeaponData->fireRate)
 	{

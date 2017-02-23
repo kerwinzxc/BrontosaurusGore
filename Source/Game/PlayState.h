@@ -13,11 +13,11 @@ class CGameObjectManager;
 class CScene;
 class CModelComponentManager;
 class CCollisionComponentManager;
-class AmmoComponentManager;
-class WeaponSystemManager;
-class WeaponFactory;
-class ProjectileComponentManager;
-class ProjectileFactory;
+class CAmmoComponentManager;
+class CWeaponSystemManager;
+class CWeaponFactory;
+class CProjectileComponentManager;
+class CProjectileFactory;
 
 class CMovementComponent;
 
@@ -50,6 +50,11 @@ private:
 
 	CModelComponentManager* myModelComponentManager;
 
+	AmmoComponentManager* myAmmoComponentManager;
+	WeaponSystemManager* myWeaponSystemManager;
+	WeaponFactory* myWeaponFactory;
+	ProjectileComponentManager* myProjectileComponentManager;
+	ProjectileFactory* myProjectileFactory;
 	AmmoComponentManager* myAmmoComponentManager;
 	WeaponSystemManager* myWeaponSystemManager;
 	WeaponFactory* myWeaponFactory;
