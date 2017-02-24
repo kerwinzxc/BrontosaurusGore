@@ -404,3 +404,6 @@ Bin/BrontosaurusGore_Retail.lib
 *.orig
 Bin/TClient_x64_Release.lib
 Bin/TServer_x64_Release.lib
+Bin/TClient_x64_Debug.lib
+Bin/TServer_x64_Debug.lib
+Bin/TShared_x64_Debug.lib

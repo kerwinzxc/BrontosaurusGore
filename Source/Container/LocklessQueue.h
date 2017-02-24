@@ -21,6 +21,7 @@ namespace Container
 		~CLocklessQueue();
 
 		void Push(T aValue) override;
+		void Append(IQueue<T>& aQueue) override;
 		T Pop() override;
 
 		Error TryPush(const T aValue);
@@ -28,6 +29,9 @@ namespace Container
 		void DeleteAll();
 		void RemoveAll() override;
 	private:
+		using IQueue<T>::myHead;
+		using IQueue<T>::myTail;
+
 		std::atomic<bool> myPushing;
 		std::atomic<bool> myPoping;
 
@@ -38,7 +42,7 @@ namespace Container
 }
 
 template <typename T>
-Container::CLocklessQueue<T>::CLocklessQueue() : IQueue<T>()
+Container::CLocklessQueue<T>::CLocklessQueue() : IQueue<T>(), myPushing(false), myPoping(false)
 {
 }
 
@@ -67,6 +71,18 @@ void Container::CLocklessQueue<T>::Push(T aValue)
 	IQueue<T>::myTail = item;
 
 	IQueue<T>::IncrementCount();
+}
+
+template <typename T>
+void Container::CLocklessQueue<T>::Append(IQueue<T>& aQueue)
+{
+	if(aQueue.IsEmpty() == true)
+	{
+		return;
+	}
+	std::lock_guard<std::mutex> guard(myLock);
+
+	IQueue<T>::Append(aQueue);
 }
 
 template <typename T>

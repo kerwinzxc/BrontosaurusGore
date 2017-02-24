@@ -31,10 +31,10 @@ inline Postmaster::Message::IMessage::~IMessage()
 {
 }
 
-inline Postmaster::Message::IMessage* Postmaster::Message::IMessage::Copy()
-{
-	return nullptr;
-}
+//inline Postmaster::Message::IMessage* Postmaster::Message::IMessage::Copy()
+//{
+//	return nullptr;
+//}
 
 inline eMessageType Postmaster::Message::IMessage::GetType() const
 {

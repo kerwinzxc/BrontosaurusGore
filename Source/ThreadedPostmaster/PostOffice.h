@@ -30,6 +30,10 @@ namespace Postmaster
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
 			void Unsubscribe(ISubscriber* aSubscriber);
 		protected:
+
+			void AppendMessages(Container::CLocklessQueue<Message::IMessage*>& aBufferQueue);
+
+			void BroadcastGlobal(Message::IMessage* aMessage);
 			void Broadcast(Message::IMessage* aMessage);
 			void Narrowcast(Message::IMessage* aMessage, IObject* aSourceObject);
 
@@ -39,9 +43,10 @@ namespace Postmaster
 			void UnsubscribeBroadcast(ISubscriber* aSubscriber);
 			void UnsubscribeNarrowcast(ISubscriber* aSubscriber);
 
+			Container::CLocklessQueue<Message::IMessage*> myOutgoingQueue;
+			
 			Container::CLocklessQueue<Message::IMessage*> myMessageQueue;
 			Container::CLocklessQueue<NarrowcastStruct> myNarrowMessageQueue;
-
 			typedef std::vector<ISubscriber*> SubscriberList;
 			typedef std::map<IObject*, SubscriberList> NarrowSubscriberList;
 			typedef std::array<SubscriberList, static_cast<unsigned>(eMessageType::eLength)> SubscriberMessageList;

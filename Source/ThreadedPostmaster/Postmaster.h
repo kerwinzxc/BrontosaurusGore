@@ -20,6 +20,7 @@ namespace Postmaster
 		class CPostmaster
 		{
 		public:
+			friend class CPostOffice;
 			static void Create();
 			static void Destroy();
 			static CPostmaster& GetInstance();
@@ -56,9 +57,13 @@ namespace Postmaster
 			void Unsubscribe(ISubscriber* aSubscriber);
 			bool ShouldRun() const;
 		protected:
+			void AppendOutgoing(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue);
+
 			void WaitForMessages();
 			void HandleBroadcastMessages();
 			void HandleNarrowcastMessages();
+
+			
 
 			static CPostmaster* ourInstance;
 
@@ -107,14 +112,7 @@ inline void Postmaster::Threaded::CPostmaster::Run()
 	}
 }
 
-inline void Postmaster::Threaded::CPostmaster::Broadcast(Message::IMessage* aMessage)
-{
-	if (aMessage != nullptr)
-	{
-		myMessageQueue.Push(aMessage);
-		myMessageWaitCondition.notify_one();
-	}
-}
+
 
 inline void Postmaster::Threaded::CPostmaster::Stop()
 {

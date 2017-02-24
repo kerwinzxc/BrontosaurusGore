@@ -1,6 +1,7 @@
 #include "Postmaster.h"
 #include "Message.h"
 #include "PostOffice.h"
+#include "../CommonUtilities/GrowingArray.h"
 
 Postmaster::Threaded::CPostmaster* Postmaster::Threaded::CPostmaster::ourInstance = nullptr;
 
@@ -65,6 +66,17 @@ Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadO
 	return *it->second;
 }
 
+void Postmaster::Threaded::CPostmaster::Broadcast(Message::IMessage* aMessage)
+{
+	
+	if (aMessage != nullptr)
+	{
+		//myMessageQueue.Push(aMessage);
+		//myMessageWaitCondition.notify_one();
+		GetThreadOffice().BroadcastGlobal(aMessage);
+	}
+}
+
 void Postmaster::Threaded::CPostmaster::BroadcastLocal(Message::IMessage* aMessage)
 {
 	if (aMessage != nullptr)
@@ -114,9 +126,15 @@ bool Postmaster::Threaded::CPostmaster::ShouldRun() const
 	return myMessageQueue.IsEmpty() == false || myNarrowMessageQueue.IsEmpty() == false || myIsRunning == false;
 }
 
+void Postmaster::Threaded::CPostmaster::AppendOutgoing(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue)
+{
+	myMessageQueue.Append(aLocklessQueue);
+	myMessageWaitCondition.notify_one();
+}
+
 void Postmaster::Threaded::CPostmaster::HandleBroadcastMessages()
 {
-	while (myMessageQueue.IsEmpty() == false)
+	/*while (myMessageQueue.IsEmpty() == false)
 	{
 		Message::IMessage* message = myMessageQueue.Pop();
 		std::map<std::thread::id, CPostOffice*>::iterator it;
@@ -127,7 +145,28 @@ void Postmaster::Threaded::CPostmaster::HandleBroadcastMessages()
 			myOfficeLock.unlock();
 		}
 		delete message;
+	}*/
+	
+	
+	CU::GrowingArray<Message::IMessage*> buffer;
+	buffer.Init(myMessageQueue.Size());
+
+	while(myMessageQueue.IsEmpty() == false)
+	{
+		buffer.Add(myMessageQueue.Pop());
 	}
+	std::map<std::thread::id, CPostOffice*>::iterator it;
+	for (it = myOffices.begin(); it != myOffices.end(); ++it)
+	{
+		Container::CLocklessQueue<Message::IMessage*> bufferQueue;
+		for(int i = 0; i < buffer.Size(); ++i)
+		{
+			Message::IMessage* message = buffer[i];
+			bufferQueue.Push(message->Copy());
+		}
+		it->second->AppendMessages(bufferQueue);
+	}
+	buffer.DeleteAll();
 }
 
 void Postmaster::Threaded::CPostmaster::HandleNarrowcastMessages()
