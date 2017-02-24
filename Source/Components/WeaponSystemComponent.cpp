@@ -21,18 +21,40 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eTryToShoot:
+	{
 		myWeapons[myActiveWeaponIndex]->TryToShoot(aMessageData.myVector3f);
 		break;
+	}
 	case eComponentMessageType::eShoot:
+	{
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 		break;
+	}
 	case eComponentMessageType::eAddWeapon:
+	{
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
 		break;
+	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
+	{
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
 		break;
+	}
+	case eComponentMessageType::eChangeWeapon:
+	{
+		short index = myActiveWeaponIndex + aMessageData.myInt;
+		if (index < 0)
+		{
+			index = myWeapons.Size() - 1;
+		}
+		if (index >= myWeapons.Size())
+		{
+			index = 0;
+		}
+		myActiveWeaponIndex = index;
+		break;
+	}
 	default:
 		break;
 	}

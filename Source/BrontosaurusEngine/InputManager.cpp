@@ -47,6 +47,8 @@ CInputManager::CInputManager()
 
 	myHasFocus = true;
 
+	myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
+
 	PostMaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
 }
 
@@ -183,6 +185,26 @@ void CInputManager::UpdateMouse()
 					}
 				}
 				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
+			}
+			int a = myDInputWrapper->GetMouseWheelPos();
+			if (a != myLastMouseWheelPosition)
+			{
+				if (a != 0)
+				{
+					CU::SInputMessage mouseWheelChanged;
+					mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
+					mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
+					mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
+
+					for (CU::CInputMessenger* messenger : myMessengers)
+					{
+						if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
+						{
+							break;
+						}
+					}
+					myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
+				}
 			}
 		}
 
