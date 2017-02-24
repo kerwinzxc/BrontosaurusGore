@@ -71,7 +71,9 @@ float3 WorldPosition(PosTex_InputPixel input, float aDepth)
 	float4 viewPos = float4(input.tex.x * 2 - 1, -(input.tex.y * 2 - 1), aDepth, 1);
 	viewPos = mul(projectionInverse, viewPos);
 	viewPos = mul(cameraSpace, viewPos);
+	
 	viewPos = viewPos / viewPos.w;
+	
 	return viewPos.xyz;
 }
 
