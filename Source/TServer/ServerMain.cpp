@@ -10,6 +10,7 @@
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "../TShared/NetworkMessage_Position.h"
 
+#include "GameServer.h"
 
 CServerMain::CServerMain(): myTimerHandle(0), currentFreeId(ID_FREE)
 {
@@ -25,7 +26,9 @@ void CServerMain::StartServer()
 	myTimerHandle = myTimerManager.CreateTimer();
 	myNetworkWrapper.Init(DEFAULT_PORT);
 
-	myGameServer.Init();
+	myGameServer = new CGameServer();
+
+	myGameServer->Init();
 
 	Update();
 }

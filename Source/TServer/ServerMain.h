@@ -8,7 +8,9 @@
 #include <string>
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
-#include "GameServer.h"
+
+
+class CGameServer;
 
 struct SClientAdress
 {
@@ -52,6 +54,6 @@ private:
 	std::map<ClientID, float> myPendingPings;
 	CMessageManager myMessageManager;
 
-	CGameServer myGameServer;
+	CGameServer* myGameServer;
 };
 

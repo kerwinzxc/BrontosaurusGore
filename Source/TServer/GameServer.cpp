@@ -13,7 +13,7 @@
 
 
 
-CGameServer::CGameServer()
+CGameServer::CGameServer():myAmmoComponentManager(nullptr),myGameObjectManager(nullptr),myWeaponFactory(nullptr),myWeaponSystemManager(nullptr)
 {
 	myIsRunning = false;
 }
@@ -64,7 +64,7 @@ void CGameServer::Load()
 #else
 	const int levelIndex = 0;
 #endif
-
+	int myLevelIndex = 1;
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
 	levelPath += "/LevelData.json";
