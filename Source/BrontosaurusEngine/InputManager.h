@@ -46,6 +46,8 @@ private:
 	CU::InputWrapper* myDInputWrapper;
 	CU::XInputWrapper* myXInputWrapper;
 
+	int myLastMouseWheelPosition;
+
 	bool myHasFocus;
 
 	static CInputManager* ourInstance;

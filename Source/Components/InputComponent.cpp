@@ -64,6 +64,13 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 	case CU::eInputType::eKeyboardReleased:
 		KeyReleased(aInputMessage.myKey);
 		break;
+	case CU::eInputType::eScrollWheelChanged:
+	{
+		SComponentMessageData scrollWheelData;
+		scrollWheelData.myInt = aInputMessage.myMouseWheelDelta.x;
+		GetParent()->NotifyComponents(eComponentMessageType::eChangeWeapon, scrollWheelData);
+	}
+		break;
 	}
 
 	return CU::eInputReturn::ePassOn;
