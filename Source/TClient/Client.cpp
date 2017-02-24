@@ -14,11 +14,12 @@
 #include "../PostMaster/Message.h"
 #include "../PostMaster/Event.h"
 #include "../PostMaster/PostMaster.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 
 CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false), myMessageManager(nullptr)
 {
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 
@@ -166,13 +167,6 @@ void CClient::Send(CNetworkMessage* aNetworkMessage)
 {
 	myNetworkWrapper.Send(aNetworkMessage, myServerIp, SERVER_PORT);
 }
-
-eMessageReturn CClient::Recieve(const Message& aMessage)
-{
-	aMessage.myEvent.DoEvent(this);
-	return eMessageReturn::eContinue;
-}
-
 
 bool CClient::Connect(const char* anIp, std::string aClientName)
 {

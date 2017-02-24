@@ -1,7 +1,8 @@
 #pragma once
-
-#include "../PostMaster/Subscriber.h"
+#include <string>
+#include "CommonUtilities/vector2.h"
 #include "CommonUtilities/InputListener.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 enum class eMessageReturn;
 
@@ -26,7 +27,7 @@ namespace GUI
 	class WidgetContainer;
 	class HatContainer;
 
-	class GUIManager : public Subscriber, public CU::IInputListener
+	class GUIManager : public Postmaster::ISubscriber, public CU::IInputListener
 	{
 	public:
 		GUIManager();
@@ -53,8 +54,6 @@ namespace GUI
 		CU::eInputReturn MouseClicked(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
 		CU::eInputReturn MouseReleased(const CU::eMouseButtons aMouseButton, const CU::Vector2f& aMousePosition);
 		CU::eInputReturn MouseMoved(const CU::Vector2f& aMousePosition);
-
-		eMessageReturn Recieve(const Message& aMessage) override;
 
 		inline void SetRenderMouse(const bool aShouldRenderMouse);
 

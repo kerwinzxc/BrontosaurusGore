@@ -158,6 +158,9 @@
     <ClCompile Include="TServer_NetworkWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TClient\TClient.vcxproj">
+      <Project>{df7198ab-1f25-4ce1-baed-6a8ba762a249}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\TShared\TShared.vcxproj">
       <Project>{36f61d67-c746-4d60-9bdd-313641057e23}</Project>
     </ProjectReference>

@@ -1,5 +1,6 @@
 #pragma once
 #include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 class CScene;
 
@@ -10,7 +11,7 @@ namespace CU
 	class Time;
 }
 
-class CModelViewer : public Subscriber
+class CModelViewer : public Postmaster::ISubscriber
 {
 public:
 	CModelViewer();
@@ -22,8 +23,8 @@ public:
 
 	void LoadModel(const std::string& aModelPath);
 
+	eMessageReturn DoEvent(const DroppedFile& aDroppedFile) override;
 private:
-	eMessageReturn Recieve(const Message& aMessage) override;
 	
 	CScene* myScene;
 	InstanceID myCurrentModel;

@@ -112,11 +112,6 @@ ICollider* CCollisionComponentManager::CreateCollider(const eColliderType aColli
 	return newCollider;
 }
 
-eMessageReturn CCollisionComponentManager::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
 void CCollisionComponentManager::FlipShouldRender()
 {
 	myShouldRender = !myShouldRender;

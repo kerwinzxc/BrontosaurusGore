@@ -8,6 +8,7 @@
 #include "../PostMaster/DroppedFile.h"
 
 #include <Shellapi.h>
+#include "../ThreadedPostmaster/Postmaster.h"
 
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -89,11 +90,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		char filePath[MAX_PATH];
 		for (int i = 0; DragQueryFileA(hDropInfo, i, filePath, sizeof(filePath)); i++)
 		{
-			PostMaster* pm = PostMaster::GetInstancePtr();
-			if (pm != nullptr)
+			//PostMaster* pm = PostMaster::GetInstancePtr();
+			/*if (pm != nullptr)
 			{
 				pm->SendLetter(Message(eMessageType::eDroppedFile, DroppedFile(filePath)));
-			}
+			}*/
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DroppedFile(filePath));
 		}
 		DragFinish(hDropInfo);
 	}
@@ -104,7 +107,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CHAR:
 	{
 		char keyPressed = static_cast<char>(wParam);
-		PostMaster::GetInstance().SendLetter(Message(eMessageType::eCharPressed, KeyCharPressed(keyPressed)));
+		//PostMaster::GetInstance().SendLetter(Message(eMessageType::eCharPressed, KeyCharPressed(keyPressed)));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new KeyCharPressed(keyPressed));
 	}
 	break;
 	case WM_SIZE:
@@ -136,20 +140,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_KILLFOCUS:
 	{
-		PostMaster* pm = PostMaster::GetInstancePtr();
+		/*PostMaster* pm = PostMaster::GetInstancePtr();
 		if (pm != nullptr)
 		{
 			pm->SendLetter(Message(eMessageType::eFocusChanged, FocusChange(false)));
-		}
+		}*/
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(false));
 	}
 		break;
 	case WM_SETFOCUS:
 	{
-		PostMaster* pm = PostMaster::GetInstancePtr();
+	/*	PostMaster* pm = PostMaster::GetInstancePtr();
 		if (pm != nullptr)
 		{
 			pm->SendLetter(Message(eMessageType::eFocusChanged, FocusChange(true)));
-		}
+		}*/
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(true));
 	}
 		break;
 	default:

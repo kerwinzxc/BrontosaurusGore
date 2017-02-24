@@ -2,7 +2,7 @@
 #include "FocusChange.h"
 #include "../BrontosaurusEngine/InputManager.h"
 
-FocusChange::FocusChange(const bool aHasFocus)
+FocusChange::FocusChange(const bool aHasFocus) : IMessage(eMessageType::eFocusChanged)
 {
 	myHasFocus = aHasFocus;
 }
@@ -11,12 +11,17 @@ FocusChange::~FocusChange()
 {
 }
 
-eMessageReturn FocusChange::DoEvent(CInputManager* aInputManager) const
+eMessageReturn FocusChange::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
-	if (aInputManager)
-	{
-		aInputManager->LockUnlockMouse(myHasFocus);
-	}
+	return aSubscriber.DoEvent(*this);
+}
 
-	return eMessageReturn::eContinue;
+bool FocusChange::GetHasFocus() const
+{
+	return myHasFocus;
+}
+
+Postmaster::Message::IMessage* FocusChange::Copy()
+{
+	return new FocusChange(*this);
 }

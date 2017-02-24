@@ -1,6 +1,7 @@
 #pragma once
 #include "StateStack\State.h"
-#include "PostMaster\Subscriber.h"
+#include "CommonUtilities/GrowingArray.h"
+#include "ThreadedPostmaster/Subscriber.h"
 
 enum class eFadeState
 {
@@ -10,7 +11,7 @@ enum class eFadeState
 
 class CSpriteInstance;
 
-class CSplashScreen : public State, public Subscriber
+class CSplashScreen : public State, public Postmaster::ISubscriber
 {
 public:
 	CSplashScreen(StateStack& aStateStack);
@@ -21,7 +22,6 @@ public:
 	void AddPicture(const char * aPath);
 	void UserWantsToContinue();
 
-	eMessageReturn Recieve(const Message& aMessage) override;
 
 private:
 	void FadeIn(const CU::Time& aDeltaTime);

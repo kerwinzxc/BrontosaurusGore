@@ -3,14 +3,14 @@
 #include "../PostMaster/Subscriber.h"
 #include "Tween.h"
 #include "Queue.h"
+#include "ThreadedPostmaster/Subscriber.h"
 
-class CGameEventMessenger :public Subscriber
+class CGameEventMessenger :public Postmaster::ISubscriber
 {
 public:
 	CGameEventMessenger();
 	~CGameEventMessenger();
 
-	eMessageReturn Recieve(const Message& aMessage) override;
 
 	void Init(const CU::Vector2f &aPosition);
 	void Update(const float aDeltaTime);

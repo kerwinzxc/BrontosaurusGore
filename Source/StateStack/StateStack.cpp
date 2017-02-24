@@ -1,5 +1,13 @@
 #include "stdafx.h"
 #include "StateStack.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/ConsoleCalledUpon.h"
+#include "../PostMaster/PushState.h"
+#include "../Game/MainMenuState.h"
+#include "../Game/LevelSelectState.h"
+#include "../Game/PauseMenu.h"
+#include "../Game/LoadState.h"
+#include "../Game/CreditsState.h"
 
 StateStack::StateStack()
 	: myStates(8)
@@ -7,14 +15,18 @@ StateStack::StateStack()
 	, myStateToSwapTo(nullptr)
 	, myShouldUpdate(true)
 {
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eStateStackMessage);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eStateStackMessage);
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eStateStackMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
+
 }
 
 StateStack::~StateStack()
 {
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eStateStackMessage);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eConsoleCalledUpon);
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eStateStackMessage);
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eConsoleCalledUpon);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 	Clear();
 }
 
@@ -36,6 +48,42 @@ void StateStack::PushState(State *aState)
 State* StateStack::GetCurrentState()
 {
 	return myStates.GetLast();
+}
+
+eMessageReturn StateStack::DoEvent(const ConsoleCalledUpon& aConsoleCalledUpon)
+{
+	SetShouldUpdate(aConsoleCalledUpon.GetIsConsoleActive() == false);
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn StateStack::DoEvent(const PopCurrentState& aPopCurrent)
+{
+	GetCurrentState()->SetStateStatus(eStateStatus::ePop);
+	return eMessageReturn::eStop;
+}
+
+eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
+{
+	switch (aPushState.GetStateType())
+	{
+	case PushState::eState::ePlayState:
+		PushState(new CLoadState(*this, aPushState.GetLevelIndex()));
+		break;
+	case PushState::eState::eCreditScreen:
+		PushState(new CreditsState(*this, aPushState.GetLevelIndex()));
+		break;
+	case PushState::eState::ePauseScreen:
+		PushState(new PauseMenu(*this));
+		break;
+	case PushState::eState::eLevelSelect:
+		static_cast<MainMenuState*>(GetCurrentState())->SetIsGoingToLevelSelect(true);
+		PushState(new LevelSelectState(*this));
+		break;
+	default: 
+		break;
+	}
+
+	return eMessageReturn::eStop;
 }
 
 const eStateStatus StateStack::UpdateState(const CU::Time& aDeltaTime)
@@ -146,10 +194,5 @@ void StateStack::AddSwapStateFunction(const std::function<void(void)>& aSwapStat
 void StateStack::SwapState(State* aState)
 {
 	myStateToSwapTo = aState;
-}
-
-eMessageReturn StateStack::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
 }
 

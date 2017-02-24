@@ -1,13 +1,13 @@
 #pragma once
 #include "..\StateStack\State.h"
-#include "PostMaster\Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace GUI
 {
 	class GUIManager;
 }
 
-class LevelSelectState : public State, public Subscriber
+class LevelSelectState : public State, public Postmaster::ISubscriber
 {
 public:
 	LevelSelectState(StateStack& aStateStack);
@@ -20,7 +20,6 @@ public:
 	void OnExit(const bool aLetThroughRender) override;
 
 	bool GetLetThroughRender() const override;
-	eMessageReturn Recieve(const Message & aMessage) override;
 
 private:
 	GUI::GUIManager* myGUIManager;

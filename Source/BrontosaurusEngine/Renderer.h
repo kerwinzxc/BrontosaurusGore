@@ -9,6 +9,7 @@
 
 //temp includes
 #include "../PostMaster/Subscriber.h" //mvh carl
+#include "../ThreadedPostmaster/Subscriber.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -29,7 +30,7 @@ struct SRendererSettings
 };
 
 
-class CRenderer : public Subscriber
+class CRenderer : public Postmaster::ISubscriber
 {
 public:
 	CRenderer();
@@ -137,7 +138,6 @@ private:
 	bool myIsRunning;
 
 	// Inherited via Subscriber
-	eMessageReturn Recieve(const Message& aMessage) override;
 };
 
 inline SRendererSettings& CRenderer::GetSettings()

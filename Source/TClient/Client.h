@@ -5,6 +5,7 @@
 #include "../TShared/MessageManager.h"
 #include "Chat.h"
 #include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 enum class eClientState
 {
@@ -13,7 +14,7 @@ enum class eClientState
 	CONECTED,
 };
 
-class CClient : public Subscriber
+class CClient : public Postmaster::ISubscriber
 {
 	friend class CClientMessageManager;
 public:
@@ -26,8 +27,6 @@ public:
 	void Ping();
 	void Update();
 	void Send(CNetworkMessage* aNetworkMessage);
-
-	eMessageReturn Recieve(const Message& aMessage) override;
 
 	bool Connect(const char* anIp, std::string aClientName);
 
