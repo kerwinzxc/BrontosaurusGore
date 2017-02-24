@@ -4,9 +4,9 @@
 #include "../CommonUtilities/TimerManager.h"
 
 class CGameObjectManager;
-class AmmoComponentManager;
-class WeaponSystemManager;
-class WeaponFactory;
+class CAmmoComponentManager;
+class CWeaponSystemManager;
+class CWeaponFactory;
 
 class CGameServer
 {
@@ -27,20 +27,20 @@ private:
 	bool Update();
 
 	CGameObjectManager* myGameObjectManager;
-	AmmoComponentManager* myAmmoComponentManager;
-	WeaponSystemManager* myWeaponSystemManager;
-	WeaponFactory* myWeaponFactory;
+	CAmmoComponentManager* myAmmoComponentManager;
+	CWeaponSystemManager* myWeaponSystemManager;
+	CWeaponFactory* myWeaponFactory;
 
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
 	CU::ThreadPool myThreadPool;
-	CServerMain myMainServer;
 
 
 
 	bool myIsRunning;
 	bool myInGame;
+	bool myIsLoaded;
 };
 

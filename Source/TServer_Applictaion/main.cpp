@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "../TServer/GameServer.h"
 #include "../CommonUtilities/DL_Debug.h"
+#include "../TServer/ServerMain.h"
 
 
 int main(int argc, char* argv[])
@@ -12,9 +12,8 @@ int main(int argc, char* argv[])
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();
 
-	CGameServer gameServer;
-	gameServer.Init();
-	gameServer.Start();
+	CServerMain server;
+	server.StartServer();
 
 	//CommandLineManager::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();

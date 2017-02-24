@@ -434,6 +434,9 @@
     <ProjectReference Include="..\StateStack\StateStack.vcxproj">
       <Project>{11e472e1-7ce9-4029-b340-8c27b6d2e279}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\TServer\TServer.vcxproj">
+      <Project>{62ea3afe-a11b-43d0-86a3-1e29aa057693}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

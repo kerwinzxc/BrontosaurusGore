@@ -9,7 +9,7 @@ CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
 void CServerLoadManager::CreateInstance(CGameServer& aGameServer)
 {
 	assert(ourInstance == nullptr && "Load manager already created");
-	ourInstance = new CServerLoadManager();
+	ourInstance = new CServerLoadManager(aGameServer);
 }
 
 CServerLoadManager* CServerLoadManager::GetInstance()

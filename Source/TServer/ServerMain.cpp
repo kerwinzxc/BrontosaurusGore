@@ -24,6 +24,10 @@ void CServerMain::StartServer()
 {
 	myTimerHandle = myTimerManager.CreateTimer();
 	myNetworkWrapper.Init(DEFAULT_PORT);
+
+	myGameServer.Init();
+
+	Update();
 }
 
 void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)

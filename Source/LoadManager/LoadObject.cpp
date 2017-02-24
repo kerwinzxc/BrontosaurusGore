@@ -8,6 +8,7 @@
 #include "ComponentManager.h"
 #include "DL_Debug.h"
 #include "GameObjectManager.h"
+#include "../TServer/GameServer.h"
 #include "CommonUtilities.h"
 #include "ComponentMessage.h"
 
@@ -70,12 +71,12 @@ void LinkObject(const int target, const int anOtherComponent)
 	gameObject->AddComponent(otherComponent);
 }
 
-int LoadObject(KLoader::SLoadedComponentData someData)
+int LoadServerObject(KLoader::SLoadedComponentData someData)
 {
 	CServerLoadManager* loadManager = CServerLoadManager::GetInstance();
 	if (!loadManager) return NULL_COMPONENT;
 
-	CGameObjectManager* gameObjectManager = loadManager->GetCurrentGameServer.GetGameObjectManager();
+	CGameObjectManager* gameObjectManager = &loadManager->GetCurrentGameServer().GetGameObjectManager();
 	if (!gameObjectManager) return NULL_COMPONENT;
 
 	CGameObject* const gameObject = gameObjectManager->CreateGameObject();

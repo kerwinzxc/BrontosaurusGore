@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "GameServer.h"
-#include "../Components/ComponentManager.h"
-#include "../Components/GameObjectManager.h"
-#include "../Components/AmmoComponentManager.h"
-#include "../Components/WeaponFactory.h"
-#include "../Components/WeaponSystemManager.h"
+#include "ComponentManager.h"
+#include "GameObjectManager.h"
+#include "AmmoComponentManager.h"
+#include "WeaponFactory.h"
+#include "WeaponSystemManager.h"
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
-#include "../LoadManager/LoadManager.h"
+#include "../LoadManager/ServerLoadManager.h"
+
+
 
 
 
@@ -24,19 +26,11 @@ CGameServer::~CGameServer()
 void CGameServer::Init()
 {
 	
-
-	Load();
 }
 
 void CGameServer::Start()
 {
-	CU::Work work(std::bind(&CServerMain::Update, &myMainServer));
-	myThreadPool.AddWork(work);
-
-	do
-	{
-		myIsRunning = Update();
-	} while (myIsRunning == true);
+	
 }
 
 CGameObjectManager & CGameServer::GetGameObjectManager()
@@ -52,7 +46,7 @@ void CGameServer::Load()
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	LoadManagerGuard loadManagerGuard(*this);
+	ServerLoadManagerGuard loadManagerGuard(*this);
 	CreateManagersAndFactories();
 
 	myWeaponFactory->LoadWeapons();
@@ -90,9 +84,9 @@ void CGameServer::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 
-	myAmmoComponentManager = new AmmoComponentManager();
-	myWeaponFactory = new WeaponFactory();
-	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
+	myAmmoComponentManager = new CAmmoComponentManager();
+	myWeaponFactory = new CWeaponFactory();
+	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 }
 
 bool CGameServer::Update()

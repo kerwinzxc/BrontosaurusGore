@@ -50,20 +50,3 @@ private:
 
 	friend void CPlayState::Load();
 };
-
-class LoadManagerGuard
-{
-public:
-	~LoadManagerGuard()
-	{
-		LoadManager::DestroyInstance();
-	}
-
-private:
-	LoadManagerGuard(CGameServer& aGameServer)
-	{
-		LoadManager::CreateInstance();
-	}
-
-	friend void CGameServer::Load();
-};

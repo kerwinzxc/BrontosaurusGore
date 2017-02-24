@@ -1,13 +1,12 @@
 #pragma once
+#include "../TServer/GameServer.h"
 
-class CGameServer;
+
 
 class CServerLoadManager
 {
 public:
-	CServerLoadManager();
-	~CServerLoadManager();
-	friend class LoadManagerGuard;
+	friend class ServerLoadManagerGuard;
 
 	static CServerLoadManager* GetInstance();
 
@@ -30,5 +29,22 @@ private:
 
 	CGameServer& myCurrentGameServer;
 	
+};
+
+class ServerLoadManagerGuard
+{
+public:
+	~ServerLoadManagerGuard()
+	{
+		CServerLoadManager::DestroyInstance();
+	}
+
+private:
+	ServerLoadManagerGuard(CGameServer& aGameServer)
+	{
+		CServerLoadManager::CreateInstance(aGameServer);
+	}
+
+	friend void CGameServer::Load();
 };
 
