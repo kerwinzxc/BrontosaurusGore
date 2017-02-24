@@ -25,6 +25,7 @@ class CMovementComponent;
 class CWeaponFactory;
 class CProjectileComponentManager;
 class CProjectileFactory;
+class CInputComponentManager;
 
 class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
@@ -61,6 +62,7 @@ private:
 	CProjectileComponentManager* myProjectileComponentManager;
 	CProjectileFactory* myProjectileFactory;
 	CEnemyComponentManager* myEnemyComponentManager;
+	CInputComponentManager* myInputComponentManager;
 
 	CMovementComponent* myMovementComponent;
 

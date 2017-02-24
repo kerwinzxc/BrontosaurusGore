@@ -355,6 +355,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyComponentManager.h" />
     <ClInclude Include="GeneralAmmoData.h" />
+    <ClInclude Include="InputComponentManager.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
@@ -401,6 +402,7 @@
     <ClCompile Include="EnemyComponentManager.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="InputComponentManager.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />

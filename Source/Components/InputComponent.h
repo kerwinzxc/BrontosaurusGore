@@ -16,6 +16,7 @@ public:
 	~CInputComponent();
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	void Update();
 
 private:
 	CU::eInputReturn TakeInput(const CU::SInputMessage& aInputMessage) override;
@@ -24,7 +25,7 @@ private:
 
 	void KeyPressed(const CU::eKeys aKey);
 	void KeyReleased(const CU::eKeys aKey);
-
 private:
 	CU::StaticArray<CU::eKeys, static_cast<int>(ePlayerControls::eLength)> myControlMap;
+	bool myIsLeftMouseButtonPressed;
 };
