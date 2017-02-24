@@ -38,6 +38,9 @@
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
+#include "EnemyComponentManager.h"
+#include "Enemy.h"
+
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
@@ -64,7 +67,6 @@ CPlayState::~CPlayState()
 
 	SAFE_DELETE(myModelComponentManager);
 
-	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
@@ -103,6 +105,7 @@ void CPlayState::Load()
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
 		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
 		cameraObject->AddComponent(cameraComponent);
@@ -173,6 +176,7 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
@@ -226,6 +230,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
+	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
