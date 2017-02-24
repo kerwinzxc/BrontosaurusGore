@@ -402,3 +402,4 @@ Bin/BrontosaurusGore_Debug.lib
 Bin/BrontosaurusGore_Release.lib
 Bin/BrontosaurusGore_Retail.lib
 *.orig
+Bin/TClient_x64_Release.lib

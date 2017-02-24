@@ -49,7 +49,7 @@ CInputManager::CInputManager()
 
 	myHasFocus = true;
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
 }
 
 CInputManager::~CInputManager()

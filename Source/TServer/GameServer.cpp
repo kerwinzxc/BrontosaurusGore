@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "GameServer.h"
-#include "ComponentManager.h"
-#include "GameObjectManager.h"
-#include "AmmoComponentManager.h"
-#include "WeaponFactory.h"
-#include "WeaponSystemManager.h"
+#include "../Components/ComponentManager.h"
+#include "../Components/GameObjectManager.h"
+#include "../Components/AmmoComponentManager.h"
+#include "../Components/WeaponFactory.h"
+#include "../Components/WeaponSystemManager.h"
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
 #include "../LoadManager/ServerLoadManager.h"
@@ -13,7 +13,7 @@
 
 
 
-CGameServer::CGameServer():myAmmoComponentManager(nullptr),myGameObjectManager(nullptr),myWeaponFactory(nullptr),myWeaponSystemManager(nullptr)
+CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager(nullptr), myWeaponFactory(nullptr), myMainTimer(0), myInGame(false), myIsLoaded(false), myWeaponSystemManager(nullptr)
 {
 	myIsRunning = false;
 }
