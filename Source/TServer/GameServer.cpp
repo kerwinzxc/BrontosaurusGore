@@ -13,7 +13,7 @@
 
 
 
-CGameServer::CGameServer():myAmmoComponentManager(nullptr),myGameObjectManager(nullptr),myWeaponFactory(nullptr),myWeaponSystemManager(nullptr)
+CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager(nullptr), myWeaponFactory(nullptr), myMainTimer(0), myInGame(false), myIsLoaded(false), myWeaponSystemManager(nullptr)
 {
 	myIsRunning = false;
 }

@@ -1,7 +1,8 @@
 #pragma once
-#include "StateStack/State.h"
 #include "LoadingAnimation.h"
+#include "../StateStack/State.h"
 
+class StateStack;
 class CPlayState;
 
 class CLoadState :public State

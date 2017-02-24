@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include "vector3.h"
+#include "../CommonUtilities/vector3.h"
 
 class CNetworkPosMessageEvent: public Event
 {
@@ -11,4 +11,3 @@ public:
 private:
 	const CU::Vector3f myPosition;
 };
-

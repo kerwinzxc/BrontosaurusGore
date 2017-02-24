@@ -13,8 +13,8 @@ class PostMaster
 public:
 	static void CreateInstance();
 	static void DestroyInstance();
-	static PostMaster& GetInstance();
-	static PostMaster* GetInstancePtr();
+	//static PostMaster& GetInstance();
+	//static PostMaster* GetInstancePtr();
 
 	//void InsertSubscriber(Subscriber* aSubscriber, const eMessageType aMessageType);
 	void Subscribe(Subscriber* aSubscriber, const eMessageType aMessageType, const int aPriority);

@@ -3,7 +3,7 @@
 #include "BrontosaurusEngine\Console.h"
 
 KeyCharPressed::KeyCharPressed(const char aKey)
-	: myKey(aKey)
+	: IMessage(eMessageType::eCharPressed),myKey(aKey)
 {
 }
 
@@ -12,7 +12,17 @@ KeyCharPressed::~KeyCharPressed()
 {
 }
 
-eMessageReturn KeyCharPressed::DoEvent(CConsole *aConsole) const
+eMessageReturn KeyCharPressed::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
-	return aConsole->TakeKeyBoardInputPressedChar(myKey);
+	return aSubscriber.DoEvent(*this);
+}
+
+char KeyCharPressed::GetKey() const
+{
+	return myKey;
+}
+
+Postmaster::Message::IMessage* KeyCharPressed::Copy()
+{
+	return new KeyCharPressed(*this);
 }

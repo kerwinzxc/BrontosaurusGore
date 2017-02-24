@@ -25,6 +25,7 @@
 #include "../CommonUtilities/JsonValue.h"
 #include "Components/GameObject.h"
 #include "Components/ComponentMessage.h"
+#include "ThreadedPostmaster/Postmaster.h"
 
 using size_ga = CU::GrowingArray<CLoaderMesh*>::size_type;
 
@@ -217,49 +218,61 @@ namespace GUI
 		const std::string& widgetName = aWidget->GetName();
 		if (widgetName.find("Quit") != std::string::npos)
 		{
-			auto popStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); };
+			auto popStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState()); };
 			Button* button = new Button(popStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Start") != std::string::npos)
 		{
-			auto pushPlayStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, PushState::_DONT_ASK_))); };
+			auto pushPlayStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::ePlayState, PushState::_DONT_ASK_));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, PushState::_DONT_ASK_))); 
+				};
 			Button* button = new Button(pushPlayStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Credits") != std::string::npos)
 		{
-			auto pushCreditStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::eCreditScreen, PushState::_DONT_ASK_))); };
+			auto pushCreditStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::eCreditScreen, PushState::_DONT_ASK_));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::eCreditScreen, PushState::_DONT_ASK_))); 
+				};
 			Button* button = new Button(pushCreditStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("LevelSelect") != std::string::npos)
 		{
-			auto pushCreditStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::eLevelSelect, PushState::_DONT_ASK_))); };
+			auto pushCreditStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::eLevelSelect, PushState::_DONT_ASK_));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::eLevelSelect, PushState::_DONT_ASK_))); 
+				};
 			Button* button = new Button(pushCreditStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Retry") != std::string::npos)
 		{
-			auto popStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); };
+			auto popStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); 
+				};
 			Button* button = new Button(popStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Resume") != std::string::npos)
 		{
-			auto popStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); };
+			auto popStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); 
+				};
 			Button* button = new Button(popStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Continue") != std::string::npos)
 		{
-			auto popStateMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); };
+			auto popStateMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState())); 
+				};
 			Button* button = new Button(popStateMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
@@ -273,28 +286,36 @@ namespace GUI
 		}
 		else if (widgetName.find("Level1") != std::string::npos)
 		{
-			auto pushLevelMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 10))); };
+			auto pushLevelMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::ePlayState, 10));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 10))); 
+				};
 			Button* button = new Button(pushLevelMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Level2") != std::string::npos)
 		{
-			auto pushLevelMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 11))); };
+			auto pushLevelMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::ePlayState, 11));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 11))); 
+				};
 			Button* button = new Button(pushLevelMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Level3") != std::string::npos)
 		{
-			auto pushLevelMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 12))); };
+			auto pushLevelMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::ePlayState, 12));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 12))); 
+				};
 			Button* button = new Button(pushLevelMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;
 		}
 		else if (widgetName.find("Level4") != std::string::npos)
 		{
-			auto pushLevelMessage = [] { PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 13))); };
+			auto pushLevelMessage = [] { Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::ePlayState, PushState::_DONT_ASK_));
+				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PushState(PushState::eState::ePlayState, 13))); 
+				};
 			Button* button = new Button(pushLevelMessage, aWidget->GetWorldPosition(), aWidget->GetSize(), aWidget->GetName());
 			button->AddWidget("Animation", new ButtonAnimation(aWidget));
 			return button;

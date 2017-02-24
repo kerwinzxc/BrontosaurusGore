@@ -9,6 +9,7 @@
 #include "BrontosaurusEngine\SpriteInstance.h"
 
 #include "BrontosaurusEngine\ParticleEmitterInstance.h"
+#include "ThreadedPostmaster/Postmaster.h"
 
 
 CreditsState::CreditsState(StateStack& aStateStack, const bool aInGame) 
@@ -57,10 +58,6 @@ void CreditsState::OnExit(const bool /*aLetThroughRender*/)
 
 void CreditsState::GoToMainMenu()
 {
-	PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState()));
-}
-
-eMessageReturn CreditsState::Recieve(const Message & aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
+	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState()));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
 }

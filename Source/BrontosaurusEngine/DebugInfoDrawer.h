@@ -5,6 +5,7 @@
 
 #include <atomic>
 #include "../CommonUtilities/BitSet.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -22,7 +23,7 @@ namespace CU
 
 class CTextInstance;
 
-class CDebugInfoDrawer : public Subscriber
+class CDebugInfoDrawer : public Postmaster::ISubscriber
 {
 public:
 	CDebugInfoDrawer(unsigned int aDebugFlags = 0);
@@ -31,18 +32,20 @@ public:
 	void Render(const CU::Vector2ui aTargetWindowSize);
 	void Update();
 
-	eMessageReturn Recieve(const Message& aMessage) override;
-
+	
 	void PressedKey(const CU::eKeys& aKey);
 	void ReleasedKey(const CU::eKeys& aKey);
 
 	void SetDrawCalls(const int aDrawCallsCount);
 	void UpdateFPSCounter();
 
+	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
+
 private:
 	void UpdateLogicFPSCounter();
 	void UpdateDrawCallsCounter();
 	void UpdateMemoryUsage();
+
 
 	enum eDebugText : unsigned int
 	{

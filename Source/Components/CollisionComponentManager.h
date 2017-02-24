@@ -1,6 +1,5 @@
 #pragma once
-
-#include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -16,7 +15,7 @@ namespace Intersection
 	union CollisionData;
 }
 
-class CCollisionComponentManager : public Subscriber
+class CCollisionComponentManager : public Postmaster::ISubscriber
 {
 public:
 	enum class eColliderType
@@ -39,7 +38,6 @@ public:
 
 private:
 	ICollider* CreateCollider(const eColliderType aColliderType, Intersection::CollisionData& aCollisionData);
-	eMessageReturn Recieve(const Message& aMessage) override;
 
 	CU::GrowingArray<CCollisionComponent*, unsigned int, false> myCollisionComponents;
 	CCollisionManager* myCollisionManager;

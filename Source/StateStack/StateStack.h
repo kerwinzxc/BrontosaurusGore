@@ -1,6 +1,7 @@
 #pragma once
 #include "../PostMaster/Subscriber.h"
 #include <functional>
+#include "../ThreadedPostmaster/Subscriber.h"
 
 class State;
 enum class eStateStatus : unsigned char;
@@ -13,7 +14,7 @@ namespace CU
 const bool STATESTACK_CONTINUE = true;
 const bool STATESTACK_QUIT = false;
 
-class StateStack : public Subscriber
+class StateStack : public Postmaster::ISubscriber
 {
 public:
 	StateStack();
@@ -28,13 +29,18 @@ public:
 	void AddSwapStateFunction(const std::function<void(void)>& aSwapStateCunction);
 	void SwapState(State* aState);
 
-	eMessageReturn Recieve(const Message& aMessage) override;
-
 	inline void SetShouldUpdate(bool aShouldUpdate);
+
+	eMessageReturn DoEvent(const ConsoleCalledUpon& aConsoleCalledUpon) override;
+	eMessageReturn DoEvent(const PopCurrentState& aPopCurrent) override;
+	eMessageReturn DoEvent(const ::PushState& aPushState) override;
+
 private:
 	const eStateStatus UpdateState(const CU::Time& aDeltaTime);
 	void UpdateStateAtIndex(const CU::Time& aDeltaTime, const short aIndex);
 	void RenderStateAtIndex(const short aIndex);
+
+
 
 	CU::GrowingArray<State*, short> myStates;
 	std::function<void(void)> mySwapStateFunction;

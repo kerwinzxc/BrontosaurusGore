@@ -13,6 +13,8 @@
 #include "LuaWrapper/SSlua/SSlua.h"
 #include "ScriptLoader.h"
 #include "KevinLoader/KevinLoader.h"
+#include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/PostOffice.h"
 
 CGame::CGame()
 {
@@ -57,6 +59,7 @@ void CGame::Init()
 
 void CGame::Update(const CU::Time& aDeltaTime)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	bool isRunning = myStateStack.Update(aDeltaTime);
 	myClient.Update();
 	if (isRunning == false)

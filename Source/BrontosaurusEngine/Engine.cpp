@@ -24,6 +24,8 @@
 #include "../Audio/AudioInterface.h"
 #include "../FontEngine/FontEngineFacade.h"
 #include "Console.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 CEngine* CEngine::myInstance = nullptr;
 
@@ -97,6 +99,7 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 
 void CEngine::Render()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	myDXFramework->ClearDepthStencil();
 	myDXFramework->ClearScreen();
 
@@ -162,6 +165,7 @@ void CEngine::Start()
 	//http ://stackoverflow.com/questions/10876342/equivalent-of-setthreadpriority-on-linux-pthreads
 #endif
 
+	
 	myInitCallbackFunction();
 	myConsole->GetLuaFunctions();
 
@@ -207,7 +211,6 @@ void CEngine::Start()
 		{
 			Render();
 		}
-
 	}
 }
 

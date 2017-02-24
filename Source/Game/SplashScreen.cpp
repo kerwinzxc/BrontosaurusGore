@@ -131,8 +131,3 @@ void CSplashScreen::OnEnter(const bool /*aLetThroughRender*/)
 void CSplashScreen::OnExit(const bool /*aLetThroughRender*/)
 {
 }
-
-eMessageReturn CSplashScreen::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}

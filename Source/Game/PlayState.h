@@ -3,6 +3,7 @@
 #include "../PostMaster/Subscriber.h"
 #include <atomic>
 #include "../Components/EnemyComponentManager.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -26,7 +27,7 @@ class CProjectileComponentManager;
 class CProjectileFactory;
 class CInputComponentManager;
 
-class CPlayState : public State , public Subscriber
+class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
 public:
 	CPlayState(StateStack& aStateStack, const int aLevelIndex);

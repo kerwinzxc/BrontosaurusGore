@@ -49,11 +49,6 @@ void GUICursor::SetPosition(const CU::Vector2f& aPosition)
 	mySprite->SetPosition(/*position*/aPosition);
 }
 
-eMessageReturn GUICursor::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
 const CU::Vector2f& GUICursor::GetPosition() const
 {
 	return mySprite->GetPosition();

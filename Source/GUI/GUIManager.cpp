@@ -15,6 +15,7 @@
 #include "../Audio/AudioInterface.h"
 #include "CommonUtilities/InputMessage.h"
 #include "CommonUtilities/EInputReturn.h"
+#include "ThreadedPostmaster/Message.h"
 
 static CU::Vector2f locMousePosition;
 
@@ -237,10 +238,7 @@ CU::eInputReturn GUI::GUIManager::MouseMoved(const CU::Vector2f& aMousePosition)
 	return CU::eInputReturn::ePassOn;
 }
 
-eMessageReturn GUI::GUIManager::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
+
 
 CU::eInputReturn GUI::GUIManager::TakeInput(const CU::SInputMessage& aInputMessage)
 {
