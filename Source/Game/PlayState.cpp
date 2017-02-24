@@ -44,6 +44,7 @@
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
+#include "InputComponentManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -54,8 +55,10 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myMovementComponent(nullptr)
 	, myAmmoComponentManager(nullptr)
 	, myWeaponFactory(nullptr)
+	, myWeaponSystemManager(nullptr)
 	, myProjectileComponentManager(nullptr)
 	, myProjectileFactory(nullptr)
+	, myInputComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 }
@@ -111,7 +114,7 @@ void CPlayState::Load()
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 
-		CInputComponent* inputComponent = new CInputComponent();
+		CInputComponent* inputComponent = myInputComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(inputComponent);
 
 		myMovementComponent = new CMovementComponent();
@@ -128,6 +131,11 @@ void CPlayState::Load()
 		giveAmmoData.myInt = 100;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 		addHandGunData.myString = "Shotgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		addHandGunData.myString = "PlasmaRifle";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
 		giveAmmoData.myInt = 100;
@@ -183,6 +191,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myAmmoComponentManager->Update(aDeltaTime);
+	myInputComponentManager->Update();
 
 	return myStatus;
 }
@@ -240,4 +249,5 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+	myInputComponentManager = new CInputComponentManager();
 }
