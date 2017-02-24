@@ -9,6 +9,9 @@
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
 
+
+class CGameServer;
+
 struct SClientAdress
 {
 	std::string myIP;
@@ -43,10 +46,14 @@ private:
 
 	TShared_NetworkWrapper myNetworkWrapper;
 
+	std::map<__int16, CImportantNetworkMessage*> myImportantMessages;
+
 	std::map<ClientID, SClientAdress> myClients;
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;
 	CMessageManager myMessageManager;
+
+	CGameServer* myGameServer;
 };
 

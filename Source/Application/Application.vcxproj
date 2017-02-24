@@ -439,6 +439,8 @@
     </ProjectReference>
     <ProjectReference Include="..\ThreadedPostmaster\ThreadedPostmaster.vcxproj">
       <Project>{2e206e26-7c71-4d89-9a90-2a3d0c132c9d}</Project>
+    <ProjectReference Include="..\TServer\TServer.vcxproj">
+      <Project>{62ea3afe-a11b-43d0-86a3-1e29aa057693}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

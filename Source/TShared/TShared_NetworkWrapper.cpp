@@ -8,7 +8,7 @@
 #include "NetworkMessage_Ping.h"
 #include "NetworkMessage_PingResponse.h"
 
-TShared_NetworkWrapper::TShared_NetworkWrapper() : myBuffer(nullptr), myCurrentBufferSize(0), mySocket(INVALID_SOCKET)
+TShared_NetworkWrapper::TShared_NetworkWrapper() : myBuffer(nullptr), myCurrentBufferSize(0), mySocket(INVALID_SOCKET), myMessageCount(1)
 {
 }
 
@@ -17,6 +17,15 @@ TShared_NetworkWrapper::~TShared_NetworkWrapper()
 {
 	closesocket(mySocket);
 	WSACleanup();
+}
+
+bool TShared_NetworkWrapper::CheckIfImportantMessageDone(__int16 aMessageID)
+{
+	if (myImportantMessages.count(aMessageID) > 0)
+	{
+		return false;
+	}
+	return true;
 }
 
 bool TShared_NetworkWrapper::Init(unsigned short aPort)
@@ -72,13 +81,26 @@ bool TShared_NetworkWrapper::Init(unsigned short aPort)
 	return true;
 }
 
-bool TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort)
+__int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort)
 {
 	aNetworkMessage->PackMessage();
 	const StreamType& streamType = aNetworkMessage->GetSerializedData();
 
 	const unsigned tempBufferSize = aNetworkMessage->GetSerializedData().size();
 	SNetworkPackageHeader aHeader = aNetworkMessage->GetHeader();
+
+	if (aNetworkMessage->IsImportant() == true)
+	{
+		if (myImportantMessages.count(aHeader.myMessageCount) < 1)
+		{
+			aHeader.myMessageCount = GetMessageCount();
+			myImportantMessages[aHeader.myMessageCount] = static_cast<CImportantNetworkMessage*>(aNetworkMessage);
+		}
+	}
+	else
+	{
+		aHeader.myMessageCount = GetMessageCount();
+	}
 
 	unsigned currentPacketSize = sizeof(SNetworkPackageHeader) + streamType.size();
 
@@ -111,7 +133,17 @@ bool TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const char* 
 		std::cout << error.c_str();
 	}
 
-	return true;
+	return aHeader.myMessageCount;
+}
+
+__int16 TShared_NetworkWrapper::GetMessageCount()
+{
+	const __int16 temp = myMessageCount++;
+	if (myMessageCount == 0)
+	{
+		++myMessageCount;
+	}
+	return temp;
 }
 
 bool TShared_NetworkWrapper::Send(SNetworkPackageHeader aPackageHeader, const char* aData, unsigned aDataSize, const char* aRecieverAdress, const char* aRecieverPort)
