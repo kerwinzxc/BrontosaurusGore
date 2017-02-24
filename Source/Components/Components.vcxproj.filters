@@ -115,6 +115,7 @@
     <ClCompile Include="EnemyComponentManager.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="InputComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -260,10 +261,11 @@
     </ClInclude>
     <ClInclude Include="EnemyComponentManager.h">
       <Filter>Enemy</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="GeneralAmmoData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
+    <ClInclude Include="InputComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
