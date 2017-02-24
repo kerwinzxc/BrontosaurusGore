@@ -31,8 +31,28 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		CProjectileFactory::GetInstance().ShootProjectile(myWeaponData->projectileData, aDirection, myUser->GetWorldPosition());
-		myElapsedFireTimer = 0.0f;
+		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
+		{
+			CU::Vector3f rotatedDirection = aDirection;
+			rotatedDirection = aDirection;
+			if(myWeaponData->randomSpreadAngleX > 0)
+			{
+				unsigned short randomNumber = (rand() % myWeaponData->randomSpreadAngleX);
+				short randomXAngle = randomNumber - myWeaponData->randomSpreadAngleX / 2.0f;
+				randomNumber = (rand() % myWeaponData->randomSpreadAngleY);
+				float randomXRadian = randomXAngle * PI / 180.0f;
+				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(randomXRadian);
+			}
+			if (myWeaponData->randomSpreadAngleY > 0)
+			{
+				unsigned short randomNumber = (rand() % myWeaponData->randomSpreadAngleY);
+				short randomYAngle = randomNumber - myWeaponData->randomSpreadAngleY / 2.0f;
+				float randomYRadian = randomYAngle * PI / 180.0f;
+				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(randomYRadian);
+			}
+			CProjectileFactory::GetInstance().ShootProjectile(myWeaponData->projectileData, rotatedDirection, myUser->GetWorldPosition());
+			myElapsedFireTimer = 0.0f;
+		}
 	}
 }
 void CWeapon::Update(float aDeltaTime)

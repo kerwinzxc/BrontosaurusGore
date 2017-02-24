@@ -41,6 +41,9 @@ void CWeaponFactory::LoadWeapons()
 		std::string weaponName = levelsArray[i].at("WeaponName").GetString();
 		newWeaponData->name = weaponName.c_str();
 		newWeaponData->fireRate = levelsArray[i].at("FireRate").GetFloat();
+		newWeaponData->randomSpreadAngleX = levelsArray[i].at("RandomSpreadAngleX").GetInt();
+		newWeaponData->randomSpreadAngleY = levelsArray[i].at("RandomSpreadAngleY").GetInt();
+		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();
 		newProjectileData->projectileModelFilePath = levelsArray[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(levelsArray[i].at("Damage").GetFloat());
 		newProjectileData->movementSpeed = levelsArray[i].at("ProjectileMovementSpeed").GetFloat();
@@ -64,6 +67,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 			SComponentMessageData newWeaponMessage;
 			newWeaponMessage.myWeapon = newWeapon;
 			aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem, newWeaponMessage);
+			return;
 		}
 	}
 	DL_PRINT("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);

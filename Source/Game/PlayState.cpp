@@ -123,6 +123,9 @@ void CPlayState::Load()
 		SComponentMessageData addHandGunData;
 		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		addHandGunData.myString = "Shotgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
 		SComponentMessageData giveAmmoData;
 		giveAmmoData.myInt = 100;
