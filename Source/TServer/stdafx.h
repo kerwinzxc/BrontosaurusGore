@@ -13,3 +13,7 @@
 
 // TODO: reference additional headers your program requires here
 #include "../CommonUtilities/GrowingArray.h"
+#include "../CommonUtilities/DL_Debug.h"
+#include "../CommonUtilities/vector3.h"
+#include "../CommonUtilities/vector2.h"
+#include "../CommonUtilities/CUTime.h"

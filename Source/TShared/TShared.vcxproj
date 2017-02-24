@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
+    <ClInclude Include="ImportantNetworkMessage.h" />
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="NetworkMessage_ChatMessage.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ImportantNetworkMessage.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="NetworkMessage_ChatMessage.cpp" />

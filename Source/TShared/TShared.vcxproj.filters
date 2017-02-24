@@ -36,6 +36,9 @@
     <Filter Include="NetworkMessage\Connect">
       <UniqueIdentifier>{4b050800-97dd-452d-a9cb-2fa2cefe07b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\MessageDeImportante">
+      <UniqueIdentifier>{086985a4-756c-4c68-9d51-9180aa70ffb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -86,6 +89,9 @@
     <ClInclude Include="NetworkMesssage_Connect.h">
       <Filter>NetworkMessage\Connect</Filter>
     </ClInclude>
+    <ClInclude Include="ImportantNetworkMessage.h">
+      <Filter>NetworkMessage\MessageDeImportante</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -117,6 +123,9 @@
     </ClCompile>
     <ClCompile Include="NetworkMesssage_Connect.cpp">
       <Filter>NetworkMessage\Connect</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportantNetworkMessage.cpp">
+      <Filter>NetworkMessage\MessageDeImportante</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

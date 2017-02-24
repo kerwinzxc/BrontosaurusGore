@@ -135,7 +135,7 @@ void CPlayState::Load()
 	}
 	
 
-	myGameObjectManager->SendObjectsDoneMessage();
+	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	

@@ -47,6 +47,11 @@ void CNetworkMessage::SetHeader(SNetworkPackageHeader aHeader)
 	myHeader.myPackageType = static_cast<char>(GetPackageType());
 }
 
+bool CNetworkMessage::IsImportant()
+{
+	return false;
+}
+
 const SNetworkPackageHeader& CNetworkMessage::GetHeader() const
 {
 	return myHeader;
