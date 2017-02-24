@@ -205,6 +205,10 @@ void CInputManager::UpdateMouse()
 					}
 					myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
 				}
+				else
+				{
+					myLastMouseWheelPosition = 0;
+				}
 			}
 		}
 

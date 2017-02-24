@@ -121,13 +121,15 @@ void CPlayState::Load()
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
 		SComponentMessageData addHandGunData;
+		SComponentMessageData giveAmmoData;
 		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 		addHandGunData.myString = "Shotgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		SComponentMessageData giveAmmoData;
 		giveAmmoData.myInt = 100;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
