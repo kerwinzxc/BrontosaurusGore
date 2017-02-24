@@ -92,6 +92,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadedPostmaster", "Threa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Container", "Container\Container.vcxproj", "{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fluid", "Fluid\Fluid.vcxproj", "{6D095002-C8D8-490E-AF99-F87B6B4801A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -575,6 +577,26 @@ Global
 		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x64.Build.0 = Release|x64
 		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x86.ActiveCfg = Release|Win32
 		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x86.Build.0 = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Debug|x64.ActiveCfg = Debug|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Debug|x64.Build.0 = Debug|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Debug|x86.Build.0 = Debug|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewer|x64.ActiveCfg = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewer|x64.Build.0 = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewer|x86.ActiveCfg = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewer|x86.Build.0 = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewerRelease|x64.ActiveCfg = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewerRelease|x64.Build.0 = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewerRelease|x86.ActiveCfg = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.ModelViewerRelease|x86.Build.0 = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Release|x64.ActiveCfg = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Release|x64.Build.0 = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Release|x86.ActiveCfg = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Release|x86.Build.0 = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Retail|x64.ActiveCfg = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Retail|x64.Build.0 = Release|x64
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Retail|x86.ActiveCfg = Release|Win32
+		{6D095002-C8D8-490E-AF99-F87B6B4801A9}.Retail|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
