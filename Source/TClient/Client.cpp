@@ -17,7 +17,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 
 
-CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false), myMessageManager(nullptr)
+CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false), myMessageManager(nullptr), myCurrentPing(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
@@ -81,6 +81,12 @@ void CClient::Update()
 {
 	float currentTime = 0.f;
 
+	std::string pingString;
+	pingString = "Ping: ";
+	pingString += std::to_string(static_cast<int>(myCurrentPing * 1000 + 0.5f)).c_str();
+
+	DL_PRINT(pingString.c_str());
+
 	//while (true)
 	{
 		myTimerManager.UpdateTimers();
@@ -121,6 +127,7 @@ void CClient::Update()
 			break;
 		case ePackageType::ePingResponse:
 			{
+				myCurrentPing = myServerPingTime;
 				myServerPingTime = 0;
 				myServerIsPinged = false;
 			}

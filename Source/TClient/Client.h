@@ -38,6 +38,8 @@ private:
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
+	float myCurrentPing;
+
 	TShared_NetworkWrapper myNetworkWrapper;
 	eClientState myState;
 	CU::Timer myTimer;

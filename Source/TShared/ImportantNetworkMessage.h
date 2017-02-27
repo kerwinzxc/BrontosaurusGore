@@ -10,5 +10,12 @@ public:
 
 	bool IsImportant() override;
 
+	void SetImportantId(int aImportantCount);
+	int GetImportantId()const;
+private:
+	int myImportantId;
+
+	void DoSerialize(StreamType& aStream) override;
+	void DoDeserialize(StreamType& aStream) override;
 };
 

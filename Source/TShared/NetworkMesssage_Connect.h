@@ -1,7 +1,7 @@
 #pragma once
-#include "NetworkMessage.h"
+#include "ImportantNetworkMessage.h"
 
-class CNetworkMessage_Connect:public CNetworkMessage
+class CNetworkMessage_Connect:public CImportantNetworkMessage
 {
 public:
 	CNetworkMessage_Connect();
@@ -9,7 +9,6 @@ public:
 
 	ePackageType GetPackageType()const override;
 	
-
 	std::string myClientName;
 private:
 	void DoSerialize(StreamType& aStream) override;
