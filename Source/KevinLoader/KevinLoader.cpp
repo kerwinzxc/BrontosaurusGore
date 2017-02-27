@@ -5,6 +5,7 @@
 #include "../BrontosaurusEngine/Console.h"
 #include <fstream>
 #include <string>
+#include "../Components/ComponentManager.h"
 
 namespace KLoader
 {
@@ -197,6 +198,8 @@ namespace KLoader
 			 }
 
 			 myLinkObjects[currentID] = currentLink;
+
+
 		}
 		return eError::NO_LOADER_ERROR;
 	}
