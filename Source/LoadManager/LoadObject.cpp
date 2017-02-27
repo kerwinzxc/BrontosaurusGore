@@ -41,6 +41,7 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 	const float rotationZ = RotationObject.at("z").GetFloat() / 180 * PI;
 
 	currentMatrix.Rotate(rotationX, rotationY, rotationZ);
+	currentMatrix.Rotate(PI, CU::Axees::Y);
 
 	CU::CJsonValue ScalingObject = someData.myData.at("scale");
 
@@ -69,6 +70,7 @@ void LinkObject(const int target, const int anOtherComponent)
 	CComponent* const otherComponent = CComponentManager::GetInstance().GetComponent(anOtherComponent);
 
 	gameObject->AddComponent(otherComponent);
+	gameObject->Move(CU::Vector3f::Zero);
 }
 
 int LoadServerObject(KLoader::SLoadedComponentData someData)
