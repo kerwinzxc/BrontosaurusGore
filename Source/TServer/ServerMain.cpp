@@ -12,7 +12,7 @@
 
 #include "GameServer.h"
 
-CServerMain::CServerMain(): myTimerHandle(0), currentFreeId(ID_FREE)
+CServerMain::CServerMain(): myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myGameServer(nullptr)
 {
 }
 
@@ -31,6 +31,35 @@ void CServerMain::StartServer()
 	myGameServer->Init();
 
 	Update();
+}
+
+void CServerMain::UpdateImportantMessages(const CU::Time aDeltaTime)
+{
+	for (auto pair : myImportantMessages)
+	{
+		SImportantWaitData& waitData = myImportantMessages.at(pair.first);
+
+		waitData.myWaitedTime += aDeltaTime;
+		if (waitData.myWaitedTime.GetMilliseconds() > 75)
+		{
+			SendTo(waitData.myNetworkMessage, true);
+			waitData.myWaitedTime = 0;
+		}
+	}
+}
+
+void CServerMain::RecieveImportantResponse(CImportantNetworkMessage* aNetworkMessage)
+{
+	const int &importantID = aNetworkMessage->GetImportantId();
+	SImportantWaitData waitData = myImportantMessages.at(importantID);
+
+	myImportantMessages.erase(importantID);
+
+	const SNetworkPackageHeader& header = waitData.myNetworkMessage->GetHeader();
+	myClients.at(header.myTargetID).ResponseTime = waitData.myWaitedTime.GetMilliseconds();
+
+	delete waitData.myNetworkMessage;
+	delete aNetworkMessage;
 }
 
 void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
@@ -153,9 +182,18 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 	}
 }
 
-void CServerMain::SendTo(CNetworkMessage* aNetworkMessage)
+void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
 {
 	SNetworkPackageHeader header = aNetworkMessage->GetHeader();
+
+	if (aNetworkMessage->IsImportant() == true && aIsResend == false)
+	{
+		SImportantWaitData waitData(static_cast<CImportantNetworkMessage*>(aNetworkMessage));
+		waitData.myNetworkMessage->SetImportantId(myImportantCount);
+		myImportantMessages[myImportantCount] = waitData;
+
+		myImportantCount += 1;
+	}
 
 	switch (aNetworkMessage->GetHeader().myTargetID)
 	{
@@ -224,11 +262,28 @@ bool CServerMain::Update()
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 
 		UpdatePing(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime());
+		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
 		char* currentSenderIp = nullptr;
 		char* currentSenderPort = nullptr;
 
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(&currentSenderIp, &currentSenderPort);
+
+		if (currentMessage->IsImportant() && static_cast<ePackageType>(currentMessage->GetHeader().myPackageType) != ePackageType::eImportantResponse)
+		{
+			CImportantNetworkMessage* importantNetworkMessage = static_cast<CImportantNetworkMessage*>(currentMessage);
+			importantNetworkMessage->UnpackMessage();
+
+			SNetworkPackageHeader header;
+			header.myTargetID = currentMessage->GetHeader().mySenderID;
+			header.mySenderID = ID_SERVER;
+			header.myPackageType = static_cast<char>(ePackageType::eImportantResponse);
+			header.myTimeStamp = static_cast<int>(GetCurrentTime());
+
+			CImportantNetworkMessage* ResponseMessage = myMessageManager.CreateMessage<CImportantNetworkMessage>(header);
+			SendTo(ResponseMessage);
+			delete ResponseMessage;
+		}
 
 		switch (static_cast<ePackageType>(currentMessage->GetHeader().myPackageType))
 		{
@@ -267,7 +322,7 @@ bool CServerMain::Update()
 			{
 				HandleChatMessage(currentMessage->CastTo<CNetworkMessage_ChatMessage>());
 			}
-
+			break;
 		case ePackageType::ePosition:
 			{
 				CNetworkMessage_Position* position = currentMessage->CastTo<CNetworkMessage_Position>();
@@ -285,6 +340,10 @@ bool CServerMain::Update()
 
 				SendTo(currentMessage);
 			}
+			break;
+		case ePackageType::eImportantResponse:
+			RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
+			break;
 		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;
