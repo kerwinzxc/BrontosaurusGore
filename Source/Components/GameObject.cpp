@@ -81,6 +81,18 @@ void  CGameObject::NotifyOnlyComponents(const eComponentMessageType aMessageType
 	ComponentReceive(aMessageType, aMessageData);
 }
 
+bool CGameObject::AskComponents(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	if (myParent != nullptr)
+	{
+		return myParent->AskComponents(aQuestionType, aQuestionData);
+	}
+	else
+	{
+		return Answer(aQuestionType, aQuestionData);
+	}
+}
+
 void CGameObject::MarkForDestruction()
 {
 	myManager.AddObjectForDestruction(this);
@@ -127,7 +139,7 @@ CU::GrowingArray<CComponent*>& CGameObject::GetComponents()
 	return myComponents;
 }
 
-void CGameObject::ComponentReceive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CGameObject::ComponentReceive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	for (unsigned int i = 0; i < myComponents.Size(); i++)
 	{
@@ -147,6 +159,19 @@ void CGameObject::ComponentReceive(const eComponentMessageType aMessageType, con
 	//	test = myComponents[i];
 	//	test->Receive(aMessageType, aMessageData);
 	//}
+}
+
+bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	for (CComponent* component : myComponents)
+	{
+		if (component->Answer(aQuestionType, aQuestionData) == true)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 CGameObject::CGameObject(CGameObjectManager &aManager) : myTransformId(0), myManager(aManager)

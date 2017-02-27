@@ -63,14 +63,10 @@ enum class eComponentMessageType
 	eWeaponFactoryGiveWeaponToWeaponSystem,
 	eChangeSelectedAmmoType,
 	eGiveAmmo,
-	eSetDirectionForShooting,
+	//eSetDirectionForShooting,
 	eChangeWeapon,
 	eLength,
 };
-
-#ifndef STATIC_SIZEOF
-#define STATIC_SIZEOF(x) { char STATIC_SIZEOF_TEMP[(x)]; STATIC_SIZEOF_TEMP = 1; }
-#endif // !STATIC_SIZEOF
 
 struct SComponentMessageData
 {
