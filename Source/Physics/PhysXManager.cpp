@@ -10,6 +10,7 @@
 #include <foundation/PxFoundation.h>
 #include <pvd/PxPvd.h>
 #include <extensions/PxRigidBodyExt.h>
+#include "SharedPhysicsPointer.h"
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>
@@ -167,6 +168,13 @@ namespace Physics
 	void CPhysXManager::Create()
 	{
 		ourInstance = new CPhysXManager();
+
+		Physics::CSharedPhysicsPointer<physx::PxMaterial> test(Physics::CPhysXManager::GetInstance().CreateMaterial(1, 1, 1));
+
+		Physics::CSharedPhysicsPointer<physx::PxMaterial> test2 = test;
+
+		Physics::CSharedPhysicsPointer<physx::PxMaterial>* test3 = new CSharedPhysicsPointer<physx::PxMaterial>(test);
+		delete test3;
 	}
 
 	void CPhysXManager::Destroy()

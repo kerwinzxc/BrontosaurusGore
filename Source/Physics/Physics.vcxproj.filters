@@ -17,6 +17,18 @@
     <Filter Include="PhysX\Error">
       <UniqueIdentifier>{157fbd67-4e17-4fef-9e77-56d943c90495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SmartPointer">
+      <UniqueIdentifier>{90331454-d8d1-4032-8e3a-cf2613cf7f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SmartPointer\Base">
+      <UniqueIdentifier>{5f50e58d-312f-4256-b13c-d9fd83135505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SmartPointer\Shared">
+      <UniqueIdentifier>{8805b3a3-819c-4c81-8415-bb342941afe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SmartPointer\Unique">
+      <UniqueIdentifier>{b763e72b-ae19-4dd4-b328-41e87ee89622}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -519,6 +531,12 @@
     </ClInclude>
     <ClInclude Include="PhysXErrorHander.h">
       <Filter>PhysX\Error</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartPhysicsPointer.h">
+      <Filter>SmartPointer\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedPhysicsPointer.h">
+      <Filter>SmartPointer\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

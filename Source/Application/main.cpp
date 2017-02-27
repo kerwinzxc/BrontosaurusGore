@@ -35,6 +35,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
 void Init(int argc, char* argv[])
 {
+	
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Start();
 	CommandLineManager::CreateInstance(argc, argv);

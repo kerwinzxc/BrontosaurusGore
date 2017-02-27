@@ -41,7 +41,6 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 	const float rotationZ = RotationObject.at("z").GetFloat() / 180 * PI;
 
 	currentMatrix.Rotate(rotationX, rotationY, rotationZ);
-	currentMatrix.Rotate(PI, CU::Axees::Y);
 
 	CU::CJsonValue ScalingObject = someData.myData.at("scale");
 
