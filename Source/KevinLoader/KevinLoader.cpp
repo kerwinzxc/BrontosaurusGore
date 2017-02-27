@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "KevinLoader.h"
-#include "../CommonUtilities/DL_Debug.h"
-//#include "../CommonUtilities/PJWrapper.h"
-#include "../BrontosaurusEngine/Console.h"
 #include <fstream>
-#include <string>
 #include "../Components/ComponentManager.h"
 
 namespace KLoader

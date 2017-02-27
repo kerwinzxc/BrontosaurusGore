@@ -2,6 +2,7 @@
 #include "WeaponSystemComponent.h"
 #include "Weapon.h"
 #include "WeaponFactory.h"
+#include "PlayerControls.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -9,6 +10,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 
 	myActiveWeaponIndex = 0;
 	myWeapons.Init(5);
+	myIsShooting = false;
 }
 
 
@@ -16,15 +18,21 @@ CWeaponSystemComponent::~CWeaponSystemComponent()
 {
 }
 
-void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	switch (aMessageType)
 	{
-	case eComponentMessageType::eTryToShoot:
-	{
-		myWeapons[myActiveWeaponIndex]->TryToShoot(aMessageData.myVector3f);
+	case eComponentMessageType::eKeyPressed:
+		HandleKeyPressed(aMessageData);
 		break;
-	}
+	case eComponentMessageType::eKeyReleased:
+		HandleKeyReleased(aMessageData);
+		break;
+	//case eComponentMessageType::eTryToShoot:
+	//{
+	//	myWeapons[myActiveWeaponIndex]->TryToShoot(aMessageData.myVector3f);
+	//	break;
+	//}
 	case eComponentMessageType::eShoot:
 	{
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
@@ -60,14 +68,35 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 }
 
-void CWeaponSystemComponent::Destroy()
-{
-}
-
 void CWeaponSystemComponent::Update(float aDelta)
 {
+	if (myIsShooting == true)
+	{
+		SComponentQuestionData lookatData;
+		if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraLookat, lookatData) == true)
+		{
+			myWeapons[myActiveWeaponIndex]->TryToShoot(lookatData.myVector3f);
+		}
+	}
+
 	for(unsigned short i = 0; i < myWeapons.Size(); i++)
 	{
 		myWeapons[i]->Update(aDelta);
+	}
+}
+
+void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)
+{
+	if (aMessageData.myPlayerControl == ePlayerControls::ePrimaryWeapon)
+	{
+		myIsShooting = true;
+	}
+}
+
+void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMessageData)
+{
+	if (aMessageData.myPlayerControl == ePlayerControls::ePrimaryWeapon)
+	{
+		myIsShooting = false;
 	}
 }

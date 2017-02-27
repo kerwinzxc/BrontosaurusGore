@@ -29,6 +29,7 @@
 
 #include "GameObject.h"
 #include "ComponentMessage.h"
+#include "ComponentAnswer.h"
 #include "ComponentManager.h"
 
 // TODO: reference additional headers your program requires here

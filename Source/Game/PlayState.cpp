@@ -6,7 +6,6 @@
 #include <StopWatch.h>
 #include <EInputReturn.h>
 #include <Lights.h>
-#include <TimerManager.h>
 #include <Scene.h>
 
 #include "Skybox.h"
@@ -34,7 +33,6 @@
 
 #include "CameraComponent.h"
 #include "InputComponent.h"
-#include <chrono>
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
@@ -44,7 +42,6 @@
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
-#include "InputComponentManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -80,15 +77,13 @@ CPlayState::~CPlayState()
 
 void CPlayState::Load()
 {
-	CU::TimerManager timerMgr;
-	CU::TimerHandle handle = timerMgr.CreateTimer();
-	timerMgr.StartTimer(handle);
 	CU::CStopWatch loadPlaystateTimer;
+	loadPlaystateTimer.Start();
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	LoadManagerGuard loadManagerGuard(*this, *myScene);
 	CreateManagersAndFactories();
+	LoadManagerGuard loadManagerGuard(*this, *myScene);
 
 	Lights::SDirectionalLight dirLight;
 	dirLight.color = { .25f, .25f, .25f, 1.0f };
@@ -102,7 +97,31 @@ void CPlayState::Load()
 	
 	myWeaponFactory->LoadWeapons();
 
-	//create player:
+
+
+
+	//real loading:
+	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+	CU::CJsonValue levelsFile;
+
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
+
+	const KLoader::eError loadError = loader.LoadFile(levelPath);
+	if (loadError != KLoader::eError::NO_LOADER_ERROR)
+	{
+		DL_MESSAGE_BOX("Loading Failed");
+	}
+
+
+
+	//create hard coded player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
@@ -115,7 +134,8 @@ void CPlayState::Load()
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 
-		CInputComponent* inputComponent = myInputComponentManager->CreateAndRegisterComponent();
+		CInputComponent* inputComponent = new CInputComponent();
+		CComponentManager::GetInstance().RegisterComponent(inputComponent);
 		playerObject->AddComponent(inputComponent);
 
 		myMovementComponent = new CMovementComponent();
@@ -148,36 +168,13 @@ void CPlayState::Load()
 
 	myScene->SetSkybox("default_cubemap.dds");
 	
-	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
-	CU::CJsonValue levelsFile;
-
-	std::string errorString = levelsFile.Parse("Json/LevelList.json");
-	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
-
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
-
-#ifdef _DEBUGq
-	myLevelIndex = levelsArray.Size() - 1;
-#else
-	const int levelIndex = 0;
-#endif
-
-	std::string levelPath = "Json/Levels/";
-	levelPath += levelsArray[myLevelIndex].GetString();
-	levelPath += "/LevelData.json";
-
-	const KLoader::eError loadError = loader.LoadFile(levelPath);
-	if (loadError != KLoader::eError::NO_LOADER_ERROR)
-	{
-		DL_MESSAGE_BOX("Loading Failed");
-	}
+	
 	myIsLoaded = true;
 
 	// Get time to load the level:
-	timerMgr.UpdateTimers();
-	float time = timerMgr.GetTimer(handle).GetLifeTime().GetMilliseconds();
+	loadPlaystateTimer.Update();
+	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
-
 }
 
 void CPlayState::Init()
@@ -192,7 +189,6 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myAmmoComponentManager->Update(aDeltaTime);
-	myInputComponentManager->Update();
 
 	return myStatus;
 }
@@ -250,5 +246,4 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
-	myInputComponentManager = new CInputComponentManager();
 }

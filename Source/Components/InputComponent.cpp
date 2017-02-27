@@ -11,6 +11,9 @@
 #endif // INTIFY
 #define INTIFY(ENUM_TYPE) (static_cast<int>(ENUM_TYPE))
 
+int GetInputButton(const CU::eKeys aKey);
+int GetInputButton(const CU::eMouseButtons aKey);
+
 CInputComponent::CInputComponent()
 {
 	CU::CInputMessenger* inputMessenger = CU::CInputMessenger::GetInstance(eInputMessengerType::ePlayState);
@@ -21,14 +24,16 @@ CInputComponent::CInputComponent()
 		inputMessenger->Subscribe(*this);
 	}
 
-	myControlMap[INTIFY(ePlayerControls::eForward)] = CU::eKeys::W;
-	myControlMap[INTIFY(ePlayerControls::eLeft)] = CU::eKeys::A;
-	myControlMap[INTIFY(ePlayerControls::eBackward)] = CU::eKeys::S;
-	myControlMap[INTIFY(ePlayerControls::eRight)] = CU::eKeys::D;
-	myControlMap[INTIFY(ePlayerControls::eJump)] = CU::eKeys::SPACE;
-	myControlMap[INTIFY(ePlayerControls::eActivate)] = CU::eKeys::E;
+	myControlMap[INTIFY(ePlayerControls::eForward)] = GetInputButton(CU::eKeys::W);
+	myControlMap[INTIFY(ePlayerControls::eLeft)] = GetInputButton(CU::eKeys::A);
+	myControlMap[INTIFY(ePlayerControls::eBackward)] = GetInputButton(CU::eKeys::S);
+	myControlMap[INTIFY(ePlayerControls::eRight)] = GetInputButton(CU::eKeys::D);
+	myControlMap[INTIFY(ePlayerControls::eJump)] = GetInputButton(CU::eKeys::SPACE);
+	myControlMap[INTIFY(ePlayerControls::eActivate)] = GetInputButton(CU::eKeys::E);
+	myControlMap[INTIFY(ePlayerControls::ePrimaryWeapon)] = GetInputButton(CU::eMouseButtons::LBUTTON);
+	myControlMap[INTIFY(ePlayerControls::eSecondaryWeapon)] = GetInputButton(CU::eMouseButtons::RBUTTON);
 
-	myIsLeftMouseButtonPressed = false;
+	//myIsLeftMouseButtonPressed = false;
 }
 
 CInputComponent::~CInputComponent()
@@ -48,18 +53,10 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 		break;
 	case CU::eInputType::eMousePressed:
-	{
-		aInputMessage.myMouseButton;
-		aInputMessage.myMousePosition;
-
-		myIsLeftMouseButtonPressed = true;
+		MousePressed(aInputMessage.myMouseButton);
 		break;
-	}
 	case CU::eInputType::eMouseReleased:
-		aInputMessage.myMouseButton;
-		aInputMessage.myMousePosition;
-
-		myIsLeftMouseButtonPressed = false;
+		MouseReleased(aInputMessage.myMouseButton);
 		break;
 	case CU::eInputType::eKeyboardPressed:
 		KeyPressed(aInputMessage.myKey);
@@ -92,9 +89,31 @@ void CInputComponent::MouseMoved(const CU::Vector2f aMouseDeltaNormalized)
 	NotifyParent(eComponentMessageType::ePitch, data);
 }
 
+void CInputComponent::MousePressed(const CU::eMouseButtons aMouseButton)
+{
+	int index = myControlMap.Find(GetInputButton(aMouseButton));
+	if (index != myControlMap.FoundNone)
+	{
+		SComponentMessageData data;
+		data.myPlayerControl = static_cast<ePlayerControls>(index);
+		NotifyParent(eComponentMessageType::eKeyPressed, data);
+	}
+}
+
+void CInputComponent::MouseReleased(const CU::eMouseButtons aMouseButton)
+{
+	int index = myControlMap.Find(GetInputButton(aMouseButton));
+	if (index != myControlMap.FoundNone)
+	{
+		SComponentMessageData data;
+		data.myPlayerControl = static_cast<ePlayerControls>(index);
+		NotifyParent(eComponentMessageType::eKeyReleased, data);
+	}
+}
+
 void CInputComponent::KeyPressed(const CU::eKeys aKey)
 {
-	int index = myControlMap.Find(aKey);
+	int index = myControlMap.Find(GetInputButton(aKey));
 	if (index != myControlMap.FoundNone)
 	{
 		SComponentMessageData data;
@@ -105,7 +124,7 @@ void CInputComponent::KeyPressed(const CU::eKeys aKey)
 
 void CInputComponent::KeyReleased(const CU::eKeys aKey)
 {
-	int index = myControlMap.Find(aKey);
+	int index = myControlMap.Find(GetInputButton(aKey));
 	if (index != myControlMap.FoundNone)
 	{
 		SComponentMessageData data;
@@ -114,10 +133,12 @@ void CInputComponent::KeyReleased(const CU::eKeys aKey)
 	}
 }
 
-void CInputComponent::Update()
+int GetInputButton(const CU::eKeys aKey)
 {
-	if(myIsLeftMouseButtonPressed == true)
-	{
-		GetParent()->NotifyComponents(eComponentMessageType::eSetDirectionForShooting, SComponentMessageData());
-	}
+	return static_cast<int>(aKey);
+}
+
+int GetInputButton(const CU::eMouseButtons aMouseButton)
+{
+	return static_cast<int>(CU::eKeys::LENGTH) + static_cast<int>(aMouseButton);
 }

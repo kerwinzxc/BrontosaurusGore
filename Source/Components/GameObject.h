@@ -28,6 +28,8 @@ public:
 	void NotifyComponents(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData);
 	void NotifyOnlyComponents(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData);
 
+	bool AskComponents(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData);
+
 	void MarkForDestruction();
 	bool IsGameObject() override;
 
@@ -39,6 +41,8 @@ private:
 	void Destroy() override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData) override;
 	void ComponentReceive(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData);
+	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
+
 	CGameObject(CGameObjectManager& aManager);
 	CGameObject(const CGameObject& anObject) = delete;
 	~CGameObject();

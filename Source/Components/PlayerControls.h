@@ -8,7 +8,7 @@ enum class ePlayerControls
 	eRight,
 	eJump,
 	eActivate,
-	ePrimary,
-	eSecondary,
+	ePrimaryWeapon,
+	eSecondaryWeapon,
 	eLength
 };

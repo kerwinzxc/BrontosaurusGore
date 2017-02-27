@@ -9,6 +9,9 @@
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
+#include <string>
+
 #include "../CommonUtilities/GrowingArray.h"
+#include "../CommonUtilities/DL_Debug.h"
 
 // TODO: reference additional headers your program requires here
