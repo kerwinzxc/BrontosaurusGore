@@ -215,11 +215,11 @@ void CRenderer::Render()
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
 
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0,0,0.33,0.33), &gBuffer.GetAlbedo());
+	/*myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0,0,0.33,0.33), &gBuffer.GetAlbedo());
 
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.33, 0., 0.66, 0.33), &gBuffer.GetNormal());
 
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.66, 0., 1.0, 0.33), gBuffer.GetDepth());
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.66, 0., 1.0, 0.33), gBuffer.GetDepth());*/
 }
 
 void CRenderer::SwapWrite()
@@ -508,9 +508,11 @@ void CRenderer::UpdateBuffer()
 	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	SOncePerFrameBuffer updatedBuffer;
 
-	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
+	const CU::Matrix44f cameraInverse = myCamera.GetInverse();
+	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = cameraInverse;
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
-	updatedBuffer.myCameraMatrices.myCameraSpace = myCamera.GetTransformation();
+	const CU::Matrix44f camera = myCamera.GetTransformation();
+	updatedBuffer.myCameraMatrices.myCameraSpace = camera;
 	updatedBuffer.myCameraMatrices.myProjectionInverse = myCamera.GetProjectionInverse();
 
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
@@ -549,7 +551,7 @@ void CRenderer::UpdatePointlightBuffer(const CPointLightInstance& aPointLightIns
 	lightBuffer.pointLight.position = aPointLightInstance.GetPosition();
 	lightBuffer.pointLight.color = aPointLightInstance.GetColor();
 	lightBuffer.pointLight.intensity = aPointLightInstance.GetInstensity();
-	lightBuffer.pointLight.range = aPointLightInstance.GetRange();
+	lightBuffer.pointLight.range = aPointLightInstance.GetRange() * 100;
 	lightBuffer.cubemapMipcount = 11;
 
 	DEVICE_CONTEXT->Map(myPointlightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);

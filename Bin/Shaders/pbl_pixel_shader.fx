@@ -68,11 +68,13 @@ float PS_Depth(PosTex_InputPixel input)
 
 float3 WorldPosition(PosTex_InputPixel input, float aDepth)
 {
-	float4 viewPos = float4(input.tex.x * 2 - 1, -(input.tex.y * 2 - 1), aDepth, 1);
+	float4 viewPos = float4(input.tex.x * 2 - 1, (input.tex.y * 2 - 1), aDepth, 1);
 	viewPos = mul(projectionInverse, viewPos);
+	
 	viewPos = mul(cameraSpace, viewPos);
 	
 	viewPos = viewPos / viewPos.w;
+	//viewPos.z = 0;
 	
 	return viewPos.xyz;
 }
@@ -420,28 +422,28 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 
 	//DIRR DIFF
 
-	float3 lightColor = float3(0,0,0);//myDirectionalLight.color.rgb;
-	float3 lambert = PS_Lambert(input, normal, myDirectionalLight.direction.xyz).color.xyz;
-	float3 toLight = -myDirectionalLight.direction.xyz;
-	float3 halfvec = normalize(toLight + toEye);
-	float LdotH = dot(toLight, halfvec);
-	LdotH = saturate(LdotH);
-	LdotH = 1.0f - LdotH;
-	LdotH = pow(LdotH, 5);
-	float3 Dirrfresnel = LdotH * (1.f - substance);
-	Dirrfresnel = substance + Dirrfresnel;
-	float3 one = float3(1.0f, 1.0f, 1.0f);
-	float3 directionDiffuse = metalnessAlbedo * lightColor * lambert * (one - Dirrfresnel);
+// 	float3 lightColor = float3(0,0,0);//myDirectionalLight.color.rgb;
+// 	float3 lambert = PS_Lambert(input, normal, myDirectionalLight.direction.xyz).color.xyz;
+// 	float3 toLight = -myDirectionalLight.direction.xyz;
+// 	float3 halfvec = normalize(toLight + toEye);
+// 	float LdotH = dot(toLight, halfvec);
+// 	LdotH = saturate(LdotH);
+// 	LdotH = 1.0f - LdotH;
+// 	LdotH = pow(LdotH, 5);
+// 	float3 Dirrfresnel = LdotH * (1.f - substance);
+// 	Dirrfresnel = substance + Dirrfresnel;
+// 	float3 one = float3(1.0f, 1.0f, 1.0f);
+// 	float3 directionDiffuse = metalnessAlbedo * lightColor * lambert * (one - Dirrfresnel);
 
 
 
-//DIRR SPEC
-		//float3 directionSpecularity = PS_DirectSpecularity(input, normal, myDirectionalLight.color.rgb, myDirectionalLight.direction.xyz).color.xyz;
+// //DIRR SPEC
+// 		//float3 directionSpecularity = PS_DirectSpecularity(input, normal, myDirectionalLight.color.rgb, myDirectionalLight.direction.xyz).color.xyz;
 
-	lightColor = myDirectionalLight.color.rgb;
-	float3 distribution = PS_Distribution(input, myDirectionalLight.direction.xyz, worldPosition).color.xxx;
-	float3 visibility = PS_Visibility(input, myDirectionalLight.direction.xyz, worldPosition).color.xxx;
-	float3 directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility;
+// 	lightColor = myDirectionalLight.color.rgb;
+// 	float3 distribution = PS_Distribution(input, myDirectionalLight.direction.xyz, worldPosition).color.xxx;
+// 	float3 visibility = PS_Visibility(input, myDirectionalLight.direction.xyz, worldPosition).color.xxx;
+	float3 directionSpecularity = (float3)0;// = lightColor * lambert * Dirrfresnel * distribution * visibility;
 
 
 	//Shadow magicz
@@ -462,11 +464,11 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 
 
 
-	if(shadowCamDepth < shadowCamPosition.z - 0.001f && shadowCamDepth != 0.f)
-	{
-		directionDiffuse.rgb = 0.0f;
-		directionSpecularity.rgb = 0.0f;
-	}	
+	// if(shadowCamDepth < shadowCamPosition.z - 0.001f && shadowCamDepth != 0.f)
+	// {
+	// 	directionDiffuse.rgb = 0.0f;
+	// 	directionSpecularity.rgb = 0.0f;
+	// }	
 
 		float3 difference = (pointLight.position.xyz) - worldPosition.xyz;
     	float l = length(difference);
@@ -478,25 +480,25 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 
     	float3 direction = normalize(difference);
     	float4 color = (float4)0;
-    	lightColor = pointLight.color.rgb;
-    	lambert = PS_Lambert(input, normal, -direction).color.xyz;
-    	toLight = direction;
-    	halfvec = normalize(toLight + toEye);
-    	LdotH = dot(toLight, halfvec);
+    	float3 lightColor = pointLight.color.rgb;
+    	float3 lambert = PS_Lambert(input, normal, -direction).color.xyz;
+    	float3 toLight = direction;
+    	float3 halfvec = normalize(toLight + toEye);
+    	float LdotH = dot(toLight, halfvec);
     	LdotH = saturate(LdotH);
     	LdotH = 1.0f - LdotH;
     	LdotH = pow(LdotH, 5);
-    	Dirrfresnel = LdotH * (1.f - substance);
+    	float3 Dirrfresnel = LdotH * (1.f - substance);
     	Dirrfresnel = substance + Dirrfresnel;
-    	color = float4(metalnessAlbedo * pointLight.color.rgb * lambert * (one - Dirrfresnel), 1.0f);
-    	directionDiffuse = color.rgb * pointLight.intensity * lightRange;
-    	distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
-    	visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
-    	directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
+    	color = float4(metalnessAlbedo * pointLight.color.rgb * lambert * (float3(1,1,1) - Dirrfresnel), 1.0f);
+    	float3 directionDiffuse = color.rgb * pointLight.intensity * lightRange;
+    	float3 distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
+    	float3 visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
+    	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
 
 	
 
-		output.color = float4(ambientDiffuse + ambientSpecularity + directionDiffuse + directionSpecularity + emissive, 1.0f);
+		output.color = float4(ambientDiffuse + ambientSpecularity + /*directionDiffuse +*/ directionSpecularity + emissive, 1.0f);
 	}
 	return output;
 }
@@ -505,7 +507,7 @@ PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
 	PixelOutput output = (PixelOutput)0;
 	output.color = PS_PBL(input).color;
-	output.color.w = 1.f/ numberOfLights;
+	output.color.w = 1.f;
 
 	return output;
 }
