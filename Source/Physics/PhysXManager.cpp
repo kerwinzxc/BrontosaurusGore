@@ -282,10 +282,12 @@ namespace Physics
 	physx::PxGeometry* CPhysXManager::CreateMeshGeometry(const char* aPath)
 	{
 		PxConvexMeshDesc desc;
+		return nullptr;
 	}
 
 	physx::PxGeometry* CPhysXManager::CreateSphereGeometry(const float aRadius)
 	{
+		return nullptr;
 
 	}
 
