@@ -1,14 +1,14 @@
 #pragma once
-class ProjectileComponent;
-class ProjectileComponentManager
+class CProjectileComponent;
+class CProjectileComponentManager
 {
 public:
-	ProjectileComponentManager();
-	~ProjectileComponentManager();
-	ProjectileComponent* CreateAndRegisterComponent();
+	CProjectileComponentManager();
+	~CProjectileComponentManager();
+	CProjectileComponent* CreateAndRegisterComponent();
 	void Update(const CU::Time& aDeltaTime);
 
 private:
-	CU::GrowingArray<ProjectileComponent*> myComponents;
+	CU::GrowingArray<CProjectileComponent*> myComponents;
 };
 

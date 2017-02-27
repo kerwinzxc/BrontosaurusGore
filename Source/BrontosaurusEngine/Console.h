@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "../PostMaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -18,7 +19,7 @@ namespace SSlua
 
 class CTextInstance;
 
-class CConsole : public Subscriber
+class CConsole : public Postmaster::ISubscriber
 {
 public:
 	CConsole();
@@ -28,7 +29,6 @@ public:
 	void GetLuaFunctions();
 	void Activate();
 	void Deactivate();
-	eMessageReturn Recieve(const Message & aMessage) override;
 	eMessageReturn TakeKeyBoardInputPressedChar(const char aKey);
 	eMessageReturn TakeKeyBoardInput(const CU::eKeys aKey);
 	
@@ -36,6 +36,7 @@ public:
 	bool Update(float aDeltaTime);
 	void Render();
 
+	eMessageReturn DoEvent(const KeyCharPressed& aCharPressed) override;
 private:
 	void UpdateCommandSuggestions(const std::string& aStringToCompare);
 	size_t CConsole::MakeCommandSuggestions(const std::string& aStringToCompare, const std::string& aStringToEvaluate);
@@ -45,7 +46,7 @@ private:
 
 	CU::DynamicString ParseAndRunFunction(const CU::DynamicString& aString);
 
-private:
+
 	std::map<std::string, SSlua::LuaCallbackFunction> myLuaFunctions;
 	CU::GrowingArray<CTextInstance*> myTextLog;
 	CTextInstance* myCurrentText;

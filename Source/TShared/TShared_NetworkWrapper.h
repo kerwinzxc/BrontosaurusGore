@@ -1,7 +1,8 @@
 #pragma once
 #include "CommonNetworkIncludes.h"
 #include <functional>
-#include "NetworkMessage.h"
+#include "ImportantNetworkMessage.h"
+#include <map>
 
 #define DEFAULT_PORT 27015
 #define SERVER_PORT "27015"
@@ -27,20 +28,25 @@ public:
 	TShared_NetworkWrapper();
 	~TShared_NetworkWrapper();
 
+	bool CheckIfImportantMessageDone(__int16 aMessageID);
 	bool Init(unsigned short aPort);
-	bool Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort);
+	__int16 Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort);
 
 	CNetworkMessage* Recieve(char** senderIp = nullptr, char** senderPort = nullptr);
 
 
 private:
-
+	__int16 GetMessageCount();
+	
 	bool Send(SNetworkPackageHeader aPackageHeader, const char* aData, unsigned aDataSize, const char* aRecieverAdress, const char* aRecieverPort);
 	char* myBuffer;
 	unsigned int myCurrentBufferSize;
 
+	std::map<__int16, CImportantNetworkMessage*> myImportantMessages;
+
 	WSAData myWsaData;
 	SOCKET mySocket;
 	bool myShallClose;
+	__int16 myMessageCount;
 };
 

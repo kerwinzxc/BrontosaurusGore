@@ -7,6 +7,9 @@ public:
 	CNetworkMessage_Connect();
 	~CNetworkMessage_Connect();
 
+	ePackageType GetPackageType()const override;
+	
+
 	std::string myClientName;
 private:
 	void DoSerialize(StreamType& aStream) override;

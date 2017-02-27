@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 
 void Init(int argc, char* argv[]);
@@ -34,12 +35,15 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 
 void Init(int argc, char* argv[])
 {
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Start();
 	CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	PostMaster::CreateInstance();
 
 	{
 		CGame game;
+		
 		SInitEngineParams engineParams;
 		engineParams.myWindowParams.Width = 1920;
 		engineParams.myWindowParams.Height = 1080;
@@ -107,6 +111,8 @@ void Init(int argc, char* argv[])
 	DL_Debug::Debug::DestroyInstance();
 	CommandLineManager::DestroyInstance();
 
+	Postmaster::Threaded::CPostmaster::GetInstance().Stop();
+	Postmaster::Threaded::CPostmaster::Destroy();
 	//DumpMemoryLeeks();
 }
 

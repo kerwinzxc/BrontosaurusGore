@@ -18,6 +18,7 @@ template <typename TYPE>
 TYPE* CMessageManager::CreateMessage(SNetworkPackageHeader aHeader)
 {
 	CNetworkMessage* message = new TYPE;
+	aHeader.myTimeStamp = GetCurrentTime();
 	message->SetHeader(aHeader);
 	return static_cast<TYPE*>(message);
 }

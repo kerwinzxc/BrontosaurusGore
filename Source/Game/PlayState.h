@@ -2,6 +2,8 @@
 #include "../StateStack/State.h"
 #include "../PostMaster/Subscriber.h"
 #include <atomic>
+#include "../Components/EnemyComponentManager.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 namespace CU
 {
@@ -12,15 +14,20 @@ class CGameObjectManager;
 class CScene;
 class CModelComponentManager;
 class CCollisionComponentManager;
-class AmmoComponentManager;
-class WeaponSystemManager;
-class WeaponFactory;
-class ProjectileComponentManager;
-class ProjectileFactory;
-
+class CAmmoComponentManager;
+class CWeaponSystemManager;
+class CWeaponFactory;
+class CProjectileComponentManager;
+class CProjectileFactory;
+class CAmmoComponentManager;
+class CWeaponSystemManager;
 class CMovementComponent;
+class CWeaponFactory;
+class CProjectileComponentManager;
+class CProjectileFactory;
+class CInputComponentManager;
 
-class CPlayState : public State , public Subscriber
+class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
 public:
 	CPlayState(StateStack& aStateStack, const int aLevelIndex);
@@ -49,16 +56,19 @@ private:
 
 	CModelComponentManager* myModelComponentManager;
 
-	AmmoComponentManager* myAmmoComponentManager;
-	WeaponSystemManager* myWeaponSystemManager;
-	WeaponFactory* myWeaponFactory;
-	ProjectileComponentManager* myProjectileComponentManager;
-	ProjectileFactory* myProjectileFactory;
+	CAmmoComponentManager* myAmmoComponentManager;
+	CWeaponSystemManager* myWeaponSystemManager;
+	CWeaponFactory* myWeaponFactory;
+	CProjectileComponentManager* myProjectileComponentManager;
+	CProjectileFactory* myProjectileFactory;
+	CEnemyComponentManager* myEnemyComponentManager;
+	CInputComponentManager* myInputComponentManager;
 
 	CMovementComponent* myMovementComponent;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+	
 };
 
 inline bool CPlayState::IsLoaded() const

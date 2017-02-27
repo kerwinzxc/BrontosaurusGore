@@ -1,8 +1,11 @@
 #pragma once
-struct ProjectileData;
-struct WeaponData 
+struct SProjectileData;
+struct SWeaponData 
 {
-	ProjectileData* projectileData;
-	const char* name;
+	SProjectileData* projectileData;
+	std::string name;
 	float fireRate;
+	unsigned short randomSpreadAngleX;
+	unsigned short randomSpreadAngleY;
+	unsigned short projectilesFiredPerShot;
 };

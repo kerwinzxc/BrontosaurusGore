@@ -13,6 +13,8 @@
 #include "LuaWrapper/SSlua/SSlua.h"
 #include "ScriptLoader.h"
 #include "KevinLoader/KevinLoader.h"
+#include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/PostOffice.h"
 
 CGame::CGame()
 {
@@ -50,11 +52,16 @@ void CGame::Init()
 		mySplashScreen = new CSplashScreen(myStateStack);
 		myStateStack.PushState(mySplashScreen);
 	}
+
+	myClient.StartClient();
+	myClient.Connect("127.0.0.1", "InsertName");
 }
 
 void CGame::Update(const CU::Time& aDeltaTime)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	bool isRunning = myStateStack.Update(aDeltaTime);
+	myClient.Update();
 	if (isRunning == false)
 	{
 		CEngine::GetInstance()->Shutdown();

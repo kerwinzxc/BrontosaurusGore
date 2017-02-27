@@ -13,6 +13,7 @@
 #include "Audio/AudioInterface.h"
 
 #include "Game.h"
+#include "ThreadedPostmaster/Postmaster.h"
 
 PauseMenu::PauseMenu(StateStack& aStateStack)
 	: State(aStateStack, eInputMessengerType::ePauseMenu)
@@ -71,7 +72,8 @@ bool PauseMenu::GetLetThroughRender() const
 
 void PauseMenu::Resume()
 {
-	PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState()));
+	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState()));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
 }
 
 void PauseMenu::LevelSelect()

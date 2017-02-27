@@ -4,7 +4,7 @@
 #include "../BrontosaurusEngine/DebugInfoDrawer.h"
 
 DrawCallsCount::DrawCallsCount(const int aDrawCallsCount)
-	: myDrawCallsCount(aDrawCallsCount)
+	:IMessage(eMessageType::eDrawCallsThisFrame), myDrawCallsCount(aDrawCallsCount)
 {
 }
 
@@ -12,12 +12,17 @@ DrawCallsCount::~DrawCallsCount()
 {
 }
 
-eMessageReturn DrawCallsCount::DoEvent(CDebugInfoDrawer* aDebugInfoDrawer) const
+eMessageReturn DrawCallsCount::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
-	if (aDebugInfoDrawer != nullptr)
-	{
-		aDebugInfoDrawer->SetDrawCalls(myDrawCallsCount);
-	}
+	return aSubscriber.DoEvent(*this);
+}
 
-	return eMessageReturn::eContinue;
+int DrawCallsCount::GetDrawCalls() const
+{
+	return myDrawCallsCount;
+}
+
+Postmaster::Message::IMessage* DrawCallsCount::Copy()
+{
+	return new DrawCallsCount(*this);
 }

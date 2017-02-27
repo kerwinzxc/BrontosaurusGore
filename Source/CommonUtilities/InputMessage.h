@@ -10,6 +10,7 @@ namespace CU
 		eMouseMoved,
 		eMousePressed,
 		eMouseReleased,
+		eScrollWheelChanged,
 		eKeyboardPressed,
 		eKeyboardReleased
 	};
@@ -21,6 +22,7 @@ namespace CU
 		{
 			Vector2f myMousePosition;
 			Vector2f myMouseDelta;
+			Vector2f myMouseWheelDelta;
 		};
 
 		union

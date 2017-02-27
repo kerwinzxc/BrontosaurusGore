@@ -9,6 +9,7 @@ public:
 
 	short myClientId;
 
+	ePackageType GetPackageType()const override;
 private:
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;

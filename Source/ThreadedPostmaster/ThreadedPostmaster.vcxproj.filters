@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Postmaster">
+      <UniqueIdentifier>{abd4ee60-8087-43e9-a117-35238344a030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostOffice">
+      <UniqueIdentifier>{ec3c5fc1-d7c6-421c-950b-cc82fc17de11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message">
+      <UniqueIdentifier>{0551b411-b009-42fb-a4e8-faba4028d029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subscriber">
+      <UniqueIdentifier>{6927ca86-de79-4b57-9db9-4cc4aa71adcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subscriber\Base">
+      <UniqueIdentifier>{b0fb210e-51ee-479e-97e1-7911c284d0cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\Base">
+      <UniqueIdentifier>{190b67dc-6618-405b-b9e3-9d986ad5d990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{8f1ea0bb-9cf2-45ef-902c-91b21997b2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Narrowcast">
+      <UniqueIdentifier>{07d5e4a1-cece-4bb3-973a-410afca7d6d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Postmaster.cpp">
+      <Filter>Postmaster</Filter>
+    </ClCompile>
+    <ClCompile Include="PostOffice.cpp">
+      <Filter>PostOffice</Filter>
+    </ClCompile>
+    <ClCompile Include="Subscriber.cpp">
+      <Filter>Subscriber\Base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Postmaster.h">
+      <Filter>Postmaster</Filter>
+    </ClInclude>
+    <ClInclude Include="PostOffice.h">
+      <Filter>PostOffice</Filter>
+    </ClInclude>
+    <ClInclude Include="Subscriber.h">
+      <Filter>Subscriber\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Message\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NarrowcastStruct.h">
+      <Filter>Narrowcast</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

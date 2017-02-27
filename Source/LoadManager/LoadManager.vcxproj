@@ -211,7 +211,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Components\;$(SolutionDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -226,7 +226,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Components\;$(SolutionDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -291,7 +291,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Components\;$(SolutionDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -310,7 +310,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Components\;$(SolutionDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -329,7 +329,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions); _RETAIL_BUILD</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Components\;$(SolutionDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -342,6 +342,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LoadCamera.h" />
+    <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadManager.h" />
     <ClInclude Include="LoadModel.h" />
@@ -351,11 +352,13 @@
     <ClInclude Include="LoadScriptComponent.h" />
     <ClInclude Include="LoadSoundComponent.h" />
     <ClInclude Include="LuaFunctions.h" />
+    <ClInclude Include="ServerLoadManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LoadCamera.cpp" />
+    <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
     <ClCompile Include="LoadModel.cpp" />
@@ -365,6 +368,7 @@
     <ClCompile Include="LoadScriptComponent.cpp" />
     <ClCompile Include="LoadSoundComponent.cpp" />
     <ClCompile Include="LuaFunctions.cpp" />
+    <ClCompile Include="ServerLoadManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ModelViewer|Win32'">Create</PrecompiledHeader>

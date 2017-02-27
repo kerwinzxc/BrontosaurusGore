@@ -211,7 +211,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -230,7 +230,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -299,7 +299,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -322,7 +322,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -345,7 +345,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions); _RETAIL_BUILD</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -375,7 +375,11 @@
     <ClInclude Include="CollisionComponentManager.h" />
     <ClInclude Include="ComponentMessageCallback.h" />
     <ClInclude Include="ComponentMessageTypeToLua.h" />
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="GeneralAmmoData.h" />
+    <ClInclude Include="InputComponentManager.h" />
+    <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
     <ClInclude Include="InputComponent.h" />
@@ -420,8 +424,11 @@
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="ComponentMessageTypeToLua.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyComponentManager.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="InputComponentManager.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />

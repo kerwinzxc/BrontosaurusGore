@@ -1,7 +1,6 @@
 #pragma once
-struct AmmoData
+struct SAmmoData
 {
-	unsigned short ammoClip;
 	unsigned short maxAmmo;
-	float realoadDuration;
+	std::string ammoForWeaponName;
 };

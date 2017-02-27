@@ -37,6 +37,8 @@
     <ClInclude Include="LoadCamera.h">
       <Filter>LoadThings\LoadCamera</Filter>
     </ClInclude>
+    <ClInclude Include="ServerLoadManager.h" />
+    <ClInclude Include="LoadEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,6 +74,8 @@
     <ClCompile Include="LoadCamera.cpp">
       <Filter>LoadThings\LoadCamera</Filter>
     </ClCompile>
+    <ClCompile Include="ServerLoadManager.cpp" />
+    <ClCompile Include="LoadEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">

@@ -9,5 +9,6 @@ enum class eInputMessengerType
 	ePauseMenu,
 	eCredits,
 	eSplashScreen,
+	eServer,
 	eLength
 };

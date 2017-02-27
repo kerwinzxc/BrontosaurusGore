@@ -6,5 +6,7 @@ class CNetworkMessage_Ping: public CNetworkMessage
 public:
 	CNetworkMessage_Ping();
 	~CNetworkMessage_Ping();
+
+	ePackageType GetPackageType()const override;
 };
 

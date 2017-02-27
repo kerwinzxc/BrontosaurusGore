@@ -27,6 +27,8 @@ CInputComponent::CInputComponent()
 	myControlMap[INTIFY(ePlayerControls::eRight)] = CU::eKeys::D;
 	myControlMap[INTIFY(ePlayerControls::eJump)] = CU::eKeys::SPACE;
 	myControlMap[INTIFY(ePlayerControls::eActivate)] = CU::eKeys::E;
+
+	myIsLeftMouseButtonPressed = false;
 }
 
 CInputComponent::~CInputComponent()
@@ -46,12 +48,18 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 		break;
 	case CU::eInputType::eMousePressed:
+	{
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;
+
+		myIsLeftMouseButtonPressed = true;
 		break;
+	}
 	case CU::eInputType::eMouseReleased:
 		aInputMessage.myMouseButton;
 		aInputMessage.myMousePosition;
+
+		myIsLeftMouseButtonPressed = false;
 		break;
 	case CU::eInputType::eKeyboardPressed:
 		KeyPressed(aInputMessage.myKey);
@@ -59,8 +67,14 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 	case CU::eInputType::eKeyboardReleased:
 		KeyReleased(aInputMessage.myKey);
 		break;
+	case CU::eInputType::eScrollWheelChanged:
+	{
+		SComponentMessageData scrollWheelData;
+		scrollWheelData.myInt = aInputMessage.myMouseWheelDelta.x;
+		GetParent()->NotifyComponents(eComponentMessageType::eChangeWeapon, scrollWheelData);
+		break;
 	}
-
+	}
 	return CU::eInputReturn::ePassOn;
 }
 
@@ -97,5 +111,13 @@ void CInputComponent::KeyReleased(const CU::eKeys aKey)
 		SComponentMessageData data;
 		data.myPlayerControl = static_cast<ePlayerControls>(index);
 		NotifyParent(eComponentMessageType::eKeyReleased, data);
+	}
+}
+
+void CInputComponent::Update()
+{
+	if(myIsLeftMouseButtonPressed == true)
+	{
+		GetParent()->NotifyComponents(eComponentMessageType::eSetDirectionForShooting, SComponentMessageData());
 	}
 }

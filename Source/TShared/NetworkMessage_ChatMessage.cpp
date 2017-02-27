@@ -11,6 +11,11 @@ CNetworkMessage_ChatMessage::~CNetworkMessage_ChatMessage()
 {
 }
 
+ePackageType CNetworkMessage_ChatMessage::GetPackageType() const
+{
+	return ePackageType::eChat;
+}
+
 void CNetworkMessage_ChatMessage::DoSerialize(StreamType& aStream)
 {
 	serialize(myChatMessage, aStream);

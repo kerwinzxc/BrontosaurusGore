@@ -17,6 +17,8 @@
 #include "../CommonUtilities/InputMessenger.h"
 #include "../CommonUtilities/InputMessage.h"
 #include "../CommonUtilities/EInputReturn.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/FocusChange.h"
 
 CInputManager* CInputManager::ourInstance(nullptr);
 
@@ -47,7 +49,7 @@ CInputManager::CInputManager()
 
 	myHasFocus = true;
 
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eFocusChanged);
 }
 
 CInputManager::~CInputManager()
@@ -58,12 +60,9 @@ CInputManager::~CInputManager()
 
 	SAFE_DELETE(myDInputWrapper);
 	SAFE_DELETE(myXInputWrapper);
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
-}
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
 
-eMessageReturn CInputManager::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CInputManager::SetMousePosition(const CU::Vector2f& aMousePosition)
@@ -102,6 +101,12 @@ void CInputManager::Neglect(CU::CInputMessenger& aMessenger)
 CInputManager* CInputManager::GetInstance()
 {
 	return ourInstance;
+}
+
+eMessageReturn CInputManager::DoEvent(const FocusChange& aFocusChange)
+{
+	LockUnlockMouse(aFocusChange.GetHasFocus());
+	return eMessageReturn::eContinue;
 }
 
 void CInputManager::Update()
@@ -183,6 +188,30 @@ void CInputManager::UpdateMouse()
 					}
 				}
 				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
+			}
+			int a = myDInputWrapper->GetMouseWheelPos();
+			if (a != myLastMouseWheelPosition)
+			{
+				if (a != 0)
+				{
+					CU::SInputMessage mouseWheelChanged;
+					mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
+					mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
+					mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
+
+					for (CU::CInputMessenger* messenger : myMessengers)
+					{
+						if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
+						{
+							break;
+						}
+					}
+					myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
+				}
+				else
+				{
+					myLastMouseWheelPosition = 0;
+				}
 			}
 		}
 

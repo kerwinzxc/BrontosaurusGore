@@ -1,10 +1,11 @@
 #pragma once
 
 #include "../PostMaster/Subscriber.h"
+#include "ThreadedPostmaster/Subscriber.h"
 
 class CSpriteInstance;
 
-class GUICursor : public Subscriber
+class GUICursor : public Postmaster::ISubscriber
 {
 public:
 	GUICursor();
@@ -14,7 +15,6 @@ public:
 	void SetPosition(const CU::Vector2f& aPosition);
 	const CU::Vector2f& GetPosition() const;
 
-	eMessageReturn Recieve(const Message& aMessage) override;
 
 private:
 	CSpriteInstance* mySprite;

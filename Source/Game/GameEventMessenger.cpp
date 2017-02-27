@@ -3,6 +3,7 @@
 #include "PostMaster/Message.h"
 #include "PostMaster/Event.h"
 #include "PostMaster/PostMaster.h"
+#include "ThreadedPostmaster/Postmaster.h"
 
 
 CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(nullptr), myCurrentTime(0), myWaitTime(2.f)
@@ -12,12 +13,8 @@ CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(
 CGameEventMessenger::~CGameEventMessenger()
 {
 	delete myInTweener, myOutTweener;
-	PostMaster::GetInstance().UnSubscribe(this, eMessageType::eGameEventMessage);
-}
-
-eMessageReturn CGameEventMessenger::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
+	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eGameEventMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CGameEventMessenger::Init(const CU::Vector2f& aPosition)
@@ -25,7 +22,8 @@ void CGameEventMessenger::Init(const CU::Vector2f& aPosition)
 	myText.Init();
 	myText.SetPosition(aPosition);
 	myText.SetAlignment(eAlignment::CENTER);
-	PostMaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
+	//PostMaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
 }
 
 void CGameEventMessenger::Update(const float aDeltaTime)

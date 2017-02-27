@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PrecompiledHeader">
+      <UniqueIdentifier>{83c467ed-fb37-4d04-baab-e837ffd1c636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkWrapper">
+      <UniqueIdentifier>{7c0524f0-bb87-4235-8f63-8c9b1a7274f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage">
+      <UniqueIdentifier>{3c6968d9-8540-411f-a2e9-0063008e6bef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\ConnectMessage">
+      <UniqueIdentifier>{7ecf9830-cc21-44f9-a7e0-44464e46917e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\PingMessage">
+      <UniqueIdentifier>{1c0081c2-c2da-44fa-b06c-4dd9b1d080d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\PingResponseMessage">
+      <UniqueIdentifier>{764af7b7-3483-4d1f-85e4-6782096efa94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MessageManager">
+      <UniqueIdentifier>{25f4e9dd-9a16-4249-9590-1547cff8e4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\ConectResponse">
+      <UniqueIdentifier>{dd3cadef-d39c-437c-a2c2-3532a5d81100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\ChatMessage">
+      <UniqueIdentifier>{4d66e038-3d80-4bc4-8c2b-4f940098ddb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\PositionMessage">
+      <UniqueIdentifier>{7602595b-5909-4fb1-92fe-38c2477ae017}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>PrecompiledHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>PrecompiledHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonNetworkIncludes.h" />
+    <ClInclude Include="CommonErrorHandling.h" />
+    <ClInclude Include="TShared_NetworkWrapper.h">
+      <Filter>NetworkWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage.h">
+      <Filter>NetworkMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializeHelper.h" />
+    <ClInclude Include="NetworkMesssage_Connect.h">
+      <Filter>NetworkMessage\ConnectMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_Ping.h">
+      <Filter>NetworkMessage\PingMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="PackageType.h">
+      <Filter>NetworkMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PingResponse.h">
+      <Filter>NetworkMessage\PingResponseMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageManager.h">
+      <Filter>MessageManager</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ConectResponse.h">
+      <Filter>NetworkMessage\ConectResponse</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ChatMessage.h">
+      <Filter>NetworkMessage\ChatMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_Position.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PrecompiledHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="TShared_NetworkWrapper.cpp">
+      <Filter>NetworkWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage.cpp">
+      <Filter>NetworkMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMesssage_Connect.cpp">
+      <Filter>NetworkMessage\ConnectMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_Ping.cpp">
+      <Filter>NetworkMessage\PingMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PingResponse.cpp">
+      <Filter>NetworkMessage\PingResponseMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageManager.cpp">
+      <Filter>MessageManager</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ConectResponse.cpp">
+      <Filter>NetworkMessage\ConectResponse</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ChatMessage.cpp">
+      <Filter>NetworkMessage\ChatMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_Position.cpp" />
+  </ItemGroup>
+</Project>

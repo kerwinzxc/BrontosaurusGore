@@ -49,20 +49,20 @@ void PostMaster::DestroyInstance()
 	SAFE_DELETE(ourInstance);
 }
 
-PostMaster& PostMaster::GetInstance()
-{
-	if (ourInstance == nullptr)
-	{
-		assert(!"Post master is not created (is NULL)");
-	}
-
-	return *ourInstance;
-}
-
-PostMaster* PostMaster::GetInstancePtr()
-{
-	return ourInstance;
-}
+//PostMaster& PostMaster::GetInstance()
+//{
+//	if (ourInstance == nullptr)
+//	{
+//		assert(!"Post master is not created (is NULL)");
+//	}
+//
+//	return *ourInstance;
+//}
+//
+//PostMaster* PostMaster::GetInstancePtr()
+//{
+//	return ourInstance;
+//}
 
 void PostMaster::Subscribe(Subscriber* aSubscriber, const eMessageType aMessageType, const int aPriority)
 {

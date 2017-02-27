@@ -1,13 +1,16 @@
 #pragma once
-#include <CommonNetworkIncludes.h>
-#include "TShared_NetworkWrapper.h"
+#include "../TShared/CommonNetworkIncludes.h"
+#include "../TShared/TShared_NetworkWrapper.h"
 #include <map>
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
 #include "../CommonUtilities/GrowingArray.h"
 #include <string>
-#include "MessageManager.h"
-#include "NetworkMessage_ChatMessage.h"
+#include "../TShared/MessageManager.h"
+#include "../TShared/NetworkMessage_ChatMessage.h"
+
+
+class CGameServer;
 
 struct SClientAdress
 {
@@ -32,6 +35,8 @@ public:
 	void DisconectClient(ClientID aClient);
 	void UpdatePing(CU::Time aDeltaTime);
 
+	void SendTo(CNetworkMessage* aNetworkMessage);
+
 	void HandleChatMessage(CNetworkMessage_ChatMessage* aNetworkMessageChatMessage);
 	bool Update();
 
@@ -41,10 +46,14 @@ private:
 
 	TShared_NetworkWrapper myNetworkWrapper;
 
+	std::map<__int16, CImportantNetworkMessage*> myImportantMessages;
+
 	std::map<ClientID, SClientAdress> myClients;
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;
 	CMessageManager myMessageManager;
+
+	CGameServer* myGameServer;
 };
 

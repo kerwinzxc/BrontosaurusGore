@@ -38,7 +38,13 @@
 #include <thread>
 #include "MovementComponent.h"
 #include "ModelComponentManager.h"
+#include "EnemyComponentManager.h"
+#include "Enemy.h"
 
+#include "WeaponSystemComponent.h"
+#include "AmmoComponent.h"
+#include "ComponentMessage.h"
+#include "InputComponentManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -49,8 +55,10 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myMovementComponent(nullptr)
 	, myAmmoComponentManager(nullptr)
 	, myWeaponFactory(nullptr)
+	, myWeaponSystemManager(nullptr)
 	, myProjectileComponentManager(nullptr)
 	, myProjectileFactory(nullptr)
+	, myInputComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 }
@@ -62,7 +70,6 @@ CPlayState::~CPlayState()
 
 	SAFE_DELETE(myModelComponentManager);
 
-	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
@@ -93,38 +100,77 @@ void CPlayState::Load()
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
-	Sleep(5000);
+	myWeaponFactory->LoadWeapons();
+
 	//create player:
 	{
 		CCameraComponent* cameraComponent = new CCameraComponent();
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+		cameraObject->GetLocalTransform().SetPosition(0.f, 180.f, 0.f); //ändrat till cm igen får ses över //Alex
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 
-		CInputComponent* inputComponent = new CInputComponent();
+		CInputComponent* inputComponent = myInputComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(inputComponent);
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
+		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		playerObject->AddComponent(weaponSystenComponent);
+		playerObject->AddComponent(ammoComponent);
+		SComponentMessageData addHandGunData;
+		SComponentMessageData giveAmmoData;
+		addHandGunData.myString = "Handgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		addHandGunData.myString = "Shotgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		addHandGunData.myString = "PlasmaRifle";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
+		giveAmmoData.myInt = 100;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
 
-	myGameObjectManager->SendObjectsDoneMessage();
+	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
+	CU::CJsonValue levelsFile;
 
-	const KLoader::eError loadError = loader.LoadFile("Json/Levels/SceneNameMissing/LevelData.json");
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+#ifdef _DEBUGq
+	myLevelIndex = levelsArray.Size() - 1;
+#else
+	const int levelIndex = 0;
+#endif
+
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
+
+	const KLoader::eError loadError = loader.LoadFile(levelPath);
 	if (loadError != KLoader::eError::NO_LOADER_ERROR)
 	{
 		DL_MESSAGE_BOX("Loading Failed");
 	}
-
 	myIsLoaded = true;
 
 	// Get time to load the level:
@@ -141,7 +187,12 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime);
 	myScene->Update(aDeltaTime);
+	myWeaponSystemManager->Update(aDeltaTime);
+	myProjectileComponentManager->Update(aDeltaTime);
+	myAmmoComponentManager->Update(aDeltaTime);
+	myInputComponentManager->Update();
 
 	return myStatus;
 }
@@ -191,10 +242,13 @@ void CPlayState::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
+	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
-	myAmmoComponentManager = new AmmoComponentManager();
-	myWeaponFactory = new WeaponFactory();
-	myWeaponSystemManager = new WeaponSystemManager(myWeaponFactory);
-	myProjectileComponentManager = new ProjectileComponentManager();
-	myProjectileFactory = new ProjectileFactory(myProjectileComponentManager);
+	myAmmoComponentManager = new CAmmoComponentManager();
+	myWeaponFactory = new CWeaponFactory();
+	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myProjectileComponentManager = new CProjectileComponentManager();
+	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+	myInputComponentManager = new CInputComponentManager();
 }
