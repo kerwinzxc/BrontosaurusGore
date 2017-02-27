@@ -9,6 +9,7 @@
 
 #include <foundation/PxFoundation.h>
 #include <pvd/PxPvd.h>
+#include <extensions/PxRigidBodyExt.h>
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>
@@ -149,6 +150,8 @@ namespace Physics
 	}
 	CPhysXManager::~CPhysXManager()
 	{
+		PxCloseExtensions();
+
 		if (myPvd)
 		{
 			myPvd->disconnect();
@@ -180,7 +183,7 @@ namespace Physics
 	// Update in 60 - FPS
 	void CPhysXManager::Update(const float dt)
 	{
-		myScene->simulate(1.0f / 60.0f);
+		myScene->simulate(dt);
 		myScene->fetchResults(true);
 	}
 
@@ -188,11 +191,21 @@ namespace Physics
 	{
 		PxShape* shape = myPhysics->createShape(aGeometry, aMaterial);
 		PxTransform transform(0, 0, 0);
-		PxRigidStatic* rigidStatic = myPhysics->createRigidStatic(transform);
-		rigidStatic->attachShape(*shape);
+		PxRigidStatic* body = myPhysics->createRigidStatic(transform);
+
+		body->attachShape(*shape);
 		shape->release();
-		myScene->addActor(*rigidStatic);
-		return rigidStatic;
+		return body;
+	}
+
+	PxRigidActor* CPhysXManager::CreateDynamicCollider(physx::PxGeometry& aGeometry, physx::PxMaterial& aMaterial)
+	{
+		PxShape* shape = myPhysics->createShape(aGeometry, aMaterial);
+		PxTransform transform(0, 0, 0);
+		PxRigidDynamic* body = myPhysics->createRigidDynamic(transform);
+		body->attachShape(*shape);
+		shape->release();
+		return body;
 	}
 
 	PxScene* CPhysXManager::CreateScene()
@@ -201,7 +214,7 @@ namespace Physics
 		PxSceneDesc sceneDesc(myPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.82f, 0.0f);
 		
-		myDispatcher = PxDefaultCpuDispatcherCreate(2);
+		myDispatcher = PxDefaultCpuDispatcherCreate(0);
 		sceneDesc.cpuDispatcher = myDispatcher;
 		//maybe GPU Dispatcher
 		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
@@ -216,25 +229,6 @@ namespace Physics
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::Enum::eTRANSMIT_CONSTRAINTS,		true);
 		}
 #endif
-		/*myDefaultMaterial = myPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-		PxRigidStatic* groundPlane = PxCreatePlane(*myPhysics, PxPlane(0, 1, 0, 0), *myDefaultMaterial);
-		pxScene->addActor(*groundPlane);
-
-		PxShape* shape = myPhysics->createShape(PxBoxGeometry(2.0f, 2.0f, 2.0f), *myDefaultMaterial);
-		for (PxU32 i = 0; i < 10; i++)
-		{
-			for (PxU32 j = 0; j < 10 - i; j++)
-			{
-				PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(10 - i), PxReal(i * 2 + 1), 0) * 2.0f);
-				PxRigidDynamic* body = myPhysics->createRigidDynamic(PxTransform(PxVec3(0, 50, 0)).transform(localTm));
-				body->attachShape(*shape);
-				PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-				pxScene->addActor(*body);
-			}
-		}
-		shape->release();*/
-
 
 		return pxScene;
 	}
@@ -243,7 +237,7 @@ namespace Physics
 
 	PxMaterial* CPhysXManager::CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution)
 	{
-		return myPhysics->createMaterial(aDynamicFriction, aStaticFriction, aRestitution);
+		return myPhysics->createMaterial(aStaticFriction, aDynamicFriction, aRestitution);
 	}
 
 	void CPhysXManager::SetGlobalPose(PxRigidActor* aActor, const CU::Matrix44f& aTransformation)
@@ -255,10 +249,44 @@ namespace Physics
 		aActor->setGlobalPose(transformation);
 	}
 
+	void CPhysXManager::AddActor(PxRigidActor& aActor)
+	{
+		myScene->addActor(aActor);
+	}
+
+	void CPhysXManager::RemoveActor(physx::PxRigidActor& aActor)
+	{
+		myScene->removeActor(aActor);
+	}
+
+	void CPhysXManager::SetPvdCameraTransform(const CU::Matrix44f& /*aTransformation*/)
+	{
+		PxPvdSceneClient* client = myScene->getScenePvdClient();
+		if (client)
+		{
+			//physx::PxVec3 origin = { aTransformation.m41, aTransformation.m42 ,aTransformation.m43 };
+			//CU::Vector3f up = aTransformation.myUpVector;
+			//physx::PxVec3 pxup = { up.x, up.x ,up.x};
+			//
+			//client->updateCamera("", origin, pxup, origin);
+		}
+	}
+
 	PxGeometry* CPhysXManager::CreateBoxGeometry(const CU::Vector3f& aSize)
 	{
 		PxVec3 size = { abs(aSize.x), abs(aSize.y), abs(aSize.z) };
 		size *= 0.5f;
 		return new PxBoxGeometry(size);
 	}
+
+	physx::PxGeometry* CPhysXManager::CreateMeshGeometry(const char* aPath)
+	{
+		PxConvexMeshDesc desc;
+	}
+
+	physx::PxGeometry* CPhysXManager::CreateSphereGeometry(const float aRadius)
+	{
+
+	}
+
 }

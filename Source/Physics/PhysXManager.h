@@ -33,11 +33,22 @@ namespace Physics
 
 		//mebe add layers?
 		physx::PxRigidActor* CreateStaticCollider(physx::PxGeometry& aGeometry, physx::PxMaterial& aMaterial);
+		physx::PxRigidActor* CreateDynamicCollider(physx::PxGeometry& aGeometry, physx::PxMaterial& aMaterial);
+
 
 		physx::PxGeometry* CreateBoxGeometry(const CU::Vector3f& aSize);
+		physx::PxGeometry* CreateMeshGeometry(const char* aPath);
+		physx::PxGeometry* CreateSphereGeometry(const float aRadius);
+
 		physx::PxMaterial* CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution);
 
 		void SetGlobalPose(physx::PxRigidActor* aActor, const CU::Matrix44f& aTransformation);
+
+		void AddActor(physx::PxRigidActor& aActor);
+		void RemoveActor(physx::PxRigidActor& aActor);
+
+		void SetPvdCameraTransform(const CU::Matrix44f& aTransformation);
+
 
 	private:
 		CPhysXManager();
