@@ -8,11 +8,9 @@
 #include "..\Components/Component.h"
 #include "..\Components/ComponentManager.h"
 #include "Components/ModelComponentManager.h"
-#include "Physics/PhysicsManager.h"
 #include "BrontosaurusEngine\ModelManager.h"
 #include "LoadManager.h"
 #include "Scene.h"
-#include "Physics/RigidBodyComponent.h"
 #include "Game/PlayState.h"
 #include "Components\AudioSourceComponentManager.h"
 

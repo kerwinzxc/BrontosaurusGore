@@ -108,9 +108,10 @@ void CPlayState::Load()
 		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
 		cameraComponent->SetCamera(playerCamera);
 		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
+		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
 		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+		cameraObject->GetLocalTransform().SetPosition(0.f, 180.f, 0.f); //ändrat till cm igen får ses över //Alex
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 

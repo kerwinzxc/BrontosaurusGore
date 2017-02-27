@@ -11,6 +11,7 @@ namespace Container
 		virtual ~IQueue();
 
 		virtual void Push(T aValue) = 0;
+		virtual void Append(IQueue& aQueue);
 		virtual T Pop() = 0;
 
 		unsigned Size() const;
@@ -47,6 +48,29 @@ myTail(nullptr)
 template <typename T>
 Container::IQueue<T>::~IQueue()
 {
+}
+
+template <typename T>
+void Container::IQueue<T>::Append(IQueue& aQueue)
+{
+	if(aQueue.IsEmpty() == true)
+	{
+		return;
+	}
+
+	if (IQueue<T>::IsEmpty() == false)
+	{
+		typename IQueue<T>::myTail->next = aQueue.myHead;
+	}
+	else
+	{
+		typename IQueue<T>::myHead = aQueue.myHead;
+	}
+	typename IQueue<T>::myTail = aQueue.myTail;
+	myItemCount += aQueue.myItemCount;
+	aQueue.myHead = 0;
+	aQueue.myTail = 0;
+	aQueue.myItemCount = 0;
 }
 
 template <typename T>

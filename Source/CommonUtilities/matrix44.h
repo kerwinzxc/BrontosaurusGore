@@ -215,44 +215,71 @@ namespace CU
 
 		Matrix44 CreateProjectionMatrixLH(TYPE aNear, TYPE aFar, TYPE aWidth, TYPE aHeight, TYPE aFov)
 		{
-			Matrix44 temp = Matrix44::Identity;
-			float aAspectRatio = aWidth / aHeight;
 
-			TYPE sinFov;
-			TYPE cosFov;
-			TYPE height;
-			TYPE width;
-
-			sinFov = sin(0.5f * aFov);
-			cosFov = cos(0.5f * aFov);
+			TYPE width = aWidth, height = aHeight;
 
 
-			height = cosFov / sinFov;
-			width = height / aAspectRatio;
+
+			Matrix44<TYPE> temp;
+
+
+			TYPE aspectRatio = width / height;
 
 			TYPE scaling = aFar / (aFar - aNear);
+			// it was std::tan, sin seems te give far better results then tan
+			// maybe makes GUI somewhat koko
+			TYPE yScale = 1.0f / std::sin(aFov / 2.0f);
+			TYPE xScale = yScale / aspectRatio;
 
-			temp.m11 = width;
-			temp.m12 = 0.0f;
-			temp.m13 = 0.0f;
-			temp.m14 = 0.0f;
-
-			temp.m21 = 0.0f;
-			temp.m22 = height;
-			temp.m23 = 0.0f;
-			temp.m24 = 0.0f;
-
-			temp.m31 = 0.0f;
-			temp.m32 = 0.0f;
-			temp.m33 = scaling;
-			temp.m34 = 1.1f;
-
-			temp.m41 = 0.0f;
-			temp.m42 = 0.0f;
-			temp.m43 = -scaling * aNear;
-			temp.m44 = 0.0f;
+			temp.myMatrix[0] = xScale;
+			temp.myMatrix[5] = yScale;
+			temp.myMatrix[10] = scaling;
+			temp.myMatrix[14] = -scaling * aNear;
+			temp.myMatrix[11] = 1;
+			temp.myMatrix[15] = 0;
 
 			return temp;
+
+
+
+			//Matrix44 temp = Matrix44::Identity;
+			//float aAspectRatio = aWidth / aHeight;
+
+			//TYPE sinFov;
+			//TYPE cosFov;
+			//TYPE height;
+			//TYPE width;
+
+			//sinFov = sin(0.5f * aFov);
+			//cosFov = cos(0.5f * aFov);
+
+
+			//height = cosFov / sinFov;
+			//width = height / aAspectRatio;
+
+			//TYPE scaling = aFar / (aFar - aNear);
+
+			//temp.m11 = width;
+			//temp.m12 = 0.0f;
+			//temp.m13 = 0.0f;
+			//temp.m14 = 0.0f;
+
+			//temp.m21 = 0.0f;
+			//temp.m22 = height;
+			//temp.m23 = 0.0f;
+			//temp.m24 = 0.0f;
+
+			//temp.m31 = 0.0f;
+			//temp.m32 = 0.0f;
+			//temp.m33 = scaling;
+			//temp.m34 = 1.1f;
+
+			//temp.m41 = 0.0f;
+			//temp.m42 = 0.0f;
+			//temp.m43 = -scaling * aNear;
+			//temp.m44 = 0.0f;
+
+			//return temp;
 		}
 
 

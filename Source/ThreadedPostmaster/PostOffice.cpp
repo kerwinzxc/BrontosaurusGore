@@ -1,7 +1,6 @@
 #include "PostOffice.h"
 #include "Message.h"
-
-
+#include "Postmaster.h"
 
 
 Postmaster::Threaded::CPostOffice::~CPostOffice()
@@ -16,6 +15,11 @@ Postmaster::Threaded::CPostOffice::~CPostOffice()
 
 void Postmaster::Threaded::CPostOffice::HandleMessages()
 {
+	if (myOutgoingQueue.IsEmpty() == false)
+	{
+		CPostmaster::GetInstance().AppendOutgoing(myOutgoingQueue);
+	}
+	
 	HandleBroadcastMessages();
 	HandleNarrowcastMessages();
 }
@@ -27,6 +31,16 @@ void Postmaster::Threaded::CPostOffice::Unsubscribe(ISubscriber* aSubscriber)
 	UnsubscribeBroadcast(aSubscriber);
 	UnsubscribeNarrowcast(aSubscriber);
 	
+}
+
+void Postmaster::Threaded::CPostOffice::AppendMessages(Container::CLocklessQueue<Postmaster::Message::IMessage*>& aBufferQueue)
+{
+	myMessageQueue.Append(aBufferQueue);
+}
+
+void Postmaster::Threaded::CPostOffice::BroadcastGlobal(Message::IMessage* aMessage)
+{
+	myOutgoingQueue.Push(aMessage);
 }
 
 void Postmaster::Threaded::CPostOffice::HandleBroadcastMessages()

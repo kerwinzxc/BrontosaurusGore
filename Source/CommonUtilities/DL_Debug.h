@@ -37,11 +37,13 @@ namespace DL_Debug
 	#define RESOURCES_LOG(...) DL_WRITELOG(DL_Debug::eLogTypes::eResource, __VA_ARGS__)
 	#define ENGINE_LOG(...) DL_WRITELOG(DL_Debug::eLogTypes::eEngine, __VA_ARGS__)
 	#define GAMEPLAY_LOG(...) DL_WRITELOG(DL_Debug::eLogTypes::eGamePlay, __VA_ARGS__)
+	#define PHYSICS_LOG(...) DL_WRITELOG(DL_Debug::eLogTypes::ePhysics, __VA_ARGS__)
 #else //!USE_FILTERLOG
 	#define LOG(logtype, ...)
 	#define RESOURCES_LOG(...)
 	#define ENGINE_LOG(...)
 	#define GAMEPLAY_LOG(...)
+	#define PHYSICS_LOG(...)
 #endif //USE_FILTERLOG
 
 #ifndef _RETAIL_BUILD
@@ -70,6 +72,7 @@ namespace DL_Debug
 		eResource,
 		eEngine,
 		eGamePlay,
+		ePhysics,
 		eCrash,
 		eThreadedModels,
 		eThreadPool,
