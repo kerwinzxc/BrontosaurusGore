@@ -43,6 +43,7 @@ namespace DL_Debug
 	#define RESOURCES_LOG(...)
 	#define ENGINE_LOG(...)
 	#define GAMEPLAY_LOG(...)
+	#define PHYSICS_LOG(...)
 #endif //USE_FILTERLOG
 
 #ifndef _RETAIL_BUILD
