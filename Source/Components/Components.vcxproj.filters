@@ -16,12 +16,6 @@
     <ClCompile Include="CameraManager.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionComponent.cpp">
-      <Filter>Collisions</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionComponentManager.cpp">
-      <Filter>Collisions</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleEmitterComponent.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
@@ -109,6 +103,19 @@
     <ClCompile Include="AmmoComponentManager.cpp">
       <Filter>Ammo</Filter>
     </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Collisions\physx</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxColliderComponent.cpp">
+      <Filter>Collisions</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponentManager.cpp" />
+    <ClCompile Include="CollisionComponent.cpp">
+      <Filter>Collisions</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComponentManager.cpp">
+      <Filter>Collisions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -128,12 +135,6 @@
     </ClInclude>
     <ClInclude Include="CameraManager.h">
       <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
-      <Filter>Collisions</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponentManager.h">
-      <Filter>Collisions</Filter>
     </ClInclude>
     <ClInclude Include="ParticleEmitterComponentManager.h">
       <Filter>Particles</Filter>
@@ -249,6 +250,19 @@
     <ClInclude Include="PlayerControls.h">
       <Filter>InputComponent</Filter>
     </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Collisions\physx</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxColliderComponent.h">
+      <Filter>Collisions</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponentManager.h" />
+    <ClInclude Include="CollisionComponent.h">
+      <Filter>Collisions</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponentManager.h">
+      <Filter>Collisions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -301,6 +315,9 @@
     </Filter>
     <Filter Include="Precompiled">
       <UniqueIdentifier>{e9975db9-e15c-49a1-918b-953f9a1f8c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collisions\physx">
+      <UniqueIdentifier>{805be385-302c-47fc-9985-a53bd024b633}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
