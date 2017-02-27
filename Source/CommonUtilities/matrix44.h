@@ -216,14 +216,19 @@ namespace CU
 		Matrix44 CreateProjectionMatrixLH(TYPE aNear, TYPE aFar, TYPE aWidth, TYPE aHeight, TYPE aFov)
 		{
 
+			TYPE width = aWidth, height = aHeight;
+
+
+
 			Matrix44<TYPE> temp;
 
 
-			TYPE aspectRatio = aWidth / aHeight;
+			TYPE aspectRatio = width / height;
 
 			TYPE scaling = aFar / (aFar - aNear);
-
-			TYPE yScale = 1.0f / std::tan(aFov / 2.0f);
+			// it was std::tan, sin seems te give far better results then tan
+			// maybe makes GUI somewhat koko
+			TYPE yScale = 1.0f / std::sin(aFov / 2.0f);
 			TYPE xScale = yScale / aspectRatio;
 
 			temp.myMatrix[0] = xScale;
