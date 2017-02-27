@@ -10,6 +10,11 @@
 #include "../TShared/NetworkMessage_ChatMessage.h"
 
 
+enum class eServerState
+{
+	eWaitingForClients,
+};
+
 class CGameServer;
 
 struct SClientAdress
@@ -17,6 +22,23 @@ struct SClientAdress
 	std::string myIP;
 	std::string myPort;
 	std::string myName;
+	int ResponseTime;
+};
+
+struct SImportantWaitData
+{
+	SImportantWaitData(): myNetworkMessage(nullptr), myWaitedTime(0)
+	{
+	}
+
+	SImportantWaitData(CImportantNetworkMessage* aNetworkMessage)
+		: myNetworkMessage(aNetworkMessage),
+		  myWaitedTime(0)
+	{
+	}
+
+	CImportantNetworkMessage* myNetworkMessage;
+	CU::Time myWaitedTime;
 };
 
 class CServerMain
@@ -25,6 +47,9 @@ public:
 	CServerMain();
 	~CServerMain();
 	void StartServer();
+
+	void UpdateImportantMessages(const CU::Time aDeltaTime);
+	void RecieveImportantResponse(CImportantNetworkMessage* aNetworkMessage);
 
 	void ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort);
 	void RecievePingResponse(SNetworkPackageHeader aHeader);
@@ -35,20 +60,25 @@ public:
 	void DisconectClient(ClientID aClient);
 	void UpdatePing(CU::Time aDeltaTime);
 
-	void SendTo(CNetworkMessage* aNetworkMessage);
+	void SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend = false);
 
 	void HandleChatMessage(CNetworkMessage_ChatMessage* aNetworkMessageChatMessage);
 	bool Update();
 
 private:
+
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myTimerHandle;
 
 	TShared_NetworkWrapper myNetworkWrapper;
 
-	std::map<__int16, CImportantNetworkMessage*> myImportantMessages;
+	std::map<int, CU::Time> myPings;
+
+	std::map<int, SImportantWaitData> myImportantMessages;
+	int myImportantCount;
 
 	std::map<ClientID, SClientAdress> myClients;
+
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;

@@ -12,14 +12,12 @@ struct SNetworkPackageHeader
 		myTargetID = mySenderID;
 		mySenderID = mySenderID;
 		myTimeStamp = 0;
-		myMessageCount = 0;
 	}
 
 	__int8 myPackageType;
 	__int32 myTimeStamp;
 	__int16 mySenderID;
 	__int16 myTargetID;
-	__int16 myMessageCount;
 };
 
 
@@ -63,4 +61,9 @@ TYPE* CNetworkMessage::CastTo()
 	tempMessage->SetHeader(myHeader);
 	tempMessage->UnpackMessage();
 	return static_cast<TYPE*>(tempMessage);
+}
+
+inline bool CNetworkMessage::IsImportant()
+{
+	return false;
 }

@@ -89,19 +89,6 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 	const unsigned tempBufferSize = aNetworkMessage->GetSerializedData().size();
 	SNetworkPackageHeader aHeader = aNetworkMessage->GetHeader();
 
-	if (aNetworkMessage->IsImportant() == true)
-	{
-		if (myImportantMessages.count(aHeader.myMessageCount) < 1)
-		{
-			aHeader.myMessageCount = GetMessageCount();
-			myImportantMessages[aHeader.myMessageCount] = static_cast<CImportantNetworkMessage*>(aNetworkMessage);
-		}
-	}
-	else
-	{
-		aHeader.myMessageCount = GetMessageCount();
-	}
-
 	unsigned currentPacketSize = sizeof(SNetworkPackageHeader) + streamType.size();
 
 	if (myCurrentBufferSize < currentPacketSize)
@@ -133,7 +120,7 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 		std::cout << error.c_str();
 	}
 
-	return aHeader.myMessageCount;
+	return myMessageCount;
 }
 
 __int16 TShared_NetworkWrapper::GetMessageCount()
