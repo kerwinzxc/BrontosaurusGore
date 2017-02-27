@@ -9,5 +9,6 @@ enum class ePackageType
 	eConnectResponse,
 	eChat,
 	ePosition,
+	eImportantResponse,
 	eSize,
 };
