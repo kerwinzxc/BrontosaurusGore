@@ -38,7 +38,7 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 	return *myGameObjectManager;
 }
 
-void CGameServer::Load()
+void CGameServer::Load(const int aLevelIndex)
 {
 	CU::TimerManager timerMgr;
 	CU::TimerHandle handle = timerMgr.CreateTimer();
@@ -89,7 +89,8 @@ void CGameServer::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 }
 
-bool CGameServer::Update()
+bool CGameServer::Update(CU::Time aDeltaTime)
 {
+	DL_PRINT("In Update");
 	return true;
 }

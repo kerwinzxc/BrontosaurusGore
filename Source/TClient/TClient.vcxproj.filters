@@ -37,6 +37,5 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ClientMessageManager.cpp" />
-    <ClCompile Include="Main.cpp" />
   </ItemGroup>
 </Project>

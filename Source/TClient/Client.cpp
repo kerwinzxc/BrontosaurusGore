@@ -17,6 +17,8 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 
 
+CClient* CClient::ourInstance = nullptr;
+
 CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false), myMessageManager(nullptr), myCurrentPing(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -25,6 +27,25 @@ CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0),
 
 CClient::~CClient()
 {
+}
+
+void CClient::Create()
+{
+	if (ourInstance == nullptr)
+	{
+		ourInstance = new CClient;
+	}
+}
+
+void CClient::Destroy()
+{
+	delete ourInstance;
+	ourInstance = nullptr;
+}
+
+CClient& CClient::GetInstance()
+{
+	return *ourInstance;
 }
 
 bool CClient::StartClient()

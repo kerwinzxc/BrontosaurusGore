@@ -12,10 +12,12 @@ public:
 
 	void SetImportantId(int aImportantCount);
 	int GetImportantId()const;
-private:
-	int myImportantId;
 
+protected:
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;
+
+private:
+	int myImportantId;
 };
 

@@ -10,5 +10,7 @@ enum class ePackageType
 	eChat,
 	ePosition,
 	eImportantResponse,
+	eLoadLevel,
+	eClientReady,
 	eSize,
 };

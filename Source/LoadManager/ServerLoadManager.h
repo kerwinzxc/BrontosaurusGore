@@ -45,6 +45,6 @@ private:
 		CServerLoadManager::CreateInstance(aGameServer);
 	}
 
-	friend void CGameServer::Load();
+	friend void CGameServer::Load(const int aLevelIndex);
 };
 
