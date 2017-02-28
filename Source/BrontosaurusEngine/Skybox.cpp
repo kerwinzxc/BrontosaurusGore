@@ -18,6 +18,7 @@ CSkybox::CSkybox()
 	, myVertexBuffer(nullptr)
 	, myIndexBuffer(nullptr)
 	, mySkyboxTexture(nullptr)
+	, mySRV(nullptr)
 	, myRefCount(1)
 {
 }
@@ -44,6 +45,27 @@ void CSkybox::Init(const char* aPath)
 	myEffect = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, topology);
 
 	mySkyboxTexture = &TEXTUREMGR.LoadTexture(aPath);
+	mySRV = nullptr;
+
+	CreateVertexIndexBuffer();
+	CU::Matrix44f VSbuffer;
+	myVSBuffer = BSR::CreateCBuffer<CU::Matrix44f>(&VSbuffer);
+	CU::Vector4f PSBuffer;
+	myPSBuffer = BSR::CreateCBuffer<CU::Vector4f>(&PSBuffer);
+}
+
+void CSkybox::Init(ID3D11ShaderResourceView* aSRV)
+{
+	unsigned int shaderType = 1; // position
+	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/skybox_shader.fx", shaderType);
+	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/skybox_shader.fx", shaderType);
+	ID3D11GeometryShader* geometryShader = nullptr;//SHADERMGR->LoadGeometryShader(L"Shaders/skybox_shader.fx", shaderType);
+	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/skybox_shader.fx", shaderType);
+	D3D_PRIMITIVE_TOPOLOGY topology = D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	myEffect = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, topology);
+
+	mySkyboxTexture = nullptr;
+	mySRV = aSRV;
 
 	CreateVertexIndexBuffer();
 	CU::Matrix44f VSbuffer;
@@ -58,7 +80,10 @@ void CSkybox::Render(const CU::Camera& aCamera)
 
 	myEffect->Activate();
 	UpdateCbuffer(aCamera);
-	DEVICE_CONTEXT->PSSetShaderResources(0, 1, mySkyboxTexture->GetShaderResourceViewPointer());
+
+	DEVICE_CONTEXT->PSSetShaderResources(0, 1, mySRV == nullptr ? mySkyboxTexture->GetShaderResourceViewPointer() : &mySRV);
+	DEVICE_CONTEXT->PSSetShaderResources(1, 1, mySRV == nullptr ? mySkyboxTexture->GetShaderResourceViewPointer() : &mySRV);
+
 
 	UINT stride = sizeof(SVertexDataCube);
 	UINT offset = 0;

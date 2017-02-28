@@ -27,6 +27,8 @@ public:
 	~CSkybox();
 
 	void Init(const char* aPath);
+	void Init(ID3D11ShaderResourceView* aSRV);
+
 	void Render(const CU::Camera & aCamera);
 	inline CTexture* GetTexture();
 	inline short AddRef();
@@ -36,6 +38,7 @@ private:
 	void CreateVertexIndexBuffer();
 	void UpdateCbuffer(const CU::Camera& aCamera);
 
+	ID3D11ShaderResourceView* mySRV;
 private:
 	CEffect* myEffect;
 	ID3D11Buffer* myVSBuffer;
