@@ -20,7 +20,7 @@
 	public APEX API, so it explicitly does not include Apex.h
 */
 
-#include "PhysXSDKVersion.h"
+#include "PhysX3/PhysXSDKVersion.h"
 
 /*!
  \def APEX_SDK_VERSION

@@ -11,6 +11,7 @@
 #include <pvd/PxPvd.h>
 #include <extensions/PxRigidBodyExt.h>
 #include "SharedPhysicsPointer.h"
+#include "Include/apex_1.4/Apex.h"
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>
@@ -109,6 +110,7 @@ namespace Physics
 		, myFoundation(nullptr)
 		, myPvd(nullptr)
 		, myDispatcher(nullptr)
+		, myCooking(nullptr)
 	{
 		PHYSICS_LOG("Initializing PhysX\n");
 		myPhysXAllocatorCallback = new CPhysXAllocator();
@@ -145,8 +147,13 @@ namespace Physics
 
 		myPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *myFoundation, physx::PxTolerancesScale(), recordMemoryAllocations, myPvd);
 		PX_ERRORCHECK(myPhysics != nullptr, "PxCreatePhysics failed!\n");
+		PxCookingParams cookingParams = PxCookingParams(physx::PxTolerancesScale());
+		myCooking = PxCreateCooking(PX_PHYSICS_VERSION, myPhysics->getFoundation(), cookingParams);
+		PX_ERRORCHECK(myCooking != nullptr, "PxCreateCooking failed!\n");
 
 		myScene = CreateScene();
+
+		InitApex();
 
 	}
 	CPhysXManager::~CPhysXManager()
@@ -233,7 +240,17 @@ namespace Physics
 
 		return pxScene;
 	}
-
+#include "Include/apex_1.4/UserRenderResourceManager.h"
+	void CPhysXManager::InitApex()
+	{
+		nvidia::ApexSDKDesc apexDesc;
+		apexDesc.physXSDK = myPhysics;
+		apexDesc.cooking = myCooking;
+		apexDesc.pvd = myPvd;
+		//Make proper render resource manager
+		myRenderResourceManager = new DummyRenderResourceManager();
+		apexDesc.renderResourceManager = myRenderResourceManager;
+	}
 
 
 	PxMaterial* CPhysXManager::CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution)

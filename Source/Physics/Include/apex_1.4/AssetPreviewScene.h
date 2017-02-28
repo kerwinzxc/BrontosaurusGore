@@ -21,7 +21,7 @@
 #include "Renderable.h"
 #include "Context.h"
 #include "foundation/PxVec3.h"
-#include <ApexDefs.h>
+#include "Include/apex_1.4/ApexDefs.h"
 
 #if PX_PHYSICS_VERSION_MAJOR == 3
 #include "PxFiltering.h"

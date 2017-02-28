@@ -214,7 +214,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -234,7 +234,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -306,7 +306,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -330,7 +330,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -354,7 +354,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
