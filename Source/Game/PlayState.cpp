@@ -42,7 +42,6 @@
 #include "WeaponSystemComponent.h"
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
-#include "InputComponentManager.h"
 #include "TClient/Client.h"
 #include "TShared/NetworkMessage_ClientReady.h"
 #include "TClient/ClientMessageManager.h"
