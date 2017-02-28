@@ -23,6 +23,7 @@ CSurface::CSurface(const std::string& aDirectory, const CU::GrowingArray<std::st
 			i != (eAmbientOcclusion)	&&
 			i != (eEmissive)			&&
 			i != (eNormal)				&&
+			i != (eNormal2)				&&
 			i != (eMetalness))
 		{
 			continue;

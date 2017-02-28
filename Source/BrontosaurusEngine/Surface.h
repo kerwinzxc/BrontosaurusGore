@@ -13,7 +13,8 @@ public:
 		eRoughness = 1,
 		eAmbientOcclusion,
 		eEmissive,
-		eNormal = 5,
+		eNormal = 4,
+		eNormal2 = 5,
 		eMetalness = 10
 	};
 
