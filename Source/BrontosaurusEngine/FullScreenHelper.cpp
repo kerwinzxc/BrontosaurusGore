@@ -27,6 +27,13 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* mBlShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/motionBlur.fx", ShaderType);
 	ID3D11PixelShader* CLDShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/cubicLensDistortion.fx", ShaderType);
 
+	//Jag är en kommentar också Deferred;
+
+	ID3D11PixelShader* deferredAmbient = SHADERMGR->LoadPixelShader(L"Shaders/deferred/deferred_ambient.fx", ShaderType);
+	ID3D11PixelShader* deferredDirectional = SHADERMGR->LoadPixelShader(L"Shaders/deferred/deferred_directional.fx", ShaderType);
+	ID3D11PixelShader* deferredPointLight = SHADERMGR->LoadPixelShader(L"Shaders/deferred/deferred_pointLight.fx", ShaderType);
+	ID3D11PixelShader* deferredSpotLight = SHADERMGR->LoadPixelShader(L"Shaders/deferred/deferred_spotlight.fx", ShaderType);
+
 	// LightShafts
 	//
 	ID3D11VertexShader* lShvertexShader = SHADERMGR->LoadVertexShader(L"Shaders/Fullscreen/lightShafts.fx", ShaderType);
@@ -43,6 +50,14 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eToneMap)]					= new CEffect(vertexShader, tneShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMotionBlur)]				= new CEffect(vertexShader, mBlShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCubicLensDistortion)]		= new CEffect(vertexShader, CLDShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//deferred,
+	myEffects[static_cast<int>(eEffectType::eDeferredAmbient)]			= new CEffect(vertexShader, deferredAmbient, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eDeferredDirectional)]		= new CEffect(vertexShader, deferredDirectional, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eDeferredPointLight)]		= new CEffect(vertexShader, deferredPointLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eDeferredSpotLight)]		= new CEffect(vertexShader, deferredPointLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+
 
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -109,6 +124,44 @@ void CFullScreenHelper::DoEffect(const eEffectType aEffectType, const CU::Vector
 		DEVICE_CONTEXT->RSSetViewports(1, &viewport);
 	}
 	DoEffect(aEffectType, aRenderPackageResource, aSecondRenderPackageResource);
+}
+
+// Spopa-Sod Edvin Lek här!
+
+void CFullScreenHelper::DoEffect(const eEffectType aEffectType)
+{
+	myEffects[static_cast<int>(aEffectType)]->Activate();
+	UINT stride = sizeof(SVertexData);
+	UINT offset = 0;
+
+	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &myVertexBuffer, &stride, &offset);
+	DEVICE_CONTEXT->Draw(4, 0);
+}
+
+void CFullScreenHelper::DoEffect(const eEffectType aEffectType, const CU::Vector4f & aRect)
+{
+	if (aRect != CU::Vector4f::Zero)
+	{
+		CU::Vector2f windowSize;
+		windowSize.x = static_cast<float>(ENGINE->GetWindowSize().x);
+		windowSize.y = static_cast<float>(ENGINE->GetWindowSize().y);
+
+		CU::Vector4f windowRect;
+		windowRect.x = windowSize.x * aRect.x;
+		windowRect.y = windowSize.y * aRect.y;
+		windowRect.z = windowSize.x * aRect.z;
+		windowRect.w = windowSize.y * aRect.w;
+
+		D3D11_VIEWPORT viewport;
+		viewport.TopLeftX = windowRect.x;
+		viewport.TopLeftY = windowRect.y;
+		viewport.Width = windowRect.z - windowRect.x;
+		viewport.Height = windowRect.w - windowRect.y;
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		DEVICE_CONTEXT->RSSetViewports(1, &viewport);
+	}
+	DoEffect(aEffectType);
 }
 
 void CFullScreenHelper::CreateQuad()

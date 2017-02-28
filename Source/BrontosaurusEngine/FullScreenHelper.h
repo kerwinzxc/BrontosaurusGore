@@ -33,7 +33,11 @@ public:
 		eCubicLensDistortion,
 		eToneMap,
 		eMotionBlur, //ooh
-		eSize
+		eDeferredAmbient, //oh oh oh oh
+		eDeferredDirectional,
+		eDeferredPointLight,
+		eDeferredSpotLight,
+		eSize,
 	};
 
 public:
@@ -46,6 +50,8 @@ public:
 	void DoEffect(const eEffectType aEffectType, ID3D11ShaderResourceView* aRenderPackage, ID3D11ShaderResourceView* aSecondRenderPackage = nullptr);
 	void DoEffect(const eEffectType aEffectType, const CU::Vector4f & aRect, ID3D11ShaderResourceView* aRenderPackage, ID3D11ShaderResourceView* aSecondRenderPackage = nullptr);
 
+	void DoEffect(const eEffectType aEffectType);
+	void DoEffect(const eEffectType aEffectType, const CU::Vector4f & aRect);
 
 private: 
 	void CreateQuad();
