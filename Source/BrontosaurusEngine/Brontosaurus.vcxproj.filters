@@ -68,6 +68,9 @@
     <Filter Include="Sprite">
       <UniqueIdentifier>{aeb03320-ae0b-495c-97dc-ce8e28d81244}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cubemap">
+      <UniqueIdentifier>{e071643c-a279-4239-a850-dedb49cbef52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -260,6 +263,10 @@
     <ClInclude Include="Text.h">
       <Filter>Text</Filter>
     </ClInclude>
+    <ClInclude Include="Cubemap.h">
+      <Filter>Cubemap</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -400,6 +407,10 @@
     <ClCompile Include="Text.cpp">
       <Filter>Text</Filter>
     </ClCompile>
+    <ClCompile Include="Cubemap.cpp">
+      <Filter>Cubemap</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

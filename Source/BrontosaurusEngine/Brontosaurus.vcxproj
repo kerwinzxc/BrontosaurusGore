@@ -381,6 +381,8 @@
   <ItemGroup>
     <ClInclude Include="Allignment.h" />
     <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="Cubemap.h" />
+    <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="SettingsSubscriber.h" />
     <ClInclude Include="Navmesh.h" />
     <ClInclude Include="ObjLoader.h" />
@@ -456,6 +458,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="Cubemap.cpp" />
+    <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="SettingsSubscriber.cpp" />
     <ClCompile Include="Navmesh.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
