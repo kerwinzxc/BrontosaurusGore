@@ -53,7 +53,6 @@ void CRenderPackage::Init(const CU::Vector2ui & aSize, ID3D11Texture2D * aTextur
 void CRenderPackage::Clear()
 {
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
-
 	float clearColour[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	context->ClearRenderTargetView(myTarget, clearColour);
 	context->ClearDepthStencilView(myDepth, D3D11_CLEAR_DEPTH, 1.f, 0);
@@ -93,6 +92,16 @@ ID3D11ShaderResourceView *& CRenderPackage::GetDepthResource()
 ID3D11ShaderResourceView *& CRenderPackage::GetResource()
 {
 	return myResource;
+}
+
+ID3D11RenderTargetView *& CRenderPackage::GetRenderTargetView()
+{
+	return myTarget;
+}
+
+ID3D11DepthStencilView*& CRenderPackage::GetDepthStencilView()
+{
+	return myDepth;
 }
 
 ID3D11Texture2D *& CRenderPackage::GetTexture()
