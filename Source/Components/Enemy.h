@@ -16,6 +16,8 @@ namespace Component
 
 		void Update(const CU::Time& aDeltaTime);
 
+		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+
 		static void SetPlayer(CGameObject* playerObject);
 	protected:
 		static CGameObject* myPlayerObject;
@@ -24,6 +26,7 @@ namespace Component
 		float myDetectionRange2;
 		float myStartAttackRange2;
 		float myStopAttackRange2;
+		bool myIsDead;
 	};
 }
 

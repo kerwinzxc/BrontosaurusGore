@@ -52,6 +52,11 @@ void HealthComponent::TakeDamage(const healthPoint aDamage)
 	{
 		myCurrentHealth = 0;
 		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
+
+
+		SComponentMessageData data;
+		data.myBool = false;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
 	}
 	else
 	{
