@@ -11,9 +11,9 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #include "GameServer.h"
-#include "TShared/NetworkMessage_LoadLevel.h"
+#include "../TShared/NetworkMessage_LoadLevel.h"
 #include <array>
-#include "TShared/NetworkMessage_ClientReady.h"
+#include "../TShared/NetworkMessage_ClientReady.h"
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myGameServer(nullptr)
 {
