@@ -80,7 +80,8 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	std::wstring wShaderPath = std::wstring(shaderPath.begin(), shaderPath.end());
 
 	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/vertex_shader.fx", shaderType);
-	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/pixel_shader.fx", shaderType);
+	ID3D11PixelShader* forwardPixelShader = SHADERMGR->LoadPixelShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/pixel_shader.fx", shaderType);
+	ID3D11PixelShader* deferredPixelShader = SHADERMGR->LoadPixelShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/deferred/deferred_pixel_shader.fx", shaderType);
 
 
 	ID3D11GeometryShader* geometryShader = nullptr;// CEngine::GetInstance()->GetShaderManager()->LoadGeometryShader(L"Shaders/geometry_shader.fx", shaderType);
@@ -89,7 +90,9 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 
 	D3D_PRIMITIVE_TOPOLOGY topology			= D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	//Put effects in a manager mebe?
-	CEffect* effect = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, topology);
+	CEffect* forwardEffect = new CEffect(vertexShader, forwardPixelShader, geometryShader, inputLayout, topology);
+	CEffect* deferredEffect = new CEffect(vertexShader, deferredPixelShader, geometryShader, inputLayout, topology);
+
 	CSurface* surface = new CSurface(modelPath, scene.myTextures);
 	//CSurface* surface = new CSurface(texturePaths);
 
@@ -97,7 +100,8 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	{
 		aNewModel->mySphereColData = /*SSphereColData*/(scene.mySphereColData);
 	}
-	aNewModel->Initialize(effect, surface, scene.myMeshes);
+	aNewModel->Initialize(forwardEffect, surface, scene.myMeshes);
+	aNewModel->myDeferredEffect = deferredEffect;
 	aNewModel->SetScene(scene.myScene);
 
 	return true;
