@@ -118,20 +118,33 @@ void CRenderer::Render()
 	}
 
 	DoRenderQueue();
+	myDeferredRenderer.DoRenderQueue();
+
+	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
+	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eNoBlend;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-
 	SetStates(&changeStateMessage);
+
 
 	Downsample(*renderTo);
 	HDR();
 	Bloom();
 	MotionBlur();
 	LensDistortion(myIntermediatePackage);
+
+	myIntermediatePackage.Activate();
+	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.0f, 0.5f, 0.5f }, &myDeferredRenderer.myGbuffer.diffuse);
+	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
+	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.roughnessMetalnessAO);
+	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
+
+
 	RenderGUI();
 
 
@@ -536,13 +549,9 @@ void CRenderer::CreateBlendStates()
 
 	ID3D11BlendState* blendState = NULL;
 	{
-
-
 		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
-
 		blendDesc_AlphaBlend.AlphaToCoverageEnable = FALSE;
 		blendDesc_AlphaBlend.IndependentBlendEnable = FALSE;
-
 		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
@@ -600,6 +609,30 @@ void CRenderer::CreateBlendStates()
 		myBlendStates[static_cast<int>(eBlendState::eNoBlend)] = blendState;
 
 	}
+
+
+
+
+	blendState = NULL;
+	{
+		D3D11_BLEND_DESC blendDesc_Blend = {};
+
+		blendDesc_Blend.AlphaToCoverageEnable = FALSE;
+		blendDesc_Blend.IndependentBlendEnable = TRUE;
+		blendDesc_Blend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_Blend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
+		blendDesc_Blend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
+		blendDesc_Blend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+		blendDesc_Blend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+		blendDesc_Blend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
+		blendDesc_Blend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+		blendDesc_Blend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_Blend, &blendState);
+		CHECK_RESULT(result, "Failed to create No-Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eAddBlend)] = blendState;
+	}
+
 }
 
 void CRenderer::CreateDepthStencilStates()
@@ -765,6 +798,27 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 {
 	switch (aRenderMesage->myType)
 	{
+	case SRenderMessage::eRenderMessageType::eRenderPointLight:
+	case SRenderMessage::eRenderMessageType::eRenderSpotLight:
+	case SRenderMessage::eRenderMessageType::eRenderDirectionalLight:
+	{
+		myDeferredRenderer.AddRenderMessage(aRenderMesage);
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eSetCubemapResource:
+	{
+		SSetCubemapResource* msg = static_cast<SSetCubemapResource*>(aRenderMesage);
+		DEVICE_CONTEXT->PSSetShaderResources(0, 1, &msg->mySRV);
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eClear:
+	{
+		SClear* msg = static_cast<SClear*>(aRenderMesage);
+		float r, g, b = g = r = 1.0f;
+		float clearColour[4] = { r, g, b, 1.0f };
+		DEVICE_CONTEXT->ClearRenderTargetView(msg->myRTV, clearColour);
+		break;
+	}
 	case SRenderMessage::eRenderMessageType::eActivateRenderTo:
 	{
 		renderTo->Activate();
@@ -780,7 +834,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderNavmeshMessage* msg = static_cast<SRenderNavmeshMessage*>(aRenderMesage);
 		CModel* model = msg->myModel;
-		SRenderModelParams params;
+		SForwardRenderModelParams params;
 		params.myTransform = msg->myTransformation;
 		params.myTransformLastFrame = msg->myTransformation;
 		
@@ -789,6 +843,16 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		model->Render(params);
 		++aDrawCallCount;
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eSetRTV:
+	{
+		SSetRTVMessage* msg = static_cast<SSetRTVMessage*>(aRenderMesage);
+		float r, g, b = g = r = 1.0f;
+		float clearColour[4] = { r, g, b, 1.0f };
+		DEVICE_CONTEXT->ClearRenderTargetView(msg->myRTV, clearColour);
+		DEVICE_CONTEXT->RSSetViewports(1, msg->myViewport);
+		DEVICE_CONTEXT->OMSetRenderTargets(1, &msg->myRTV, nullptr);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderCameraQueue:
@@ -800,11 +864,23 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		msg->CameraRenderPackage.Clear();
 		msg->CameraRenderPackage.Activate();
+		
 		for (unsigned int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
 		{
 			HandleRenderMessage(msg->CameraRenderQueue[i], aDrawCallCount);
 		}
-		//msg->CameraRenderQueue.DeleteAll();
+
+
+		//msg->myDeferredRenderer.ClearRenderTargets();
+		//msg->myDeferredRenderer.SetRenderTargets();
+		//for (unsigned int i = 0; i < msg->DeferredCameraRenderQueue.Size(); ++i)
+		//{
+		//	msg->myDeferredRenderer.DoRenderMessage(msg->DeferredCameraRenderQueue[i]);
+		//}
+		//DO LIGHT STUFF FOR DEFERRED
+		//COPY DEFERRED INTERMEDIATE TO CAMERAS RENDERPACKAGE
+
+
 		myCamera = previousCam;
 		renderTo->Activate();
 		UpdateBuffer();
@@ -838,6 +914,12 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		++aDrawCallCount;
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
+	{
+		myDeferredRenderer.AddRenderMessage(aRenderMesage);
+		++aDrawCallCount;
+		break;
+	}
 	case SRenderMessage::eRenderMessageType::eRenderGUIModel:
 	{
 		myGUIData.myInputPackage.Activate();
@@ -847,7 +929,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		if (model == nullptr) break;
 
-		SRenderModelParams params;
+		SForwardRenderModelParams params;
 		params.myTransform = msg->myToWorld;
 		params.myTransformLastFrame = msg->myToWorld; //don't blur  GUI, atm fullösning deluxe.
 		params.myRenderToDepth = false;
