@@ -18,9 +18,10 @@ class CClient : public Postmaster::ISubscriber
 {
 	friend class CClientMessageManager;
 public:
-	CClient();
-	~CClient();
 
+	static void Create();
+	static void Destroy();
+	static CClient& GetInstance();
 	bool StartClient();
 	void Disconect();
 	void UpdatePing(const CU::Time& aTime);
@@ -33,6 +34,13 @@ public:
 	CClientMessageManager* myMessageManager;
 
 private:
+
+	CClient();
+	~CClient();
+
+
+	static CClient* ourInstance;
+
 	CChat myChat;
 
 	CU::TimerManager myTimerManager;

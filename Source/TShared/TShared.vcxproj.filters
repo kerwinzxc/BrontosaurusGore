@@ -39,6 +39,12 @@
     <Filter Include="NetworkMessage\MessageDeImportante">
       <UniqueIdentifier>{086985a4-756c-4c68-9d51-9180aa70ffb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\loadLevel">
+      <UniqueIdentifier>{5c873a7d-2ece-4857-bc70-9eed67563c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Ready">
+      <UniqueIdentifier>{6f20ca8c-8e23-4ca4-8ecc-6b8edbef9727}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -92,6 +98,10 @@
     <ClInclude Include="ImportantNetworkMessage.h">
       <Filter>NetworkMessage\MessageDeImportante</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_LoadLevel.h">
+      <Filter>NetworkMessage\loadLevel</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ClientReady.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -127,5 +137,9 @@
     <ClCompile Include="ImportantNetworkMessage.cpp">
       <Filter>NetworkMessage\MessageDeImportante</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkMessage_LoadLevel.cpp">
+      <Filter>NetworkMessage\loadLevel</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ClientReady.cpp" />
   </ItemGroup>
 </Project>

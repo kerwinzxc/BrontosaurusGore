@@ -19,12 +19,12 @@ public:
 
 	CGameObjectManager& GetGameObjectManager();
 
-	void Load();
+	void Load(const int aLevelIndex);
 
 	void CreateManagersAndFactories();
-
+	bool Update(CU::Time aDeltaTime);
 private:
-	bool Update();
+
 
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;

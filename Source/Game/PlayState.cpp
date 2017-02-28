@@ -45,6 +45,9 @@
 #include "AmmoComponent.h"
 #include "ComponentMessage.h"
 #include "InputComponentManager.h"
+#include "TClient/Client.h"
+#include "TShared/NetworkMessage_ClientReady.h"
+#include "TClient/ClientMessageManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -172,6 +175,13 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 	myIsLoaded = true;
+
+	//skicka meddelande om att laddning e klar.
+	/*SNetworkPackageHeader header;
+	header.myTargetID = (short)ePreDefId::ID_SERVER;
+	header.myPackageType = (char)ePackageType::eClientReady;
+	CClient::GetInstance().myMessageManager->
+	CClient::GetInstance().Send()*/
 
 	// Get time to load the level:
 	timerMgr.UpdateTimers();

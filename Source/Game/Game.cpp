@@ -25,10 +25,13 @@ CGame::~CGame()
 	KLoader::CKevinLoader::DestroyInstance();
 	CBackgroundLoadingManager::DestroyInstance();
 	SSlua::LuaWrapper::DestroyIfCreated();
+	CClient::Destroy();
 }
 
 void CGame::Init()
 {
+	CClient::Create();
+
 	 CBackgroundLoadingManager::CreateInstance();
 
 	 KLoader::CKevinLoader::CreateInstance();
@@ -53,15 +56,15 @@ void CGame::Init()
 		myStateStack.PushState(mySplashScreen);
 	}
 
-	myClient.StartClient();
-	myClient.Connect("127.0.0.1", "InsertName");
+	CClient::GetInstance().StartClient();
+	CClient::GetInstance().Connect("127.0.0.1", "InsertName");
 }
 
 void CGame::Update(const CU::Time& aDeltaTime)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	bool isRunning = myStateStack.Update(aDeltaTime);
-	myClient.Update();
+	CClient::GetInstance().Update();
 	if (isRunning == false)
 	{
 		CEngine::GetInstance()->Shutdown();

@@ -13,16 +13,19 @@
 enum class eServerState
 {
 	eWaitingForClients,
+	eLoadingLevel,
+	eInGame,
 };
 
 class CGameServer;
 
-struct SClientAdress
+struct SClientData
 {
 	std::string myIP;
 	std::string myPort;
 	std::string myName;
 	int ResponseTime;
+	bool IsReady;
 };
 
 struct SImportantWaitData
@@ -63,6 +66,8 @@ public:
 	void SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend = false);
 
 	void HandleChatMessage(CNetworkMessage_ChatMessage* aNetworkMessageChatMessage);
+	bool CheckIfClientsReady() const;
+	void StartGame();
 	bool Update();
 
 private:
@@ -77,12 +82,14 @@ private:
 	std::map<int, SImportantWaitData> myImportantMessages;
 	int myImportantCount;
 
-	std::map<ClientID, SClientAdress> myClients;
+	std::map<ClientID, SClientData> myClients;
 
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;
 	CMessageManager myMessageManager;
+
+	eServerState myServerState;
 
 	CGameServer* myGameServer;
 };
