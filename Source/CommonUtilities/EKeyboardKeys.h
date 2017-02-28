@@ -147,6 +147,7 @@ namespace CU
 		WEBBACK = 0xEA /* Web Back */,
 		MYCOMPUTER = 0xEB /* My Computer */,
 		MAIL = 0xEC /* Mail */,
-		MEDIASELECT = 0xED /* Media Select */
+		MEDIASELECT = 0xED /* Media Select */,
+		LENGTH
 	};
 }

@@ -23,6 +23,7 @@
 #include "../Game/PlayState.h"
 
 #include "KevinLoader/KevinLoader.h"
+#include "ComponentManager.h"
 
 #include "LoadManager.h"
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include <matrix44.h>
 
 namespace CU
 {
@@ -14,25 +13,17 @@ namespace CU
 class CCameraComponent : public CComponent
 {
 public:
-	//friend class CCameraComponentManager;
 	CCameraComponent();
 	~CCameraComponent();
-	
-	void InitOffsetPosition();
 
-	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)override;
-
-	inline void SetCamera(CU::Camera& aCamera);
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
+	void SetCamera(CU::Camera& aCamera);
 
 private:
 	void Pitch(const float aPitch);
+	bool GetLookat(CU::Vector3f& aLookat);
 
-	CU::Vector3f myOffsetPosition;
 	CU::Camera* myCamera;
 	bool myUnlocked;
 };
-
-inline void CCameraComponent::SetCamera(CU::Camera& aCamera)
-{
-	myCamera = &aCamera;
-}

@@ -1,22 +1,16 @@
 #include "stdafx.h"
 #include "CameraComponent.h"
-#include "GameObject.h"
-#include "../CommonUtilities/matrix44.h"
 #include "../CommonUtilities/Camera.h"
 
 CCameraComponent::CCameraComponent()
+	: myCamera(nullptr)
+	, myUnlocked(false)
 {
 	myType = eComponentType::eCamera;
-	myUnlocked = false;
 }
 
 CCameraComponent::~CCameraComponent()
 {
-}
-
-void CCameraComponent::InitOffsetPosition()
-{
-	//myOffsetPosition = myCamera->GetPosition(); 
 }
 
 void CCameraComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -32,30 +26,37 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eMoving:
 		if (myUnlocked == false)
 		{
-			//CU::Vector3f parentPosition = GetParent()->GetWorldPosition();
-			//parentPosition.y = 0.f;
-			//myCamera->SetPosition(myOffsetPosition + parentPosition);
 			myCamera->SetTransformation(GetParent()->GetToWorldTransform());
 		}
 		break;
 	case eComponentMessageType::ePitch:
 		Pitch(aMessageData.myFloat);
 		break;
-	case eComponentMessageType::eSetDirectionForShooting:
-		CU::Matrix44f localMatrix = GetParent()->GetToWorldTransform();
-		localMatrix.Move(CU::Vector3f(0.0f, 0.0f, 10.0f));
-		CU::Vector3f direction = localMatrix.GetPosition() - GetParent()->GetWorldPosition();
-		direction.Normalize();
-		SComponentMessageData shootData;
-		shootData.myVector3f = direction;
-		GetParent()->NotifyComponents(eComponentMessageType::eTryToShoot, shootData);
-		break;
 	}
+}
+
+bool CCameraComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eHasCameraComponent:
+		aQuestionData.myBool = true;
+		return true;
+	case eComponentQuestionType::eGetCameraLookat:
+		return GetLookat(aQuestionData.myVector3f);
+	}
+
+	return false;
+}
+
+void CCameraComponent::SetCamera(CU::Camera& aCamera)
+{
+	myCamera = &aCamera;
 }
 
 void CCameraComponent::Pitch(const float aPitch)
 {
-	const float PitchCap = 0.999f;
+	const float PitchCap = 0.99f;
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 
@@ -72,4 +73,15 @@ void CCameraComponent::Pitch(const float aPitch)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
 	}
+}
+
+bool CCameraComponent::GetLookat(CU::Vector3f& aLookat)
+{
+	if (GetParent())
+	{
+		aLookat = GetParent()->GetToWorldTransform().myForwardVector.GetNormalized();
+		return true;
+	}
+
+	return false;
 }

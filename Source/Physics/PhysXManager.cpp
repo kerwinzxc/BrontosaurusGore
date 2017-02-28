@@ -10,6 +10,7 @@
 #include <foundation/PxFoundation.h>
 #include <pvd/PxPvd.h>
 #include <extensions/PxRigidBodyExt.h>
+#include "SharedPhysicsPointer.h"
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>

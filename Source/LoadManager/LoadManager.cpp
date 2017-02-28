@@ -31,20 +31,10 @@ void LoadManager::DestroyInstance()
 	SAFE_DELETE(ourInstance);
 }
 
-//void LoadManager::SetCurrentScene(CScene* aScene)
-//{
-//	myCurrentScene = aScene;
-//}
-
 CScene& LoadManager::GetCurrentScene() const
 {
 	return myCurrentScene;
 }
-
-//void LoadManager::SetCurrentPlayState(CPlayState* aPlaystate)
-//{
-//	myCurrentPlaystate = aPlaystate;
-//}
 
 CPlayState& LoadManager::GetCurrentPLaystate() const
 {
@@ -60,7 +50,7 @@ void LoadManager::RegisterFunctions()
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy);
-	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
+	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
 	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
@@ -72,15 +62,10 @@ LoadManager::LoadManager(CPlayState& aPlayState, CScene& aScene)
 	: myCurrentPlaystate(aPlayState)
 	, myCurrentScene(aScene)
 {
-	//myCurrentScene = nullptr;
-	//myCurrentPlaystate = nullptr;
-
 	RegisterFunctions();
 }
 
 
 LoadManager::~LoadManager()
 {
-	//myCurrentScene = nullptr;
-	//myCurrentPlaystate = nullptr;
 }

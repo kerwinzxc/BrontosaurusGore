@@ -26,6 +26,14 @@ void CComponent::Receive(const eComponentMessageType aMessageType, const SCompon
 	aMessageData;
 }
 
+bool CComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	aQuestionType;
+	aQuestionData;
+
+	return false;
+}
+
 bool CComponent::IsGameObject()
 {
 	return false;

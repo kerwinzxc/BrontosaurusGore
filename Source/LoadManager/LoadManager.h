@@ -3,7 +3,8 @@
 
 class CScene;
 
-#define LOAD_MGR LoadManager::GetInstance()
+
+// GET_LOADMANAGER(LOCAL_VARIABLE) defined below
 
 class LoadManager
 {
@@ -12,11 +13,7 @@ public:
 
 	static LoadManager* GetInstance();
 
-
-	//void SetCurrentScene(CScene* aScene);
 	CScene& GetCurrentScene() const;
-
-	//void SetCurrentPlayState(CPlayState* aPlaystate);
 	CPlayState& GetCurrentPLaystate() const;
 
 	void RegisterFunctions();
@@ -50,3 +47,8 @@ private:
 
 	friend void CPlayState::Load();
 };
+
+#define GET_LOADMANAGER(LOCAL_VARIABLE)									\
+LoadManager* LOCAL_VARIABLE_invisiblePtr = LoadManager::GetInstance();	\
+if (LOCAL_VARIABLE_invisiblePtr == nullptr) { return NULL_COMPONENT; }	\
+LoadManager& LOCAL_VARIABLE = *LOCAL_VARIABLE_invisiblePtr
