@@ -15,6 +15,11 @@
 #include "KevinLoader/KevinLoader.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "ThreadedPostmaster/PostOffice.h"
+#include "PostMaster/SendNetworkMessage.h"
+#include "TShared/NetworkMessage_LoadLevel.h"
+#include "TClient/ClientMessageManager.h"
+#include "PostMaster/Message.h"
+#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 CGame::CGame()
 {
@@ -25,20 +30,33 @@ CGame::~CGame()
 	KLoader::CKevinLoader::DestroyInstance();
 	CBackgroundLoadingManager::DestroyInstance();
 	SSlua::LuaWrapper::DestroyIfCreated();
-	CClient::Destroy();
 }
 
 void CGame::Init()
 {
-	CClient::Create();
+	CBackgroundLoadingManager::CreateInstance();
 
-	 CBackgroundLoadingManager::CreateInstance();
+	KLoader::CKevinLoader::CreateInstance();
 
-	 KLoader::CKevinLoader::CreateInstance();
+	SSlua::LuaWrapper& luaWrapper = SSlua::LuaWrapper::GetInstance();
+	luaWrapper.RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
 
-	 SSlua::LuaWrapper& luaWrapper = SSlua::LuaWrapper::GetInstance();
-	 luaWrapper.RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
-	 
+	myClient.StartClient();
+	myClient.Connect("127.0.0.1", "Adam");
+
+	CClientMessageManager* messageMangaerInstance = CClientMessageManager::GetInstance();
+
+	if (messageMangaerInstance == nullptr)
+	{
+		DL_ASSERT("clientMessageManager not created");
+	}
+
+	CNetworkMessage_LoadLevel* loadLevelMessage = messageMangaerInstance->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
+
+	loadLevelMessage->myLevelIndex = 0;
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(loadLevelMessage));
+
 
 	myStateStack.PushState(new CLoadState(myStateStack, 0));
 	//if (CommandLineManager::GetInstance()->HasParameter("-skipMainMenu") == true)
@@ -49,26 +67,24 @@ void CGame::Init()
 	//{
 	//	myStateStack.PushState(new MainMenuState(myStateStack));
 	//}
-	
+
 	if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
 	{
 		mySplashScreen = new CSplashScreen(myStateStack);
 		myStateStack.PushState(mySplashScreen);
 	}
 
-	CClient::GetInstance().StartClient();
-	CClient::GetInstance().Connect("127.0.0.1", "InsertName");
+
 }
 
 void CGame::Update(const CU::Time& aDeltaTime)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	bool isRunning = myStateStack.Update(aDeltaTime);
-	CClient::GetInstance().Update();
 	if (isRunning == false)
 	{
 		CEngine::GetInstance()->Shutdown();
-	}		
+	}
 }
 
 void CGame::Render()

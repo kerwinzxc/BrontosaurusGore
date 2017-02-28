@@ -408,3 +408,4 @@ Bin/TClient_x64_Debug.lib
 Bin/TServer_x64_Debug.lib
 Bin/TShared_x64_Debug.lib
 /Bin/TServer_Applictaion_x64_Debug.lib
+/Bin/TServer_Applictaion_x64_Release.lib

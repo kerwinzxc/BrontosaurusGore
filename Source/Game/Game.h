@@ -22,5 +22,5 @@ public:
 private:
 	StateStack myStateStack;
 	CSplashScreen* mySplashScreen;
-
+	CClient myClient;
 };

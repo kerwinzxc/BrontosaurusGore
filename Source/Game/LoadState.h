@@ -23,5 +23,6 @@ private:
 	CLoadingAnimation myLoadingAnimation;
 
 	const int myLevelIndex;
+	bool myGotOkFromServer;
 };
 

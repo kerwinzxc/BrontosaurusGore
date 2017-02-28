@@ -45,6 +45,9 @@
 #include "TClient/Client.h"
 #include "TShared/NetworkMessage_ClientReady.h"
 #include "TClient/ClientMessageManager.h"
+#include "PostMaster/SendNetworkMessage.h"
+#include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -112,6 +115,8 @@ void CPlayState::Load()
 
 	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
+
+
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
 	levelPath += "/LevelData.json";
@@ -173,14 +178,7 @@ void CPlayState::Load()
 	
 	
 	myIsLoaded = true;
-
-	//skicka meddelande om att laddning e klar.
-	/*SNetworkPackageHeader header;
-	header.myTargetID = (short)ePreDefId::ID_SERVER;
-	header.myPackageType = (char)ePackageType::eClientReady;
-	CClient::GetInstance().myMessageManager->
-	CClient::GetInstance().Send()*/
-
+	
 	// Get time to load the level:
 	loadPlaystateTimer.Update();
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();

@@ -1,6 +1,7 @@
 #pragma once
 #include "../PostMaster/EMessageReturn.h"
 #include "../PostMaster/NetworkPosMessageEvent.h"
+#include "SendNetowrkMessageMessage.h"
 
 class PushState;
 class PopCurrentState;
@@ -27,5 +28,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const PopCurrentState& aPopCurrent);
 		virtual eMessageReturn DoEvent(const PushState& aPushState);
 		virtual eMessageReturn DoEvent(const CNetworkPosMessageEvent& aPositionEvent);
+		virtual eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
 	};
 }

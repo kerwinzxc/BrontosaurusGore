@@ -11,17 +11,21 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #include "GameServer.h"
-#include "TShared/NetworkMessage_LoadLevel.h"
+#include "../TShared/NetworkMessage_LoadLevel.h"
 #include <array>
-#include "TShared/NetworkMessage_ClientReady.h"
+#include "../TShared/NetworkMessage_ClientReady.h"
+#include "KevinLoader/KLoaderError.h"
+#include "KevinLoader/KevinLoader.h"
 
-CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myGameServer(nullptr)
+CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
+	KLoader::CKevinLoader::CreateInstance();
 }
 
 
 CServerMain::~CServerMain()
 {
+	KLoader::CKevinLoader::DestroyInstance();
 }
 
 void CServerMain::StartServer()

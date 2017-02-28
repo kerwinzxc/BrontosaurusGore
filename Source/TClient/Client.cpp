@@ -15,44 +15,27 @@
 #include "../PostMaster/Event.h"
 #include "../PostMaster/PostMaster.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../BrontosaurusEngine/Engine.h"
+#include "../CommonUtilities/ThreadPool.h"
 
 
-CClient* CClient::ourInstance = nullptr;
-
-CClient::CClient(): myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false), myMessageManager(nullptr), myCurrentPing(0)
+CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
+	CClientMessageManager::CreateInstance(*this);
 }
 
 
 CClient::~CClient()
 {
-}
-
-void CClient::Create()
-{
-	if (ourInstance == nullptr)
-	{
-		ourInstance = new CClient;
-	}
-}
-
-void CClient::Destroy()
-{
-	delete ourInstance;
-	ourInstance = nullptr;
-}
-
-CClient& CClient::GetInstance()
-{
-	return *ourInstance;
+	CClientMessageManager::DestroyInstance();
 }
 
 bool CClient::StartClient()
 {
 	myNetworkWrapper.Init(0);
-	myMessageManager = new CClientMessageManager(*this);
 	myMainTimer = myTimerManager.CreateTimer();
+	CEngine::GetInstance()->GetThreadPool()->AddWork(CU::Work(std::bind(&CClient::Update, this)));
 	return true;
 }
 
@@ -88,7 +71,7 @@ void CClient::Ping()
 		header.myPackageType = static_cast<char>(ePackageType::ePing);
 		header.myTimeStamp = 100;
 
-		CNetworkMessage_Ping* tempMessagePing = myMessageManager->CreateMessage<CNetworkMessage_Ping>("__Server");
+		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
 		myNetworkWrapper.Send(tempMessagePing, myServerIp, SERVER_PORT);
 
@@ -108,8 +91,10 @@ void CClient::Update()
 
 	DL_PRINT(pingString.c_str());
 
-	//while (true)
+	while (true)
 	{
+		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
 
@@ -141,7 +126,7 @@ void CClient::Update()
 				header.myPackageType = static_cast<char>(ePackageType::ePingResponse);
 				header.myTimeStamp = 100;
 
-				CNetworkMessage_PingResponse* newMessage = myMessageManager->CreateMessage<CNetworkMessage_PingResponse>("__Server");
+				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
 				myNetworkWrapper.Send(newMessage, myServerIp, SERVER_PORT);
 				delete newMessage;
 			}
@@ -183,7 +168,7 @@ void CClient::Update()
 			header.myTargetID = ID_ALL_BUT_ME;
 			header.myTimeStamp = KYLE;
 
-			CNetworkMessage_ChatMessage* chatNMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
+			CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
 
 			chatNMessage->myChatMessage = myName + ":" + chatMessage;
 			myNetworkWrapper.Send(chatNMessage, myServerIp, SERVER_PORT);
@@ -209,8 +194,21 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	header.mySenderID = ID_ALL;
 	header.myTimeStamp = myTimer.GetLifeTime().GetMilliseconds();
 
-	CNetworkMessage_Connect* message = myMessageManager->CreateMessage<CNetworkMessage_Connect>("__Server");
+	CNetworkMessage_Connect* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Connect>("__Server");
 	message->myClientName = aClientName;
 
-	return  myNetworkWrapper.Send(message, anIp, SERVER_PORT);
+	myNetworkWrapper.Send(message, anIp, SERVER_PORT);
+
+	while (myState == eClientState::CONECTING)
+	{
+		
+	}
+
+	return  true;
+}
+
+eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+{
+	Send(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
 }
