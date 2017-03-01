@@ -6,6 +6,7 @@ enum class eRasterizerState
 	eNoCulling,
 	eNoCullingClockwise,
 	eWireFrame,
+	eCullFront,
 	eSize,
 };
 

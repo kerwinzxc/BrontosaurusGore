@@ -539,6 +539,18 @@ void CRenderer::CreateRasterizerStates()
 	myRasterizerStates[static_cast<int>(eRasterizerState::eNoCullingClockwise)] = noCullClockwiseState;
 	
 
+	ID3D11RasterizerState* FrontCullState = nullptr;
+	D3D11_RASTERIZER_DESC rasterFrontFace;
+	ZeroMemory(&rasterFrontFace, sizeof(rasterFrontFace));
+	rasterFrontFace.FillMode = D3D11_FILL_SOLID;
+	rasterFrontFace.CullMode = D3D11_CULL_FRONT;
+	rasterFrontFace.DepthClipEnable = false;
+	rasterFrontFace.FrontCounterClockwise = false;
+	result = DEVICE->CreateRasterizerState(&rasterFrontFace, &FrontCullState);
+	CHECK_RESULT(result, "Failed to create Rasterizer Default State.");
+	myRasterizerStates[static_cast<int>(eRasterizerState::eCullFront)] = FrontCullState;
+
+
 
 	DEVICE_CONTEXT->RSSetState(myRasterizerStates[static_cast<int>(eRasterizerState::eDefault)]);
 }
