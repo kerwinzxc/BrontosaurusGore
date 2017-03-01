@@ -25,8 +25,6 @@ public:
 	bool GetIsActive() const;
 	void SetActive(const bool aIsActive);
 private:
-	//CU::Vector3f myPosition;
-	//CPointLight* myLight;
 	Lights::SPointLight myData;
 	bool myIsActive;
 };
