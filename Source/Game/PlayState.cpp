@@ -167,7 +167,7 @@ void CPlayState::Load()
 		addHandGunData.myString = "PlasmaRifle";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
+		giveAmmoData.myInt = 1000;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
@@ -196,6 +196,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myScene->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
+	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 
 	return myStatus;
