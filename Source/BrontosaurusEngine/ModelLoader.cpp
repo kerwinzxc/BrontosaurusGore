@@ -10,6 +10,9 @@
 #include "ShaderManager.h"
 #include "Surface.h"
 
+#define MODEL_TEXTURE_DIRECTORY "Models/Textures/"
+
+
 CModelLoader::CModelLoader()
 {
 }	
@@ -93,7 +96,7 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	CEffect* forwardEffect = new CEffect(vertexShader, forwardPixelShader, geometryShader, inputLayout, topology);
 	CEffect* deferredEffect = new CEffect(vertexShader, deferredPixelShader, geometryShader, inputLayout, topology);
 
-	CSurface* surface = new CSurface(modelPath, scene.myTextures);
+	CSurface* surface = new CSurface(MODEL_TEXTURE_DIRECTORY, scene.myTextures);
 	//CSurface* surface = new CSurface(texturePaths);
 
 	if (scene.mySphereColData.radius > 0.0f)
