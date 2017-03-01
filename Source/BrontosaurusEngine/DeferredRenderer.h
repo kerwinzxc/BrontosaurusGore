@@ -5,6 +5,8 @@ struct SRenderMessage;
 struct ID3D11Buffer;
 class CDXFramework;
 
+class CLightModel;
+
 class CFullScreenHelper;
 
 
@@ -52,9 +54,14 @@ private:
 	void SetSRV();
 	void SetCBuffer();
 
+	void InitPointLightModel();
+
 private:
 	CU::GrowingArray<SRenderMessage*> myRenderMessages;
 	CU::GrowingArray<SRenderMessage*> myLightMessages;
+
+
+	CLightModel* myLightModel;
 
 
 	ID3D11Buffer* myProjectionInverseBuffer;
@@ -64,6 +71,7 @@ private:
 
 	SGBuffer myGbuffer;
 	CRenderPackage myIntermediatePackage;
+	
 	CDXFramework* myFramework;
 };
 

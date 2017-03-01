@@ -8,6 +8,10 @@
 #include "FullScreenHelper.h"
 #include "Lights.h"
 #include "Renderer.h"
+#include "LightModel.h"
+#include "Engine.h"
+#include "ShaderManager.h"
+#include "FBXLoader.h"
 
 CDeferredRenderer::CDeferredRenderer()
 {
@@ -21,6 +25,8 @@ CDeferredRenderer::CDeferredRenderer()
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	
+	
+
 	myRenderMessages.Init(128);
 	myLightMessages.Init(128);
 
@@ -35,6 +41,8 @@ CDeferredRenderer::CDeferredRenderer()
 
 	Lights::SSpotLight spotLight;
 	mySpotLightBuffer = BSR::CreateCBuffer<Lights::SSpotLight>(&spotLight);
+
+	InitPointLightModel();
 }
 
 CDeferredRenderer::~CDeferredRenderer()
@@ -43,8 +51,26 @@ CDeferredRenderer::~CDeferredRenderer()
 	SAFE_RELEASE(myDirectionalLightBuffer);
 	SAFE_RELEASE(myPointLightBuffer);
 	SAFE_RELEASE(mySpotLightBuffer);
+	SAFE_DELETE(myLightModel);
 }
 
+void CDeferredRenderer::InitPointLightModel()
+{
+	myLightModel = new CLightModel();
+
+	CFBXLoader modelLoader;
+	CLoaderModel* model = modelLoader.LoadModel("Models/lightmeshes/sphere.fbx");
+	CLoaderMesh* mesh = model->myMeshes[0];
+
+	unsigned int shaderBlueprint = mesh->myShaderType;
+	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/Deferred/deferred_vertex.fx", shaderBlueprint);
+	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_pointlight.fx", shaderBlueprint);
+	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/Deferred/deferred_vertex.fx", shaderBlueprint);
+
+
+	CEffect* effect = new CEffect(vertexShader, pixelShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	myLightModel->Init(effect, mesh);
+}
 
 void CDeferredRenderer::DoRenderMessage(SRenderMessage* aRenderMessage)
 {
@@ -132,7 +158,7 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 
 	DoAmbientLighting(aFullscreenHelper);
 
-	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myRasterizerState = eRasterizerState::eCullFront;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eAddBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
@@ -169,8 +195,6 @@ void CDeferredRenderer::ClearRenderTargets()
 	myGbuffer.roughnessMetalnessAO.Clear();
 	myGbuffer.emissive.Clear();
 }
-
-
 
 void CDeferredRenderer::ActivateIntermediate()
 {
@@ -240,7 +264,12 @@ void CDeferredRenderer::RenderPointLight(SRenderMessage* aRenderMessage, CFullSc
 	SRenderPointLight* msg = static_cast<SRenderPointLight*>(aRenderMessage);
 	BSR::UpdateCBuffer<Lights::SPointLight>(myPointLightBuffer, &msg->pointLight);
 	myFramework->GetDeviceContext()->PSSetConstantBuffers(2, 1, &myPointLightBuffer);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredPointLight);
+	CU::Matrix44f pointLightTransformation;
+	pointLightTransformation.myPosition = msg->pointLight.position;
+	float scale = msg->pointLight.range;
+	pointLightTransformation.Scale({ scale, scale, scale });
+	myLightModel->Render(pointLightTransformation);
+//	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredPointLight);
 }
 
 void CDeferredRenderer::RenderSpotLight(SRenderMessage* aRenderMessage, CFullScreenHelper& aFullscreenHelper)
