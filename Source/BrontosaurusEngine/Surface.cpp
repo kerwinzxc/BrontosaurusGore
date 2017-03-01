@@ -32,12 +32,17 @@ CSurface::CSurface(const std::string& aDirectory, const CU::GrowingArray<std::st
 
 
 
-		if (aTextureNameList[i] == "")
+		/*if (aTextureNameList[i] == "")
 		{
 			myTextures.Add(nullptr);
 		}
-		else
+		else*/
 		{
+			if (i == eEmissive && aTextureNameList[i] == "")
+			{
+				myTextures.Add(nullptr);
+				continue;
+			}
 			std::wstring texturePath = CU::StringToWString(aDirectory + aTextureNameList[i]);
 			CTexture& texture = CEngine::GetInstance()->GetTextureManager().LoadTexture(texturePath.c_str());
 			myTextures.Add(&texture);
