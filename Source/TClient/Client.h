@@ -43,7 +43,7 @@ private:
 	float myCurrentPing;
 
 	TShared_NetworkWrapper myNetworkWrapper;
-	eClientState myState;
+	std::atomic<eClientState> myState;
 	CU::Timer myTimer;
 	short myId;
 

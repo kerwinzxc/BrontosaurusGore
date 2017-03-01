@@ -110,6 +110,7 @@
     <ClInclude Include="NetworkMessage_ServerReady.h">
       <Filter>NetworkMessage\Ready</Filter>
     </ClInclude>
+    <ClInclude Include="Tshared_NetworkId.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

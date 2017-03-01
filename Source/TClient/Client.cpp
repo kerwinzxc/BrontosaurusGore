@@ -208,7 +208,6 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 
 	while (myState == eClientState::CONECTING)
 	{
-		
 	}
 
 	return  true;

@@ -67,7 +67,7 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 	case CU::eInputType::eScrollWheelChanged:
 	{
 		SComponentMessageData scrollWheelData;
-		scrollWheelData.myInt = aInputMessage.myMouseWheelDelta.x;
+		scrollWheelData.myInt = static_cast<int>(aInputMessage.myMouseWheelDelta.x);
 		GetParent()->NotifyComponents(eComponentMessageType::eChangeWeapon, scrollWheelData);
 		break;
 	}
