@@ -81,9 +81,7 @@ void CSkybox::Render(const CU::Camera& aCamera)
 	myEffect->Activate();
 	UpdateCbuffer(aCamera);
 
-	DEVICE_CONTEXT->PSSetShaderResources(0, 1, mySRV == nullptr ? mySkyboxTexture->GetShaderResourceViewPointer() : &mySRV);
 	DEVICE_CONTEXT->PSSetShaderResources(1, 1, mySRV == nullptr ? mySkyboxTexture->GetShaderResourceViewPointer() : &mySRV);
-
 
 	UINT stride = sizeof(SVertexDataCube);
 	UINT offset = 0;
