@@ -65,6 +65,10 @@ enum class eComponentMessageType
 	eGiveAmmo,
 	//eSetDirectionForShooting,
 	eChangeWeapon,
+	eTakeDamage,
+	eHeal,
+	eTookDamage,
+	eDied,
 	eLength,
 };
 

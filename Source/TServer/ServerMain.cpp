@@ -17,6 +17,7 @@
 #include "KevinLoader/KLoaderError.h"
 #include "KevinLoader/KevinLoader.h"
 #include "TShared/NetworkMessage_ServerReady.h"
+#include "../TShared/NetworkMessage_ClientReady.h"
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {

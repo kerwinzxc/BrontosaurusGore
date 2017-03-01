@@ -118,6 +118,7 @@
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="ColliderComponentManager.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -273,6 +274,7 @@
     <ClInclude Include="ComponentAnswer.h">
       <Filter>Component</Filter>
     </ClInclude>
+    <ClInclude Include="HealthComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
