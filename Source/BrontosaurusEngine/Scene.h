@@ -7,6 +7,7 @@
 #include "InstanceID.h"
 #include "Camera.h"
 #include "RenderCamera.h"
+#include "Cubemap.h"
 
 class CSkybox;
 class CModelInstance;
@@ -46,6 +47,8 @@ public:
 	void AddCamera(const eCameraType aCameraType);
 
 	void SetSkybox(const char* aPath);
+	void SetSkybox(ID3D11ShaderResourceView* aSRV);
+
 
 	CModelInstance* GetModelAt(const InstanceID aModelID);
 	CFireEmitterInstance& GetFireEmitter(const InstanceID aFireEmitterID);
@@ -64,6 +67,8 @@ public:
 
 	void DeleteParticleEmitterInstance(const InstanceID anID);
 	void RemovePointLightInstance(const InstanceID anID);
+
+	void GenerateCubemap();
 
 	inline CSkybox& GetSkybox();
 	
@@ -84,6 +89,8 @@ private:
 	Lights::SDirectionalLight myDirectionalLight; //make array
 
 	CSkybox* mySkybox;
+	CCubemap* myCubemap;
+	CCubemap* myFullbright;
 
 	float myFogStart;
 	float myFogEnd;

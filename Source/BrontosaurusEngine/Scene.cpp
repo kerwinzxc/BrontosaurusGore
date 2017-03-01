@@ -318,10 +318,20 @@ void CScene::SetSkybox(const char* aPath)
 
 	mySkybox = new CSkybox();
 	mySkybox->Init(aPath);
+}
 
+void CScene::SetSkybox(ID3D11ShaderResourceView* aSRV)
+{
+	if (mySkybox != nullptr)
+	{
+		if (mySkybox->DecRef() <= 0)
+		{
+			SAFE_DELETE(mySkybox);
+		}
+	}
 
-
-
+	mySkybox = new CSkybox();
+	mySkybox->Init(aSRV);
 }
 
 CModelInstance* CScene::GetModelAt(const InstanceID aModelID)
@@ -408,4 +418,75 @@ void CScene::RemovePointLightInstance(const InstanceID anID)
 	myPointLights[anID].SetActive(false);
 	myFreePointlights.Push(anID);
 
+}
+
+void CScene::GenerateCubemap()
+{
+	SChangeStatesMessage statemsg;
+	SSetCameraMessage cameraMsg;
+	CU::VectorOnStack<CPointLightInstance, 8> culledPointlights;
+
+	static float piOver2 = 3.1415926f / 2.0f;
+
+	CU::Matrix33f rotations[6];
+	rotations[1] = CU::Matrix33f::CreateRotateAroundY(-piOver2);
+	rotations[0] = CU::Matrix33f::CreateRotateAroundY(piOver2);
+	rotations[3] = CU::Matrix33f::CreateRotateAroundX(piOver2);
+	rotations[2] = CU::Matrix33f::CreateRotateAroundX(-piOver2);
+	rotations[4] = CU::Matrix33f::Identity;
+	rotations[5] = CU::Matrix33f::CreateRotateAroundY(PI);
+
+
+	//rotations[0] = CU::Matrix33f::CreateRotateAroundY(-piOver2);
+	//rotations[1] = CU::Matrix33f::CreateRotateAroundY(piOver2);
+	//rotations[2] = CU::Matrix33f::CreateRotateAroundX(piOver2);
+	//rotations[3] = CU::Matrix33f::CreateRotateAroundX(-piOver2);
+	//rotations[4] = CU::Matrix33f::Identity;
+	//rotations[5] = CU::Matrix33f::CreateRotateAroundY(PI);
+
+	//myFullbright->SetShaderResource();
+
+	for (int i = 0; i < 6; ++i)
+	{
+		myCubemap->ActivateForRender(i);
+		cameraMsg.myCamera = myCubemap->GetCamera();
+		cameraMsg.myCamera.SetTransformation(rotations[i]);
+		RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
+
+		if (mySkybox)
+		{
+			statemsg.myBlendState = eBlendState::eNoBlend;
+			statemsg.myRasterizerState = eRasterizerState::eNoCulling;
+			statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
+			statemsg.mySamplerState = eSamplerState::eWrap;
+			RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+			SRenderSkyboxMessage* msg = new SRenderSkyboxMessage();
+			mySkybox->AddRef();
+			msg->mySkybox = mySkybox;
+			RENDERER.AddRenderMessage(msg);
+			statemsg.myRasterizerState = eRasterizerState::eDefault;
+			statemsg.myDepthStencilState = eDepthStencilState::eDefault;
+			statemsg.myBlendState = eBlendState::eNoBlend;
+			statemsg.mySamplerState = eSamplerState::eClamp;
+			RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+		}
+		
+		
+		// mebe not neededo? - said Greedo
+		CU::Vector3f lightDir = myDirectionalLight.direction;
+		myDirectionalLight.direction = CU::Vector3f::Zero;
+		//
+		for (unsigned int j = 0; j < myModels.Size(); ++j)
+		{
+			if (myModels[j] == nullptr || myModels[j]->ShouldRender() == false)
+			{
+				continue;
+			}
+			myModels[j]->Render(&myDirectionalLight, culledPointlights);
+		}
+		myDirectionalLight.direction = lightDir;
+	}
+
+	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
+	myCubemap->SetShaderResource();
 }
