@@ -29,6 +29,9 @@ void CProjectileComponent::Activate(SProjectileData* someData, const CU::Vector3
 	GetParent()->GetLocalTransform().SetPosition(aPosition);
 	GetParent()->GetLocalTransform().LookAt(GetParent()->GetLocalTransform().GetPosition() + aDirection);
 	myIsActive = true;
+	SComponentMessageData visibilityData;
+	visibilityData.myBool = true;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 }
 
 void CProjectileComponent::Update(float aDeltaTime)
@@ -50,4 +53,7 @@ void CProjectileComponent::Update(float aDeltaTime)
 void CProjectileComponent::Deactivate()
 {
 	myIsActive = false;
+	SComponentMessageData visibilityData;
+	visibilityData.myBool = false;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 }
