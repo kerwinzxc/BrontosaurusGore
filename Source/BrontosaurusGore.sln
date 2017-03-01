@@ -92,6 +92,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadedPostmaster", "Threa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Container", "Container\Container.vcxproj", "{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{B6224D03-7AF6-4A48-8A12-FD98FFD3BB42}"
+	ProjectSection(SolutionItems) = preProject
+		..\Bin\Shaders\Deferred\deferred_ambient.fx = ..\Bin\Shaders\Deferred\deferred_ambient.fx
+		..\Bin\Shaders\Deferred\deferred_directional.fx = ..\Bin\Shaders\Deferred\deferred_directional.fx
+		..\Bin\Shaders\Deferred\deferred_pixel_shader.fx = ..\Bin\Shaders\Deferred\deferred_pixel_shader.fx
+		..\Bin\Shaders\Deferred\deferred_pointLight.fx = ..\Bin\Shaders\Deferred\deferred_pointLight.fx
+		..\Bin\Shaders\Deferred\deferred_spotlight.fx = ..\Bin\Shaders\Deferred\deferred_spotlight.fx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -581,5 +590,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1A77405A-3C30-4C71-BB69-48D3AC474F0E} = {E8308878-AF21-4BF8-9E80-4D5265BFC105}
+		{B6224D03-7AF6-4A48-8A12-FD98FFD3BB42} = {E8308878-AF21-4BF8-9E80-4D5265BFC105}
 	EndGlobalSection
 EndGlobal
