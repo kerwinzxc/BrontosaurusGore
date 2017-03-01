@@ -9,6 +9,13 @@ struct Pos_InputPixel
     float4 position : SV_POSITION;
 };
 
+struct LightModel_InputPixel
+{
+	float4 position : SV_POSITION;
+	float4 uv		: TEXCOORD;
+};
+
+
 struct PosNormBinormTanTex_InputVertex
 {
     float4 position : POSITION;
