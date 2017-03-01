@@ -32,8 +32,6 @@ CInputComponent::CInputComponent()
 	myControlMap[INTIFY(ePlayerControls::eActivate)] = GetInputButton(CU::eKeys::E);
 	myControlMap[INTIFY(ePlayerControls::ePrimaryWeapon)] = GetInputButton(CU::eMouseButtons::LBUTTON);
 	myControlMap[INTIFY(ePlayerControls::eSecondaryWeapon)] = GetInputButton(CU::eMouseButtons::RBUTTON);
-
-	//myIsLeftMouseButtonPressed = false;
 }
 
 CInputComponent::~CInputComponent()
@@ -67,7 +65,7 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 	case CU::eInputType::eScrollWheelChanged:
 	{
 		SComponentMessageData scrollWheelData;
-		scrollWheelData.myInt = aInputMessage.myMouseWheelDelta.x;
+		scrollWheelData.myInt = static_cast<int>(aInputMessage.myMouseWheelDelta.x);
 		GetParent()->NotifyComponents(eComponentMessageType::eChangeWeapon, scrollWheelData);
 		break;
 	}
