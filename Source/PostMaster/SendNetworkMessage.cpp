@@ -3,7 +3,7 @@
 #include "TClient/Client.h"
 
 
-SendNetworkMessage::SendNetworkMessage() : myNetworkMessage(nullptr)
+SendNetworkMessage::SendNetworkMessage(CNetworkMessage* aNetworkMessage) : myNetworkMessage(aNetworkMessage)
 {
 	
 }
@@ -24,3 +24,5 @@ eMessageReturn SendNetworkMessage::DoEvent(CClient* aClient) const
 	delete myNetworkMessage;
 	return eMessageReturn::eStop;
 }
+
+

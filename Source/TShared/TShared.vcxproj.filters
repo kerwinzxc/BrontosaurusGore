@@ -101,7 +101,16 @@
     <ClInclude Include="NetworkMessage_LoadLevel.h">
       <Filter>NetworkMessage\loadLevel</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMessage_ClientReady.h" />
+    <ClInclude Include="NetworkMessageHolder.h">
+      <Filter>NetworkMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ClientReady.h">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ServerReady.h">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClInclude>
+    <ClInclude Include="Tshared_NetworkId.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,6 +149,11 @@
     <ClCompile Include="NetworkMessage_LoadLevel.cpp">
       <Filter>NetworkMessage\loadLevel</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkMessage_ClientReady.cpp" />
+    <ClCompile Include="NetworkMessage_ClientReady.cpp">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ServerReady.cpp">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

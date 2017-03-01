@@ -10,3 +10,8 @@ CNetworkMessage_ClientReady::CNetworkMessage_ClientReady()
 CNetworkMessage_ClientReady::~CNetworkMessage_ClientReady()
 {
 }
+
+ePackageType CNetworkMessage_ClientReady::GetPackageType() const
+{
+	return ePackageType::eClientReady;
+}

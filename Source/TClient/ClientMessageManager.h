@@ -1,17 +1,28 @@
 #pragma once
 #include "../TShared/MessageManager.h"
 #include "Client.h"
+#include "../TShared/NetworkMessageHolder.h"
+
 
 class CClientMessageManager : public CMessageManager
 {
 public:
-	CClientMessageManager(CClient& aClient);
-	~CClientMessageManager();
+	static void CreateInstance(CClient& aClient);
+	static CClientMessageManager* GetInstance();
+	static void DestroyInstance();
 
 	template <typename TYPE>
 	TYPE* CreateMessage(const std::string& aTarget);
 
+	template <typename TYPE>
+	TYPE* CreateMessage(SNetworkMessageHolder aMessageHolder);
+
 private:
+	static CClientMessageManager* ourInstance;
+
+	CClientMessageManager(CClient& aClient);
+	~CClientMessageManager();
+
 	CClient& myClient;
 };
 
@@ -34,4 +45,13 @@ TYPE* CClientMessageManager::CreateMessage(const std::string& aTarget)
 
 	header.mySenderID = myClient.myId;
 	return CMessageManager::CreateMessage<TYPE>(header);
+}
+
+template <typename TYPE>
+TYPE* CClientMessageManager::CreateMessage(SNetworkMessageHolder aMessageHolder)
+{
+	TYPE* message = CMessageManager::CreateMessage<TYPE>(aMessageHolder.myHeader);
+	message->SetData(aMessageHolder.Stream);
+
+	return message;
 }

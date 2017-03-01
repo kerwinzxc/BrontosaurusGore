@@ -12,5 +12,6 @@ enum class ePackageType
 	eImportantResponse,
 	eLoadLevel,
 	eClientReady,
+	eServerReady,
 	eSize,
 };

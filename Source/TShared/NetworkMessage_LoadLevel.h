@@ -7,6 +7,8 @@ public:
 	CNetworkMessage_LoadLevel();
 	~CNetworkMessage_LoadLevel();
 
+	ePackageType GetPackageType()const override;
+
 	int myLevelIndex;
 private:
 

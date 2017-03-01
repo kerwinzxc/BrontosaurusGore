@@ -35,7 +35,10 @@ class CSceneAnimator;
 class CLoaderScene
 {
 public:
-	CLoaderScene() : myMeshes(2), myTextures(8), isLODScene(false), myScene(nullptr) {}
+	CLoaderScene() : myTextures(8), myMeshes(2), myCamera(nullptr), myScene(nullptr), isLODScene(false), myNumBones(0)
+	{
+	}
+
 	~CLoaderScene() { myMeshes.DeleteAll(); SAFE_DELETE(myCamera); }
 	std::string myAlbedoTexture;
 	CU::GrowingArray<std::string> myTextures;
