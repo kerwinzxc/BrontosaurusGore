@@ -17,7 +17,7 @@ class CDeferredRenderer
 	{
 		CRenderPackage diffuse;
 		CRenderPackage normal;
-		CRenderPackage roughnessMetalnessAO;
+		CRenderPackage RMAO;
 		CRenderPackage emissive;
 	};
 

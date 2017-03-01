@@ -21,7 +21,7 @@ CDeferredRenderer::CDeferredRenderer()
 	myGbuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myGbuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myGbuffer.emissive.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myGbuffer.roughnessMetalnessAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myGbuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	
@@ -182,7 +182,7 @@ void CDeferredRenderer::SetRenderTargets()
 	ID3D11RenderTargetView* rtvs[4];
 	rtvs[0] = myGbuffer.diffuse.GetRenderTargetView();
 	rtvs[1] = myGbuffer.normal.GetRenderTargetView();
-	rtvs[2] = myGbuffer.roughnessMetalnessAO.GetRenderTargetView();
+	rtvs[2] = myGbuffer.RMAO.GetRenderTargetView();
 	rtvs[3] = myGbuffer.emissive.GetRenderTargetView();
 
 	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, myGbuffer.diffuse.GetDepthStencilView());
@@ -192,7 +192,7 @@ void CDeferredRenderer::ClearRenderTargets()
 {
 	myGbuffer.diffuse.Clear();
 	myGbuffer.normal.Clear();
-	myGbuffer.roughnessMetalnessAO.Clear();
+	myGbuffer.RMAO.Clear();
 	myGbuffer.emissive.Clear();
 }
 
@@ -215,7 +215,7 @@ void CDeferredRenderer::SetSRV()
 	ID3D11ShaderResourceView* srvs[5];
 	srvs[0] = myGbuffer.diffuse.GetResource();
 	srvs[1] = myGbuffer.normal.GetResource();
-	srvs[2] = myGbuffer.roughnessMetalnessAO.GetResource();
+	srvs[2] = myGbuffer.RMAO.GetResource();
 	srvs[3] = myGbuffer.emissive.GetResource();
 	srvs[4] = myGbuffer.diffuse.GetDepthResource();
 	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
@@ -269,7 +269,6 @@ void CDeferredRenderer::RenderPointLight(SRenderMessage* aRenderMessage, CFullSc
 	float scale = msg->pointLight.range;
 	pointLightTransformation.Scale({ scale, scale, scale });
 	myLightModel->Render(pointLightTransformation);
-//	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredPointLight);
 }
 
 void CDeferredRenderer::RenderSpotLight(SRenderMessage* aRenderMessage, CFullScreenHelper& aFullscreenHelper)
