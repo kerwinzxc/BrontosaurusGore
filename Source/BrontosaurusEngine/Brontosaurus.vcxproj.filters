@@ -269,6 +269,9 @@
     <ClInclude Include="DeferredRenderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="LightModel.h">
+      <Filter>Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -414,6 +417,9 @@
     </ClCompile>
     <ClCompile Include="DeferredRenderer.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="LightModel.cpp">
+      <Filter>Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
