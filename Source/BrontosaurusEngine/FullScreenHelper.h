@@ -35,7 +35,7 @@ public:
 		eMotionBlur, //ooh
 		eDeferredAmbient, //oh oh oh oh
 		eDeferredDirectional,
-		eDeferredPointLight,
+		//eDeferredPointLight,
 		eDeferredSpotLight,
 		eSize,
 	};
