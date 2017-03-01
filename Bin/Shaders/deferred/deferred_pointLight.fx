@@ -1,4 +1,6 @@
+#include <..\shader_structs.fx>
 #include <..\Fullscreen\structs.fx>
+
 
 //**********************************************//
 //					TEXTURES					//
@@ -161,11 +163,11 @@ float3 CameraPosition()
 	return cameraPosition.xyz;
 }
 
-Output PS_PosTex(PosTex_InputPixel inputPixel)
+Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 {
 	Output output;
 	
-	float2 uv = inputPixel.tex;
+	float2 uv = (inputPixel.uv / inputPixel.uv.w).xy;
 	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
 
 	if (depth >= DEPTH_BIAS)
@@ -204,8 +206,8 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 	float lightRange = length(difference) / pointLight.range;
 	lightRange = saturate(lightRange);
-	lightRange = 1.0f - lightRange;
 	lightRange *= lightRange;
+	lightRange = 1.0f - lightRange;
 
 	// DIF
 	float3 lightColor = pointLight.color;
@@ -232,6 +234,8 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 	float3 finalColor = directionDiffuse + directionSpecularity;
 	finalColor *= pointLight.intensity * lightRange;
+
 	output.color = float4(finalColor, 1.0f);
+
 	return output;
 }
