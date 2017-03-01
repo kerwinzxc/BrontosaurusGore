@@ -13,13 +13,16 @@ struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
 struct D3D11_VIEWPORT;
 
+class CTexture;
+
 class CCubemap
 {
 public:
 	CCubemap();
+	CCubemap(const char* aPath);
+
 	~CCubemap();
 	void ActivateForRender(const int aIndex);
-	CU::Camera& GetCamera() { return myCamera; }
 	ID3D11ShaderResourceView* GetSRV();
 	void Clear();
 	void SetShaderResource();
@@ -31,6 +34,8 @@ private:
 	ID3D11RenderTargetView* myRTV[6];
 	D3D11_VIEWPORT* myViewport;
 	//ID3D11DepthStencilView* myDepth;
-	CU::Camera myCamera;
+
+	CTexture* myTextureFromFile;
+	bool myIsInEngine;
 };
 

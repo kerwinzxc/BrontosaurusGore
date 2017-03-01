@@ -4,6 +4,7 @@
 #include "DXFramework.h"
 #include "RenderMessages.h"
 #include "Renderer.h"
+#include "TextureManager.h"
 
 CCubemap::CCubemap()
 {
@@ -15,25 +16,36 @@ CCubemap::CCubemap()
 	myTexture = nullptr;
 	myViewport = nullptr;
 	Init();
-	myCamera.Init(90.f, width, height, 1.0f, 100.f);
+	myIsInEngine = true;
 }
 
+
+CCubemap::CCubemap(const char* aPath)
+{
+	for (int i = 0; i < 6; ++i)
+	{
+		myRTV[i] = nullptr;
+	}
+	mySRV = nullptr;
+	myTexture = nullptr;
+	myViewport = nullptr;
+
+	myTextureFromFile = &TEXTUREMGR.LoadTexture(aPath);
+	myIsInEngine = false;
+}
 
 CCubemap::~CCubemap()
 {
 	for (int i = 0; i < 6; ++i)
 	{
-		myRTV[i]->Release();
-		myRTV[i] = nullptr;
+		SAFE_RELEASE(myRTV[i]);
 	}
-	mySRV->Release();
-	mySRV = nullptr;
-	myTexture->Release();
-	myTexture = nullptr;
+	SAFE_RELEASE(mySRV);
+	SAFE_RELEASE(myTexture);
+	SAFE_DELETE(myViewport);
 
-	delete myViewport;
-	myViewport = nullptr;
-
+	if (myTextureFromFile != nullptr)
+		TEXTUREMGR.DestroyTexture(myTextureFromFile);
 }
 
 void CCubemap::Init()
@@ -94,30 +106,36 @@ void CCubemap::Init()
 
 void CCubemap::Clear()
 {
-	SClear msg;
-	for (int i = 0; i < 6; ++i)
+	if (myIsInEngine)
 	{
-		msg.myRTV = myRTV[i];
-		RENDERER.AddRenderMessage(new SClear(msg));
+		SClear msg;
+		for (int i = 0; i < 6; ++i)
+		{
+			msg.myRTV = myRTV[i];
+			RENDERER.AddRenderMessage(new SClear(msg));
+		}
 	}
 }
 
 void CCubemap::SetShaderResource()
 {
 	SSetCubemapResource msg;
-	msg.mySRV = mySRV;
+	msg.mySRV = myIsInEngine ? mySRV : myTextureFromFile->GetShaderResourceView();
 	RENDERER.AddRenderMessage(new SSetCubemapResource(msg));
 }
 
 void CCubemap::ActivateForRender(const int aIndex)
 {
-	SSetRTVMessage *msg = new SSetRTVMessage();
-	msg->myRTV = myRTV[aIndex];
-	msg->myViewport = myViewport;
-	RENDERER.AddRenderMessage(msg);
+	if (myIsInEngine)
+	{
+		SSetRTVMessage *msg = new SSetRTVMessage();
+		msg->myRTV = myRTV[aIndex];
+		msg->myViewport = myViewport;
+		RENDERER.AddRenderMessage(msg);
+	}
 }
 
 ID3D11ShaderResourceView* CCubemap::GetSRV()
 {
-	return mySRV;
+	return myIsInEngine ? mySRV : myTextureFromFile->GetShaderResourceView();
 }
