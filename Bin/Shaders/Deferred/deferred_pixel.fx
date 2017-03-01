@@ -6,7 +6,7 @@
 //**********************************************//
 
 Texture2D diffuse               : register(t1);
-Texture2D roughnessMetalnessAO	: register(t3);
+Texture2D RMAO					: register(t3);
 Texture2D emissive				: register(t4);
 Texture2D normalMap				: register(t6);
 
@@ -40,7 +40,7 @@ struct PixelOutput
 {
 	float4 diffuse              : SV_TARGET0;
 	float4 normal				: SV_TARGET1;
-	float4 roughnessMetalnessAO : SV_TARGET2;
+	float4 RMAO					: SV_TARGET2;
 	float3 emissive				: SV_TARGET3;
 };
 
@@ -54,8 +54,13 @@ PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
 {
 	PixelOutput output;
 	output.diffuse = diffuse.Sample(samplerWrap, input.uv);
+	if (output.diffuse.a == 0.0f)
+	{
+		discard;
+	}
+
 	output.normal = float4(PS_ObjectNormal(input), 1.0f);
-	output.roughnessMetalnessAO = roughnessMetalnessAO.Sample(samplerWrap, input.uv);
+	output.RMAO = RMAO.Sample(samplerWrap, input.uv);
 	output.emissive = emissive.Sample(samplerWrap, input.uv).xyz;
 	return output;
 }

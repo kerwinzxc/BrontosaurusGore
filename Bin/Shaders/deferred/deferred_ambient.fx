@@ -4,25 +4,25 @@
 //					TEXTURES					//
 //**********************************************//
 
-TextureCube cubeMap                     : register(t0);
-Texture2D deferred_diffuse              : register(t1);
-Texture2D deferred_normal               : register(t2);
-Texture2D deferred_roughnessMetalnessAO : register(t3);
-Texture2D deferred_emissive             : register(t4);
-Texture2D deferred_depth                : register(t5);
+TextureCube cubeMap             : register(t0);
+Texture2D deferred_diffuse      : register(t1);
+Texture2D deferred_normal       : register(t2);
+Texture2D deferred_RMAO			: register(t3);
+Texture2D deferred_emissive     : register(t4);
+Texture2D deferred_depth        : register(t5);
 
 //**********************************************//
 //					SAMPLERS					//
 //**********************************************//
 
-SamplerState SamplerClamp               : register(s0);
-SamplerState samplerWrap                : register(s1);
+SamplerState SamplerClamp       : register(s0);
+SamplerState samplerWrap        : register(s1);
 
 //**********************************************//
 //					C-BUFFER					//
 //**********************************************//
 
-cbuffer ConstantBuffer                  : register(b0)
+cbuffer ConstantBuffer          : register(b0)
 {
 	float4x4 cameraSpaceInversed;
 	float4x4 projectionSpace;
@@ -33,7 +33,7 @@ cbuffer ConstantBuffer                  : register(b0)
 	float garbageo[4];
 }
 
-cbuffer ProjectionInverse               : register(b1)
+cbuffer ProjectionInverse      : register(b1)
 {
 	float4x4 projectionInverse;
 	float4x4 cameraSpace;
@@ -46,7 +46,7 @@ cbuffer ProjectionInverse               : register(b1)
 
 struct Output
 {
-	float4 color                        : SV_TARGET0;
+	float4 color                : SV_TARGET0;
 };
 
 //**********************************************//
@@ -90,38 +90,38 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	//normal = mul(float4(normal, 1.0f), cameraSpaceInversed).xyz;
 
 	//float3 emissive = deferred_emissive.Sample(samplerWrap, uv).xyz;									 // eget pass?
-	float4 RoughnessMetalnessAO = deferred_roughnessMetalnessAO.Sample(samplerWrap, uv);
+	float4 RMAO = deferred_RMAO.Sample(samplerWrap, uv);
 	//float3 ambientLight = cubeMap.SampleLevel(samplerWrap, normal, 0).xyz;
 	float3 ambientLight = cubeMap.SampleLevel(samplerWrap, normal.xyz, (uint) 11 - 2).xyz; // FIX!
 	//ambientLight = float3(1.0f, 0.0f, 0.0f);
 
 
-	float3 metalness = RoughnessMetalnessAO.yyy;
+	float3 metalness = RMAO.yyy;
 	//metalness *= -1;
 	//metalness += 1.0f;
 
 	float3 metalnessAlbedo = albedo - (albedo * metalness);
-	float3 ambientOcclusion = RoughnessMetalnessAO.zzz;
-	float1 roughness = RoughnessMetalnessAO.x;
+	float3 ambientOcclusion = RMAO.zzz;
+	float1 roughness = RMAO.x;
 	//roughness = 0.01f;
 	float3 substance = (float3(0.04f, 0.04f, 0.04f) - (float3(0.04f, 0.04f, 0.04f) * metalness)) + albedo * metalness;
 
-    float4 worldPos = (float4) 0;
-    //worldPos.xy = uv;
-    worldPos.xy = (uv * 2.0f);
+	float4 worldPos = (float4) 0;
+	//worldPos.xy = uv;
+	worldPos.xy = (uv * 2.0f);
 	worldPos.xy -= float2(1.0f, 1.0f); // transforms to -1 to 1
-    worldPos.y *= -1.0f;
+	worldPos.y *= -1.0f;
 	worldPos.z = depth;
 	worldPos.w = 1.0f;
 
 	worldPos = mul(projectionInverse, worldPos);
-    worldPos = mul(cameraSpace, worldPos);
+	worldPos = mul(cameraSpace, worldPos);
 	worldPos = worldPos / worldPos.w;
 
 
 	float4 cameraPos = (float4)0;
-    cameraPos.w = 1.0f;
-    cameraPos = mul(cameraSpace, cameraPos);
+	cameraPos.w = 1.0f;
+	cameraPos = mul(cameraSpace, cameraPos);
 	cameraPos = cameraPos / cameraPos.w;
 
 	//cameraPos = -cameraPos;

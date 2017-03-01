@@ -4,27 +4,27 @@
 //					TEXTURES					//
 //**********************************************//
 
-TextureCube cubeMap                     : register(t0);
-Texture2D deferred_diffuse              : register(t1);
-Texture2D deferred_normal               : register(t2);
-Texture2D deferred_roughnessMetalnessAO : register(t3);
-Texture2D deferred_emissive             : register(t4);
-Texture2D deferred_depth                : register(t5);
+TextureCube cubeMap             : register(t0);
+Texture2D deferred_diffuse      : register(t1);
+Texture2D deferred_normal       : register(t2);
+Texture2D deferred_RMAO			: register(t3);
+Texture2D deferred_emissive     : register(t4);
+Texture2D deferred_depth        : register(t5);
 
-Texture2D shadowBuffer                  : register(t6);
+Texture2D shadowBuffer          : register(t6);
 
 //**********************************************//
 //					SAMPLERS					//
 //**********************************************//
 
-SamplerState SamplerClamp               : register(s0);
-SamplerState samplerWrap                : register(s1);
+SamplerState SamplerClamp       : register(s0);
+SamplerState samplerWrap        : register(s1);
 
 //**********************************************//
 //					C-BUFFER					//
 //**********************************************//
 
-cbuffer ConstantBuffer                  : register(b0)
+cbuffer ConstantBuffer			: register(b0)
 {
 	float4x4 cameraSpaceInversed;
 	float4x4 projectionSpace;
@@ -37,13 +37,13 @@ cbuffer ConstantBuffer                  : register(b0)
 
 
 // lägg till i ^
-cbuffer CameraBuffer					: register(b1)
+cbuffer CameraBuffer			: register(b1)
 {
 	float4x4 projectionInverse;
 	float4x4 cameraSpace;
 }
 
-cbuffer directionalLight                : register(b2)
+cbuffer directionalLight        : register(b2)
 {
 	struct DirectionaLight
 	{
@@ -62,7 +62,7 @@ cbuffer directionalLight                : register(b2)
 
 struct Output
 {
-	float4 color                        : SV_TARGET0;
+	float4 color				: SV_TARGET0;
 };
 
 //**********************************************//
@@ -177,12 +177,12 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 albedo = deferred_diffuse.Sample(samplerWrap, uv).xyz;
 	float3 normal = Normal(uv);
 
-	float4 roughnessMetalnessAO = deferred_roughnessMetalnessAO.Sample(samplerWrap, uv);
-	float3 metalness = roughnessMetalnessAO.yyy;
+	float4 RMAO = deferred_RMAO.Sample(samplerWrap, uv);
+	float3 metalness = RMAO.yyy;
 
 	float3 metalnessAlbedo = albedo - (albedo * metalness);
-	float3 ambientOcclusion = roughnessMetalnessAO.zzz;
-	float1 roughness = roughnessMetalnessAO.x;
+	float3 ambientOcclusion = RMAO.zzz;
+	float1 roughness = RMAO.x;
 	float3 substance = (float3(0.04f, 0.04f, 0.04f) - (float3(0.04f, 0.04f, 0.04f) * metalness)) + albedo * metalness;
 
 	float3 worldPosition = WorldPosition(uv, depth);
