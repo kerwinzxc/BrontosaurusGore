@@ -107,6 +107,9 @@
     <ClInclude Include="NetworkMessage_ClientReady.h">
       <Filter>NetworkMessage\Ready</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_ServerReady.h">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -146,6 +149,9 @@
       <Filter>NetworkMessage\loadLevel</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMessage_ClientReady.cpp">
+      <Filter>NetworkMessage\Ready</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ServerReady.cpp">
       <Filter>NetworkMessage\Ready</Filter>
     </ClCompile>
   </ItemGroup>

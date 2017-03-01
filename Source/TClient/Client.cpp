@@ -17,6 +17,8 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../BrontosaurusEngine/Engine.h"
 #include "../CommonUtilities/ThreadPool.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "ServerReadyMessage.h"
 
 
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
@@ -142,6 +144,11 @@ void CClient::Update()
 			{
 				CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
 				std::cout << chatMessage->myChatMessage << std::endl;
+			}
+			break;
+		case ePackageType::eServerReady:
+			{
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
 			}
 			break;
 		case ePackageType::eZero:

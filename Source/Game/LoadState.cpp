@@ -12,6 +12,7 @@
 #include "TShared/NetworkMessage_ClientReady.h"
 #include "TClient/ClientMessageManager.h"
 #include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::eLoadState)
@@ -29,6 +30,7 @@ void CLoadState::Init()
 {
 	//RENDERER.ClearRenderQueue();
 	CBackgroundLoadingManager &bLM = CBackgroundLoadingManager::GetInstance();
+
 
 	if (bLM.GetIfActive() == true)
 	{
@@ -91,12 +93,21 @@ void CLoadState::Render()
 	RENDERER.AddRenderMessage(new SChangeStatesMessage(msg));
 	myLoadingAnimation.Render();
 
+
 }
 
 void CLoadState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CLoadState::OnExit(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
+}
+
+eMessageReturn CLoadState::DoEvent(const CServerReadyMessage& aServerReadyMessageMessageMessage)
+{
+	myGotOkFromServer = true;
+	return eMessageReturn::eContinue;
 }

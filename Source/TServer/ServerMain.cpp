@@ -16,6 +16,7 @@
 #include "../TShared/NetworkMessage_ClientReady.h"
 #include "KevinLoader/KLoaderError.h"
 #include "KevinLoader/KevinLoader.h"
+#include "TShared/NetworkMessage_ServerReady.h"
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
@@ -207,6 +208,7 @@ void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
 	switch (aNetworkMessage->GetHeader().myTargetID)
 	{
 	case ID_ALL_BUT_ME:
+	case ID_ALL:
 		for (auto client : myClients)
 		{
 			if (client.first != header.mySenderID)
@@ -276,6 +278,16 @@ bool CServerMain::CheckIfClientsReady() const
 void CServerMain::StartGame()
 {
 	myServerState = eServerState::eInGame;
+
+	SNetworkPackageHeader header;
+	header.myTargetID = ID_ALL;
+	header.mySenderID = ID_SERVER;
+	header.myPackageType = static_cast<char>(ePackageType::eServerReady);
+	header.myTimeStamp = GetCurrentTime();
+
+	CNetworkMessage_ServerReady* message = myMessageManager.CreateMessage<CNetworkMessage_ServerReady>(header);
+
+	SendTo(message);
 }
 
 bool CServerMain::Update()
@@ -391,7 +403,7 @@ bool CServerMain::Update()
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
 
-				if (CheckIfClientsReady() == true);
+				if (CheckIfClientsReady() == true)
 				{
 					StartGame();
 				}

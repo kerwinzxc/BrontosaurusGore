@@ -1,11 +1,12 @@
 #pragma once
 #include "LoadingAnimation.h"
 #include "../StateStack/State.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 class StateStack;
 class CPlayState;
 
-class CLoadState :public State
+class CLoadState :public State, Postmaster::ISubscriber
 {
 public:
 	CLoadState(StateStack& aStateStack, const int aLevelIndex);
@@ -17,6 +18,8 @@ public:
 
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
+
+	eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage) override;
 private:
 
 	CPlayState* myPlayState;
