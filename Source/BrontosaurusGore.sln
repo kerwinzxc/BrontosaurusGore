@@ -96,9 +96,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{B6
 	ProjectSection(SolutionItems) = preProject
 		..\Bin\Shaders\Deferred\deferred_ambient.fx = ..\Bin\Shaders\Deferred\deferred_ambient.fx
 		..\Bin\Shaders\Deferred\deferred_directional.fx = ..\Bin\Shaders\Deferred\deferred_directional.fx
-		..\Bin\Shaders\Deferred\deferred_pixel_shader.fx = ..\Bin\Shaders\Deferred\deferred_pixel_shader.fx
+		..\Bin\Shaders\Deferred\deferred_pixel.fx = ..\Bin\Shaders\Deferred\deferred_pixel.fx
 		..\Bin\Shaders\Deferred\deferred_pointLight.fx = ..\Bin\Shaders\Deferred\deferred_pointLight.fx
 		..\Bin\Shaders\Deferred\deferred_spotlight.fx = ..\Bin\Shaders\Deferred\deferred_spotlight.fx
+		..\Bin\Shaders\Deferred\deferred_vertex.fx = ..\Bin\Shaders\Deferred\deferred_vertex.fx
 	EndProjectSection
 EndProject
 Global
