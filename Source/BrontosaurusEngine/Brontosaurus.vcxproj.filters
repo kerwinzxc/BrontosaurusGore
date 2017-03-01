@@ -266,7 +266,9 @@
     <ClInclude Include="Cubemap.h">
       <Filter>Cubemap</Filter>
     </ClInclude>
-    <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="DeferredRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -410,7 +412,9 @@
     <ClCompile Include="Cubemap.cpp">
       <Filter>Cubemap</Filter>
     </ClCompile>
-    <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="DeferredRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
