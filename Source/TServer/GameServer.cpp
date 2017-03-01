@@ -25,7 +25,6 @@ CGameServer::~CGameServer()
 
 void CGameServer::Init()
 {
-	
 }
 
 void CGameServer::Start()
@@ -38,16 +37,19 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 	return *myGameObjectManager;
 }
 
-void CGameServer::Load()
+void CGameServer::Load(const int aLevelIndex)
 {
+	ServerLoadManagerGuard loadManagerGuard(*this);
+	CreateManagersAndFactories();
+
+
 	CU::TimerManager timerMgr;
 	CU::TimerHandle handle = timerMgr.CreateTimer();
 	timerMgr.StartTimer(handle);
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	ServerLoadManagerGuard loadManagerGuard(*this);
-	CreateManagersAndFactories();
+
 
 	myWeaponFactory->LoadWeapons();
 
@@ -64,7 +66,7 @@ void CGameServer::Load()
 #else
 	const int levelIndex = 0;
 #endif
-	int myLevelIndex = 1;
+	int myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
 	levelPath += "/LevelData.json";
@@ -89,7 +91,8 @@ void CGameServer::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 }
 
-bool CGameServer::Update()
+bool CGameServer::Update(CU::Time aDeltaTime)
 {
+	DL_PRINT("In Update");
 	return true;
 }

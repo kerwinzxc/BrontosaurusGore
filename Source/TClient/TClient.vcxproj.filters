@@ -29,6 +29,7 @@
     <ClInclude Include="Chat.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientMessageManager.h" />
+    <ClInclude Include="ServerReadyMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -37,6 +38,6 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ClientMessageManager.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ServerReadyMessage.cpp" />
   </ItemGroup>
 </Project>

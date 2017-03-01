@@ -5,6 +5,7 @@
 KeyCharPressed::KeyCharPressed(const char aKey)
 	: IMessage(eMessageType::eCharPressed),myKey(aKey)
 {
+
 }
 
 

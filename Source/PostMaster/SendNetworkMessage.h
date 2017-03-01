@@ -6,12 +6,13 @@ class SendNetworkMessage: public Event
 {
 public:
 
-	SendNetworkMessage();
+	SendNetworkMessage(CNetworkMessage* aNetworkMessage);
 	~SendNetworkMessage();
 
 	void SetPackage(CNetworkMessage* aMessage);
 
 	virtual eMessageReturn DoEvent(CClient* aClient) const override;
+	//virtual eMessageReturn DoEvent(CServerMain* aServer) const override;
 
 private:
 

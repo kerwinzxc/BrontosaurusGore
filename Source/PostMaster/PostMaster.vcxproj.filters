@@ -50,9 +50,11 @@
     <ClCompile Include="GameEventMessageEvent.cpp">
       <Filter>Events\GameEventMessageEvent</Filter>
     </ClCompile>
-    <ClCompile Include="SendNetworkMessage.cpp" />
     <ClCompile Include="NetworkPosMessageEvent.cpp">
       <Filter>Events\NetworkPositionMessageEvent</Filter>
+    </ClCompile>
+    <ClCompile Include="SendNetworkMessage.cpp">
+      <Filter>Events\SendNetworkMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,9 +190,13 @@
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="PopCurrentState.h" />
     <ClInclude Include="PostMaster.h" />
-    <ClInclude Include="SendNetworkMessage.h" />
     <ClInclude Include="NetworkPosMessageEvent.h">
       <Filter>Events\NetworkPositionMessageEvent</Filter>
+    </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="SendNetworkMessage.h">
+      <Filter>Events\SendNetworkMessage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +241,9 @@
     </Filter>
     <Filter Include="Events\NetworkPositionMessageEvent">
       <UniqueIdentifier>{bd679b4b-3735-472e-8d46-02b10137e280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events\SendNetworkMessage">
+      <UniqueIdentifier>{16ca5ba6-f79f-4a89-b650-f830f24cf8fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

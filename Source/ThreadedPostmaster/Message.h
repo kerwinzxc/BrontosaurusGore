@@ -2,6 +2,8 @@
 #include "../PostMaster/EMessageReturn.h"
 enum class eMessageType;
 
+class CClient;
+
 namespace Postmaster
 {
 	class ISubscriber;
@@ -16,6 +18,7 @@ namespace Postmaster
 			virtual IMessage* Copy() = 0;
 
 			virtual eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const = 0;
+
 			eMessageType GetType() const;
 		private:
 			eMessageType myType;

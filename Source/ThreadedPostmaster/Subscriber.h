@@ -9,6 +9,8 @@ class FocusChange;
 class DroppedFile;
 class ConsoleCalledUpon;
 class DrawCallsCount;
+class CServerReadyMessage;
+class CSendNetowrkMessageMessage;
 
 namespace Postmaster
 {
@@ -27,5 +29,7 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const PopCurrentState& aPopCurrent);
 		virtual eMessageReturn DoEvent(const PushState& aPushState);
 		virtual eMessageReturn DoEvent(const CNetworkPosMessageEvent& aPositionEvent);
+		virtual eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
+		virtual eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage);
 	};
 }

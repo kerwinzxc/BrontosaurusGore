@@ -70,7 +70,7 @@ eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
 		PushState(new CLoadState(*this, aPushState.GetLevelIndex()));
 		break;
 	case PushState::eState::eCreditScreen:
-		PushState(new CreditsState(*this, aPushState.GetLevelIndex()));
+		PushState(new CreditsState(*this, static_cast<bool>(aPushState.GetLevelIndex())));
 		break;
 	case PushState::eState::ePauseScreen:
 		PushState(new PauseMenu(*this));

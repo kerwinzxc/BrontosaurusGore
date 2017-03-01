@@ -6,6 +6,7 @@
 #include "Chat.h"
 #include "../PostMaster/Subscriber.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 enum class eClientState
 {
@@ -30,9 +31,10 @@ public:
 
 	bool Connect(const char* anIp, std::string aClientName);
 
-	CClientMessageManager* myMessageManager;
+	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 
 private:
+
 	CChat myChat;
 
 	CU::TimerManager myTimerManager;
@@ -41,7 +43,7 @@ private:
 	float myCurrentPing;
 
 	TShared_NetworkWrapper myNetworkWrapper;
-	eClientState myState;
+	std::atomic<eClientState> myState;
 	CU::Timer myTimer;
 	short myId;
 

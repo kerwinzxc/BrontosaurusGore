@@ -73,6 +73,14 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, CU::DynamicStrin
 		myStrings[aLineNumber] = std::move(aString);
 	}
 
+	if (aLineNumber > myStrings.Size())
+	{
+		for (int i = 0; i < aLineNumber - myStrings.Size(); ++i)
+		{
+			myStrings.Add("");
+		}
+	}
+
 	if (aLineNumber == myStrings.Size())
 	{
 		myStrings.Add(std::move(aString));
