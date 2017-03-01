@@ -49,6 +49,7 @@ public:
 	void SetSkybox(const char* aPath);
 	void SetSkybox(ID3D11ShaderResourceView* aSRV);
 
+	void SetCubemap(const char* aPath);
 
 	CModelInstance* GetModelAt(const InstanceID aModelID);
 	CFireEmitterInstance& GetFireEmitter(const InstanceID aFireEmitterID);
@@ -90,7 +91,6 @@ private:
 
 	CSkybox* mySkybox;
 	CCubemap* myCubemap;
-	CCubemap* myFullbright;
 
 	float myFogStart;
 	float myFogEnd;
