@@ -580,6 +580,12 @@ namespace CU
 			return *this;
 		}
 
+		Matrix44 LerpPosition(const CU::Vector3<TYPE>& aInterpolateToPosition, const TYPE aInterpolatingSpeed)
+		{
+			myPosition.Lerp(aInterpolateToPosition, aInterpolatingSpeed);
+
+			return *this;
+		}
 		void InvertMe()
 		{
 			InvertMatrix(&m11);
