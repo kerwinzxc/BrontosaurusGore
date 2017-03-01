@@ -37,4 +37,5 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		break;
 	default: break;
 	}
+	return eStateStatus::eKeep;
 }
