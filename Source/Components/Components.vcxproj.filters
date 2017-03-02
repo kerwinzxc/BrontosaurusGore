@@ -283,6 +283,9 @@
       <Filter>NetworkComponent</Filter>
     </ClInclude>
     <ClInclude Include="NetworkComponentManager.h" />
+    <ClInclude Include="ProjectileBufferData.h">
+      <Filter>Projectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
