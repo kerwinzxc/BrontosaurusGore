@@ -1,5 +1,5 @@
 
-TextureCube skybox : register(t0);
+TextureCube skybox : register(t1);
 SamplerState Sampler;
 
 cbuffer ConstantBuffer : register( b0 ) //to vertex & geometry

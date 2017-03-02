@@ -50,7 +50,7 @@ public:
 	inline bool GetVisibility() { return myIsVisible; }
 
 	void Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList);
-
+	void Render();
 	//Edvin testar med kamera
 	void Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList, CRenderCamera& aRenderToCamera);
 
@@ -58,6 +58,7 @@ public:
 
 	void SetTransformation(CU::Matrix44f& aTransformation);
 	void SetPosition(CU::Vector3f aPosition);
+	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
 	void ChangeAnimation(const char* aAnimationKey);
 	void SetAnimationLooping(const bool aValue);

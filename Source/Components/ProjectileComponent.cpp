@@ -25,9 +25,13 @@ void CProjectileComponent::Activate(SProjectileData* someData, const CU::Vector3
 {
 	myData = someData;
 	myDirection = aDirection;
+	myStartPosition = aPosition;
 	GetParent()->GetLocalTransform().SetPosition(aPosition);
 	GetParent()->GetLocalTransform().LookAt(GetParent()->GetLocalTransform().GetPosition() + aDirection);
 	myIsActive = true;
+	SComponentMessageData visibilityData;
+	visibilityData.myBool = true;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 }
 
 void CProjectileComponent::Update(float aDeltaTime)
@@ -36,5 +40,20 @@ void CProjectileComponent::Update(float aDeltaTime)
 	{
 		GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, myData->movementSpeed * aDeltaTime));
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
+		float distance2 = CU::Vector3f(myStartPosition - GetParent()->GetWorldPosition()).Length2();
+		float inActivationRange = 1000;
+		if(distance2 > inActivationRange * inActivationRange)
+		{
+			Deactivate();
+		}
 	}
+}
+
+void CProjectileComponent::Deactivate()
+{
+	myIsActive = false;
+	SComponentMessageData visibilityData;
+	visibilityData.myBool = false;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 }

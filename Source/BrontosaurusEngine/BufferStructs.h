@@ -53,13 +53,26 @@ struct SAnimationBoneStruct
 	CU::Matrix44f boneMatrices[32];
 };
 
-struct SRenderModelParams
+struct SForwardRenderModelParams
 {
 	CU::Matrix44f myTransform;
 	CU::Matrix44f myTransformLastFrame;
 	Lights::SDirectionalLight myDirectionalLight;
 	CU::VectorOnStack<Lights::SPointLight, 8> myPointLightList;
 	unsigned char myNumLights;
+
+	const char* aAnimationState = nullptr;
+	float aAnimationTime = 0.0f;
+	bool aAnimationLooping = true;
+	float aHighlightIntencity = 0.f;
+
+	bool myRenderToDepth = false;
+};
+
+struct SDeferredRenderModelParams
+{
+	CU::Matrix44f myTransform;
+	CU::Matrix44f myTransformLastFrame;
 
 	const char* aAnimationState = nullptr;
 	float aAnimationTime = 0.0f;

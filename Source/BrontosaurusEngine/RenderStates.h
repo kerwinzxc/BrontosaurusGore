@@ -6,6 +6,7 @@ enum class eRasterizerState
 	eNoCulling,
 	eNoCullingClockwise,
 	eWireFrame,
+	eCullFront,
 	eSize,
 };
 
@@ -13,6 +14,7 @@ enum class eBlendState
 {
 	eAlphaBlend,
 	eNoBlend,
+	eAddBlend,
 	eSize,
 };
 

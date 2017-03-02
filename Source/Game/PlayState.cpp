@@ -101,7 +101,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 2500.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -169,7 +169,7 @@ void CPlayState::Load()
 		addHandGunData.myString = "PlasmaRifle";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
+		giveAmmoData.myInt = 1000;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 	
@@ -177,7 +177,7 @@ void CPlayState::Load()
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
-	
+	myScene->SetCubemap("purpleCubemap.dds");
 	
 	myIsLoaded = true;
 	
@@ -198,6 +198,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myScene->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
+	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 
 	return myStatus;
