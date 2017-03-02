@@ -6,7 +6,7 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #define vodi void
-
+static const float gravityDeceleration = 1000.18f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
@@ -24,6 +24,9 @@ CMovementComponent::CMovementComponent()
 	myAcceleration = playerControls["Acceleration"].GetFloat();
 	myDeceleration = playerControls["Deceleration"].GetFloat();
 	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
+	myIsJumping = false;
+	myJumpDistance = 200.0f;
+	myJumpTimeUntilTop = 2.0f;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -45,7 +48,7 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 
 void CMovementComponent::Update(const CU::Time aDeltaTime)
 {
-
+	myVelocity.y = 0.0f;
 	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)] == true && myVelocity.x > -myMaxSpeed)
 	{
 		myVelocity.x += myAcceleration * aDeltaTime.GetSeconds();
@@ -100,16 +103,29 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myVelocity /= sqrtf(speed);
 		myVelocity *= myMaxSpeed;
 	}
-
-	myVelocity.y = 0.f;
-
+	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true)
+	{
+		if(myIsJumping == false)
+		{
+			myIsJumping = true;
+			myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
+			myElapsedJumpTime = 0.0f;
+		}
+	}
+	myVelocity.y = CalculateJumpVelocity(aDeltaTime);
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	
+	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
+	{
+		parentTransform.GetPosition().y = 0.0f;
+		myIsJumping = false;
+	}
+
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 	CU::Vector3f position = parentTransform.GetPosition();
-
+	myVelocity.Print();
 	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
 	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 
@@ -123,4 +139,19 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 void CMovementComponent::KeyReleased(const ePlayerControls aPlayerControl)
 {
 	myKeysDown[static_cast<int>(aPlayerControl)] = false;
+}
+
+float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
+{
+	if(myIsJumping == true)
+	{
+		
+		myElapsedJumpTime += aDeltaTime.GetSeconds();
+		myJumpVelocity -= gravityDeceleration * aDeltaTime.GetSeconds();
+		return myJumpVelocity;
+	}
+	else
+	{
+		return 0;
+	}
 }

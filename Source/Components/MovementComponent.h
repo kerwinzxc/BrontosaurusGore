@@ -11,7 +11,7 @@ public:
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Update(const CU::Time aDeltaTime);
-
+	float CalculateJumpVelocity(const CU::Time aDeltaTime);
 private:
 	void KeyPressed(const ePlayerControls aPlayerControl);
 	void KeyReleased(const ePlayerControls aPlayerControl);
@@ -23,4 +23,10 @@ private:
 	float myAcceleration;
 	float myDeceleration;
 	float myMaxSpeed;
+
+	float myElapsedJumpTime;
+	float myJumpVelocity;
+	float myJumpDistance;
+	float myJumpTimeUntilTop;
+	bool myIsJumping;
 };
