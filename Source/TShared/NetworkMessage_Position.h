@@ -10,12 +10,14 @@ public:
 
 	const CU::Vector3f& GetPosition();
 	void SetPosition(const CU::Vector3f& aPosition);
+	void SetID(const unsigned aNetworkComponentID);
 	ePackageType GetPackageType()const override;
 private:
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;
 
 	CU::Vector3f myPosition;
+	unsigned myNetworkComponentID;
 
 };
 

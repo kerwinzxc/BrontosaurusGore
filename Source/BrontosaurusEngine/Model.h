@@ -84,7 +84,9 @@ public:
 	//Shape
 	bool Initialize(CEffect* aEffect, CSurface* aSurface);
 
-	void Render(SRenderModelParams& aParamObj);
+	void Render(SForwardRenderModelParams& aParamObj);
+	void Render(SDeferredRenderModelParams& aParamObj);
+
 
 	inline bool GetInitialized() const;
 	inline const SSphereColData& GetCollisionData() const;
@@ -120,7 +122,9 @@ private:
 	bool InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList, CU::GrowingArray<unsigned int>& aIndexList);
 	bool InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList);
 	bool InitBuffers(const CLoaderMesh * aLoadedMesh);
-	void UpdateCBuffer(SRenderModelParams& aParamObj);
+	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
+	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
+
 
 	inline void SetBoundingBox(const CU::AABB& aAABB);
 
@@ -134,8 +138,8 @@ private:
 #ifdef _DEBUG
 	std::string myFilePath;
 #endif // _DEBUG
-
-	CEffect* myEffect;
+	CEffect* myDeferredEffect;
+	CEffect* myForwardEffect;
 	CSurface* mySurface;
 	CDXFramework* myFramework;
 
@@ -143,7 +147,7 @@ private:
 
 	ID3D11Buffer* myCbuffer; // vertexBuffer
 	ID3D11Buffer* myLightBuffer; // pixelbuffer
-	ID3D11Buffer* myTimeCBuffer; // to vertex Shuld be a buffer that sends every frame along with CameraPosition, and stuffz
+	ID3D11Buffer* myPixelBuffer;
 	ID3D11Buffer* myBoneBuffer;
 
 	static const unsigned int ourMaxBoneBufferSize = 32u * sizeof(CU::Matrix44f);

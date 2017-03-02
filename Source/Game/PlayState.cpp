@@ -26,6 +26,7 @@
 #include "Components/WeaponFactory.h"
 #include "Components/ProjectileComponentManager.h"
 #include "Components/ProjectileFactory.h"
+#include "Components/NetworkComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -77,6 +78,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
+	SAFE_DELETE(myNetworkComponentManager);
 
 	CComponentManager::DestroyInstance();
 }
@@ -99,7 +101,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 2500.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -175,7 +177,7 @@ void CPlayState::Load()
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
-	
+	myScene->SetCubemap("purpleCubemap.dds");
 	
 	myIsLoaded = true;
 	
@@ -235,6 +237,11 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 	return myGameObjectManager;
 }
 
+CNetworkComponentManager * CPlayState::GetNetworkComponentManager()
+{
+	return myNetworkComponentManager;
+}
+
 void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
@@ -255,4 +262,6 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myNetworkComponentManager = new CNetworkComponentManager();
 }

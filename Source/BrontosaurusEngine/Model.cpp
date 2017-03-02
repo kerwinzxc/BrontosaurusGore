@@ -21,14 +21,15 @@
 
 CModel::CModel()
 	: myConstantBuffers(nullptr)
-	, myEffect(nullptr)
+	, myForwardEffect(nullptr)
+	, myDeferredEffect(nullptr)
 	, mySurface(nullptr)
 	, myFramework(nullptr)
 	, myLODModels(4)
 	, myCbuffer(nullptr)
 	, myBoneBuffer(nullptr)
 	, myLightBuffer(nullptr)
-	, myTimeCBuffer(nullptr)
+	, myPixelBuffer(nullptr)
 	, myScene(nullptr)
 	, myIsInitialized(false)
 	, myIsAlphaModel(false)
@@ -64,11 +65,13 @@ CModel::~CModel()
 
 	SAFE_RELEASE(myCbuffer);
 	SAFE_RELEASE(myLightBuffer);
-	SAFE_RELEASE(myTimeCBuffer);
+	SAFE_RELEASE(myPixelBuffer);
 	myIsInitialized = false;
 	myVertexSize = 0;
 
-	SAFE_DELETE(myEffect); //make sure this releases stuff
+	SAFE_DELETE(myDeferredEffect); //make sure this releases stuff
+	SAFE_DELETE(myForwardEffect); //make sure this releases stuff
+
 	SAFE_DELETE(mySurface);
 
 	mySceneAnimator = nullptr;
@@ -79,7 +82,7 @@ bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface)
 {
 	mySurface = aSurface;
 	myFramework = CEngine::GetInstance()->GetFramework();
-	myEffect = aEffect;
+	myForwardEffect = aEffect;
 	myIsInitialized = true;
 	InitConstBuffers();
 
@@ -285,15 +288,15 @@ bool CModel::InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList)
 	return true;
 }
 
-void CModel::Render(SRenderModelParams & aParamObj)
+void CModel::Render(SForwardRenderModelParams & aParamObj)
 {
 	if (aParamObj.myRenderToDepth == true)
 	{
-		myEffect->ActivateForDepth();
+		myForwardEffect->ActivateForDepth();
 	}
 	else
 	{
-		myEffect->Activate();
+		myForwardEffect->Activate();
 	}
 
 	if (mySurface != nullptr)
@@ -321,7 +324,43 @@ void CModel::Render(SRenderModelParams & aParamObj)
 	}
 }
 
-void CModel::UpdateCBuffer(SRenderModelParams & aParamObj)
+void CModel::Render(SDeferredRenderModelParams& aParamObj)
+{
+	if (aParamObj.myRenderToDepth == true)
+	{
+		myDeferredEffect->ActivateForDepth();
+	}
+	else
+	{
+		myDeferredEffect->Activate();
+	}
+
+	if (mySurface != nullptr)
+	{
+		mySurface->Activate();
+	}
+
+	UpdateCBuffer(aParamObj);
+
+	UINT stride = myVertexSize;
+	UINT offset = 0;
+
+	SLodData& currentLodModel = GetCurrentLODModel(aParamObj.myTransform.GetPosition());
+
+	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
+	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	if (myLODModels.GetLast().myIndexBuffer == nullptr)
+	{
+		DEVICE_CONTEXT->Draw(currentLodModel.myVertexCount, 0);
+	}
+	else
+	{
+		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
+	}
+}
+
+void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 {
 	// WorldSpace thingy
 	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
@@ -334,22 +373,6 @@ void CModel::UpdateCBuffer(SRenderModelParams & aParamObj)
 	memcpy(mappedSubResource.pData, &updated, sizeof(SToWorldSpace));
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
-
-
-	//Time uglyness
-	//if (myTimeCBuffer != nullptr)
-	{
-		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		CU::Time dt = ENGINE->GetTime();
-		float dtf = dt.GetSeconds();
-		CU::Vector4f frameTime(dtf, 1337.0f, 0.0f, 0.0f);
-		DEVICE_CONTEXT->Map(myTimeCBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-		memcpy(mappedSubResource.pData, &frameTime, sizeof(CU::Vector4f));
-		DEVICE_CONTEXT->Unmap(myTimeCBuffer, 0);
-		DEVICE_CONTEXT->VSSetConstantBuffers(2, 1, &myTimeCBuffer);
-	}
-
-
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != nullptr) && (aParamObj.aAnimationState[0] != '\0'))
@@ -405,6 +428,36 @@ void CModel::UpdateCBuffer(SRenderModelParams & aParamObj)
 	//{
 	//	myFramework->GetDeviceContext()->GSSetConstantBuffers(1, 1, &myConstantBuffers[eShaderStage::eGeometry]);
 	//}
+}
+
+void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
+{
+	// WorldSpace thingy
+	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	SToWorldSpace updated;
+	updated.myWorldSpace = aParamObj.myTransform;
+	updated.myWorldSpaceLastFrame = aParamObj.myTransformLastFrame;
+	DEVICE_CONTEXT->Map(myCbuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+	memcpy(mappedSubResource.pData, &updated, sizeof(SToWorldSpace));
+	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
+	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
+
+	//ANIMATION BUFFER
+	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != nullptr) && (aParamObj.aAnimationState[0] != '\0'))
+	{
+
+		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState, aParamObj.aAnimationLooping);
+
+		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
+
+		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+		memcpy(mappedSubResource.pData, &bones[0], min(ourMaxBoneBufferSize, bones.size() * sizeof(mat4)));
+		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
+		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
+	}
 }
 
 void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)
@@ -464,8 +517,7 @@ void CModel::InitConstBuffers()
 	Lights::SLightsBuffer light;
 	myLightBuffer = BSR::CreateCBuffer<Lights::SLightsBuffer>(&light);
 
-	CU::Vector4f tempTime;
-	myTimeCBuffer = BSR::CreateCBuffer<CU::Vector4f>(&tempTime);
+	
 }
 
 CU::Matrix44f CModel::GetBoneTransform(const float aTime, const char * aAnimationState, const char* aBoneName)
@@ -496,9 +548,14 @@ CU::Matrix44f CModel::GetBoneTransform(const float aTime, const char * aAnimatio
 
 CModel& CModel::operator=(CModel&& aModel)
 {
-	SAFE_DELETE(myEffect);
-	myEffect = aModel.myEffect;
-	aModel.myEffect = nullptr;
+	SAFE_DELETE(myForwardEffect);
+	myForwardEffect = aModel.myForwardEffect;
+	aModel.myForwardEffect = nullptr;
+
+	SAFE_DELETE(myDeferredEffect);
+	myDeferredEffect = aModel.myDeferredEffect;
+	aModel.myDeferredEffect = nullptr;
+
 
 	SAFE_DELETE(mySurface);
 	mySurface = aModel.mySurface;
@@ -540,8 +597,6 @@ CModel& CModel::operator=(CModel&& aModel)
 	aModel.myCbuffer = nullptr;
 	myLightBuffer = aModel.myLightBuffer;
 	aModel.myLightBuffer = nullptr;
-	myTimeCBuffer = aModel.myTimeCBuffer;
-	aModel.myTimeCBuffer = nullptr;
 
 	myIsInitialized = aModel.myIsInitialized.load();
 	aModel.myIsInitialized = false;
@@ -565,11 +620,17 @@ CModel& CModel::operator=(CModel&& aModel)
 CModel& CModel::operator=(const CModel& aModel)
 {
 
-	SAFE_DELETE(myEffect);
-	if (aModel.myEffect != nullptr)
+	SAFE_DELETE(myForwardEffect);
+	if (aModel.myForwardEffect != nullptr)
 	{
-		myEffect = new CEffect(*aModel.myEffect);
+		myForwardEffect = new CEffect(*aModel.myForwardEffect);
 	}
+	SAFE_DELETE(myDeferredEffect);
+	if (aModel.myDeferredEffect != nullptr)
+	{
+		myDeferredEffect = new CEffect(*aModel.myDeferredEffect);
+	}
+
 
 	SAFE_DELETE(mySurface);
 	if (aModel.mySurface != nullptr)
@@ -612,8 +673,6 @@ CModel& CModel::operator=(const CModel& aModel)
 	SAFE_ADD_REF(myCbuffer);
 	myLightBuffer = aModel.myLightBuffer;
 	SAFE_ADD_REF(myLightBuffer);
-	myTimeCBuffer = aModel.myTimeCBuffer;
-	SAFE_ADD_REF(myTimeCBuffer);
 
 	myIsInitialized = aModel.myIsInitialized.load();
 

@@ -4,10 +4,12 @@
 #include "stdafx.h"
 #include "../CommonUtilities/DL_Debug.h"
 #include "../TServer/ServerMain.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 
 int main(int argc, char* argv[])
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Start();
 	//CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();
@@ -18,6 +20,8 @@ int main(int argc, char* argv[])
 	//CommandLineManager::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();
 	//PostMaster::DestroyInstance();
+	Postmaster::Threaded::CPostmaster::GetInstance().Stop();
+	Postmaster::Threaded::CPostmaster::Destroy();
 
     return 0;
 }
