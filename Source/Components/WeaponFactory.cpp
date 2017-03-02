@@ -5,6 +5,7 @@
 #include "ProjectileData.h"
 #include "AmmoData.h"
 #include "../CommonUtilities/JsonValue.h"
+#include "ProjectileFactory.h"
 
 CWeaponFactory::CWeaponFactory()
 {
@@ -51,6 +52,10 @@ void CWeaponFactory::LoadWeapons()
 		newAmmoData->ammoForWeaponName = newWeaponData->name;
 		myWeaponDataList.Add(newWeaponData);
 		myAmmoDataList.Add(newAmmoData);
+		if(CProjectileFactory::GetInstance() != nullptr)
+		{
+			CProjectileFactory::GetInstance()->CreateNewProjectileBuffer(newProjectileData->projectileModelFilePath, 500);	
+		}
 	}
 }
 void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)

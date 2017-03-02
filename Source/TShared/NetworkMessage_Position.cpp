@@ -16,6 +16,11 @@ const CU::Vector3f& CNetworkMessage_Position::GetPosition()
 	return myPosition;
 }
 
+const unsigned CNetworkMessage_Position::GetID()
+{
+	return myNetworkComponentID;
+}
+
 void CNetworkMessage_Position::SetPosition(const CU::Vector3f& aPosition)
 {
 	myPosition = aPosition;
@@ -29,6 +34,7 @@ ePackageType CNetworkMessage_Position::GetPackageType() const
 void CNetworkMessage_Position::DoSerialize(StreamType& aStream)
 {
 	serialize(myPosition, aStream);
+	serialize(myNetworkComponentID, aStream);
 }
 
 void CNetworkMessage_Position::DoDeserialize(StreamType& aStream)
@@ -36,6 +42,7 @@ void CNetworkMessage_Position::DoDeserialize(StreamType& aStream)
 	if (aStream.size() > 0)
 	{
 		myPosition = deserialize<CU::Vector3f>(aStream);
+		myNetworkComponentID = deserialize<unsigned>(aStream);
 	}
 }
 

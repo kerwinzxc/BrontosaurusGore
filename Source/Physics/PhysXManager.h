@@ -57,7 +57,6 @@ namespace Physics
 		~CPhysXManager();
 		
 		physx::PxScene* CreateScene();
-		void InitApex();
 	private:
 		static CPhysXManager * ourInstance;
 	

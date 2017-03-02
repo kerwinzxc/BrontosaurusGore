@@ -71,6 +71,8 @@ public:
 	void StartGame();
 	bool Update();
 
+	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
+
 private:
 
 	CU::TimerManager myTimerManager;
@@ -93,5 +95,8 @@ private:
 	eServerState myServerState;
 
 	CGameServer* myGameServer;
+
+	bool myIsRunning;
+	bool myCanQuit;
 };
 

@@ -48,7 +48,6 @@ public:
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 	CGameObjectManager* GetGameObjectManager();
-	CNetworkComponentManager* GetNetworkComponentManager();
 
 	inline bool IsLoaded() const;
 
@@ -67,8 +66,6 @@ private:
 	CInputComponentManager* myInputComponentManager;
 
 	CMovementComponent* myMovementComponent;
-
-	CNetworkComponentManager* myNetworkComponentManager;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;

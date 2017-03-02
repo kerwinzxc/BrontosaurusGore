@@ -155,7 +155,6 @@ namespace Physics
 
 		myScene = CreateScene();
 
-		InitApex();
 
 		CApex::SApexInit apexInit;
 		apexInit.physics = myPhysics;
@@ -248,7 +247,6 @@ namespace Physics
 
 		return pxScene;
 	}
-
 
 	PxMaterial* CPhysXManager::CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution)
 	{
