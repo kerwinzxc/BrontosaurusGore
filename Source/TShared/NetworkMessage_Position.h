@@ -9,6 +9,7 @@ public:
 	~CNetworkMessage_Position();
 
 	const CU::Vector3f& GetPosition();
+	const unsigned GetID();
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetID(const unsigned aNetworkComponentID);
 	ePackageType GetPackageType()const override;

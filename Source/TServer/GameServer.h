@@ -7,7 +7,6 @@ class CGameObjectManager;
 class CAmmoComponentManager;
 class CWeaponSystemManager;
 class CWeaponFactory;
-class CNetworkComponentManager;
 
 class CGameServer
 {
@@ -19,12 +18,13 @@ public:
 	void Start();
 
 	CGameObjectManager& GetGameObjectManager();
-	CNetworkComponentManager& GetNetworkComponentManager();
 
 	void Load(const int aLevelIndex);
 
 	void CreateManagersAndFactories();
 	bool Update(CU::Time aDeltaTime);
+
+	bool IsLoaded() const;
 private:
 
 
@@ -32,7 +32,6 @@ private:
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
 	CWeaponFactory* myWeaponFactory;
-	CNetworkComponentManager* myNetworkComponentManager;
 
 
 	CU::TimerManager myTimerManager;

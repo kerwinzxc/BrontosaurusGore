@@ -77,6 +77,7 @@ void CTextureManager::CreateTexture(const wchar_t* aTexturePath, CTexture& aNewT
 	std::ifstream infile(aTexturePath);
 	if (!infile.good())
 	{
+		DL_PRINT_WARNING("Failed to load texture %S", aTexturePath);
 		aTexturePath = L"error.dds";
 	}
 #endif // !_RETAIL_BUILD

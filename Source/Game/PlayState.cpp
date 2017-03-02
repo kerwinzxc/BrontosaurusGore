@@ -78,7 +78,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
-	SAFE_DELETE(myNetworkComponentManager);
+
+	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
 }
@@ -237,14 +238,11 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 	return myGameObjectManager;
 }
 
-CNetworkComponentManager * CPlayState::GetNetworkComponentManager()
-{
-	return myNetworkComponentManager;
-}
-
 void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
+
+	CNetworkComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -262,6 +260,4 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
-
-	myNetworkComponentManager = new CNetworkComponentManager();
 }

@@ -42,10 +42,10 @@ void CServerLoadManager::RegisterFunctions()
 {
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	loader.RegisterObjectLoadFunction(LoadObject);
+	loader.RegisterObjectLoadFunction(LoadServerObject);
 	loader.RegisterObjectLinkFunction(LinkObject);
 
-	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
+	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
