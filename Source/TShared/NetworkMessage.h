@@ -2,6 +2,7 @@
 
 #include "SerializeHelper.h"
 #include "PackageType.h"
+#include "MessageStorage.h"
 
 
 struct SNetworkPackageHeader
@@ -14,7 +15,7 @@ struct SNetworkPackageHeader
 		myTimeStamp = 0;
 	}
 
-	__int8 myPackageType;
+	__int8 myPackageType; //TODO: change to ePackageType 
 	__int32 myTimeStamp;
 	__int16 mySenderID;
 	__int16 myTargetID;
@@ -24,14 +25,16 @@ struct SNetworkPackageHeader
 class CNetworkMessage
 {
 public:
+	friend class CMessageManager;
+
 	CNetworkMessage();
 	virtual ~CNetworkMessage();
 
 	void PackMessage();
 	void UnpackMessage();
 
-	template <typename TYPE>
-	TYPE* CastTo();
+	template <typename MESSAGE_TYPE>
+	MESSAGE_TYPE* CastTo();
 
 	void SetData(const char* someData, unsigned int dataSize);
 	void SetData(StreamType aStream);
@@ -45,22 +48,31 @@ public:
 
 	virtual ePackageType GetPackageType()const;
 protected:
+
 	StreamType myStream;
 
 	virtual void DoSerialize(StreamType& aStream);
 	virtual void DoDeserialize(StreamType& aStream);
 
 	SNetworkPackageHeader myHeader;
+
+
 };
 
-template <typename TYPE>
-TYPE* CNetworkMessage::CastTo()
+template <typename MESSAGE_TYPE>
+MESSAGE_TYPE* CNetworkMessage::CastTo()
 {
-	CNetworkMessage* tempMessage = static_cast<CNetworkMessage*>(new TYPE);
-	tempMessage->SetData(myStream);
-	tempMessage->SetHeader(myHeader);
-	tempMessage->UnpackMessage();
-	return static_cast<TYPE*>(tempMessage);
+	if (CMessageStorage::GetInstance()->CheckTypeExist<MESSAGE_TYPE>() == false)
+	{
+		CMessageStorage::GetInstance()->AddType<MESSAGE_TYPE>(new MESSAGE_TYPE);
+	}
+
+	CNetworkMessage* message = CMessageStorage::GetInstance()->GetType<MESSAGE_TYPE>();
+
+	message->SetData(myStream);
+	message->SetHeader(myHeader);
+	message->UnpackMessage();
+	return static_cast<MESSAGE_TYPE*>(message);
 }
 
 inline bool CNetworkMessage::IsImportant()

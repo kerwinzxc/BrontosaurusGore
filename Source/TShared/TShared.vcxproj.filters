@@ -111,6 +111,7 @@
       <Filter>NetworkMessage\Ready</Filter>
     </ClInclude>
     <ClInclude Include="Tshared_NetworkId.h" />
+    <ClInclude Include="MessageStorage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -155,5 +156,6 @@
     <ClCompile Include="NetworkMessage_ServerReady.cpp">
       <Filter>NetworkMessage\Ready</Filter>
     </ClCompile>
+    <ClCompile Include="MessageStorage.cpp" />
   </ItemGroup>
 </Project>

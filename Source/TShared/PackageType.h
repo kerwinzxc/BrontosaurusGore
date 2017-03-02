@@ -1,6 +1,6 @@
 #pragma once
 
-enum class ePackageType
+enum class ePackageType: __int8
 {
 	eZero = 0,
 	eConnect,

@@ -13,7 +13,6 @@ CSendNetowrkMessageMessage::CSendNetowrkMessageMessage(CNetworkMessage* aNetwork
 	aNetworkMessage->PackMessage();
 	myNetworkMessage.myHeader = aNetworkMessage->GetHeader();
 	myNetworkMessage.Stream = aNetworkMessage->GetSerializedData();
-	delete aNetworkMessage;
 }
 
 
