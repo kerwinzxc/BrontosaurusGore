@@ -37,6 +37,7 @@ public:
 		eDeferredDirectional,
 		//eDeferredPointLight,
 		eDeferredSpotLight,
+		eCopyDepth,
 		eSize,
 	};
 
