@@ -158,7 +158,7 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 
 	DoAmbientLighting(aFullscreenHelper);
 
-	changeStateMessage.myRasterizerState = eRasterizerState::eCullFront;
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eAddBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
