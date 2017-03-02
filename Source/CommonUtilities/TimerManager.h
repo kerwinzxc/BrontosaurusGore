@@ -26,6 +26,7 @@ namespace CU
 		void ResetTimer(const TimerHandle aHandle);
 		void PrintTimers() const;
 
+		size_t Size() const;
 	private:
 		std::vector<Timer> myTimers;
 		LARGE_INTEGER myLastTime;
