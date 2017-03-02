@@ -517,6 +517,16 @@ namespace CU
 			return *this;
 		}
 
+		/* rotates x,y then z*/
+		Matrix44<TYPE>& RotateAroundAxes(const float x, const float y, const float z)
+		{
+			RotateAroundAxis(x, Axees::X);
+			RotateAroundAxis(y, Axees::Y);
+			RotateAroundAxis(z, Axees::Z);
+
+			return *this;
+		}
+
 		Matrix44<TYPE>& Scale(const Vector3<TYPE>& aScaleVector)
 		{
 			m11 *= aScaleVector.x;
