@@ -18,7 +18,7 @@ namespace physx
 
 namespace Physics
 {
-
+	class CApex;
 	class CPhysXAllocator;
 	class CPhysXErrorHander;
 
@@ -72,38 +72,6 @@ namespace Physics
 
 		CPhysXAllocator * myPhysXAllocatorCallback;
 		CPhysXErrorHander * myPhysXErrorHandlerCallback;
-
-		class DummyRenderResourceManager : public nvidia::UserRenderResourceManager
-		{
-		public:
-			virtual nvidia::UserRenderVertexBuffer*   createVertexBuffer(const nvidia::UserRenderVertexBufferDesc&) { return NULL; }
-			virtual void                        releaseVertexBuffer(nvidia::UserRenderVertexBuffer&) {}
-
-			virtual nvidia::UserRenderIndexBuffer*    createIndexBuffer(const nvidia::UserRenderIndexBufferDesc&) { return NULL; }
-			virtual void                        releaseIndexBuffer(nvidia::UserRenderIndexBuffer&) {}
-
-			virtual nvidia::UserRenderBoneBuffer*     createBoneBuffer(const nvidia::UserRenderBoneBufferDesc&) { return NULL; }
-			virtual void                        releaseBoneBuffer(nvidia::UserRenderBoneBuffer&) {}
-
-			virtual nvidia::UserRenderInstanceBuffer* createInstanceBuffer(const nvidia::UserRenderInstanceBufferDesc&) { return NULL; }
-			virtual void                        releaseInstanceBuffer(nvidia::UserRenderInstanceBuffer&) {}
-
-			virtual nvidia::UserRenderSpriteBuffer*   createSpriteBuffer(const nvidia::UserRenderSpriteBufferDesc&) { return NULL; }
-			virtual void                        releaseSpriteBuffer(nvidia::UserRenderSpriteBuffer&) {}
-
-			virtual nvidia::UserRenderSurfaceBuffer*  createSurfaceBuffer(const nvidia::UserRenderSurfaceBufferDesc&) { return NULL; }
-			virtual void                        releaseSurfaceBuffer(nvidia::UserRenderSurfaceBuffer&) {}
-
-			virtual nvidia::UserRenderResource*       createResource(const nvidia::UserRenderResourceDesc&) { return NULL; }
-			virtual void                        releaseResource(nvidia::UserRenderResource&) {}
-
-			virtual uint32_t                       getMaxBonesForMaterial(void*) { return 0; }
-
-			virtual bool getSpriteLayoutData(uint32_t, uint32_t, nvidia::UserRenderSpriteBufferDesc*) { return false; }
-
-			virtual bool getInstanceLayoutData(uint32_t, uint32_t, nvidia::UserRenderInstanceBufferDesc*) { return false; }
-		};
-
-		::Physics::CPhysXManager::DummyRenderResourceManager* myRenderResourceManager;
+		CApex* myApex;
 	};
 }

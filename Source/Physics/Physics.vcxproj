@@ -362,6 +362,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Apex.h" />
     <ClInclude Include="Include\apex_1.4\Actor.h" />
     <ClInclude Include="Include\apex_1.4\Apex.h" />
     <ClInclude Include="Include\apex_1.4\ApexCudaContextManager.h" />
@@ -688,6 +689,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Apex.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
     <ClCompile Include="PhysXManager.cpp" />

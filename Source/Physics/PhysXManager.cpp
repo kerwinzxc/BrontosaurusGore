@@ -12,6 +12,8 @@
 #include <extensions/PxRigidBodyExt.h>
 #include "SharedPhysicsPointer.h"
 #include "Include/apex_1.4/Apex.h"
+#include "CommonUtilities/CommonUtilities.h"
+#include "Apex.h"
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>
@@ -155,6 +157,11 @@ namespace Physics
 
 		InitApex();
 
+		CApex::SApexInit apexInit;
+		apexInit.physics = myPhysics;
+		apexInit.cooking = myCooking;
+		apexInit.pvd = myPvd;
+		myApex = new CApex(apexInit);
 	}
 	CPhysXManager::~CPhysXManager()
 	{
@@ -168,6 +175,7 @@ namespace Physics
 		SAFE_RELEASE(myScene);
 		SAFE_RELEASE(myPhysics);
 		SAFE_RELEASE(myFoundation);
+		SAFE_DELETE(myApex);
 	}
 
 
@@ -239,17 +247,6 @@ namespace Physics
 #endif
 
 		return pxScene;
-	}
-#include "Include/apex_1.4/UserRenderResourceManager.h"
-	void CPhysXManager::InitApex()
-	{
-		nvidia::ApexSDKDesc apexDesc;
-		apexDesc.physXSDK = myPhysics;
-		apexDesc.cooking = myCooking;
-		apexDesc.pvd = myPvd;
-		//Make proper render resource manager
-		myRenderResourceManager = new DummyRenderResourceManager();
-		apexDesc.renderResourceManager = myRenderResourceManager;
 	}
 
 
