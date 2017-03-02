@@ -1,0 +1,84 @@
+<PhysX30Collection version="3.3.3" >
+	<UpVector >0 0 0</UpVector>
+	<Scale >
+		<Length >0</Length>
+		<Mass >0</Mass>
+		<Speed >0</Speed>
+	</Scale>
+	<PxConvexMesh >
+		<Id >2247414431008</Id>
+		<points > 0.0442156 0.0439761 0.0116441 0.0486678 -0.00350437 0.00824918&#x0A;&#x09;&#x09;&#x09;0.0452423 0.00129522 -0.00503136 0.0427189 0.0462751 0.0059427&#x0A;&#x09;&#x09;&#x09;0.0271214 0.0280073 -0.0037787 0.0377299 -0.00122843 -0.00508374&#x0A;&#x09;&#x09;&#x09;0.0018456 0.00853803 -0.00441651 0.0087666 0.0338839 -0.00340038&#x0A;&#x09;&#x09;&#x09;0.0473162 -0.0058818 0.0125248 0.0486584 -0.00447224 0.0103984&#x0A;&#x09;&#x09;&#x09;0.0465023 0.00331932 0.0425465 0.0448233 0.00105195 0.0437663&#x0A;&#x09;&#x09;&#x09;0.0408596 -0.00557351 0.0430085 0.039894 -0.00784103 0.0409569&#x0A;&#x09;&#x09;&#x09;0.0397738 -0.00889078 0.0385083 0.0294476 0.0515077 0.0458602&#x0A;&#x09;&#x09;&#x09;0.0296035 0.0512844 0.0460771 0.0345064 0.0468758 0.0464016&#x0A;&#x09;&#x09;&#x09;0.0431064 0.0413223 0.0415499 0.030984 0.0550484 0.0337179&#x0A;&#x09;&#x09;&#x09;0.00888293 3.30374e-005 -0.000107868 0.0228236 -0.0122036 0.0287428&#x0A;&#x09;&#x09;&#x09;0.00223791 -0.00416984 0.0449486 -0.00445986 -0.000260233 0.0426283&#x0A;&#x09;&#x09;&#x09;0.00188685 0.00390752 -0.00130524 0.0302527 0.00896299 0.0521081&#x0A;&#x09;&#x09;&#x09;0.00375529 0.0539497 0.0351107 -0.00228693 0.0445963 0.0398102&#x0A;&#x09;&#x09;&#x09;0.00347743 0.0401694 0.045046 0.0227086 0.0464245 0.0472076&#x0A;&#x09;&#x09;&#x09;0.00147467 0.0472061 0.0156848 0.0041854 0.0506334 0.00850315&#x0A;&#x09;&#x09;&#x09;0.00511554 0.0476787 0.000188294 0.00207138 0.0379761 -3.75058e-005&#x0A;&#x09;&#x09;&#x09;0.0381048 -0.00782358 0.00989267 0.035425 -0.00264823 -0.00366173&#x0A;&#x09;&#x09;&#x09;0.0244094 0.00510472 0.0530288 0.0163544 0.00545377 0.0534847&#x0A;&#x09;&#x09;&#x09;0.0425406 0.0464632 0.00593545 0.0305727 0.0481703 0.00259152&#x0A;&#x09;&#x09;&#x09;0.0365048 0.0518635 0.0132671 -0.00493174 0.000956453 0.0424723&#x0A;&#x09;&#x09;&#x09;-0.00478535 0.000525534 0.0426406 0.00640763 0.0128982 0.050482&#x0A;&#x09;&#x09;&#x09;0.0284503 0.0479411 0.00185931 0.0241736 0.0550249 0.0217122&#x0A;&#x09;&#x09;&#x09;0.00433638 0.051075 0.00975752 0.000599201 0.00821664 -0.00394828&#x0A;&#x09;&#x09;&#x09;-0.00324209 0.0125685 0.00723028 -0.000303294 0.0229227 -0.00135173&#x0A;&#x09;&#x09;&#x09;0.0050958 0.0556234 0.0314197 0.0215959 0.0566194 0.03227&#x0A;&#x09;&#x09;&#x09;0.0205696 0.0567533 0.0317548</points>
+	</PxConvexMesh>
+	<PxMaterial >
+		<Id >2247414401584</Id>
+		<DynamicFriction >0.5</DynamicFriction>
+		<StaticFriction >0.5</StaticFriction>
+		<Restitution >1</Restitution>
+		<FrictionCombineMode >eMIN</FrictionCombineMode>
+		<RestitutionCombineMode >eMIN</RestitutionCombineMode>
+	</PxMaterial>
+	<PxMaterial >
+		<Id >2247414401664</Id>
+		<DynamicFriction >0.2</DynamicFriction>
+		<StaticFriction >0.2</StaticFriction>
+		<Restitution >0.6</Restitution>
+		<FrictionCombineMode >eAVERAGE</FrictionCombineMode>
+		<RestitutionCombineMode >eAVERAGE</RestitutionCombineMode>
+	</PxMaterial>
+	<PxRigidStatic >
+		<Id >2247414416608</Id>
+		<Name >groundPlane</Name>
+		<ActorFlags >eVISUALIZATION</ActorFlags>
+		<DominanceGroup >0</DominanceGroup>
+		<OwnerClient >0</OwnerClient>
+		<GlobalPose >0 0 0 1 0 0 0</GlobalPose>
+		<Shapes >
+			<PxShape >
+				<Geometry >
+					<PxPlaneGeometry />
+				</Geometry>
+				<LocalPose >0 0 0.707107 0.707107 0 0 0</LocalPose>
+				<SimulationFilterData >4294967295 4294967295 4294967295 4294967295</SimulationFilterData>
+				<QueryFilterData >0 0 0 0</QueryFilterData>
+				<Materials >
+					<PxMaterialRef >2247414401584</PxMaterialRef>
+				</Materials>
+				<ContactOffset >0.00025</ContactOffset>
+				<RestOffset >0</RestOffset>
+				<Flags >eSIMULATION_SHAPE|eSCENE_QUERY_SHAPE|eVISUALIZATION</Flags>
+				<Name >Ground</Name>
+			</PxShape>
+		</Shapes>
+	</PxRigidStatic>
+	<PxRigidStatic >
+		<Id >2247414416784</Id>
+		<Name >M_Rock_5m</Name>
+		<ActorFlags >eVISUALIZATION</ActorFlags>
+		<DominanceGroup >0</DominanceGroup>
+		<OwnerClient >0</OwnerClient>
+		<GlobalPose >0 0 0 1 0 0 0</GlobalPose>
+		<Shapes >
+			<PxShape >
+				<Geometry >
+					<PxConvexMeshGeometry >
+						<Scale >
+							<Scale >1 1 1</Scale>
+							<Rotation >0 0 0 1</Rotation>
+						</Scale>
+						<ConvexMesh >2247414431008</ConvexMesh>
+					</PxConvexMeshGeometry>
+				</Geometry>
+				<LocalPose >0 0 0 1 0 0 0</LocalPose>
+				<SimulationFilterData >131074 1 0 0</SimulationFilterData>
+				<QueryFilterData >0 0 0 0</QueryFilterData>
+				<Materials >
+					<PxMaterialRef >2247414401664</PxMaterialRef>
+				</Materials>
+				<ContactOffset >0.00130936</ContactOffset>
+				<RestOffset >0</RestOffset>
+				<Flags >eSIMULATION_SHAPE|eSCENE_QUERY_SHAPE|eVISUALIZATION</Flags>
+				<Name >M_Rock_5mRigidBodyShape1</Name>
+			</PxShape>
+		</Shapes>
+	</PxRigidStatic>
+</PhysX30Collection>

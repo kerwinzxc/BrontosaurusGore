@@ -5,6 +5,8 @@
 class CNetworkMessage_Position: public CNetworkMessage
 {
 public:
+	friend class CMessageManager;
+
 	CNetworkMessage_Position();
 	~CNetworkMessage_Position();
 
@@ -14,6 +16,8 @@ public:
 	void SetID(const unsigned aNetworkComponentID);
 	ePackageType GetPackageType()const override;
 private:
+
+
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;
 

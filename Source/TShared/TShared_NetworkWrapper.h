@@ -29,7 +29,7 @@ public:
 	~TShared_NetworkWrapper();
 
 	bool CheckIfImportantMessageDone(__int16 aMessageID);
-	bool Init(unsigned short aPort);
+	bool Init(unsigned short aPort, CMessageManager* aMessageManager);
 	__int16 Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort);
 
 	CNetworkMessage* Recieve(char** senderIp = nullptr, char** senderPort = nullptr);
@@ -48,5 +48,6 @@ private:
 	SOCKET mySocket;
 	bool myShallClose;
 	__int16 myMessageCount;
+	 CMessageManager* myMessageManager;
 };
 

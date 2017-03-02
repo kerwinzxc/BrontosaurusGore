@@ -5,8 +5,11 @@
 class CImportantNetworkMessage: public CNetworkMessage
 {
 public:
+	friend class CMessageStorage;
+
+
 	CImportantNetworkMessage();
-	~CImportantNetworkMessage();
+	virtual ~CImportantNetworkMessage();
 
 	bool IsImportant() override;
 
@@ -14,6 +17,8 @@ public:
 	int GetImportantId()const;
 
 protected:
+
+
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;
 
