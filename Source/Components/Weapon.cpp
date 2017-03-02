@@ -50,8 +50,12 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				float randomYRadian = randomYAngle * PI / 180.0f;
 				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(randomYRadian);
 			}
-			CProjectileFactory::GetInstance().ShootProjectile(myWeaponData->projectileData, rotatedDirection, myUser->GetWorldPosition());
-			myElapsedFireTimer = 0.0f;
+			if(CProjectileFactory::GetInstance() != nullptr)
+			{
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, rotatedDirection, myUser->GetWorldPosition());
+				myElapsedFireTimer = 0.0f;
+			
+			}
 		}
 	}
 }

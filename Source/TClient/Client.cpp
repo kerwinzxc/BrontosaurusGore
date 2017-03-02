@@ -108,6 +108,10 @@ void CClient::Update()
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
+		if(myTimerManager.Size() == 0)
+		{
+			break;
+		}
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
 

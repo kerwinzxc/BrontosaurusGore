@@ -382,6 +382,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
+    <ClInclude Include="ProjectileBufferData.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />

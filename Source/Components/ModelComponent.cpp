@@ -34,7 +34,9 @@ CU::Matrix44f CModelComponent::GetToWorldTransform()
 {
 	if (GetParent() != nullptr)
 	{
-		return GetParent()->GetToWorldTransform()/* * CU::Matrix44f::CreateRotateAroundY(PI)*/;
+		CU::Matrix44f worldTransform = GetParent()->GetToWorldTransform();
+
+		return worldTransform;
 	}
 	else
 	{
