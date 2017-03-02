@@ -45,7 +45,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterObjectLoadFunction(LoadObject);
 	loader.RegisterObjectLinkFunction(LinkObject);
 
-	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
+	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
