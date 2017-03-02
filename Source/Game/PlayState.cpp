@@ -26,6 +26,7 @@
 #include "Components/WeaponFactory.h"
 #include "Components/ProjectileComponentManager.h"
 #include "Components/ProjectileFactory.h"
+#include "Components/NetworkComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -77,6 +78,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
+	SAFE_DELETE(myNetworkComponentManager);
 
 	CComponentManager::DestroyInstance();
 }
@@ -234,6 +236,11 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 	return myGameObjectManager;
 }
 
+CNetworkComponentManager * CPlayState::GetNetworkComponentManager()
+{
+	return myNetworkComponentManager;
+}
+
 void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
@@ -254,4 +261,6 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myNetworkComponentManager = new CNetworkComponentManager();
 }
