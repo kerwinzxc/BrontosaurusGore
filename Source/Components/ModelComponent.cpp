@@ -35,9 +35,7 @@ CU::Matrix44f CModelComponent::GetToWorldTransform()
 	if (GetParent() != nullptr)
 	{
 		CU::Matrix44f worldTransform = GetParent()->GetToWorldTransform();
-		CU::Vector3f worldPosition = worldTransform.GetPosition();
-		worldTransform *= CU::Matrix44f::CreateRotateAroundY(PI);
-		worldTransform.SetPosition(worldPosition);
+
 		return worldTransform;
 	}
 	else

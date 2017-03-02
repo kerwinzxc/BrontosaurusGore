@@ -106,3 +106,8 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	//DL_PRINT("In Update");
 	return true;
 }
+
+bool CGameServer::IsLoaded() const
+{
+	return myIsLoaded;
+}

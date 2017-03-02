@@ -20,18 +20,27 @@
 #include "../CommonUtilities/ThreadPool.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ServerReadyMessage.h"
+#include "../CommonUtilities/ThreadNamer.h"
 
 
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
+
+	myIsRunning = false;
+	myCanQuit = false;
 }
 
 
 CClient::~CClient()
 {
 	CClientMessageManager::DestroyInstance();
+	myIsRunning = false;
+	while (!myCanQuit)
+	{
+		continue;
+	}
 }
 
 bool CClient::StartClient()
@@ -47,7 +56,7 @@ void CClient::Disconect()
 	myState = eClientState::DISCONECTED;
 	std::cout << "Disconected from server";
 	myServerIsPinged = false;
-	myChat.StopChat();
+	//myChat.StopChat();
 }
 
 void CClient::UpdatePing(const CU::Time& aTime)
@@ -93,8 +102,10 @@ void CClient::Update()
 	pingString += std::to_string(static_cast<int>(myCurrentPing * 1000 + 0.5f)).c_str();
 
 	DL_PRINT(pingString.c_str());
+	CU::SetThreadName("ClientUpdate");
+	myIsRunning = true;
 
-	while (true)
+	while (myIsRunning)
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
@@ -121,7 +132,7 @@ void CClient::Update()
 
 				std::cout << "Conected to server got id:" << myId << std::endl;
 				std::cout << "Starting chat" << std::endl;
-				myChat.StartChat();
+				//myChat.StartChat();
 			}
 			break;
 		case ePackageType::ePing:
@@ -176,22 +187,24 @@ void CClient::Update()
 			currentTime = 0.f;
 		}
 
-		const std::string chatMessage = myChat.GetChatMessage();
+		//const std::string chatMessage = myChat.GetChatMessage();
 
-		if (chatMessage != "")
-		{
-			SNetworkPackageHeader header;
-			header.myPackageType = static_cast<char>(ePackageType::eChat);
-			header.mySenderID = myId;
-			header.myTargetID = ID_ALL_BUT_ME;
-			header.myTimeStamp = KYLE;
+		//if (chatMessage != "")
+		//{
+		//	SNetworkPackageHeader header;
+		//	header.myPackageType = static_cast<char>(ePackageType::eChat);
+		//	header.mySenderID = myId;
+		//	header.myTargetID = ID_ALL_BUT_ME;
+		//	header.myTimeStamp = KYLE;
 
-			CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
+		//	CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
 
-			chatNMessage->myChatMessage = myName + ":" + chatMessage;
-			myNetworkWrapper.Send(chatNMessage, myServerIp, SERVER_PORT);
-		}
+		//	chatNMessage->myChatMessage = myName + ":" + chatMessage;
+		//	myNetworkWrapper.Send(chatNMessage, myServerIp, SERVER_PORT);
+		//}
 	}
+
+	myCanQuit = true;
 }
 
 void CClient::Send(CNetworkMessage* aNetworkMessage)
