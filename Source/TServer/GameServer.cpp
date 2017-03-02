@@ -9,6 +9,8 @@
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
 #include "../LoadManager/ServerLoadManager.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 
 
@@ -85,7 +87,7 @@ void CGameServer::Load(const int aLevelIndex)
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 	myIsLoaded = true;
-
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 }
 
 void CGameServer::CreateManagersAndFactories()
