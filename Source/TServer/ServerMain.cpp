@@ -22,6 +22,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -313,6 +314,7 @@ bool CServerMain::Update()
 	myIsRunning = true;
 	while (myIsRunning)
 	{
+		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 
@@ -467,4 +469,10 @@ bool CServerMain::Update()
 	myCanQuit = true;
 
 	return false;
+}
+
+eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+{
+	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
 }

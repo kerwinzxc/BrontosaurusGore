@@ -71,6 +71,8 @@ public:
 	void StartGame();
 	bool Update();
 
+	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
+
 private:
 
 	CU::TimerManager myTimerManager;

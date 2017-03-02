@@ -7,6 +7,7 @@
 #include "../TShared/NetworkMessage_PingResponse.h"
 #include "../TShared/NetworkMesssage_Connect.h"
 #include "../TShared/NetworkMessage_ConectResponse.h"
+#include "../TShared/NetworkMessage_Position.h"
 #include "../CommonUtilities/CommonUtilities.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "ClientMessageManager.h"
@@ -166,6 +167,12 @@ void CClient::Update()
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
 			}
 			break;
+		case ePackageType::ePosition:
+		{
+			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
+			std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+		}
+		break;
 		case ePackageType::eZero:
 		case ePackageType::eConnect:
 		case ePackageType::eSize:
