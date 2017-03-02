@@ -15,6 +15,7 @@ CChat::~CChat()
 	if (myThread != nullptr)
 	{
 		myIsRunnning = false;
+		myWaiting = false;
 		myThread->join();
 		delete myThread;
 	}
@@ -45,11 +46,13 @@ void CChat::Update()
 	while (myIsRunnning == true)
 	{
 		std::getline(std::cin, myCurrentMessage) ;
-
-		myWaiting = true;
-		while (myWaiting == true)
+		if (myIsRunnning)
 		{
-			std::this_thread::yield();
+			myWaiting = true;
+			while (myWaiting == true)
+			{
+				std::this_thread::yield();
+			}
 		}
 	}
 }

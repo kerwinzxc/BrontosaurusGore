@@ -78,7 +78,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
-	SAFE_DELETE(myNetworkComponentManager);
+
+	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
 }
@@ -140,7 +141,7 @@ void CPlayState::Load()
 		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
 		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 180.f, 0.f); //ändrat till cm igen får ses över //Alex
+		cameraObject->GetLocalTransform().SetPosition(0.f, 1.80f, 0.f); //ändrat till cm igen får ses över //Alex
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 
@@ -237,14 +238,11 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 	return myGameObjectManager;
 }
 
-CNetworkComponentManager * CPlayState::GetNetworkComponentManager()
-{
-	return myNetworkComponentManager;
-}
-
 void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
+
+	CNetworkComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -262,6 +260,4 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
-
-	myNetworkComponentManager = new CNetworkComponentManager();
 }
