@@ -21,7 +21,6 @@ void SendNetworkMessage::SetPackage(CNetworkMessage* aMessage)
 eMessageReturn SendNetworkMessage::DoEvent(CClient* aClient) const
 {
 	aClient->Send(myNetworkMessage);
-	delete myNetworkMessage;
 	return eMessageReturn::eStop;
 }
 

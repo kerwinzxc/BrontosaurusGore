@@ -7,6 +7,7 @@
 #include "PackageType.h"
 #include "NetworkMessage_Ping.h"
 #include "NetworkMessage_PingResponse.h"
+#include "MessageManager.h"
 
 TShared_NetworkWrapper::TShared_NetworkWrapper() : myBuffer(nullptr), myCurrentBufferSize(0), mySocket(INVALID_SOCKET), myMessageCount(1)
 {
@@ -28,8 +29,14 @@ bool TShared_NetworkWrapper::CheckIfImportantMessageDone(__int16 aMessageID)
 	return true;
 }
 
-bool TShared_NetworkWrapper::Init(unsigned short aPort)
+bool TShared_NetworkWrapper::Init(unsigned short aPort, CMessageManager* aMessageManager)
 {
+	if (aMessageManager == nullptr)
+	{
+		DL_ASSERT("message manager is nullptr");
+	}
+
+	myMessageManager = aMessageManager;
 
 	std::cout << "Initilizing winsock" << std::endl;
 
@@ -181,7 +188,8 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 
 	if (bytes <= 0)
 	{
-		return new CNetworkMessage;
+		SNetworkPackageHeader header;
+		return myMessageManager->CreateMessage<CNetworkMessage>(header);
 	}
 
 	if (senderIp != nullptr)
@@ -209,7 +217,7 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 
 	memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
 
-	CNetworkMessage* newMessage = new CNetworkMessage();
+	CNetworkMessage* newMessage = myMessageManager->CreateMessage<CNetworkMessage>(header);
 
 	newMessage->SetData(data, dataSize);
 	newMessage->SetExplicitHeader(header);

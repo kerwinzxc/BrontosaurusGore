@@ -8,6 +8,7 @@
 #include <string>
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
+#include "../TShared/NetworkMessageHolder.h"
 
 
 enum class eServerState
@@ -30,17 +31,18 @@ struct SClientData
 
 struct SImportantWaitData
 {
-	SImportantWaitData(): myNetworkMessage(nullptr), myWaitedTime(0)
+	SImportantWaitData(): myWaitedTime(0)
 	{
 	}
 
-	SImportantWaitData(CImportantNetworkMessage* aNetworkMessage)
-		: myNetworkMessage(aNetworkMessage),
-		  myWaitedTime(0)
+	SImportantWaitData(CImportantNetworkMessage* aNetworkMessage): myWaitedTime(0)
 	{
+		aNetworkMessage->PackMessage();
+		myMessage.myHeader = aNetworkMessage->GetHeader();
+		myMessage.Stream = aNetworkMessage->GetSerializedData();
 	}
 
-	CImportantNetworkMessage* myNetworkMessage;
+	SNetworkMessageHolder myMessage;
 	CU::Time myWaitedTime;
 };
 

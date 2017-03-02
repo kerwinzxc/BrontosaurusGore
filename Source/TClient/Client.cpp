@@ -35,7 +35,7 @@ CClient::~CClient()
 
 bool CClient::StartClient()
 {
-	myNetworkWrapper.Init(0);
+	myNetworkWrapper.Init(0, CClientMessageManager::GetInstance());
 	myMainTimer = myTimerManager.CreateTimer();
 	CEngine::GetInstance()->GetThreadPool()->AddWork(CU::Work(std::bind(&CClient::Update, this)));
 	return true;
@@ -111,7 +111,6 @@ void CClient::Update()
 			{
 				CNetworkMessage_ConectResponse* conectResponseMessage = currentMessage->CastTo<CNetworkMessage_ConectResponse>();
 				myId = conectResponseMessage->myClientId;
-				delete conectResponseMessage;
 				myState = eClientState::CONECTED;
 
 				std::cout << "Conected to server got id:" << myId << std::endl;
@@ -130,7 +129,6 @@ void CClient::Update()
 
 				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
 				myNetworkWrapper.Send(newMessage, myServerIp, SERVER_PORT);
-				delete newMessage;
 			}
 			break;
 		case ePackageType::ePingResponse:
@@ -157,7 +155,6 @@ void CClient::Update()
 		default: break;
 		}
 
-		delete currentMessage;
 
 		if (currentTime > 1.f)
 		{
@@ -173,7 +170,7 @@ void CClient::Update()
 			header.myPackageType = static_cast<char>(ePackageType::eChat);
 			header.mySenderID = myId;
 			header.myTargetID = ID_ALL_BUT_ME;
-			header.myTimeStamp = KYLE;
+			header.myTimeStamp = GetCurrentTime();
 
 			CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
 
