@@ -23,6 +23,8 @@ public:
 
 	void CreateManagersAndFactories();
 	bool Update(CU::Time aDeltaTime);
+
+	bool IsLoaded() const;
 private:
 
 

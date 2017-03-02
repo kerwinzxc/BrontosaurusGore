@@ -26,6 +26,7 @@ class CWeaponFactory;
 class CProjectileComponentManager;
 class CProjectileFactory;
 class CInputComponentManager;
+class CNetworkComponentManager;
 
 class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {

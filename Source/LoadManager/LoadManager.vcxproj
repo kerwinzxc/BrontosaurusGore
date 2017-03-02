@@ -346,6 +346,7 @@
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadManager.h" />
     <ClInclude Include="LoadModel.h" />
+    <ClInclude Include="LoadNetworkComponent.h" />
     <ClInclude Include="LoadObject.h" />
     <ClInclude Include="LoadColliderComponent.h" />
     <ClInclude Include="LoadPointLightComponent.h" />
@@ -362,6 +363,7 @@
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
     <ClCompile Include="LoadModel.cpp" />
+    <ClCompile Include="LoadNetworkComponent.cpp" />
     <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="LoadColliderComponent.cpp" />
     <ClCompile Include="LoadPointLightComponent.cpp" />

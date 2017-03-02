@@ -9,6 +9,7 @@
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "../TShared/NetworkMessageHolder.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 
 enum class eServerState
@@ -46,7 +47,7 @@ struct SImportantWaitData
 	CU::Time myWaitedTime;
 };
 
-class CServerMain
+class CServerMain : public Postmaster::ISubscriber
 {
 public:
 	CServerMain();
@@ -72,6 +73,8 @@ public:
 	void StartGame();
 	bool Update();
 
+	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
+
 private:
 
 	CU::TimerManager myTimerManager;
@@ -89,10 +92,13 @@ private:
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;
-	CMessageManager myMessageManager;
+	CMessageManager* myMessageManager;
 
 	eServerState myServerState;
 
 	CGameServer* myGameServer;
+
+	bool myIsRunning;
+	bool myCanQuit;
 };
 

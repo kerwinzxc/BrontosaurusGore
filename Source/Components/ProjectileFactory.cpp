@@ -6,6 +6,7 @@
 #include "ModelComponentManager.h"
 #include "ModelComponent.h"
 #include "ProjectileData.h"
+#include "ProjectileBufferData.h"
 
 CProjectileFactory* CProjectileFactory::ourInstance = nullptr;
 
@@ -23,21 +24,30 @@ CProjectileFactory::~CProjectileFactory()
 
 void CProjectileFactory::ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition)
 {
-	if(myPassiveProjectiles.Size() > 0)
+	for(unsigned int i = 0; i < myPassiveProjectiles.Size(); i++)
 	{
-		myActiveProjectiles.Add(myPassiveProjectiles[0]);
-		myPassiveProjectiles.RemoveCyclicAtIndex(0);
-		myActiveProjectiles.GetLast()->Activate(someData, aDirection, aSpawnPosition);
-		CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(someData->projectileModelFilePath.c_str());
-		myActiveProjectiles.GetLast()->GetParent()->AddComponent(modelComponent);
-		myActiveProjectiles.GetLast()->GetParent()->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		if(myPassiveProjectiles[i]->projectileName == someData->projectileModelFilePath) // stuff like this really needs to get hashed
+		{
+			ShootProjectile(someData, aDirection, aSpawnPosition, i);
+			return;
+		}
+	}
+	DL_PRINT("Refactoring gone wrong in ProjectileFactory yell at Marcus");
+}
+void CProjectileFactory::ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition, unsigned int aIndex)
+{
+	if (myPassiveProjectiles[aIndex]->projectileBuffer.Size() > 0)
+	{
+		myActiveProjectiles[aIndex]->projectileBuffer.Add(myPassiveProjectiles[aIndex]->projectileBuffer[0]);
+		myPassiveProjectiles[aIndex]->projectileBuffer.RemoveCyclicAtIndex(0);
+		myActiveProjectiles[aIndex]->projectileBuffer.GetLast()->Activate(someData, aDirection, aSpawnPosition);
 	}
 	else
 	{
 		DL_PRINT("Projectile buffer to small please increase it! Yell at Marcus if this causes you major frame drops");
 		for (unsigned short i = 0; i < 20; i++)
 		{
-			CreateProjectile();
+			CreateProjectile(aIndex);
 		}
 		ShootProjectile(someData, aDirection, aSpawnPosition);
 	}
@@ -46,25 +56,64 @@ void CProjectileFactory::Update(float aDeltaTime)
 {
 	for(unsigned short i = 0; i < myActiveProjectiles.Size(); i++)
 	{
-		myActiveProjectiles[i]->Update(aDeltaTime);
+		for(unsigned short j = 0; j < myActiveProjectiles[i]->projectileBuffer.Size(); j++)
+		{
+			if(myActiveProjectiles[i]->projectileBuffer[j]->GetIsActive() == false)
+			{
+				myPassiveProjectiles[i]->projectileBuffer.Add(myActiveProjectiles[i]->projectileBuffer[j]);
+				myActiveProjectiles[i]->projectileBuffer.RemoveCyclicAtIndex(j);
+				j--;
+				continue;
+			}
+		}
 	}
 }
 void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComponentManager* aModelComponentManagerPointer)
 {
 	myGameObjectManagerPointer = aGameObjectManager;
-	myActiveProjectiles.Init(500);
-	myPassiveProjectiles.Init(500);
+	myActiveProjectiles.Init(5);
+	myPassiveProjectiles.Init(5);
 	myModelComponentManagerPointer = aModelComponentManagerPointer;
-	for(unsigned short i = 0; i < 500; i++)
-	{
-		CreateProjectile();
-	}
+	//for(unsigned short i = 0; i < 500; i++)
+	//{
+	//	CreateProjectile();
+	//}
 }
 
-void CProjectileFactory::CreateProjectile()
+void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 {
 	CGameObject* aNewProjectileObject = myGameObjectManagerPointer->CreateGameObject();
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	aNewProjectileObject->AddComponent(tempProjectileComponent);
-	myPassiveProjectiles.Add(tempProjectileComponent);
+	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
+	aNewProjectileObject->AddComponent(modelComponent);
+	aNewProjectileObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	SComponentMessageData visibilityData;
+	visibilityData.myBool = false;
+	aNewProjectileObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+	myPassiveProjectiles[aIndex]->projectileBuffer.Add(tempProjectileComponent);
+}
+
+void CProjectileFactory::CreateNewProjectileBuffer(std::string aProjctileName, unsigned int aSuggestedProjectileBufferSize)
+{
+	for(unsigned int i = 0; i < myPassiveProjectiles.Size(); i++)
+	{
+		if(myPassiveProjectiles[i]->projectileName == aProjctileName) // stuff like this really needs to get hashed
+		{
+			return;
+		}
+	}
+
+	SProjectileBufferData* newBufferDataPassive = new SProjectileBufferData;
+	newBufferDataPassive->projectileName = aProjctileName;
+	newBufferDataPassive->projectileBuffer.Init(aSuggestedProjectileBufferSize);
+	SProjectileBufferData* newBufferDataActive = new SProjectileBufferData;
+	newBufferDataActive->projectileName = aProjctileName;
+	newBufferDataActive->projectileBuffer.Init(aSuggestedProjectileBufferSize);
+	myPassiveProjectiles.Add(newBufferDataPassive);
+	myActiveProjectiles.Add(newBufferDataActive);
+	for(unsigned int i = 0; i < aSuggestedProjectileBufferSize; i++)
+	{
+		CreateProjectile(myActiveProjectiles.Size() - 1);
+	}
 }

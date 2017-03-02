@@ -98,4 +98,10 @@ namespace CU
 			std::cout << "FrameTime:" << myTimers[i].GetDeltaTime().GetSeconds() << std::endl;
 		}
 	}
+
+	size_t TimerManager::Size() const
+	{
+		return myTimers.size();
+
+	}
 }

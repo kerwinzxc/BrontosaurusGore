@@ -142,3 +142,45 @@ SActivateRenderToMessage::SActivateRenderToMessage()
 	: SRenderMessage(SRenderMessage::eRenderMessageType::eActivateRenderTo)
 {
 }
+
+SSetRTVMessage::SSetRTVMessage()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eSetRTV)
+{
+	myRTV = nullptr;
+}
+
+SClear::SClear()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eClear)
+{
+	myRTV = nullptr;
+	myDSV = nullptr;
+}
+
+SSetCubemapResource::SSetCubemapResource()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eSetCubemapResource)
+{
+	mySRV = nullptr;
+}
+
+SRenderModelDeferredMessage::SRenderModelDeferredMessage()
+	:SRenderMessage(SRenderMessage::eRenderMessageType::eRenderModelDeferred)
+{
+	myModelID = -1;
+}
+
+SRenderDirectionalLight::SRenderDirectionalLight()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eRenderDirectionalLight)
+{
+}
+
+SRenderPointLight::SRenderPointLight()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eRenderPointLight)
+{
+
+}
+
+SRenderSpotLight::SRenderSpotLight()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eRenderSpotLight)
+{
+
+}

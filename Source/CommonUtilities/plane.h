@@ -28,6 +28,11 @@ namespace CU
 		//
 		void SetWithPointAndNormal(const Point3<TYPE> &aPoint, const Vector3<TYPE> &aNormal);
 
+		// Set the plane with four variables, i guess.
+		// Highly sceptic tho :)
+		//
+		void SetWithCoefficients(const TYPE aA, const TYPE aB, const TYPE aC, const TYPE aW);
+
 		// Returns true if the point is on the inside of the plane. The inside is defined as
 		// the opposite side of where the normal points to.
 		//
@@ -84,7 +89,7 @@ namespace CU
 	}
 
 	PLANE_TEMPLATE
-		void Plane<TYPE>::SetWith3Points(const Point3<TYPE> &aFirstPoint, const Point3<TYPE> &aSecondPoint, const Point3<TYPE> &aThirdPoint)
+	void Plane<TYPE>::SetWith3Points(const Point3<TYPE> &aFirstPoint, const Point3<TYPE> &aSecondPoint, const Point3<TYPE> &aThirdPoint)
 	{
 		myPoint = aFirstPoint;
 		myNormal = (aThirdPoint - aFirstPoint).Cross(aSecondPoint - aFirstPoint).Normalize();
@@ -92,11 +97,22 @@ namespace CU
 	}
 
 	PLANE_TEMPLATE
-		void Plane<TYPE>::SetWithPointAndNormal(const Point3<TYPE> &aPoint, const Vector3<TYPE> &aNormal)
+	void Plane<TYPE>::SetWithPointAndNormal(const Point3<TYPE> &aPoint, const Vector3<TYPE> &aNormal)
 	{
 		myPoint = aPoint;
 		myNormal = aNormal;
 	}
+	template<typename TYPE>
+	void Plane<TYPE>::SetWithCoefficients(const TYPE aA, const TYPE aB, const TYPE aC, const TYPE aW)
+	{
+		myNormal = Vector3f(aA, aB, aC);
+		float length = myNormal.Length();
+		myNormal.Normalize();
+		//myDistance = aW / length;
+		myPoint = { 0.0f, 0.0f,0.0f };
+	}
+
+
 
 	PLANE_TEMPLATE
 		bool Plane<TYPE>::IsInside(const Point3<TYPE> &aPoint) const

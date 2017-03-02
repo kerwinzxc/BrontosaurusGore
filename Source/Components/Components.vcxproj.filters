@@ -122,6 +122,7 @@
     <ClCompile Include="NetworkComponent.cpp">
       <Filter>NetworkComponent</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -280,6 +281,10 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="NetworkComponent.h">
       <Filter>NetworkComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkComponentManager.h" />
+    <ClInclude Include="ProjectileBufferData.h">
+      <Filter>Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

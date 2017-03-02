@@ -4,6 +4,7 @@
 #include "RenderStates.h"
 #include "RenderMessages.h"
 #include "RenderPackage.h"
+#include "DeferredRenderer.h"
 #include "FullScreenHelper.h"
 #include <TimerManager.h>
 
@@ -32,6 +33,7 @@ struct SRendererSettings
 
 class CRenderer : public Postmaster::ISubscriber
 {
+	friend CDeferredRenderer;
 public:
 	CRenderer();
 	~CRenderer();
@@ -110,7 +112,7 @@ private:
 	} myGUIData;
 
 private:
-
+	CDeferredRenderer myDeferredRenderer;
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;
 

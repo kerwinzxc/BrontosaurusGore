@@ -18,22 +18,39 @@
 #include "../KevinLoader/KevinLoader.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
 #include "../TShared/NetworkMessage_ClientReady.h"
+#include "ServerMessageManager.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../PostMaster/MessageType.h"
+#include "../ThreadedPostmaster/PostOffice.h"
+
+std::thread* locLoadingThread = nullptr;
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
 	KLoader::CKevinLoader::CreateInstance();
+	CServerMessageManager::CreateInstance(*this);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this,eMessageType::eNetworkMessage);
+
+	myIsRunning = false;
+	myCanQuit = false;
 }
 
 
 CServerMain::~CServerMain()
 {
+	myIsRunning = false;
+	while (!myCanQuit) continue;
+
 	KLoader::CKevinLoader::DestroyInstance();
+	CServerMessageManager::DestroyInstance();
 }
 
 void CServerMain::StartServer()
 {
 	myTimerHandle = myTimerManager.CreateTimer();
-	myNetworkWrapper.Init(DEFAULT_PORT, &myMessageManager);
+	myNetworkWrapper.Init(DEFAULT_PORT, CServerMessageManager::GetInstance());
+	myMessageManager = CServerMessageManager::GetInstance();
 
 	myGameServer = new CGameServer();
 
@@ -51,7 +68,7 @@ void CServerMain::UpdateImportantMessages(const CU::Time aDeltaTime)
 		waitData.myWaitedTime += aDeltaTime;
 		if (waitData.myWaitedTime.GetMilliseconds() > 75)
 		{
-			SendTo(myMessageManager.CreateMessage(waitData.myMessage), true);
+			SendTo(myMessageManager->CreateMessage(waitData.myMessage), true);
 			waitData.myWaitedTime = 0;
 		}
 	}
@@ -87,7 +104,7 @@ void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName
 	acceptPackage.myTargetID = newClientId;
 	acceptPackage.myTimeStamp = myTimerManager.GetTimer(myTimerHandle).GetLifeTime().GetMilliseconds();
 
-	CNetworkMessage_ConectResponse* message = myMessageManager.CreateMessage<CNetworkMessage_ConectResponse>(acceptPackage);
+	CNetworkMessage_ConectResponse* message = myMessageManager->CreateMessage<CNetworkMessage_ConectResponse>(acceptPackage);
 
 	message->myClientId = newClientId;
 
@@ -126,7 +143,7 @@ void CServerMain::Ping(ClientID aClientID)
 
 	SClientData client = myClients[aClientID];
 
-	CNetworkMessage_Ping* messagePing = myMessageManager.CreateMessage<CNetworkMessage_Ping>(header);
+	CNetworkMessage_Ping* messagePing = myMessageManager->CreateMessage<CNetworkMessage_Ping>(header);
 
 	myNetworkWrapper.Send(messagePing, client.myIP.c_str(), client.myPort.c_str());
 	myPendingPings[aClientID] = 0;
@@ -162,7 +179,7 @@ void CServerMain::DisconectClient(ClientID aClient)
 	header.myPackageType = static_cast<char>(ePackageType::eChat);
 	header.myTimeStamp = GetCurrentTime();
 
-	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager.CreateMessage<CNetworkMessage_ChatMessage>(header);
+	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>(header);
 	leaveMessage->myChatMessage = ("Server: " + leftClientsName + " has lef the server");
 
 
@@ -179,7 +196,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 	{
 		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
 
-		if (myPendingPings[pendingPing.first] >= 10)
+		if (myPendingPings[pendingPing.first] >= 100)
 		{
 			std::string temp;
 			temp += "Client: " + myClients[pendingPing.first].myName + " not responding";
@@ -283,7 +300,7 @@ void CServerMain::StartGame()
 	header.myPackageType = static_cast<char>(ePackageType::eServerReady);
 	header.myTimeStamp = GetCurrentTime();
 
-	CNetworkMessage_ServerReady* message = myMessageManager.CreateMessage<CNetworkMessage_ServerReady>(header);
+	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
 
 	SendTo(message);
 }
@@ -292,10 +309,10 @@ bool CServerMain::Update()
 {
 	float currentTime = 0.f;
 
-
-
-	while (true)
+	myIsRunning = true;
+	while (myIsRunning)
 	{
+		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 
@@ -320,7 +337,7 @@ bool CServerMain::Update()
 			header.myPackageType = static_cast<char>(ePackageType::eImportantResponse);
 			header.myTimeStamp = static_cast<int>(GetCurrentTime());
 
-			CImportantNetworkMessage* ResponseMessage = myMessageManager.CreateMessage<CImportantNetworkMessage>(header);
+			CImportantNetworkMessage* ResponseMessage = myMessageManager->CreateMessage<CImportantNetworkMessage>(header);
 			SendTo(ResponseMessage);
 		}
 
@@ -346,7 +363,7 @@ bool CServerMain::Update()
 			newHeader.myTargetID = currentMessage->GetHeader().mySenderID;
 			newHeader.myTimeStamp = 100;
 
-			CNetworkMessage_PingResponse* newMessage = myMessageManager.CreateMessage<CNetworkMessage_PingResponse>(newHeader);
+			CNetworkMessage_PingResponse* newMessage = myMessageManager->CreateMessage<CNetworkMessage_PingResponse>(newHeader);
 			myNetworkWrapper.Send(newMessage, currentSenderIp, currentSenderPort);
 		}
 		break;
@@ -390,7 +407,8 @@ bool CServerMain::Update()
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				myGameServer->Load(loadLevelMessage->myLevelIndex);
+				//myGameServer->Load(loadLevelMessage->myLevelIndex);
+				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 			}
 			break;
 		case ePackageType::eClientReady:
@@ -398,10 +416,10 @@ bool CServerMain::Update()
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
 
-				if (CheckIfClientsReady() == true)
-				{
-					StartGame();
-				}
+				//if (CheckIfClientsReady() == true)
+				//{
+				//	StartGame();
+				//}
 			}
 			break;
 		case ePackageType::eZero:
@@ -418,9 +436,37 @@ bool CServerMain::Update()
 			currentTime = 0.f;
 		}
 
+		if (myServerState == eServerState::eLoadingLevel)
+		{
+			if (myGameServer && myGameServer->IsLoaded())
+			{
+				if (CheckIfClientsReady() == true)
+				{
+					if (locLoadingThread)
+					{
+						locLoadingThread->join();
+						delete locLoadingThread;
+						locLoadingThread = nullptr;
+
+						StartGame();
+					}
+				}
+			}
+		}
+
 		if (myServerState == eServerState::eInGame)
 		{
 			myGameServer->Update(deltaTime);
 		}
 	}
+
+	myCanQuit = true;
+
+	return false;
+}
+
+eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+{
+	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
 }

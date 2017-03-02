@@ -32,8 +32,6 @@ CInputComponent::CInputComponent()
 	myControlMap[INTIFY(ePlayerControls::eActivate)] = GetInputButton(CU::eKeys::E);
 	myControlMap[INTIFY(ePlayerControls::ePrimaryWeapon)] = GetInputButton(CU::eMouseButtons::LBUTTON);
 	myControlMap[INTIFY(ePlayerControls::eSecondaryWeapon)] = GetInputButton(CU::eMouseButtons::RBUTTON);
-
-	//myIsLeftMouseButtonPressed = false;
 }
 
 CInputComponent::~CInputComponent()

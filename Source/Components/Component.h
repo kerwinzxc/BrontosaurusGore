@@ -51,6 +51,7 @@ enum class eComponentType : unsigned char
 	eAudioSource,
 	eActivationComponent,
 	ePointLight,
+	eNetwork,
 	eNone,
 };
 
