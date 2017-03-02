@@ -26,4 +26,18 @@ namespace BSR
 
 		return constBuffer;
 	}
+
+
+	template<typename TYPE>
+	void UpdateCBuffer(ID3D11Buffer* aBuffer, const TYPE* aData)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+		ID3D11DeviceContext* deviceContext = CEngine::GetInstance()->GetFramework()->GetDeviceContext();
+
+		deviceContext->Map(aBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+		memcpy(mappedSubResource.pData, aData, sizeof(TYPE));
+		deviceContext->Unmap(aBuffer, 0);
+	}
 }

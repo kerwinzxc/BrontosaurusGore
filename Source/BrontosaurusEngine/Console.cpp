@@ -109,7 +109,7 @@ void CConsole::UpdateCommandSuggestions(const std::string & aStringToCompare)
 	size_t result = 0;
 
 	std::map<std::string, SSlua::LuaCallbackFunction>::iterator it;
-	for (it = myLuaFunctions.begin(); it != myLuaFunctions.end(); it++)
+	for (it = myLuaFunctions.begin(); it != myLuaFunctions.end(); ++it)
 	{
 		result = MakeCommandSuggestions(aStringToCompare, it->first);
 		if (result < finalResultDifferance)

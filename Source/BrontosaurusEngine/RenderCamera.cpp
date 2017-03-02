@@ -8,6 +8,7 @@
 CRenderCamera::CRenderCamera()
 {
 	myRenderQueue.Init(32);
+	myIsShadowCamera = false;
 }
 
 

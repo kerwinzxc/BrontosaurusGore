@@ -9,10 +9,15 @@
 #include "Renderer.h"
 #include "BackgroundLoadingManager.h"
 #include "Game/Game.h"
+#include "TShared/NetworkMessage_ClientReady.h"
+#include "TClient/ClientMessageManager.h"
+#include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::eLoadState)
 	, myLevelIndex(aLevelIndex)
+	, myGotOkFromServer(false)
 {
 	myPlayState = nullptr;
 }
@@ -25,6 +30,7 @@ void CLoadState::Init()
 {
 	//RENDERER.ClearRenderQueue();
 	CBackgroundLoadingManager &bLM = CBackgroundLoadingManager::GetInstance();
+
 
 	if (bLM.GetIfActive() == true)
 	{
@@ -48,9 +54,24 @@ void CLoadState::Init()
 
 eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	myLoadingAnimation.Update(aDeltaTime);
 
 	if (myPlayState->IsLoaded() == true)
+	{
+		CClientMessageManager* const messageManagerInstance = CClientMessageManager::GetInstance();
+
+		if (messageManagerInstance == nullptr)
+		{
+			DL_ASSERT("message manager is not created");
+		}
+
+		CNetworkMessage_ClientReady* readyMessage = messageManagerInstance->CreateMessage<CNetworkMessage_ClientReady>("__Server");
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(readyMessage));
+	}
+
+	if (myGotOkFromServer == true)
 	{
 		myStateStack.SwapState(myPlayState);
 		CBackgroundLoadingManager::GetInstance().Clear();
@@ -72,12 +93,21 @@ void CLoadState::Render()
 	RENDERER.AddRenderMessage(new SChangeStatesMessage(msg));
 	myLoadingAnimation.Render();
 
+
 }
 
 void CLoadState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CLoadState::OnExit(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
+}
+
+eMessageReturn CLoadState::DoEvent(const CServerReadyMessage& aServerReadyMessageMessageMessage)
+{
+	myGotOkFromServer = true;
+	return eMessageReturn::eContinue;
 }

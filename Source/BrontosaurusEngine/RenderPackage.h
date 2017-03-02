@@ -31,6 +31,8 @@ public:
 	void Activate(CRenderPackage & aRenderPackage);
 	ID3D11ShaderResourceView*& GetDepthResource();
 	ID3D11ShaderResourceView*& GetResource();
+	ID3D11RenderTargetView*& GetRenderTargetView();
+	ID3D11DepthStencilView*& GetDepthStencilView();
 
 	ID3D11Texture2D*& GetTexture();
 

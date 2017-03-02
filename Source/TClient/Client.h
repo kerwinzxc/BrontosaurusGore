@@ -6,6 +6,7 @@
 #include "Chat.h"
 #include "../PostMaster/Subscriber.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 enum class eClientState
 {
@@ -18,10 +19,9 @@ class CClient : public Postmaster::ISubscriber
 {
 	friend class CClientMessageManager;
 public:
+	CClient();
+	~CClient();
 
-	static void Create();
-	static void Destroy();
-	static CClient& GetInstance();
 	bool StartClient();
 	void Disconect();
 	void UpdatePing(const CU::Time& aTime);
@@ -31,15 +31,9 @@ public:
 
 	bool Connect(const char* anIp, std::string aClientName);
 
-	CClientMessageManager* myMessageManager;
+	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 
 private:
-
-	CClient();
-	~CClient();
-
-
-	static CClient* ourInstance;
 
 	CChat myChat;
 
@@ -49,7 +43,7 @@ private:
 	float myCurrentPing;
 
 	TShared_NetworkWrapper myNetworkWrapper;
-	eClientState myState;
+	std::atomic<eClientState> myState;
 	CU::Timer myTimer;
 	short myId;
 

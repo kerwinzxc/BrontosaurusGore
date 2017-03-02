@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Frustum.h"
 #include "vector3.h"
-#include "matrix33.h"
+#include "matrix44.h"
 #include "AABB.h"
+#include "..\Components\ComponentMessage.h"
 
 namespace
 {
@@ -86,6 +87,50 @@ namespace CU
 
 
 	}
+//
+//	void CFrustum::SetFrustum(const Matrix44f& aViewMatrix)
+//	{
+//		Plane<float> planes[6];
+//
+//#define m(row, col) matrix[col*4+row - 5]
+//
+//		Matrix44f matrix = aViewMatrix;
+//
+//		planes[0].SetWithCoefficients(
+//			m(3, 1) + m(4, 1),
+//			m(3, 2) + m(4, 2),
+//			m(3, 3) + m(4, 3),
+//			m(3, 4) + m(4, 4));
+//		planes[1].SetWithCoefficients(
+//			-m(3, 1) + m(4, 1),
+//			-m(3, 2) + m(4, 2),
+//			-m(3, 3) + m(4, 3),
+//			-m(3, 4) + m(4, 4));
+//		planes[2].SetWithCoefficients(
+//			m(2, 1) + m(4, 1),
+//			m(2, 2) + m(4, 2),
+//			m(2, 3) + m(4, 3),
+//			m(2, 4) + m(4, 4));
+//		planes[3].SetWithCoefficients(
+//			-m(2, 1) + m(4, 1),
+//			-m(2, 2) + m(4, 2),
+//			-m(2, 3) + m(4, 3),
+//			-m(2, 4) + m(4, 4));
+//		planes[4].SetWithCoefficients(
+//			m(1, 1) + m(4, 1),
+//			m(1, 2) + m(4, 2),
+//			m(1, 3) + m(4, 3),
+//			m(1, 4) + m(4, 4));
+//		planes[5].SetWithCoefficients(
+//			-m(1, 1) + m(4, 1),
+//			-m(1, 2) + m(4, 2),
+//			-m(1, 3) + m(4, 3),
+//			-m(1, 4) + m(4, 4));
+//
+//#undef m
+//
+//	}
+//
 	bool CFrustum::IsInside(const CU::AABB & aAABB)
 	{
 	//	// assumes the AABB is in the same space as the Frustum

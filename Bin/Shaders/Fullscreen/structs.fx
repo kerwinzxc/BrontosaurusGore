@@ -1,3 +1,4 @@
+#define DEPTH_BIAS 1.0f
 
 struct PosTex_InputVertex
 {

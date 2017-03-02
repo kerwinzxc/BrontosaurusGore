@@ -38,3 +38,8 @@ void CNetworkMessage_Position::DoDeserialize(StreamType& aStream)
 		myPosition = deserialize<CU::Vector3f>(aStream);
 	}
 }
+
+void CNetworkMessage_Position::SetID(const unsigned aNetworkComponentID)
+{
+	myNetworkComponentID = aNetworkComponentID;
+}

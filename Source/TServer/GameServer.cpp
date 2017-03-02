@@ -5,6 +5,7 @@
 #include "../Components/AmmoComponentManager.h"
 #include "../Components/WeaponFactory.h"
 #include "../Components/WeaponSystemManager.h"
+#include "../Components/NetworkComponentManager.h"
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
 #include "../LoadManager/ServerLoadManager.h"
@@ -21,11 +22,12 @@ CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager
 
 CGameServer::~CGameServer()
 {
+	delete myNetworkComponentManager;
+	myNetworkComponentManager = nullptr;
 }
 
 void CGameServer::Init()
 {
-	
 }
 
 void CGameServer::Start()
@@ -38,16 +40,24 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 	return *myGameObjectManager;
 }
 
+CNetworkComponentManager & CGameServer::GetNetworkComponentManager()
+{
+	return *myNetworkComponentManager;
+}
+
 void CGameServer::Load(const int aLevelIndex)
 {
+	ServerLoadManagerGuard loadManagerGuard(*this);
+	CreateManagersAndFactories();
+
+
 	CU::TimerManager timerMgr;
 	CU::TimerHandle handle = timerMgr.CreateTimer();
 	timerMgr.StartTimer(handle);
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	ServerLoadManagerGuard loadManagerGuard(*this);
-	CreateManagersAndFactories();
+
 
 	myWeaponFactory->LoadWeapons();
 
@@ -64,7 +74,7 @@ void CGameServer::Load(const int aLevelIndex)
 #else
 	const int levelIndex = 0;
 #endif
-	int myLevelIndex = 1;
+	int myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
 	levelPath += "/LevelData.json";
@@ -87,6 +97,8 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+
+	myNetworkComponentManager = new CNetworkComponentManager;
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)

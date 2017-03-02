@@ -119,6 +119,10 @@
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="ColliderComponentManager.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="NetworkComponent.cpp">
+      <Filter>NetworkComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -275,6 +279,10 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="NetworkComponent.h">
+      <Filter>NetworkComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -330,6 +338,9 @@
     </Filter>
     <Filter Include="Enemy">
       <UniqueIdentifier>{ff38c789-3c5c-45a6-850b-4e84825c1624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkComponent">
+      <UniqueIdentifier>{cf66b67e-3cd9-4e22-b239-4d940bdcb3f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

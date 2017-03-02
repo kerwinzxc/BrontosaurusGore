@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ServerLoadManager.h"
 #include "LoadObject.h"
-
+#include "LoadNetworkComponent.h"
 
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
@@ -42,8 +42,10 @@ void CServerLoadManager::RegisterFunctions()
 {
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	loader.RegisterObjectLoadFunction(LoadObject);
+	loader.RegisterObjectLoadFunction(LoadServerObject);
 	loader.RegisterObjectLinkFunction(LinkObject);
+
+	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);

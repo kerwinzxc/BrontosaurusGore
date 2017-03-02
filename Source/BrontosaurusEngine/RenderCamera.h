@@ -26,6 +26,7 @@ private:
 	CU::Camera myCamera;
 	CRenderPackage myRenderPackage;
 	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
+	bool myIsShadowCamera;
 };
 
 inline CRenderPackage & CRenderCamera::GetRenderPackage() 

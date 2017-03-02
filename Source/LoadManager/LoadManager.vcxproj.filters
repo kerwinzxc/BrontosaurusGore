@@ -39,6 +39,9 @@
     </ClInclude>
     <ClInclude Include="ServerLoadManager.h" />
     <ClInclude Include="LoadEnemy.h" />
+    <ClInclude Include="LoadNetworkComponent.h">
+      <Filter>LoadThings\LoadNetworkComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -76,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="ServerLoadManager.cpp" />
     <ClCompile Include="LoadEnemy.cpp" />
+    <ClCompile Include="LoadNetworkComponent.cpp">
+      <Filter>LoadThings\LoadNetworkComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -113,6 +119,9 @@
     </Filter>
     <Filter Include="Precompiled">
       <UniqueIdentifier>{35f92d3f-46b3-4c23-9408-4c64a447310e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadNetworkComponent">
+      <UniqueIdentifier>{1a839b12-f513-4572-91e2-8bdc81908678}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -9,8 +9,9 @@
 #include "RenderPackage.h"
 #include "FullScreenHelper.h"
 #include "BufferStructs.h"
+#include "Lights.h"
 
-
+struct ID3D11RenderTargetView;
 
 class CSkybox;
 class CModelInstance;
@@ -70,6 +71,13 @@ struct SRenderMessage
 		eSetShadowBuffer,
 		eRenderLineBuffer,
 		eRenderNavMesh,
+		eSetRTV,
+		eSetCubemapResource,
+		eClear,
+		eRenderModelDeferred,
+		eRenderDirectionalLight,
+		eRenderPointLight,
+		eRenderSpotLight,
 	};
 
 	SRenderMessage(const eRenderMessageType aRenderMessageType);
@@ -79,6 +87,48 @@ struct SRenderMessage
 
 };
 
+struct SRenderDirectionalLight : SRenderMessage
+{
+	SRenderDirectionalLight();
+	Lights::SDirectionalLight directionalLight;
+};
+
+struct SRenderPointLight : SRenderMessage
+{
+	SRenderPointLight();
+	Lights::SPointLight pointLight;
+};
+
+struct SRenderSpotLight : SRenderMessage
+{
+	SRenderSpotLight();
+	Lights::SSpotLight spotLight;
+};
+
+struct SSetCubemapResource : SRenderMessage
+{
+	SSetCubemapResource();
+	//Incr refcount
+	ID3D11ShaderResourceView* mySRV;
+};
+
+
+struct SClear : SRenderMessage
+{
+	SClear();
+	//Incr refcount
+	ID3D11RenderTargetView* myRTV;
+	ID3D11DepthStencilView* myDSV;
+};
+
+
+struct SSetRTVMessage : SRenderMessage
+{
+	SSetRTVMessage();
+	//Incr refcount
+	D3D11_VIEWPORT* myViewport;
+	ID3D11RenderTargetView* myRTV;
+};
 
 struct SActivateRenderToMessage : SRenderMessage
 {
@@ -142,13 +192,22 @@ struct SRenderCameraQueueMessage : SRenderMessage
 	CU::Camera myCamera;
 	CRenderPackage CameraRenderPackage;
 	CU::GrowingArray < SRenderMessage*, unsigned int, false> CameraRenderQueue;
+	//CU::GrowingArray < SRenderMessage*, unsigned int, false> DeferredCameraRenderQueue;
+	//CDeferredRenderer myDeferredRenderer;
 	bool RenderDepth;
 };
 
 struct SRenderModelMessage : SRenderMessage
 {
 	SRenderModelMessage();
-	SRenderModelParams myRenderParams;
+	SForwardRenderModelParams myRenderParams;
+	int myModelID;
+};
+
+struct SRenderModelDeferredMessage : SRenderMessage
+{
+	SRenderModelDeferredMessage();
+	SDeferredRenderModelParams myRenderParams;
 	int myModelID;
 };
 

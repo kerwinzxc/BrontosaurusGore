@@ -29,6 +29,9 @@
     <Filter Include="Narrowcast">
       <UniqueIdentifier>{07d5e4a1-cece-4bb3-973a-410afca7d6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\SendNetworkMessageMessageMessage">
+      <UniqueIdentifier>{baff239b-2c2e-4b32-be51-d5705d4a1dfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -39,6 +42,9 @@
     </ClCompile>
     <ClCompile Include="Subscriber.cpp">
       <Filter>Subscriber\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SendNetowrkMessageMessage.cpp">
+      <Filter>Message\SendNetworkMessageMessageMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="NarrowcastStruct.h">
       <Filter>Narrowcast</Filter>
+    </ClInclude>
+    <ClInclude Include="SendNetowrkMessageMessage.h">
+      <Filter>Message\SendNetworkMessageMessageMessage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

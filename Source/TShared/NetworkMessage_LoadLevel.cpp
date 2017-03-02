@@ -2,13 +2,19 @@
 #include "NetworkMessage_LoadLevel.h"
 
 
-CNetworkMessage_LoadLevel::CNetworkMessage_LoadLevel()
+CNetworkMessage_LoadLevel::CNetworkMessage_LoadLevel(): myLevelIndex(0)
 {
+	myHeader.myPackageType = static_cast<char>(ePackageType::eLoadLevel);
 }
 
 
 CNetworkMessage_LoadLevel::~CNetworkMessage_LoadLevel()
 {
+}
+
+ePackageType CNetworkMessage_LoadLevel::GetPackageType() const
+{
+	return ePackageType::eLoadLevel;
 }
 
 void CNetworkMessage_LoadLevel::DoSerialize(StreamType& aStream)
