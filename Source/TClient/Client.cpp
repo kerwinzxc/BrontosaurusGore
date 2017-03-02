@@ -23,6 +23,12 @@
 #include "../CommonUtilities/ThreadNamer.h"
 
 
+#include "../Components/NetworkComponentManager.h"
+#include "../Components/NetworkComponent.h"
+#include "../Components/GameObject.h"
+#include "../Components/ComponentMessage.h"
+
+
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -170,7 +176,12 @@ void CClient::Update()
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+			//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+
+			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
+			comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
+			comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 		}
 		break;
 		case ePackageType::eZero:
@@ -232,9 +243,15 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 
 	while (myState == eClientState::CONECTING)
 	{
+		DL_PRINT("wait Connecting");
 	}
 
 	return  true;
+}
+
+short CClient::GetID()
+{
+	return myId;
 }
 
 eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)

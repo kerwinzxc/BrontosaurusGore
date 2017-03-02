@@ -12,6 +12,11 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
 
+//temp
+#include "../Components/NetworkComponent.h"
+#include "../Components/GameObject.h"
+#include "../Components/ComponentMessage.h"
+
 
 
 
@@ -24,8 +29,7 @@ CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager
 
 CGameServer::~CGameServer()
 {
-	delete myNetworkComponentManager;
-	myNetworkComponentManager = nullptr;
+	CNetworkComponentManager::Destroy();
 }
 
 void CGameServer::Init()
@@ -40,11 +44,6 @@ void CGameServer::Start()
 CGameObjectManager & CGameServer::GetGameObjectManager()
 {
 	return *myGameObjectManager;
-}
-
-CNetworkComponentManager & CGameServer::GetNetworkComponentManager()
-{
-	return *myNetworkComponentManager;
 }
 
 void CGameServer::Load(const int aLevelIndex)
@@ -93,19 +92,23 @@ void CGameServer::Load(const int aLevelIndex)
 void CGameServer::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
+	CNetworkComponentManager::Create();
 
 	myGameObjectManager = new CGameObjectManager();
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
-
-	myNetworkComponentManager = new CNetworkComponentManager;
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
 	//DL_PRINT("In Update");
+	CNetworkComponent* temp = CNetworkComponentManager::GetInstance()->GetComponent(0);
+	if (temp != nullptr)
+	{
+		temp->GetParent()->NotifyComponents(eComponentMessageType::eHeal, SComponentMessageData());
+	}
 	return true;
 }
 

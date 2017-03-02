@@ -198,7 +198,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 	{
 		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
 
-		if (myPendingPings[pendingPing.first] >= 10)
+		if (myPendingPings[pendingPing.first] >= 100)
 		{
 			std::string temp;
 			temp += "Client: " + myClients[pendingPing.first].myName + " not responding";

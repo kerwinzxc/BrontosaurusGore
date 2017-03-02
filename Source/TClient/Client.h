@@ -31,6 +31,8 @@ public:
 
 	bool Connect(const char* anIp, std::string aClientName);
 
+	short GetID();
+
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 
 private:
