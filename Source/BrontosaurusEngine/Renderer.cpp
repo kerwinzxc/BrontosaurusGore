@@ -637,8 +637,19 @@ void CRenderer::CreateBlendStates()
 
 		blendDesc_Blend.AlphaToCoverageEnable = FALSE;
 		blendDesc_Blend.IndependentBlendEnable = TRUE;
+
+
+		//blendDesc_Blend.RenderTarget[0].BlendEnable = TRUE;
+		//blendDesc_Blend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
+		//blendDesc_Blend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
+		//blendDesc_Blend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+		//blendDesc_Blend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+		//blendDesc_Blend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
+		//blendDesc_Blend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+		//blendDesc_Blend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
+
 		blendDesc_Blend.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc_Blend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
+		blendDesc_Blend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
 		blendDesc_Blend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
 		blendDesc_Blend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		blendDesc_Blend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
