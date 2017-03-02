@@ -93,5 +93,8 @@ private:
 	eServerState myServerState;
 
 	CGameServer* myGameServer;
+
+	bool myIsRunning;
+	bool myCanQuit;
 };
 

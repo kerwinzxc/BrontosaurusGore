@@ -3,7 +3,7 @@
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
 #include "../TShared/MessageManager.h"
-#include "Chat.h"
+//#include "Chat.h"
 #include "../PostMaster/Subscriber.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "../ThreadedPostmaster/PostOffice.h"
@@ -35,7 +35,7 @@ public:
 
 private:
 
-	CChat myChat;
+	//CChat myChat;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
@@ -51,5 +51,8 @@ private:
 	const char* myServerIp;
 	CU::TimeUnit myServerPingTime;
 	bool myServerIsPinged;
+
+	bool myIsRunning;
+	bool myCanQuit;
 };
 
