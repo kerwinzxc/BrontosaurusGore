@@ -12,7 +12,7 @@
 #ifndef APEX_USING_NAMESPACE_H
 #define APEX_USING_NAMESPACE_H
 
-#include "foundation/Px.h"
+#include "../pxShared/foundation/Px.h"
 #include "ApexDefs.h"
 
 #define FORWARD_DECLARATION_AND_USING(T, X) \

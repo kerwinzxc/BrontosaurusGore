@@ -46,7 +46,7 @@
  Use this to add default implementations of interop-related interfaces for UserRenderer.
 */
 
-#include "foundation/PxPreprocessor.h"
+#include "../pxShared/foundation/PxPreprocessor.h"
 
 #define APEX_SDK_VERSION 1
 #define APEX_SDK_RELEASE 0x01040000

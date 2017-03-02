@@ -207,7 +207,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\apexShared\general\RenderDebug\public\;$(ProjectDir)Include\pxShared\;$(SolutionDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
