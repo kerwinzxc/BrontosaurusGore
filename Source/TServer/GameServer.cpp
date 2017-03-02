@@ -103,6 +103,6 @@ void CGameServer::CreateManagersAndFactories()
 
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
-	DL_PRINT("In Update");
+	//DL_PRINT("In Update");
 	return true;
 }

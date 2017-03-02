@@ -22,6 +22,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
@@ -306,6 +307,7 @@ bool CServerMain::Update()
 
 	while (true)
 	{
+		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 
@@ -437,4 +439,10 @@ bool CServerMain::Update()
 			myGameServer->Update(deltaTime);
 		}
 	}
+}
+
+eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+{
+	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
 }
