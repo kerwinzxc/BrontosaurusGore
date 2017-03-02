@@ -6,7 +6,7 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #define vodi void
-static const float gravityDeceleration = 1000.18f;
+static const float gravityDeceleration = 29.82f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
@@ -25,7 +25,7 @@ CMovementComponent::CMovementComponent()
 	myDeceleration = playerControls["Deceleration"].GetFloat();
 	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
 	myIsJumping = false;
-	myJumpDistance = 200.0f;
+	myJumpDistance = playerControls["JumpHeight"].GetFloat();
 	myJumpTimeUntilTop = 2.0f;
 }
 
