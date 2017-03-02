@@ -6,7 +6,7 @@
 namespace CU
 {
 	Camera::Camera()
-		: Camera(0.f, 0.f, 0.f, 0.f, 0.f)
+	//	: Camera(0.f, 0.f, 0.f, 0.f, 0.f)
 	{
 	}
 
@@ -31,7 +31,7 @@ namespace CU
 		const float aNear,
 		const float aFar)
 	{
-		myProjection = myProjection.CreateProjectionMatrixLH(aNear, aFar, aProjectionWidth , aProjectionHeight , (aFov) *(3.14159265f / 180.f));
+		myProjection = myProjection.CreateProjectionMatrixLH(aNear, aFar, aProjectionWidth , aProjectionHeight , (aFov) /** (3.14159265f / 180.f)*/);
 		myProjectionInverse = myProjection.GetInverted();
 
 		myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
