@@ -22,17 +22,26 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
+#include "../ThreadedPostmaster/PostOffice.h"
+
+std::thread* locLoadingThread = nullptr;
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
 	KLoader::CKevinLoader::CreateInstance();
 	CServerMessageManager::CreateInstance(*this);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this,eMessageType::eNetworkMessage);
+
+	myIsRunning = false;
+	myCanQuit = false;
 }
 
 
 CServerMain::~CServerMain()
 {
+	myIsRunning = false;
+	while (!myCanQuit) continue;
+
 	KLoader::CKevinLoader::DestroyInstance();
 	CServerMessageManager::DestroyInstance();
 }
@@ -189,7 +198,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 	{
 		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
 
-		if (myPendingPings[pendingPing.first] >= 10)
+		if (myPendingPings[pendingPing.first] >= 100)
 		{
 			std::string temp;
 			temp += "Client: " + myClients[pendingPing.first].myName + " not responding";
@@ -302,10 +311,10 @@ bool CServerMain::Update()
 {
 	float currentTime = 0.f;
 
-
-
-	while (true)
+	myIsRunning = true;
+	while (myIsRunning)
 	{
+		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 
@@ -403,7 +412,8 @@ bool CServerMain::Update()
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				myGameServer->Load(loadLevelMessage->myLevelIndex);
+				//myGameServer->Load(loadLevelMessage->myLevelIndex);
+				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 			}
 			break;
 		case ePackageType::eClientReady:
@@ -411,10 +421,10 @@ bool CServerMain::Update()
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
 
-				if (CheckIfClientsReady() == true)
-				{
-					StartGame();
-				}
+				//if (CheckIfClientsReady() == true)
+				//{
+				//	StartGame();
+				//}
 			}
 			break;
 		case ePackageType::eZero:
@@ -432,9 +442,37 @@ bool CServerMain::Update()
 			currentTime = 0.f;
 		}
 
+		if (myServerState == eServerState::eLoadingLevel)
+		{
+			if (myGameServer && myGameServer->IsLoaded())
+			{
+				if (CheckIfClientsReady() == true)
+				{
+					if (locLoadingThread)
+					{
+						locLoadingThread->join();
+						delete locLoadingThread;
+						locLoadingThread = nullptr;
+
+						StartGame();
+					}
+				}
+			}
+		}
+
 		if (myServerState == eServerState::eInGame)
 		{
 			myGameServer->Update(deltaTime);
 		}
 	}
+
+	myCanQuit = true;
+
+	return false;
+}
+
+eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+{
+	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
 }
