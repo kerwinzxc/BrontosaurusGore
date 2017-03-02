@@ -67,7 +67,6 @@ CModelInstance::~CModelInstance()
 	
 	
 	//TODO: memoryleek mebe // still exists in ModelManager <-- looks like model manager owns this but a refcount would maybe be something
-	//SAFE_DELETE(mySceneAnimator); //is deleted through the map
 }
 
 void CModelInstance::Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList)
@@ -165,6 +164,23 @@ void CModelInstance::Render(Lights::SDirectionalLight * aLight, CU::VectorOnStac
 		aRenderToCamera.AddRenderMessage(msg);
 		myLastFrame = myTransformation;
 	}
+}
+
+void CModelInstance::Render()
+{
+	SRenderModelDeferredMessage msg;
+	msg.myModelID = myModel;
+	msg.myRenderParams.myTransform = myTransformation;
+	msg.myRenderParams.myTransformLastFrame = myLastFrame;
+	msg.myRenderParams.myRenderToDepth = false;
+	msg.myRenderParams.aHighlightIntencity = myHighlightIntencity;
+	if(myHasAnimations == true)
+	{
+		msg.myRenderParams.aAnimationLooping = myAnimationLooping;
+		msg.myRenderParams.aAnimationState = myCurrentAnimation;
+		msg.myRenderParams.aAnimationTime = myAnimationCounter;
+	}	
+	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
 }
 
 void CModelInstance::Update(const CU::Time aDeltaTime)

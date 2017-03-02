@@ -18,16 +18,23 @@
 #include "../KevinLoader/KevinLoader.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
 #include "../TShared/NetworkMessage_ClientReady.h"
+#include "ServerMessageManager.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../PostMaster/MessageType.h"
 
 CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
 {
 	KLoader::CKevinLoader::CreateInstance();
+	CServerMessageManager::CreateInstance(*this);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this,eMessageType::eNetworkMessage);
 }
 
 
 CServerMain::~CServerMain()
 {
 	KLoader::CKevinLoader::DestroyInstance();
+	CServerMessageManager::DestroyInstance();
 }
 
 void CServerMain::StartServer()

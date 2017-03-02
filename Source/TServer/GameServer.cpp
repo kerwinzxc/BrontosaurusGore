@@ -5,6 +5,7 @@
 #include "../Components/AmmoComponentManager.h"
 #include "../Components/WeaponFactory.h"
 #include "../Components/WeaponSystemManager.h"
+#include "../Components/NetworkComponentManager.h"
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
 #include "../LoadManager/ServerLoadManager.h"
@@ -21,6 +22,8 @@ CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager
 
 CGameServer::~CGameServer()
 {
+	delete myNetworkComponentManager;
+	myNetworkComponentManager = nullptr;
 }
 
 void CGameServer::Init()
@@ -35,6 +38,11 @@ void CGameServer::Start()
 CGameObjectManager & CGameServer::GetGameObjectManager()
 {
 	return *myGameObjectManager;
+}
+
+CNetworkComponentManager & CGameServer::GetNetworkComponentManager()
+{
+	return *myNetworkComponentManager;
 }
 
 void CGameServer::Load(const int aLevelIndex)
@@ -89,6 +97,8 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+
+	myNetworkComponentManager = new CNetworkComponentManager;
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)

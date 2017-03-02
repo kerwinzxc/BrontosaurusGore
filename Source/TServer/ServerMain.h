@@ -8,6 +8,7 @@
 #include <string>
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 
 enum class eServerState
@@ -44,7 +45,7 @@ struct SImportantWaitData
 	CU::Time myWaitedTime;
 };
 
-class CServerMain
+class CServerMain : public Postmaster::ISubscriber
 {
 public:
 	CServerMain();

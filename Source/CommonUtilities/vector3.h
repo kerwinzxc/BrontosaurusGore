@@ -59,6 +59,7 @@ namespace CU
 		Vector3 GetNormalized() const;
 
 		Vector3& Normalize();
+		Vector3& Lerp(const Vector3<TYPE>& aInterpolateToVector, const TYPE aInterpolatingSpeed);
 
 		Vector3& InterPolateTowards(Vector3 aVectorToInterPolateTowards, float aInterpolatingSpeed);
 
@@ -399,6 +400,15 @@ namespace CU
 			z /= length;
 		}
 
+		return self;
+	}
+
+	template<typename TYPE>
+	Vector3<TYPE>& Vector3<TYPE>::Lerp(const Vector3<TYPE>& aInterpolateToVector, const TYPE aInterpolatingSpeed)
+	{
+		x = x + aInterpolatingSpeed * (aInterpolateToVector.x - x);
+		y = y + aInterpolatingSpeed * (aInterpolateToVector.y - y);
+		z = z + aInterpolatingSpeed * (aInterpolateToVector.z - z);
 		return self;
 	}
 

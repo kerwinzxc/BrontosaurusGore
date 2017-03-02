@@ -46,7 +46,15 @@ void CProjectileFactory::Update(float aDeltaTime)
 {
 	for(unsigned short i = 0; i < myActiveProjectiles.Size(); i++)
 	{
-		myActiveProjectiles[i]->Update(aDeltaTime);
+		//myActiveProjectiles[i]->Update(aDeltaTime); don't di stuff here plz.
+		if(myActiveProjectiles[i]->GetIsActive() == false)
+		{
+			myPassiveProjectiles.Add(myActiveProjectiles[i]);
+			DL_PRINT("Reciclying shots. %u", myPassiveProjectiles.Size());
+			myActiveProjectiles.RemoveCyclicAtIndex(i);
+			i--;
+			continue;
+		}
 	}
 }
 void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComponentManager* aModelComponentManagerPointer)

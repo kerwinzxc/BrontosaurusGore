@@ -381,6 +381,7 @@
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="NetworkComponent.h" />
+    <ClInclude Include="NetworkComponentManager.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
@@ -433,6 +434,7 @@
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />
+    <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
     <ClCompile Include="ProjectileComponent.cpp" />
@@ -469,6 +471,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Physics\Physics.vcxproj">
       <Project>{eace5a51-158e-4e6b-9d38-1a4597e76a67}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ThreadedPostmaster\ThreadedPostmaster.vcxproj">
+      <Project>{2e206e26-7c71-4d89-9a90-2a3d0c132c9d}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
