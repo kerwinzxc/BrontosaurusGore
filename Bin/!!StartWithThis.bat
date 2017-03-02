@@ -1,0 +1,2 @@
+start TServer_Applictaion_x64_Release.exe
+start BrontosaurusGore_Release.exe
