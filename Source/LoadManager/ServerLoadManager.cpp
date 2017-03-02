@@ -42,7 +42,7 @@ void CServerLoadManager::RegisterFunctions()
 {
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 
-	loader.RegisterObjectLoadFunction(LoadObject);
+	loader.RegisterObjectLoadFunction(LoadServerObject);
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
