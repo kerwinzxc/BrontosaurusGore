@@ -51,7 +51,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eChangeWeapon:
 	{
-		short index = myActiveWeaponIndex + aMessageData.myInt;
+		unsigned int index = myActiveWeaponIndex + aMessageData.myInt;
 		if (index < 0)
 		{
 			index = myWeapons.Size() - 1;

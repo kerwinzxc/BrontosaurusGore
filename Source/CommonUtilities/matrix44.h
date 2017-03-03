@@ -252,9 +252,9 @@ namespace CU
 
 			Matrix44<TYPE> returnMatrix = Matrix44<TYPE>::Identity;
 
-			float AspectRatioX = aWidth / aHeight;
+			//float AspectRatioX = aWidth / aHeight;
 			float AspectRatioY = aHeight / aWidth;
-			float FovX = aFov * (M_PI / 180.0f);
+			float FovX = aFov * (static_cast<float>(M_PI) / 180.0f);
 			float TanFovX = tan(FovX / 2.0f);
 			float FovY = 2.0f * atan(TanFovX * AspectRatioY);
 
@@ -553,6 +553,16 @@ namespace CU
 			Rotate(x, Axees::X);
 			Rotate(y, Axees::Y);
 			Rotate(z, Axees::Z);
+
+			return *this;
+		}
+
+		/* rotates x,y then z*/
+		Matrix44<TYPE>& RotateAroundAxes(const float x, const float y, const float z)
+		{
+			RotateAroundAxis(x, Axees::X);
+			RotateAroundAxis(y, Axees::Y);
+			RotateAroundAxis(z, Axees::Z);
 
 			return *this;
 		}

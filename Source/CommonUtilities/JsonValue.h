@@ -32,7 +32,6 @@ namespace CU
 	public:
 		CJsonValue();
 		CJsonValue(const CJsonValue& aValue);
-		CJsonValue(const picojson::value& aValue);
 		CJsonValue(const std::string& aFilePath);
 		~CJsonValue();
 

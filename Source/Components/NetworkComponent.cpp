@@ -33,7 +33,7 @@ void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const 
 		}
 		if (instance != nullptr)
 		{
-			GetParent()->GetLocalTransform().GetPosition().x += 0.1;
+			GetParent()->GetLocalTransform().GetPosition().x += 0.1f;
 		}
 		CNetworkMessage_Position* positionMessage = instance->CreateMessage<CNetworkMessage_Position>(static_cast<unsigned>(ID_ALL));
 

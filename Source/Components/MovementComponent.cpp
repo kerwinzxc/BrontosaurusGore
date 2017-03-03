@@ -140,8 +140,11 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 		{
 			if (myHaveDoubleJumped == false)
 			{
-				myHaveDoubleJumped = true;
-				ActivateJump();
+				if(myElapsedJumpTime > 0.1f)
+				{
+					myHaveDoubleJumped = true;
+					ActivateJump();
+				}
 			}
 		}
 	}

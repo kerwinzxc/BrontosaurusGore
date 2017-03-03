@@ -37,16 +37,16 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			rotatedDirection = aDirection;
 			if(myWeaponData->randomSpreadAngleX > 0)
 			{
-				unsigned short randomNumber = (rand() % myWeaponData->randomSpreadAngleX);
-				short randomXAngle = randomNumber - myWeaponData->randomSpreadAngleX / 2.0f;
-				randomNumber = (rand() % myWeaponData->randomSpreadAngleY);
+				float randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleX);
+				float randomXAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleX) / 2.0f;
+				randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleY);
 				float randomXRadian = randomXAngle * PI / 180.0f;
 				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(randomXRadian);
 			}
 			if (myWeaponData->randomSpreadAngleY > 0)
 			{
-				unsigned short randomNumber = (rand() % myWeaponData->randomSpreadAngleY);
-				short randomYAngle = randomNumber - myWeaponData->randomSpreadAngleY / 2.0f;
+				float randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleY);
+				float randomYAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f;
 				float randomYRadian = randomYAngle * PI / 180.0f;
 				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(randomYRadian);
 			}
