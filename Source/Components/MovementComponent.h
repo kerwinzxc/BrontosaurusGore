@@ -29,4 +29,5 @@ private:
 	float myJumpDistance;
 	float myJumpTimeUntilTop;
 	bool myIsJumping;
+	bool myHaveDoubleJumped;
 };
