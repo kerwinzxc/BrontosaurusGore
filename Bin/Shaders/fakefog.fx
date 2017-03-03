@@ -13,3 +13,20 @@ float GetFogFactor(float3 aViewPosition)
 
 	return fogFactor;
 }
+
+static const float cVolFogHeightDensityAtViewer = 0.1f;
+static const float cHeightFalloff = 0.1f;
+static const float cGlobalDensity = 0.25f;
+
+float ComputeVolumetricFog(in float3 cameraToWorldPos)
+{
+// NOTE: cVolFogHeightDensityAtViewer = exp( -cHeightFalloff * cViewPos.z );
+	float fogInt = length(cameraToWorldPos) * cVolFogHeightDensityAtViewer;
+	const float cSlopeThreshold = 0.01;
+	if (abs(cameraToWorldPos.z) > cSlopeThreshold)
+	{
+		float t = cHeightFalloff * cameraToWorldPos.z;
+		fogInt *= (1.0 - exp(-t)) / t;
+	}
+	return exp(-cGlobalDensity * fogInt);
+}
