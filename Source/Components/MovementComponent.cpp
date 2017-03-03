@@ -109,8 +109,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		if(myIsJumping == false)
 		{
 			myIsJumping = true;
-			myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
-			myElapsedJumpTime = 0.0f;
+			ActivateJump();
 		}
 	}
 	myVelocity.y = CalculateJumpVelocity(aDeltaTime);
@@ -119,8 +118,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
 	{
 		parentTransform.GetPosition().y = 0.0f;
-		myIsJumping = false;
-		myHaveDoubleJumped = false;
+		DeavtivateJump();
 	}
 
 	CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -143,8 +141,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 			if (myHaveDoubleJumped == false)
 			{
 				myHaveDoubleJumped = true;
-				myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
-				myElapsedJumpTime = 0.0f;
+				ActivateJump();
 			}
 		}
 	}
@@ -168,4 +165,15 @@ float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
 	{
 		return 0;
 	}
+}
+
+void CMovementComponent::ActivateJump()
+{
+	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
+	myElapsedJumpTime = 0.0f;
+}
+void CMovementComponent::DeavtivateJump()
+{
+	myIsJumping = false;
+	myHaveDoubleJumped = false;
 }
