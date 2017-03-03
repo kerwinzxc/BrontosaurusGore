@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <assert.h>
 
 namespace Container
 {
@@ -11,6 +12,7 @@ namespace Container
 		virtual ~IQueue();
 
 		virtual void Push(T aValue) = 0;
+		void CheckQueueLength() const;
 		virtual void Append(IQueue& aQueue);
 		virtual T Pop() = 0;
 
@@ -51,6 +53,12 @@ Container::IQueue<T>::~IQueue()
 }
 
 template <typename T>
+void Container::IQueue<T>::CheckQueueLength() const
+{
+	assert(Size() < 2000 && "Queue overflow, messages are probably never handled.");
+}
+
+template <typename T>
 void Container::IQueue<T>::Append(IQueue& aQueue)
 {
 	if(aQueue.IsEmpty() == true)
@@ -68,9 +76,11 @@ void Container::IQueue<T>::Append(IQueue& aQueue)
 	}
 	typename IQueue<T>::myTail = aQueue.myTail;
 	myItemCount += aQueue.myItemCount;
-	aQueue.myHead = 0;
-	aQueue.myTail = 0;
+	aQueue.myHead = nullptr;
+	aQueue.myTail = nullptr;
 	aQueue.myItemCount = 0;
+	
+	CheckQueueLength();
 }
 
 template <typename T>
