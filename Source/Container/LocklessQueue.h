@@ -71,6 +71,8 @@ void Container::CLocklessQueue<T>::Push(T aValue)
 	IQueue<T>::myTail = item;
 
 	IQueue<T>::IncrementCount();
+
+	IQueue<T>::CheckQueueLength();
 }
 
 template <typename T>
