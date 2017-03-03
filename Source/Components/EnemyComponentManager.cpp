@@ -21,7 +21,7 @@ CEnemyComponentManager::CEnemyComponentManager(CScene& aScene) : myScene(aScene)
 
 void CEnemyComponentManager::Update(const CU::Time& aDeltaTime)
 {
-	for(int i = 0; i < myEnemies.Size(); ++i)
+	for(unsigned int i = 0; i < myEnemies.Size(); ++i)
 	{
 		myEnemies[i]->Update(aDeltaTime);
 	}

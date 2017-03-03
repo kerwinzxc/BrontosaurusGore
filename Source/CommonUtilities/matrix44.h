@@ -252,9 +252,9 @@ namespace CU
 
 			Matrix44<TYPE> returnMatrix = Matrix44<TYPE>::Identity;
 
-			float AspectRatioX = aWidth / aHeight;
+			//float AspectRatioX = aWidth / aHeight;
 			float AspectRatioY = aHeight / aWidth;
-			float FovX = aFov * (M_PI / 180.0f);
+			float FovX = aFov * (static_cast<float>(M_PI) / 180.0f);
 			float TanFovX = tan(FovX / 2.0f);
 			float FovY = 2.0f * atan(TanFovX * AspectRatioY);
 

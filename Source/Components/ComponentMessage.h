@@ -6,7 +6,7 @@ class CPath;
 class ICollider;
 class CComponent;
 class CGameObject;
-class SAmmoData;
+struct SAmmoData;
 class CWeapon;
 enum class ePlayerControls;
 
