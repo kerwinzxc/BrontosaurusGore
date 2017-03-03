@@ -6,6 +6,7 @@
 #include "AmmoData.h"
 #include "../CommonUtilities/JsonValue.h"
 #include "ProjectileFactory.h"
+#include "WeaponSystemComponent.h"
 
 CWeaponFactory::CWeaponFactory()
 {
@@ -72,6 +73,22 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 			SComponentMessageData newWeaponMessage;
 			newWeaponMessage.myWeapon = newWeapon;
 			aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem, newWeaponMessage);
+			return;
+		}
+	}
+	DL_PRINT("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
+	return;
+}
+
+void CWeaponFactory::CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo)
+{
+	for (unsigned short i = 0; i < myWeaponDataList.Size(); i++)
+	{
+		if (myWeaponDataList[i]->name == aWeaponName)
+		{
+			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i]);
+			SAmmoData* newAmmoData = myAmmoDataList[i];
+			aWeaponSystemToGiveAWeaponTo->AddWeapon(newWeapon, newAmmoData);
 			return;
 		}
 	}

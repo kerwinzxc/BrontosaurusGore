@@ -11,6 +11,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myActiveWeaponIndex = 0;
 	myWeapons.Init(5);
 	myIsShooting = false;
+	myTemporaryAmmoDataList.Init(5);
 }
 
 
@@ -63,6 +64,18 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myActiveWeaponIndex = index;
 		break;
 	}
+	case eComponentMessageType::eObjectDone:
+	{
+		for(unsigned int i = 0 ; i < myTemporaryAmmoDataList.Size(); i++)
+		{
+			SComponentMessageData newAmmoTypeMessage;
+			newAmmoTypeMessage.myAmmoData = myTemporaryAmmoDataList[i];
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddNewAmmoType, newAmmoTypeMessage);
+		}
+		myTemporaryAmmoDataList.RemoveAll();
+		myTemporaryAmmoDataList.Destroy();
+		break;
+	}
 	default:
 		break;
 	}
@@ -99,4 +112,14 @@ void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMes
 	{
 		myIsShooting = false;
 	}
+}
+
+void CWeaponSystemComponent::GiveWepon(const char* aWeaponName)
+{
+	WeaponFactoryPointer->CreateWeapon(aWeaponName, GetParent());
+}
+
+void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
+{
+	myWeapons.Add(aWeapon);
 }
