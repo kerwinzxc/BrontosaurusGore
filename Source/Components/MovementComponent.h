@@ -15,7 +15,8 @@ public:
 private:
 	void KeyPressed(const ePlayerControls aPlayerControl);
 	void KeyReleased(const ePlayerControls aPlayerControl);
-
+	void ActivateJump();
+	void DeavtivateJump();
 private:
 	CU::CBitSet<static_cast<int>(ePlayerControls::eLength)> myKeysDown;
 
@@ -29,4 +30,5 @@ private:
 	float myJumpDistance;
 	float myJumpTimeUntilTop;
 	bool myIsJumping;
+	bool myHaveDoubleJumped;
 };

@@ -18,7 +18,7 @@
 */
 
 #include "ApexDefs.h"
-#include "RenderDebugTyped.h" // include the header file containing the base class
+#include "../apexShared/general/RenderDebug/public/RenderDebugTyped.h" // include the header file containing the base class
 #include "ApexInterface.h"
 #include "Renderable.h"
 
