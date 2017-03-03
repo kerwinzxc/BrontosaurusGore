@@ -14,10 +14,9 @@
 
 int LoadObject(KLoader::SLoadedComponentData someData)
 {
-	LoadManager* loadManager = LoadManager::GetInstance();
-	if (!loadManager) return NULL_COMPONENT;
+	GET_LOADMANAGER(loadManager);
 
-	CGameObjectManager* gameObjectManager = loadManager->GetCurrentPLaystate().GetGameObjectManager();
+	CGameObjectManager* gameObjectManager = loadManager.GetCurrentPLaystate().GetGameObjectManager();
 	if (!gameObjectManager) return NULL_COMPONENT;
 
 	CGameObject* const gameObject = gameObjectManager->CreateGameObject();
@@ -26,29 +25,31 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 	CU::CJsonValue PositionObject = someData.myData.at("position");
 
-	const float unityScale = 100;
+	//const float unityScale = 100;
+	const CU::Vector3f unityScale3D(-100.f, 100.f, -100.f);
 
-	const float positionX = PositionObject.at("x").GetFloat() * unityScale * -1;
-	const float positionY = PositionObject.at("y").GetFloat() * unityScale;
-	const float positionZ = PositionObject.at("z").GetFloat() * unityScale * -1;
+	//const float positionX = PositionObject.at("x").GetFloat() * unityScale * -1;
+	//const float positionY = PositionObject.at("y").GetFloat() * unityScale;
+	//const float positionZ = PositionObject.at("z").GetFloat() * unityScale * -1;
+	currentMatrix.SetPosition(PositionObject.GetVector3f() * unityScale3D);
+	//currentMatrix.SetPosition({positionX, positionY, positionZ});
 
-	currentMatrix.SetPosition({positionX, positionY, positionZ});
+	//CU::CJsonValue RotationObject = someData.myData.at("rotation");
+
+	//const float rotationX = RotationObject.at("x").GetFloat() / 180 * PI;
+	//const float rotationY = RotationObject.at("y").GetFloat() / 180 * PI;
+	//const float rotationZ = RotationObject.at("z").GetFloat() / 180 * PI;
+
+	//currentMatrix.Rotate(rotationX, rotationY, rotationZ);
+
+	CU::CJsonValue ScalingObject = someData.myData.at("scale");
+	
+	currentMatrix.Scale(/*{ scaleX, scaleY, scaleZ }*/ScalingObject.GetVector3f());
 
 	CU::CJsonValue RotationObject = someData.myData.at("rotation");
 
-	const float rotationX = RotationObject.at("x").GetFloat() / 180 * PI;
-	const float rotationY = RotationObject.at("y").GetFloat() / 180 * PI;
-	const float rotationZ = RotationObject.at("z").GetFloat() / 180 * PI;
-
-	currentMatrix.Rotate(rotationX, rotationY, rotationZ);
-
-	CU::CJsonValue ScalingObject = someData.myData.at("scale");
-
-	const float scaleX = ScalingObject.at("x").GetFloat();
-	const float scaleY = ScalingObject.at("y").GetFloat();
-	const float scaleZ = ScalingObject.at("z").GetFloat();
-
-	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
+	CU::Vector3f unityRotation((RotationObject.GetVector3f() / 180) * PI);
+	currentMatrix.Rotate(unityRotation.x, unityRotation.y, unityRotation.z);
 
 	gameObject->SetName(someData.myData.at("name").GetString().c_str());
 
