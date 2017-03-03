@@ -125,7 +125,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	rotation.myForwardVector.y = 0.f;
 
 	CU::Vector3f position = parentTransform.GetPosition();
-	myVelocity.Print();
 	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
 	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 
