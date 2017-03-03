@@ -57,6 +57,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myScene(nullptr)
 	, myModelComponentManager(nullptr)
 	, myMovementComponent(nullptr)
+	, myCameraComponent(nullptr)
 	, myAmmoComponentManager(nullptr)
 	, myWeaponFactory(nullptr)
 	, myWeaponSystemManager(nullptr)
@@ -134,16 +135,26 @@ void CPlayState::Load()
 
 	//create hard coded player:
 	{
-		CCameraComponent* cameraComponent = new CCameraComponent();
-		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
-		cameraComponent->SetCamera(playerCamera);
-		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
-		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
-		Component::CEnemy::SetPlayer(playerObject);
-		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
-		cameraObject->AddComponent(cameraComponent);
-		playerObject->AddComponent(cameraObject);
+		CCameraComponent* cameraComponent = myCameraComponent;
+		if (cameraComponent == nullptr)
+		{
+			cameraComponent = new CCameraComponent();
+			CComponentManager::GetInstance().RegisterComponent(cameraComponent);
+			cameraComponent->SetCamera(playerCamera);
+
+			CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
+			cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+			cameraObject->AddComponent(cameraComponent);
+		}
+
+		CGameObject* playerObject = cameraComponent->GetParent()->GetParent();
+		if (playerObject == nullptr)
+		{
+			playerObject = myGameObjectManager->CreateGameObject();
+			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+		}
+
+		playerObject->AddComponent(cameraComponent->GetParent());
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
@@ -151,6 +162,7 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
+
 		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
@@ -172,6 +184,8 @@ void CPlayState::Load()
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
 		giveAmmoData.myInt = 1000;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		Component::CEnemy::SetPlayer(playerObject);
 	}
 	
 

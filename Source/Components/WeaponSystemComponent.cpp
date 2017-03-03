@@ -57,7 +57,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		{
 			index = myWeapons.Size() - 1;
 		}
-		if (index >= myWeapons.Size())
+		else if (static_cast<unsigned int>(index) >= myWeapons.Size())
 		{
 			index = 0;
 		}

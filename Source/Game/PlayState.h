@@ -67,6 +67,8 @@ private:
 	CInputComponentManager* myInputComponentManager;
 
 	CMovementComponent* myMovementComponent;
+	class CCameraComponent* myCameraComponent;
+	friend struct SEncapsulationBreaker;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
