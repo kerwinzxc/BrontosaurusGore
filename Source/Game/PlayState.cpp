@@ -256,6 +256,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
+	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager);
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);

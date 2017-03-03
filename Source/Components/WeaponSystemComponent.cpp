@@ -48,6 +48,8 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	{
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
+		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast()->GetData());
+
 		break;
 	}
 	case eComponentMessageType::eChangeWeapon:
