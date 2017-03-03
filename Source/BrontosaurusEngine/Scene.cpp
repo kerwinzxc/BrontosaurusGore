@@ -146,6 +146,12 @@ void CScene::Render()
 		myModels[i]->Render();
 	}
 
+	SRenderDirectionalLight light;
+	light.directionalLight = myDirectionalLight;
+	RENDERER.AddRenderMessage(new SRenderDirectionalLight(light));
+
+
+
 	SChangeStatesMessage* changeStateMessage = new SChangeStatesMessage();
 	changeStateMessage->myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage->myDepthStencilState = eDepthStencilState::eReadOnly; //don't know what to do here

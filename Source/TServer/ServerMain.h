@@ -8,6 +8,7 @@
 #include <string>
 #include "../TShared/MessageManager.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
+#include "../TShared/NetworkMessageHolder.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 
 
@@ -31,17 +32,18 @@ struct SClientData
 
 struct SImportantWaitData
 {
-	SImportantWaitData(): myNetworkMessage(nullptr), myWaitedTime(0)
+	SImportantWaitData(): myWaitedTime(0)
 	{
 	}
 
-	SImportantWaitData(CImportantNetworkMessage* aNetworkMessage)
-		: myNetworkMessage(aNetworkMessage),
-		  myWaitedTime(0)
+	SImportantWaitData(CImportantNetworkMessage* aNetworkMessage): myWaitedTime(0)
 	{
+		aNetworkMessage->PackMessage();
+		myMessage.myHeader = aNetworkMessage->GetHeader();
+		myMessage.Stream = aNetworkMessage->GetSerializedData();
 	}
 
-	CImportantNetworkMessage* myNetworkMessage;
+	SNetworkMessageHolder myMessage;
 	CU::Time myWaitedTime;
 };
 
@@ -90,7 +92,7 @@ private:
 	ClientID currentFreeId;
 
 	std::map<ClientID, float> myPendingPings;
-	CMessageManager myMessageManager;
+	CMessageManager* myMessageManager;
 
 	eServerState myServerState;
 

@@ -203,8 +203,7 @@ namespace detail {
 	template <class T>
 	struct deserialize_helper {
 
-		static T apply(StreamType::const_iterator& begin,
-			StreamType::const_iterator end) {
+		static T apply(StreamType::const_iterator& begin,StreamType::const_iterator end) {
 
 			assert(begin + sizeof(T) <= end);
 			T val;

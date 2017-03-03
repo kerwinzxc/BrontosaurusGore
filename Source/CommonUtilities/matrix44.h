@@ -225,32 +225,72 @@ namespace CU
 
 		Matrix44 CreateProjectionMatrixLH(TYPE aNear, TYPE aFar, TYPE aWidth, TYPE aHeight, TYPE aFov)
 		{
+	/*		Matrix44 temp;
+			TYPE    SinFov;
+			TYPE    CosFov;
+			TYPE    Height;
+			TYPE    Width;
 
-			TYPE width = aWidth, height = aHeight;
+			float aAspectRatio = aHeight / aWidth;
 
+			SinFov = sin(0.5f * aFov);
+			CosFov = cos(0.5f * aFov);
 
-
-			Matrix44<TYPE> temp;
-
-
-			TYPE aspectRatio = width / height;
-
+			Height = CosFov / SinFov;
+			Width = Height * aAspectRatio;
+*/
 			TYPE scaling = aFar / (aFar - aNear);
-			// it was std::tan, sin seems te give far better results then tan
-			// maybe makes GUI somewhat koko
-			TYPE yScale = 1.0f / std::sin(aFov / 2.0f);
-			TYPE xScale = yScale / aspectRatio;
 
-			temp.myMatrix[0] = xScale;
-			temp.myMatrix[5] = yScale;
-			temp.myMatrix[10] = scaling;
-			temp.myMatrix[14] = -scaling * aNear;
-			temp.myMatrix[11] = 1;
-			temp.myMatrix[15] = 0;
+			/*		temp.myMatrix[0] = Width;
+					temp.myMatrix[5] = Height;
+					temp.myMatrix[10] = scaling;
+					temp.myMatrix[11] = 1.f;
+					temp.myMatrix[14] = -scaling * aNear;
+					temp.myMatrix[15] = 0;
 
-			return temp;
+					return temp;*/
 
+			Matrix44<TYPE> returnMatrix = Matrix44<TYPE>::Identity;
 
+			float AspectRatioX = aWidth / aHeight;
+			float AspectRatioY = aHeight / aWidth;
+			float FovX = aFov * (M_PI / 180.0f);
+			float TanFovX = tan(FovX / 2.0f);
+			float FovY = 2.0f * atan(TanFovX * AspectRatioY);
+
+			float TanFovY = tan(FovY / 2.0f);
+			float FarMinusNear = aFar - aNear;
+			float OneDivTanFov = 1.0f / TanFovY;
+			float FovYDivFarMinusNear = FovY / FarMinusNear;
+
+			returnMatrix.my2DArray[0][0] = AspectRatioY * OneDivTanFov;
+			returnMatrix.my2DArray[1][1] = OneDivTanFov;
+			returnMatrix.my2DArray[2][2] = FovYDivFarMinusNear;
+			returnMatrix.my2DArray[2][2] = scaling;
+
+			returnMatrix.my2DArray[2][3] = 1.f;
+			returnMatrix.my2DArray[3][2] = -aNear * FovYDivFarMinusNear;
+			returnMatrix.my2DArray[3][2] = -aNear * scaling;
+
+			returnMatrix.my2DArray[3][3] = 0;
+
+			return returnMatrix;
+
+			//TYPE width = aWidth, height = aHeight;
+			//Matrix44<TYPE> temp;
+			//TYPE aspectRatio = width / height;
+			//TYPE scaling = aFar / (aFar - aNear);
+			//// it was std::tan, sin seems te give far better results then tan
+			//// maybe makes GUI somewhat koko
+			//TYPE yScale = 1.0f / std::sin(aFov / 2.0f);
+			//TYPE xScale = yScale / aspectRatio;
+			//temp.myMatrix[0] = xScale;
+			//temp.myMatrix[5] = yScale;
+			//temp.myMatrix[10] = scaling;
+			//temp.myMatrix[14] = -scaling * aNear;
+			//temp.myMatrix[11] = 1;
+			//temp.myMatrix[15] = 0;
+			//return temp;
 
 			//Matrix44 temp = Matrix44::Identity;
 			//float aAspectRatio = aWidth / aHeight;

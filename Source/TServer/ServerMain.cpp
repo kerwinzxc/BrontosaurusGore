@@ -49,7 +49,8 @@ CServerMain::~CServerMain()
 void CServerMain::StartServer()
 {
 	myTimerHandle = myTimerManager.CreateTimer();
-	myNetworkWrapper.Init(DEFAULT_PORT);
+	myNetworkWrapper.Init(DEFAULT_PORT, CServerMessageManager::GetInstance());
+	myMessageManager = CServerMessageManager::GetInstance();
 
 	myGameServer = new CGameServer();
 
@@ -67,7 +68,7 @@ void CServerMain::UpdateImportantMessages(const CU::Time aDeltaTime)
 		waitData.myWaitedTime += aDeltaTime;
 		if (waitData.myWaitedTime.GetMilliseconds() > 75)
 		{
-			SendTo(waitData.myNetworkMessage, true);
+			SendTo(myMessageManager->CreateMessage(waitData.myMessage), true);
 			waitData.myWaitedTime = 0;
 		}
 	}
@@ -80,11 +81,9 @@ void CServerMain::RecieveImportantResponse(CImportantNetworkMessage* aNetworkMes
 
 	myImportantMessages.erase(importantID);
 
-	const SNetworkPackageHeader& header = waitData.myNetworkMessage->GetHeader();
+	const SNetworkPackageHeader& header = waitData.myMessage.myHeader;
 	myClients.at(header.myTargetID).ResponseTime = waitData.myWaitedTime.GetMilliseconds();
 
-	delete waitData.myNetworkMessage;
-	delete aNetworkMessage;
 }
 
 void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
@@ -105,7 +104,7 @@ void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName
 	acceptPackage.myTargetID = newClientId;
 	acceptPackage.myTimeStamp = myTimerManager.GetTimer(myTimerHandle).GetLifeTime().GetMilliseconds();
 
-	CNetworkMessage_ConectResponse* message = myMessageManager.CreateMessage<CNetworkMessage_ConectResponse>(acceptPackage);
+	CNetworkMessage_ConectResponse* message = myMessageManager->CreateMessage<CNetworkMessage_ConectResponse>(acceptPackage);
 
 	message->myClientId = newClientId;
 
@@ -144,7 +143,7 @@ void CServerMain::Ping(ClientID aClientID)
 
 	SClientData client = myClients[aClientID];
 
-	CNetworkMessage_Ping* messagePing = myMessageManager.CreateMessage<CNetworkMessage_Ping>(header);
+	CNetworkMessage_Ping* messagePing = myMessageManager->CreateMessage<CNetworkMessage_Ping>(header);
 
 	myNetworkWrapper.Send(messagePing, client.myIP.c_str(), client.myPort.c_str());
 	myPendingPings[aClientID] = 0;
@@ -180,7 +179,7 @@ void CServerMain::DisconectClient(ClientID aClient)
 	header.myPackageType = static_cast<char>(ePackageType::eChat);
 	header.myTimeStamp = GetCurrentTime();
 
-	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager.CreateMessage<CNetworkMessage_ChatMessage>(header);
+	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>(header);
 	leaveMessage->myChatMessage = ("Server: " + leftClientsName + " has lef the server");
 
 
@@ -189,7 +188,6 @@ void CServerMain::DisconectClient(ClientID aClient)
 		header.myTargetID = client.first;
 		myNetworkWrapper.Send(leaveMessage, client.second.myIP.c_str(), client.second.myPort.c_str());
 	}
-	delete leaveMessage;
 }
 
 void CServerMain::UpdatePing(CU::Time aDeltaTime)
@@ -198,7 +196,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 	{
 		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
 
-		if (myPendingPings[pendingPing.first] >= 10)
+		if (myPendingPings[pendingPing.first] >= 100)
 		{
 			std::string temp;
 			temp += "Client: " + myClients[pendingPing.first].myName + " not responding";
@@ -215,8 +213,10 @@ void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
 
 	if (aNetworkMessage->IsImportant() == true && aIsResend == false)
 	{
-		SImportantWaitData waitData(static_cast<CImportantNetworkMessage*>(aNetworkMessage));
-		waitData.myNetworkMessage->SetImportantId(myImportantCount);
+		CImportantNetworkMessage* const importantMessage = static_cast<CImportantNetworkMessage*>(aNetworkMessage);
+		importantMessage->SetImportantId(myImportantCount);
+		SImportantWaitData waitData(importantMessage);
+
 		myImportantMessages[myImportantCount] = waitData;
 
 		myImportantCount += 1;
@@ -276,8 +276,6 @@ void CServerMain::HandleChatMessage(CNetworkMessage_ChatMessage* aNetworkMessage
 		}
 		break;
 	}
-
-	delete aNetworkMessageChatMessage;
 }
 
 bool CServerMain::CheckIfClientsReady() const
@@ -302,7 +300,7 @@ void CServerMain::StartGame()
 	header.myPackageType = static_cast<char>(ePackageType::eServerReady);
 	header.myTimeStamp = GetCurrentTime();
 
-	CNetworkMessage_ServerReady* message = myMessageManager.CreateMessage<CNetworkMessage_ServerReady>(header);
+	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
 
 	SendTo(message);
 }
@@ -339,9 +337,8 @@ bool CServerMain::Update()
 			header.myPackageType = static_cast<char>(ePackageType::eImportantResponse);
 			header.myTimeStamp = static_cast<int>(GetCurrentTime());
 
-			CImportantNetworkMessage* ResponseMessage = myMessageManager.CreateMessage<CImportantNetworkMessage>(header);
+			CImportantNetworkMessage* ResponseMessage = myMessageManager->CreateMessage<CImportantNetworkMessage>(header);
 			SendTo(ResponseMessage);
-			delete ResponseMessage;
 		}
 
 		switch (static_cast<ePackageType>(currentMessage->GetHeader().myPackageType))
@@ -355,7 +352,6 @@ bool CServerMain::Update()
 
 			CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
 			ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
-			delete connectMessage;
 		}
 		break;
 		case ePackageType::ePing:
@@ -367,9 +363,8 @@ bool CServerMain::Update()
 			newHeader.myTargetID = currentMessage->GetHeader().mySenderID;
 			newHeader.myTimeStamp = 100;
 
-			CNetworkMessage_PingResponse* newMessage = myMessageManager.CreateMessage<CNetworkMessage_PingResponse>(newHeader);
+			CNetworkMessage_PingResponse* newMessage = myMessageManager->CreateMessage<CNetworkMessage_PingResponse>(newHeader);
 			myNetworkWrapper.Send(newMessage, currentSenderIp, currentSenderPort);
-			delete newMessage;
 		}
 		break;
 		case ePackageType::ePingResponse:
@@ -434,7 +429,6 @@ bool CServerMain::Update()
 
 		delete currentSenderIp;
 		delete currentSenderPort;
-		delete currentMessage;
 
 		if (currentTime > 1.f)
 		{

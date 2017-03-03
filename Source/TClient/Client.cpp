@@ -23,6 +23,12 @@
 #include "../CommonUtilities/ThreadNamer.h"
 
 
+#include "../Components/NetworkComponentManager.h"
+#include "../Components/NetworkComponent.h"
+#include "../Components/GameObject.h"
+#include "../Components/ComponentMessage.h"
+
+
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -45,7 +51,7 @@ CClient::~CClient()
 
 bool CClient::StartClient()
 {
-	myNetworkWrapper.Init(0);
+	myNetworkWrapper.Init(0, CClientMessageManager::GetInstance());
 	myMainTimer = myTimerManager.CreateTimer();
 	CEngine::GetInstance()->GetThreadPool()->AddWork(CU::Work(std::bind(&CClient::Update, this)));
 	return true;
@@ -127,7 +133,6 @@ void CClient::Update()
 			{
 				CNetworkMessage_ConectResponse* conectResponseMessage = currentMessage->CastTo<CNetworkMessage_ConectResponse>();
 				myId = conectResponseMessage->myClientId;
-				delete conectResponseMessage;
 				myState = eClientState::CONECTED;
 
 				std::cout << "Conected to server got id:" << myId << std::endl;
@@ -146,7 +151,6 @@ void CClient::Update()
 
 				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
 				myNetworkWrapper.Send(newMessage, myServerIp, SERVER_PORT);
-				delete newMessage;
 			}
 			break;
 		case ePackageType::ePingResponse:
@@ -170,7 +174,12 @@ void CClient::Update()
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+			//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+
+			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
+			comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
+			comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 		}
 		break;
 		case ePackageType::eZero:
@@ -179,7 +188,6 @@ void CClient::Update()
 		default: break;
 		}
 
-		delete currentMessage;
 
 		if (currentTime > 1.f)
 		{
@@ -232,9 +240,15 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 
 	while (myState == eClientState::CONECTING)
 	{
+		DL_PRINT("wait Connecting");
 	}
 
 	return  true;
+}
+
+short CClient::GetID()
+{
+	return myId;
 }
 
 eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)

@@ -4,6 +4,7 @@
 class CNetworkMessage_Connect:public CImportantNetworkMessage
 {
 public:
+	friend class CMessageStorage;
 	CNetworkMessage_Connect();
 	~CNetworkMessage_Connect();
 

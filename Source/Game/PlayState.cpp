@@ -78,7 +78,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
-	SAFE_DELETE(myNetworkComponentManager);
+
+	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
 }
@@ -94,21 +95,21 @@ void CPlayState::Load()
 	LoadManagerGuard loadManagerGuard(*this, *myScene);
 
 	Lights::SDirectionalLight dirLight;
-	dirLight.color = { .25f, .25f, .25f, 1.0f };
+	dirLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	dirLight.direction = { -1.0f, -1.0f, 1.0f, 1.0f };
 	myScene->AddDirectionalLight(dirLight);
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 2500.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
 
 
 
-	//real loading:
+	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
 	CU::CJsonValue levelsFile;
 
@@ -140,7 +141,7 @@ void CPlayState::Load()
 		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
 		Component::CEnemy::SetPlayer(playerObject);
 		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 1.80f, 0.f); //ändrat till cm igen får ses över //Alex //ändrat tillbaka till m mvh carl
+		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
 		cameraObject->AddComponent(cameraComponent);
 		playerObject->AddComponent(cameraObject);
 
@@ -237,14 +238,11 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 	return myGameObjectManager;
 }
 
-CNetworkComponentManager * CPlayState::GetNetworkComponentManager()
-{
-	return myNetworkComponentManager;
-}
-
 void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
+
+	CNetworkComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -262,6 +260,4 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
-
-	myNetworkComponentManager = new CNetworkComponentManager();
 }

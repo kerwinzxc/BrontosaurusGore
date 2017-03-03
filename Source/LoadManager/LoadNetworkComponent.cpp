@@ -9,7 +9,7 @@
 int LoadClientNetworkComponent(KLoader::SLoadedComponentData someData)
 {
 	static NetworkId id = 0;
-	CNetworkComponent* networkComponent = LoadManager::GetInstance()->GetCurrentPLaystate().GetNetworkComponentManager()->CreateAndRegisterComponent(id);
+	CNetworkComponent* networkComponent = CNetworkComponentManager::GetInstance()->CreateAndRegisterComponent(id);
 
 	return networkComponent->GetId();
 }
@@ -17,7 +17,7 @@ int LoadClientNetworkComponent(KLoader::SLoadedComponentData someData)
 int LoadServerNetworkComponent(KLoader::SLoadedComponentData someData)
 {
 	static NetworkId id = 0;
-	CNetworkComponent* networkComponent = CServerLoadManager::GetInstance()->GetCurrentGameServer().GetNetworkComponentManager().CreateAndRegisterComponent(id);
+	CNetworkComponent* networkComponent = CNetworkComponentManager::GetInstance()->CreateAndRegisterComponent(id);
 
 	return networkComponent->GetId();
 }

@@ -143,6 +143,7 @@
     <ClInclude Include="CommonNetworkIncludes.h" />
     <ClInclude Include="ImportantNetworkMessage.h" />
     <ClInclude Include="MessageManager.h" />
+    <ClInclude Include="MessageStorage.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="NetworkMessage_ChatMessage.h" />
     <ClInclude Include="NetworkMessage_ClientReady.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="ImportantNetworkMessage.cpp" />
     <ClCompile Include="MessageManager.cpp" />
+    <ClCompile Include="MessageStorage.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="NetworkMessage_ChatMessage.cpp" />
     <ClCompile Include="NetworkMessage_ClientReady.cpp" />

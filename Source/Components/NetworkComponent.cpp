@@ -20,11 +20,20 @@ CNetworkComponent::~CNetworkComponent()
 
 void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
-		DL_PRINT("Object moving! sent from CNetworkComponent");
+		//DL_PRINT("Object moving! sent from CNetworkComponent");
+
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eHeal:
+	{
 		CServerMessageManager* instance = CServerMessageManager::GetInstance();
 		if (instance == nullptr)
 		{
-			DL_PRINT("woop");
+			//DL_PRINT("woop");
+		}
+		if (instance != nullptr)
+		{
+			GetParent()->GetLocalTransform().GetPosition().x += 0.1;
 		}
 		CNetworkMessage_Position* positionMessage = instance->CreateMessage<CNetworkMessage_Position>(static_cast<unsigned>(ID_ALL));
 
@@ -32,11 +41,6 @@ void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const 
 		positionMessage->SetID(myNetworkId);
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(positionMessage));
-
-	switch (aMessageType)
-	{
-	case eComponentMessageType::eMoving:
-	{
 
 	}
 		break;

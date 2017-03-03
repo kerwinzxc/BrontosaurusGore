@@ -7,7 +7,6 @@
 #pragma warning (push)
 #pragma warning (disable : 4996)
 
-#define OBJ_SCALE 100
 
 bool ObjLoader::LoadFromFile(const char * const aModelPath, SObjLoaderModel& aModelOut)
 {
@@ -30,7 +29,6 @@ bool ObjLoader::LoadFromFile(const char * const aModelPath, SObjLoaderModel& aMo
 		{
 			CU::Vector3f vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-			vertex *= OBJ_SCALE;
 			//vertex.y += 500.f;
 			vertex.z *= -1.0f;
 			aModelOut.VerticesList.Add(vertex);

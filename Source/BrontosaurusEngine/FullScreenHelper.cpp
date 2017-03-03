@@ -15,6 +15,8 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/Fullscreen/vertex.fx", ShaderType); 
 
 	ID3D11PixelShader* cpyShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/copy.fx", ShaderType);
+	ID3D11PixelShader* copyDepthShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/copyDepth.fx", ShaderType);
+
 	ID3D11PixelShader* HDRShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/HDR.fx", ShaderType);
 	ID3D11PixelShader* avgShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/average.fx", ShaderType);
 	ID3D11PixelShader* addShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/add.fx", ShaderType);
@@ -40,6 +42,8 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* lShShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/lightShafts.fx", ShaderType);
 
 	myEffects[static_cast<int>(eEffectType::eCopy)]						= new CEffect(vertexShader, cpyShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eCopyDepth)]				= new CEffect(vertexShader, copyDepthShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
 	myEffects[static_cast<int>(eEffectType::eHDR)]						= new CEffect(vertexShader, HDRShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eAverage)]					= new CEffect(vertexShader, avgShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eAdd)]						= new CEffect(vertexShader, addShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
