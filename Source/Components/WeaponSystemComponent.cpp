@@ -52,7 +52,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eChangeWeapon:
 	{
-		unsigned int index = myActiveWeaponIndex + aMessageData.myInt;
+		int index = myActiveWeaponIndex + aMessageData.myInt;
 		if (index < 0)
 		{
 			index = myWeapons.Size() - 1;
@@ -62,6 +62,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			index = 0;
 		}
 		myActiveWeaponIndex = index;
+		DL_PRINT("New weapon index %u", myActiveWeaponIndex);
 		break;
 	}
 	case eComponentMessageType::eObjectDone:
