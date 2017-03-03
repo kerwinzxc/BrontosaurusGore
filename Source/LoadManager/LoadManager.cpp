@@ -13,6 +13,8 @@
 #include "LoadPointLightComponent.h"
 #include "LoadEnemy.h"
 #include "LoadNetworkComponent.h"
+#include "LoadWeaponSystemComponent.h"
+#include "LoadAmmoComponent.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -55,6 +57,9 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
 	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
+	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemComponent);
+	loader.RegisterComponentLoadFunction("AmmoComponent", LoadAmmoComponent);
+
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
 	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);

@@ -37,7 +37,7 @@ inline void Component::CEnemy::SetHealth(const unsigned aHealth)
 
 inline void Component::CEnemy::SetSpeed(const float aSpeed)
 {
-	mySpeed = aSpeed;
+	mySpeed = aSpeed * 100;
 }
 
 inline void Component::CEnemy::SetDetectionRange(const float aDetactionRange)

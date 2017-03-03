@@ -27,6 +27,7 @@ CMovementComponent::CMovementComponent()
 	myIsJumping = false;
 	myHaveDoubleJumped = false;
 	myJumpDistance = playerControls["JumpHeight"].GetFloat();
+	mySecondJumpDistance = playerControls["SecondJumpHeight"].GetFloat();
 	myJumpTimeUntilTop = 2.0f;
 }
 
@@ -108,7 +109,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	{
 		if(myIsJumping == false)
 		{
-			myIsJumping = true;
 			ActivateJump();
 		}
 	}
@@ -125,7 +125,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	rotation.myForwardVector.y = 0.f;
 
 	CU::Vector3f position = parentTransform.GetPosition();
-	myVelocity.Print();
 	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
 	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 
@@ -140,8 +139,10 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 		{
 			if (myHaveDoubleJumped == false)
 			{
-				myHaveDoubleJumped = true;
-				ActivateJump();
+				if(myElapsedJumpTime > 0.1f)
+				{
+					ActivateDoubleJump();
+				}
 			}
 		}
 	}
@@ -169,6 +170,7 @@ float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
 
 void CMovementComponent::ActivateJump()
 {
+	myIsJumping = true;
 	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
 }
@@ -176,4 +178,11 @@ void CMovementComponent::DeavtivateJump()
 {
 	myIsJumping = false;
 	myHaveDoubleJumped = false;
+}
+
+void CMovementComponent::ActivateDoubleJump()
+{
+	myHaveDoubleJumped = true;
+	myJumpVelocity = sqrtf(gravityDeceleration * mySecondJumpDistance * 2);
+	myElapsedJumpTime = 0.0f;
 }

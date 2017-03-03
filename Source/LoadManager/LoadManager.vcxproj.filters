@@ -45,6 +45,12 @@
     <ClInclude Include="LoadHealthComponent.h">
       <Filter>LoadThings\LoadHealthComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadWeaponSystemComponent.h">
+      <Filter>LoadThings\LoadWeaponSystemComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAmmoComponent.h">
+      <Filter>LoadThings\LoadAmmoComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +93,12 @@
     </ClCompile>
     <ClCompile Include="LoadHealthComponent.cpp">
       <Filter>LoadThings\LoadHealthComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadWeaponSystemComponent.cpp">
+      <Filter>LoadThings\LoadWeaponSystemComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadAmmoComponent.cpp">
+      <Filter>LoadThings\LoadAmmoComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +143,12 @@
     </Filter>
     <Filter Include="LoadThings\LoadHealthComponent">
       <UniqueIdentifier>{6cfd94c6-bff5-407e-ab80-7b0da864d70b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadWeaponSystemComponent">
+      <UniqueIdentifier>{21a32717-df50-4186-b0b9-6c2e128c7178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadAmmoComponent">
+      <UniqueIdentifier>{337458a1-a63e-405e-9779-7fcdeb6364f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
