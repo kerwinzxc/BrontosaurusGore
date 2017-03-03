@@ -60,7 +60,6 @@ CInputManager::~CInputManager()
 
 	SAFE_DELETE(myDInputWrapper);
 	SAFE_DELETE(myXInputWrapper);
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
@@ -134,7 +133,6 @@ void CInputManager::UpdateMouse()
 
 		CU::Vector2f mousePosition(myLastMousePosition + mouseDeltaNormalized);
 		mousePosition.Clamp(CU::Vector2f::Zero, CU::Vector2f::One);
-		//CU::Vector2f mousePositionNormalized(mousePosition / windowSizeF);
 
 		myLastMousePosition = mousePosition;
 
@@ -171,7 +169,6 @@ void CInputManager::UpdateMouse()
 					}
 				}
 
-				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
 			}
 			if (myDInputWrapper->IsMouseButtonReleased(static_cast<CU::eMouseButtons>(i)) == true)
 			{
@@ -187,7 +184,6 @@ void CInputManager::UpdateMouse()
 						break;
 					}
 				}
-				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
 			}
 			int a = myDInputWrapper->GetMouseWheelPos();
 			if (a != myLastMouseWheelPosition)
@@ -214,23 +210,6 @@ void CInputManager::UpdateMouse()
 				}
 			}
 		}
-
-		//if (myDInputWrapper->IsMouseButtonPressed(CU::eMouseButtons::LBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonReleased(CU::eMouseButtons::LBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonPressed(CU::eMouseButtons::RBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::RBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonReleased(CU::eMouseButtons::RBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::RBUTTON)));
-		//}
 
 		myDInputWrapper->SetMousePosition(middleOfWindow.x, middleOfWindow.y);
 	}
