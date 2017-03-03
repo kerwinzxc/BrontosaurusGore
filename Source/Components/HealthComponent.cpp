@@ -2,16 +2,26 @@
 #include "HealthComponent.h"
 
 
-HealthComponent::HealthComponent(healthPoint aMaxHealth)
+HealthComponent::HealthComponent()
 {
-	myMaxHeath = aMaxHealth;
-	myCurrentHealth = myMaxHeath;
+	myMaxHeath = 0;
+	myCurrentHealth = 0;
 	myIsAlive = true;
 }
 
 
 HealthComponent::~HealthComponent()
 {
+}
+
+void HealthComponent::SetMaxHealth(const healthPoint aHealthPointValue)
+{
+	myMaxHeath = aHealthPointValue;
+}
+
+void HealthComponent::SetHealth(const healthPoint aHealthPointValue)
+{
+	myCurrentHealth = aHealthPointValue;
 }
 
 void HealthComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)

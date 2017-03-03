@@ -9,6 +9,7 @@
 #include "LoadSoundComponent.h"
 #include "LoadScriptComponent.h"
 #include "LoadFireComponent.h"
+#include "LoadHealthComponent.h"
 #include "LoadPointLightComponent.h"
 #include "LoadEnemy.h"
 #include "LoadNetworkComponent.h"
@@ -53,7 +54,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy);
 	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
-
+	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
 	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
