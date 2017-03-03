@@ -214,10 +214,10 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;ApexFrameworkDEBUG_x64.lib;Apex_ParticlesDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;$(SolutionDir)..\LibDependencies\apex\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4006  /IGNORE:4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -363,6 +363,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Apex.h" />
+    <ClInclude Include="ApexRenderResourceManager.h" />
+    <ClInclude Include="ApexResourceCallback.h" />
     <ClInclude Include="Include\apex_1.4\Actor.h" />
     <ClInclude Include="Include\apex_1.4\Apex.h" />
     <ClInclude Include="Include\apex_1.4\ApexCudaContextManager.h" />
@@ -690,6 +692,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Apex.cpp" />
+    <ClCompile Include="ApexRenderResourceManager.cpp" />
+    <ClCompile Include="ApexResourceCallback.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
     <ClCompile Include="PhysXManager.cpp" />

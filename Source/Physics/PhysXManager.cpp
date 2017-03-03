@@ -160,6 +160,7 @@ namespace Physics
 		apexInit.physics = myPhysics;
 		apexInit.cooking = myCooking;
 		apexInit.pvd = myPvd;
+		apexInit.foundation = myFoundation;
 		myApex = new CApex(apexInit);
 	}
 	CPhysXManager::~CPhysXManager()

@@ -32,15 +32,11 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 	const float positionY = PositionObject.at("y").GetFloat() * unityScale;
 	const float positionZ = PositionObject.at("z").GetFloat() * unityScale * -1;
 
-	currentMatrix.SetPosition({positionX, positionY, positionZ});
-
 	CU::CJsonValue RotationObject = someData.myData.at("rotation");
 
 	const float rotationX = RotationObject.at("x").GetFloat() / 180 * PI;
 	const float rotationY = RotationObject.at("y").GetFloat() / 180 * PI;
 	const float rotationZ = RotationObject.at("z").GetFloat() / 180 * PI;
-
-	currentMatrix.Rotate(rotationX, rotationY, rotationZ);
 
 	CU::CJsonValue ScalingObject = someData.myData.at("scale");
 
@@ -48,7 +44,10 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 	const float scaleY = ScalingObject.at("y").GetFloat();
 	const float scaleZ = ScalingObject.at("z").GetFloat();
 
+	currentMatrix.SetPosition({ positionX, positionY, positionZ });
 	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
+	currentMatrix.RotateAroundAxes(rotationX, rotationY, rotationZ);
+	
 
 	gameObject->SetName(someData.myData.at("name").GetString().c_str());
 

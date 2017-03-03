@@ -4,7 +4,7 @@
 
 namespace Container
 {
-	template<typename T>
+	template<typename T, unsigned int QueueLimit = 5000>
 	class IQueue
 	{
 	public:
@@ -39,42 +39,42 @@ namespace Container
 	
 }
 
-template <typename T>
-Container::IQueue<T>::IQueue() : 
+template <typename T, unsigned int QueueLimit = 5000>
+Container::IQueue<T, QueueLimit>::IQueue() :
 myItemCount(0), 
 myHead(nullptr), 
 myTail(nullptr)
 {
 }
 
-template <typename T>
-Container::IQueue<T>::~IQueue()
+template <typename T, unsigned int QueueLimit = 5000>
+Container::IQueue<T, QueueLimit>::~IQueue()
 {
 }
 
-template <typename T>
-void Container::IQueue<T>::CheckQueueLength() const
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::IQueue<T, QueueLimit>::CheckQueueLength() const
 {
 	assert(Size() < 2000 && "Queue overflow, messages are probably never handled.");
 }
 
-template <typename T>
-void Container::IQueue<T>::Append(IQueue& aQueue)
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::IQueue<T, QueueLimit>::Append(IQueue& aQueue)
 {
 	if(aQueue.IsEmpty() == true)
 	{
 		return;
 	}
 
-	if (IQueue<T>::IsEmpty() == false)
+	if (IsEmpty() == false)
 	{
-		typename IQueue<T>::myTail->next = aQueue.myHead;
+		typename myTail->next = aQueue.myHead;
 	}
 	else
 	{
-		typename IQueue<T>::myHead = aQueue.myHead;
+		typename myHead = aQueue.myHead;
 	}
-	typename IQueue<T>::myTail = aQueue.myTail;
+	typename myTail = aQueue.myTail;
 	myItemCount += aQueue.myItemCount;
 	aQueue.myHead = nullptr;
 	aQueue.myTail = nullptr;
@@ -83,20 +83,20 @@ void Container::IQueue<T>::Append(IQueue& aQueue)
 	CheckQueueLength();
 }
 
-template <typename T>
-unsigned Container::IQueue<T>::Size() const
+template <typename T, unsigned int QueueLimit = 5000>
+unsigned Container::IQueue<T, QueueLimit>::Size() const
 {
 	return myItemCount;
 }
 
-template <typename T>
-bool Container::IQueue<T>::IsEmpty() const
+template <typename T, unsigned int QueueLimit = 5000>
+bool Container::IQueue<T, QueueLimit>::IsEmpty() const
 {
 	return Size() == 0;
 }
 
-template <typename T>
-void Container::IQueue<T>::RemoveAll()
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::IQueue<T, QueueLimit>::RemoveAll()
 {
 	for (typename IQueue<T>::QueueItem* item = myHead; item != nullptr; )
 	{
@@ -109,14 +109,14 @@ void Container::IQueue<T>::RemoveAll()
 	myTail = nullptr;
 }
 
-template <typename T>
-void Container::IQueue<T>::IncrementCount()
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::IQueue<T, QueueLimit>::IncrementCount()
 {
 	++myItemCount;
 }
 
-template <typename T>
-void Container::IQueue<T>::DecrementCount()
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::IQueue<T, QueueLimit>::DecrementCount()
 {
 	--myItemCount;
 }
