@@ -48,7 +48,7 @@ public:
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 	CGameObjectManager* GetGameObjectManager();
-
+	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline bool IsLoaded() const;
 
 private:
@@ -77,3 +77,7 @@ inline bool CPlayState::IsLoaded() const
 	return myIsLoaded;
 }
 
+inline CWeaponSystemManager* CPlayState::GetCWeaponSystemManager()
+{
+	return myWeaponSystemManager;
+}
