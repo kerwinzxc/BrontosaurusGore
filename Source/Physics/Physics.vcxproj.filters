@@ -83,6 +83,12 @@
     <Filter Include="Apex\Include\turbulencefs">
       <UniqueIdentifier>{9e8a4fbc-5840-4348-af7b-e390bad5b1ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Apex\RenderResourceManager">
+      <UniqueIdentifier>{6d071385-3de8-4d5e-be1a-b1f365a25a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\ResourceCallback">
+      <UniqueIdentifier>{ef14ed5d-c64d-4d5c-add8-e7b5de91e548}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -1060,6 +1066,12 @@
     <ClInclude Include="Apex.h">
       <Filter>Apex</Filter>
     </ClInclude>
+    <ClInclude Include="ApexRenderResourceManager.h">
+      <Filter>Apex\RenderResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexResourceCallback.h">
+      <Filter>Apex\ResourceCallback</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1076,6 +1088,12 @@
     </ClCompile>
     <ClCompile Include="Apex.cpp">
       <Filter>Apex</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexRenderResourceManager.cpp">
+      <Filter>Apex\RenderResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexResourceCallback.cpp">
+      <Filter>Apex\ResourceCallback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

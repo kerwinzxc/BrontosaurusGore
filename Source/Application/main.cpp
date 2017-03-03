@@ -105,8 +105,9 @@ void Init(int argc, char* argv[])
 		engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
 		engineParams.myDebugFlags = DebugDrawerFlags();
 
-		Physics::CPhysXManager::Create();
+		
 		CEngine::GetInstance()->Init(engineParams);
+		Physics::CPhysXManager::Create();
 		CEngine::GetInstance()->Start();
 	}
 
