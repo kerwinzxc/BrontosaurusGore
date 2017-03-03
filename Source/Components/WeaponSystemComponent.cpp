@@ -116,7 +116,7 @@ void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMes
 
 void CWeaponSystemComponent::GiveWepon(const char* aWeaponName)
 {
-	WeaponFactoryPointer->CreateWeapon(aWeaponName, GetParent());
+	WeaponFactoryPointer->CreateWeapon(aWeaponName, this);
 }
 
 void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
