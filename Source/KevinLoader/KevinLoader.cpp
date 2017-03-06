@@ -2,6 +2,8 @@
 #include "KevinLoader.h"
 #include <fstream>
 #include "../Components/ComponentManager.h"
+#include "../LoadManager/LoadManager.h"
+#include "../Components/GameObjectManager.h"
 
 namespace KLoader
 {

@@ -31,9 +31,13 @@ void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const 
 		{
 			//DL_PRINT("woop");
 		}
+		CU::Vector3f temp;
 		if (instance != nullptr)
 		{
-			GetParent()->GetLocalTransform().GetPosition().x += 0.1f;
+			temp.z += static_cast<float>((rand() % 200 +1)/100.f);
+			GetParent()->GetLocalTransform().Rotate(static_cast<float>(((rand() % 30 + 1) - 15) * (PI / 180.f)),static_cast<CU::Axees>(rand() % 3));
+			GetParent()->GetLocalTransform().Move(temp);
+
 		}
 		CNetworkMessage_Position* positionMessage = instance->CreateMessage<CNetworkMessage_Position>(static_cast<unsigned>(ID_ALL));
 

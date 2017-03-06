@@ -1,8 +1,7 @@
 #pragma once
-#include "Game/PlayState.h"
+#include "../Game/PlayState.h"
 
 class CScene;
-
 
 // GET_LOADMANAGER(LOCAL_VARIABLE) defined below
 
