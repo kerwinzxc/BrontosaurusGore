@@ -20,6 +20,7 @@
 #include "TClient/ClientMessageManager.h"
 #include "PostMaster/Message.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "TempLobbyState.h"
 
 CGame::CGame()
 {
@@ -42,7 +43,7 @@ void CGame::Init()
 	luaWrapper.RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
 
 	myClient.StartClient();
-	myClient.Connect("127.0.0.1", "Adam");
+	//myClient.Connect("127.0.0.1", "Adam");
 
 	if (myClient.GetID() == ePreDefId::ID_FREE)
 	{
@@ -53,14 +54,16 @@ void CGame::Init()
 			DL_ASSERT("clientMessageManager not created");
 		}
 
-		CNetworkMessage_LoadLevel* loadLevelMessage = messageMangaerInstance->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
+		//CNetworkMessage_LoadLevel* loadLevelMessage = messageMangaerInstance->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
 
-		loadLevelMessage->myLevelIndex = 0;
+		//loadLevelMessage->myLevelIndex = 0;
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(loadLevelMessage));
+		//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(loadLevelMessage));
 	}
 
-	myStateStack.PushState(new CLoadState(myStateStack, 0));
+	//myStateStack.PushState(new CLoadState(myStateStack, 0));
+	myStateStack.PushState(new CTempLobbyState(myStateStack));
+
 	//if (CommandLineManager::GetInstance()->HasParameter("-skipMainMenu") == true)
 	//{
 	//	myStateStack.PushState(new CLoadState(myStateStack, 0));

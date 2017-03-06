@@ -36,7 +36,7 @@ namespace CU
 		inline void DeleteAll();
 
 		__forceinline int ByteSize() const;
-		__forceinline int Size() const;
+		constexpr __forceinline int Size() const;
 
 		static const int FoundNone = -1;
 
@@ -189,7 +189,7 @@ namespace CU
 	}
 
 	template<typename Type, int ArraySize>
-	inline int StaticArray<Type, ArraySize>::Size() const
+	constexpr inline int StaticArray<Type, ArraySize>::Size() const
 	{
 		return ArraySize;
 	}
