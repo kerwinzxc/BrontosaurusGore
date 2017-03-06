@@ -27,6 +27,7 @@
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ConetctMessage.h"
 
 
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
@@ -260,5 +261,11 @@ short CClient::GetID()
 eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
 {
 	Send(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CClient::DoEvent(const CConectMessage& aConectMessage)
+{
+	Connect(aConectMessage.myIP.c_str(), aConectMessage.myName);
 	return eMessageReturn::eContinue;
 }

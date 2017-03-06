@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ConetctMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="NarrowcastStruct.h" />
     <ClInclude Include="Object.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConetctMessage.cpp" />
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
     <ClCompile Include="SendNetowrkMessageMessage.cpp" />

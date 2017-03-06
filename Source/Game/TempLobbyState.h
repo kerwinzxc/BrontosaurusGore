@@ -11,6 +11,7 @@ enum class eLobbyState
 	eSelectLevel,
 	eEnterIp,
 	eEnterName,
+	eConecting,
 };
 
 class CTempLobbyState : public State,  Postmaster::ISubscriber
@@ -52,6 +53,8 @@ private:
 	std::string myIP;
 	std::string myName;
 	CU::Time myBlinkeyTimer;
+
 	bool myBlinkeyState;
+	
 };
 

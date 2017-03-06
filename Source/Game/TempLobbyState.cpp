@@ -5,6 +5,7 @@
 #include "EKeyboardKeys.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "PostMaster/KeyCharPressed.h"
+#include "ThreadedPostmaster/ConetctMessage.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -79,6 +80,8 @@ void CTempLobbyState::Back()
 
 void CTempLobbyState::Conect()
 {
+	myLobbyState = eLobbyState::eConecting;
+
 	if (myName.empty())
 	{
 		const CU::GrowingArray<std::string> names({"Ralle", "Adam", "Fröken", "Stefan"});
@@ -92,7 +95,7 @@ void CTempLobbyState::Conect()
 		myIP = "127.0.0.1";
 	}
 
-	myLobbyState = eLobbyState::eSelectLevel;
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, myIP));
 }
 
 void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
@@ -222,10 +225,9 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 {
 
 	myBlinkeyTimer += aDeltaTime;
-	if (myBlinkeyTimer.GetSeconds() > 1)
+	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
 	{
 		myBlinkeyState = !myBlinkeyState;
-		myBlinkeyTimer.SetSeconds(0);
 	}
 
 	switch (myLobbyState)
@@ -239,6 +241,19 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	break;
 	case eLobbyState::eSelectLevel:
 		LevelSelect();
+		break;
+	case eLobbyState::eConecting:
+		{
+			myTextINstance.SetText("");
+
+			std::string string = "Conecting";
+			for (int i = 0; i < static_cast<int>(myBlinkeyTimer.GetSeconds()) % 4; ++i)
+			{
+				string += ".";
+			}
+
+			myTextINstance.SetTextLine(0, string.c_str());
+		}
 		break;
 	default: break;
 	}

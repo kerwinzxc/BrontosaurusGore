@@ -82,11 +82,11 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myRenderer = new CRenderer();
 
 	myLineDrawer = new CLineDrawer();
-	//CFontEngineFacade::CreateInstance();
-	//myFontEngine = CFontEngineFacade::GetInstance();
+	CFontEngineFacade::CreateInstance();
+	myFontEngine = CFontEngineFacade::GetInstance();
 	//myConsole = new CConsole();
 	//myConsole->Init();
-	//myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
+	myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
 
 	bool result;
 	Audio::CAudioInterface::CreateInstance();

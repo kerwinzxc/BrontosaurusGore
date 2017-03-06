@@ -45,22 +45,6 @@ void CGame::Init()
 	myClient.StartClient();
 	//myClient.Connect("127.0.0.1", "Adam");
 
-	if (myClient.GetID() == ePreDefId::ID_FREE)
-	{
-		CClientMessageManager* messageMangaerInstance = CClientMessageManager::GetInstance();
-
-		if (messageMangaerInstance == nullptr)
-		{
-			DL_ASSERT("clientMessageManager not created");
-		}
-
-		//CNetworkMessage_LoadLevel* loadLevelMessage = messageMangaerInstance->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
-
-		//loadLevelMessage->myLevelIndex = 0;
-
-		//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(loadLevelMessage));
-	}
-
 	//myStateStack.PushState(new CLoadState(myStateStack, 0));
 	myStateStack.PushState(new CTempLobbyState(myStateStack));
 

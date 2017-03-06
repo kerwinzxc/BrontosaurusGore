@@ -32,6 +32,9 @@
     <Filter Include="Message\SendNetworkMessageMessageMessage">
       <UniqueIdentifier>{baff239b-2c2e-4b32-be51-d5705d4a1dfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\ConnectMessage">
+      <UniqueIdentifier>{d2feedd4-f20e-4879-9a79-94b6c5883ca5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -45,6 +48,9 @@
     </ClCompile>
     <ClCompile Include="SendNetowrkMessageMessage.cpp">
       <Filter>Message\SendNetworkMessageMessageMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="ConetctMessage.cpp">
+      <Filter>Message\ConnectMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="SendNetowrkMessageMessage.h">
       <Filter>Message\SendNetworkMessageMessageMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="ConetctMessage.h">
+      <Filter>Message\ConnectMessage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

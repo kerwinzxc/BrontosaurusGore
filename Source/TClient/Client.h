@@ -34,7 +34,7 @@ public:
 	short GetID();
 
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
-
+	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
 private:
 
 	//CChat myChat;
