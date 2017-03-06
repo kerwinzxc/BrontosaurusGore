@@ -435,7 +435,6 @@ void CRenderer::UpdateBuffer()
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
 
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
-	
 	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = myCamera.GetProjection();
 
 	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
@@ -478,7 +477,7 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 
-	DEVICE_CONTEXT->PSSetShaderResources(7, 1, &msg->myShadowBuffer.GetDepthResource());
+	DEVICE_CONTEXT->PSSetShaderResources(7, 1, &msg->myShadowBuffer.GetResource());
 }
 
 void CRenderer::CreateRasterizerStates()
@@ -936,6 +935,15 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eRenderModelDepth:
 	{
 		SRenderModelDepthMessage* msg = static_cast<SRenderModelDepthMessage*>(aRenderMesage);
+		CModel* model = CEngine::GetInstance()->GetModelManager()->GetModel(msg->myModelID);
+		if (!model) break;
+		model->Render(msg->myRenderParams);
+		++aDrawCallCount;
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eRenderModelShadow:
+	{
+		SRenderModelShadowMessage* msg = static_cast<SRenderModelShadowMessage*>(aRenderMesage);
 		CModel* model = CEngine::GetInstance()->GetModelManager()->GetModel(msg->myModelID);
 		if (!model) break;
 		model->Render(msg->myRenderParams);
