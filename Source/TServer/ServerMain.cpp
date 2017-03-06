@@ -357,7 +357,7 @@ bool CServerMain::Update()
 		case ePackageType::ePing:
 		{
 			//std::cout << "Ping message recievd from client " << std::endl;
-			DL_PRINT("SERVER:Ping");
+			//DL_PRINT("SERVER:Ping");
 			SNetworkPackageHeader newHeader;
 			newHeader.myPackageType = static_cast<char>(ePackageType::ePingResponse);
 			newHeader.mySenderID = ID_SERVER;
@@ -370,7 +370,7 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePingResponse:
 		{
-			DL_PRINT("SERVER:PingRespons");
+			//DL_PRINT("SERVER:PingRespons");
 			RecievePingResponse(currentMessage->GetHeader());
 		}
 		break;

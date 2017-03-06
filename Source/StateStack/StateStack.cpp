@@ -69,16 +69,16 @@ eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
 	case PushState::eState::ePlayState:
 		PushState(new CLoadState(*this, aPushState.GetLevelIndex()));
 		break;
-	case PushState::eState::eCreditScreen:
-		PushState(new CreditsState(*this, static_cast<bool>(aPushState.GetLevelIndex())));
-		break;
+	//case PushState::eState::eCreditScreen:
+	//	PushState(new CreditsState(*this, static_cast<bool>(aPushState.GetLevelIndex())));
+	//	break;
 	case PushState::eState::ePauseScreen:
-		PushState(new PauseMenu(*this));
+		PushState(new CPauseMenuState(*this));
 		break;
-	case PushState::eState::eLevelSelect:
-		static_cast<MainMenuState*>(GetCurrentState())->SetIsGoingToLevelSelect(true);
-		PushState(new LevelSelectState(*this));
-		break;
+	//case PushState::eState::eLevelSelect:
+	//	static_cast<MainMenuState*>(GetCurrentState())->SetIsGoingToLevelSelect(true);
+	//	PushState(new LevelSelectState(*this));
+	//	break;
 	default: 
 		break;
 	}
@@ -110,8 +110,6 @@ void StateStack::UpdateStateAtIndex(const CU::Time& aDeltaTime, const short aInd
 
 void StateStack::RenderStateAtIndex(const short aIndex)
 {
-	if (aIndex <= 0) return;
-
 	if (myStates[aIndex]->GetLetThroughRender() == true && aIndex > 0)
 	{
 		RenderStateAtIndex(aIndex - 1);

@@ -5,6 +5,7 @@ enum class eComponentQuestionType
 {
 	eHasCameraComponent,
 	eGetCameraLookat,
+	eGetCameraPosition,
 	eLength,
 };
 

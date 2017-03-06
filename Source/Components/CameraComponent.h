@@ -23,6 +23,7 @@ public:
 private:
 	void Pitch(const float aPitch);
 	bool GetLookat(CU::Vector3f& aLookat);
+	bool GetPosition(CU::Vector3f& aPosition);
 
 	CU::Camera* myCamera;
 	bool myUnlocked;
