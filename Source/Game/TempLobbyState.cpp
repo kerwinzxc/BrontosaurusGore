@@ -6,10 +6,12 @@
 #include "ThreadedPostmaster/Postmaster.h"
 #include "PostMaster/KeyCharPressed.h"
 #include "ThreadedPostmaster/ConetctMessage.h"
+#include "ThreadedPostmaster/ConectedMessage.h"
+#include "TShared/TShared_NetworkWrapper.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
-CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState), myLobbyState(eLobbyState::eEnterIpAndName), myCurrentLine(0), myTextInputSelected(false), myBlinkeyTimer(0)
+CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState), myLobbyState(eLobbyState::eEnterIpAndName), myCurrentLine(0), myTextInputSelected(false), myBlinkeyTimer(0), myBlinkeyState(false)
 {
 }
 
@@ -269,6 +271,7 @@ void CTempLobbyState::Render()
 void CTempLobbyState::OnEnter(const bool aLetThroughRender)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eCharPressed);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CTempLobbyState::OnExit(const bool aLetThroughRender)
@@ -308,4 +311,12 @@ eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 		}
 	}
 	return eMessageReturn::eStop;
+}
+
+eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
+{
+	myLobbyState = eLobbyState::eSelectLevel;
+	myIsPlayer = aCharPressed.myID == ID_FREE;
+
+	return eMessageReturn::eContinue;
 }

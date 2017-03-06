@@ -28,6 +28,7 @@
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
 #include "../ThreadedPostmaster/ConetctMessage.h"
+#include "../ThreadedPostmaster/ConectedMessage.h"
 
 
 CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
@@ -139,8 +140,7 @@ void CClient::Update()
 				myState = eClientState::CONECTED;
 
 				std::cout << "Conected to server got id:" << myId << std::endl;
-				std::cout << "Starting chat" << std::endl;
-				//myChat.StartChat();
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
 			}
 			break;
 		case ePackageType::ePing:

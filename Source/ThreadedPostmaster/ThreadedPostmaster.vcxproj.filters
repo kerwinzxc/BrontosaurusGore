@@ -35,6 +35,9 @@
     <Filter Include="Message\ConnectMessage">
       <UniqueIdentifier>{d2feedd4-f20e-4879-9a79-94b6c5883ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\ConectedMessage">
+      <UniqueIdentifier>{579d5494-06f4-43b1-b768-3b8d8cc4dd6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -51,6 +54,9 @@
     </ClCompile>
     <ClCompile Include="ConetctMessage.cpp">
       <Filter>Message\ConnectMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="ConectedMessage.cpp">
+      <Filter>Message\ConectedMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +83,9 @@
     </ClInclude>
     <ClInclude Include="ConetctMessage.h">
       <Filter>Message\ConnectMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="ConectedMessage.h">
+      <Filter>Message\ConectedMessage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

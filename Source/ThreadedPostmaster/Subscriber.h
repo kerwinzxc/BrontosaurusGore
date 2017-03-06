@@ -12,6 +12,7 @@ class DrawCallsCount;
 class CServerReadyMessage;
 class CSendNetowrkMessageMessage;
 class CConectMessage;
+class CConectedMessage;
 
 namespace Postmaster
 {
@@ -33,5 +34,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
 		virtual eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage);
 		virtual eMessageReturn DoEvent(const CConectMessage& aConectMessage);
+		virtual eMessageReturn DoEvent(const CConectedMessage& aConectedMessage);
 	};
 }

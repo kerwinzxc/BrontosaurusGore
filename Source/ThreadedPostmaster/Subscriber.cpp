@@ -66,3 +66,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CConectMessage& aConectMes
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CConectedMessage& aConectedMessage)
+{
+	return eMessageReturn::eContinue;
+}

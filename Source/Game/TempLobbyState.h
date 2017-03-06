@@ -42,6 +42,7 @@ public:
 	bool GetLetThroughUpdate() const override;
 
 	eMessageReturn DoEvent(const KeyCharPressed& aCharPressed) override;
+	eMessageReturn DoEvent(const CConectedMessage& aCharPressed) override;
 
 private:
 	CTextInstance myTextINstance;
@@ -55,6 +56,6 @@ private:
 	CU::Time myBlinkeyTimer;
 
 	bool myBlinkeyState;
-	
+	bool myIsPlayer;
 };
 
