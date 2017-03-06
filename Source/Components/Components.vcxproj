@@ -361,9 +361,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AmmoCheckData.h" />
     <ClInclude Include="AmmoComponent.h" />
     <ClInclude Include="AmmoComponentManager.h" />
     <ClInclude Include="AmmoData.h" />
+    <ClInclude Include="AmmoReplenishData.h" />
     <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="AudioSourceComponentManager.h" />
     <ClInclude Include="BoxColliderComponent.h" />

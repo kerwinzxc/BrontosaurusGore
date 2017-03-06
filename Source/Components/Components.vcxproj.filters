@@ -286,6 +286,12 @@
     <ClInclude Include="ProjectileBufferData.h">
       <Filter>Projectile</Filter>
     </ClInclude>
+    <ClInclude Include="AmmoCheckData.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoReplenishData.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

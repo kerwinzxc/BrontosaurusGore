@@ -7,6 +7,8 @@ class ICollider;
 class CComponent;
 class CGameObject;
 struct SAmmoData;
+struct SAmmoCheckData;
+struct SAmmoReplenishData;
 class CWeapon;
 enum class ePlayerControls;
 
@@ -61,7 +63,6 @@ enum class eComponentMessageType
 	eAddWeapon,
 	eAddNewAmmoType,
 	eWeaponFactoryGiveWeaponToWeaponSystem,
-	eChangeSelectedAmmoType,
 	eGiveAmmo,
 	//eSetDirectionForShooting,
 	eChangeWeapon,
@@ -96,6 +97,8 @@ struct SComponentMessageData
 		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
 		SAmmoData* myAmmoData;
+		SAmmoCheckData* myAmmoCheckData;
+		SAmmoReplenishData* myAmmoReplenishData;
 		CWeapon* myWeapon;
 	};
 };
