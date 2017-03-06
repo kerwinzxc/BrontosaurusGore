@@ -51,6 +51,7 @@ public:
 
 	void Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList);
 	void Render();
+	void Render(CRenderCamera & aRenderToCamera);
 	//Edvin testar med kamera
 	void Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList, CRenderCamera& aRenderToCamera);
 
