@@ -1,11 +1,15 @@
 #pragma once
 #include "HealthPoint.h"
 #include "Component.h"
-class HealthComponent : public CComponent
+
+class CHealthComponent : public CComponent
 {
 public:
-	HealthComponent(healthPoint aMaxHealth);
-	~HealthComponent();
+	CHealthComponent();
+	~CHealthComponent();
+
+	void SetMaxHealth(const healthPoint aHealthPointValue);
+	void SetHealth(const healthPoint aHealthPointValue);
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Destroy() override;

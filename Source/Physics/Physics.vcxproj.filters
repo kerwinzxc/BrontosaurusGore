@@ -29,6 +29,66 @@
     <Filter Include="SmartPointer\Unique">
       <UniqueIdentifier>{b763e72b-ae19-4dd4-b328-41e87ee89622}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Apex">
+      <UniqueIdentifier>{ba8ab9e4-d04e-43e0-a19e-04a091251901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include">
+      <UniqueIdentifier>{336d17f3-1bac-4ffe-a2b4-1aa2ebd84cf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\loader">
+      <UniqueIdentifier>{68a03bcd-cdd1-4683-a7b8-60dd0f445819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\basicfs">
+      <UniqueIdentifier>{84cab6a5-dfbf-417c-be55-7bbaf8b3d202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\basicios">
+      <UniqueIdentifier>{e6f8a700-9f7b-466c-ac3d-06222c412dc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\clothing">
+      <UniqueIdentifier>{e2fd481c-ba05-458c-9980-a00b7921902b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\destructible">
+      <UniqueIdentifier>{ce4f5a67-e997-4a88-a0a9-0c831738a251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\emitter">
+      <UniqueIdentifier>{dd7e98db-91bd-4995-8d80-bc50041de419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\fieldsampler">
+      <UniqueIdentifier>{9b8a62ab-e731-4c08-9273-8b8a3982b9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\forcefield">
+      <UniqueIdentifier>{6d28e0ee-5f5f-49ca-b261-e20cd304a3da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\iofx">
+      <UniqueIdentifier>{03312092-2a7c-4033-accd-fc59ab987d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\legacy">
+      <UniqueIdentifier>{4aaa062e-2d64-4cfd-b5cb-65845a79dbf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\nvparameterized">
+      <UniqueIdentifier>{5f72bbbd-938b-4066-ad53-00105ef8d5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\particles">
+      <UniqueIdentifier>{d4af110c-06d1-4757-adbc-52450ef0d928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\PhysX0">
+      <UniqueIdentifier>{b856e0b0-701d-490a-b923-c3099d60dc75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\PhysX3">
+      <UniqueIdentifier>{6c25ba0a-9c59-4907-b13a-2711e33611ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\pxparticleios">
+      <UniqueIdentifier>{146e28c5-99da-4f77-b05c-821c2ce6f0ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\Include\turbulencefs">
+      <UniqueIdentifier>{9e8a4fbc-5840-4348-af7b-e390bad5b1ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\RenderResourceManager">
+      <UniqueIdentifier>{6d071385-3de8-4d5e-be1a-b1f365a25a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Apex\ResourceCallback">
+      <UniqueIdentifier>{ef14ed5d-c64d-4d5c-add8-e7b5de91e548}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -538,6 +598,480 @@
     <ClInclude Include="SharedPhysicsPointer.h">
       <Filter>SmartPointer\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\AttractorFSActor.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\AttractorFSPreview.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\BasicFSAsset.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\JetFSActor.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\JetFSPreview.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\ModuleBasicFS.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\NoiseFSActor.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\NoiseFSPreview.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\VortexFSActor.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\VortexFSPreview.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\WindFSActor.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicfs\WindFSPreview.h">
+      <Filter>Apex\Include\basicfs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicios\BasicIosActor.h">
+      <Filter>Apex\Include\basicios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicios\BasicIosAsset.h">
+      <Filter>Apex\Include\basicios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\basicios\ModuleBasicIos.h">
+      <Filter>Apex\Include\basicios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingActor.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingAsset.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingAssetAuthoring.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingCollision.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingPhysicalMesh.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingPreview.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingRenderProxy.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingVelocityCallback.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\clothing\ModuleClothing.h">
+      <Filter>Apex\Include\clothing</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleActor.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleActorJoint.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleAsset.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\DestructiblePreview.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleRenderable.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\ExplicitHierarchicalMesh.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\FractureToolsAPI.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\FractureToolsStructs.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\destructible\ModuleDestructible.h">
+      <Filter>Apex\Include\destructible</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterActor.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterAsset.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterGeoms.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterLodParamDesc.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterPreview.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterActor.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterAsset.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterPreview.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterActor.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterAsset.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterPreview.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\emitter\ModuleEmitter.h">
+      <Filter>Apex\Include\emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\fieldsampler\ModuleFieldSampler.h">
+      <Filter>Apex\Include\fieldsampler</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldActor.h">
+      <Filter>Apex\Include\forcefield</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldAsset.h">
+      <Filter>Apex\Include\forcefield</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldPreview.h">
+      <Filter>Apex\Include\forcefield</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\forcefield\ModuleForceField.h">
+      <Filter>Apex\Include\forcefield</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\IofxActor.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\IofxAsset.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\IofxRenderable.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\IofxRenderCallback.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\Modifier.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\ModifierDefs.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\ModuleIofx.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\iofx\RenderVolume.h">
+      <Filter>Apex\Include\iofx</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\legacy\ModuleIofxLegacy.h">
+      <Filter>Apex\Include\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\legacy\ModuleLegacy.h">
+      <Filter>Apex\Include\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\loader\ModuleLoader.h">
+      <Filter>Apex\Include\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterized.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterized_types.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterizedMacroses.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterizedTraits.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParamUtils.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvSerializer.h">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\particles\EffectPackageActor.h">
+      <Filter>Apex\Include\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\particles\EffectPackageAsset.h">
+      <Filter>Apex\Include\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\particles\ModuleParticles.h">
+      <Filter>Apex\Include\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\particles\ParticlesPreview.h">
+      <Filter>Apex\Include\particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\PhysX0\PhysXSDKVersion.h">
+      <Filter>Apex\Include\PhysX0</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\PhysX3\PhysXSDKVersion.h">
+      <Filter>Apex\Include\PhysX3</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ModuleParticleIos.h">
+      <Filter>Apex\Include\pxparticleios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ParticleIosActor.h">
+      <Filter>Apex\Include\pxparticleios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ParticleIosAsset.h">
+      <Filter>Apex\Include\pxparticleios</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterActor.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterAsset.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterPreview.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourceActor.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourceAsset.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourcePreview.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\ModuleTurbulenceFS.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\SubstanceSourceActor.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\SubstanceSourceAsset.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSActor.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSAsset.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSPreview.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceRenderable.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceRenderCallback.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourceActor.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourceAsset.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourcePreview.h">
+      <Filter>Apex\Include\turbulencefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Actor.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Apex.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexCudaContextManager.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexDefs.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexInterface.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexNameSpace.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexSDK.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexSDKCachedData.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexSDKVersionString.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ApexUsingNamespace.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Asset.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\AssetPreview.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\AssetPreviewScene.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Context.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ConvexHullMethod.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\CudaTestManager.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Curve.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\CustomBufferIterator.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\IosAsset.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\IProgressListener.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Lock.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\MirrorScene.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Module.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\PhysXObjectDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\PxStreamFromFileBuf.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Renderable.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderBufferData.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderContext.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderDataFormat.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderDataProvider.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderDebugInterface.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderMesh.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderMeshActor.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderMeshActorDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RenderMeshAsset.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ResourceCallback.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ResourceProvider.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\RWLockable.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Scene.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\ScopedPhysXLock.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\Shape.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\TestBase.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserOpaqueMesh.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderBoneBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderBoneBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderCallback.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderIndexBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderIndexBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderInstanceBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderInstanceBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderResource.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderResourceDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderResourceManager.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderSpriteBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderSpriteBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderSurfaceBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderSurfaceBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderVertexBuffer.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\UserRenderVertexBufferDesc.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\apex_1.4\VertexFormat.h">
+      <Filter>Apex\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Apex.h">
+      <Filter>Apex</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexRenderResourceManager.h">
+      <Filter>Apex\RenderResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexResourceCallback.h">
+      <Filter>Apex\ResourceCallback</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -552,5 +1086,25 @@
     <ClCompile Include="PhysXErrorHander.cpp">
       <Filter>PhysX\Error</Filter>
     </ClCompile>
+    <ClCompile Include="Apex.cpp">
+      <Filter>Apex</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexRenderResourceManager.cpp">
+      <Filter>Apex\RenderResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexResourceCallback.cpp">
+      <Filter>Apex\ResourceCallback</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </None>
+    <None Include="Include\apex_1.4\nvparameterized\NvParamUtils.inl">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </None>
+    <None Include="Include\apex_1.4\nvparameterized\NvSerializer.inl">
+      <Filter>Apex\Include\nvparameterized</Filter>
+    </None>
   </ItemGroup>
 </Project>

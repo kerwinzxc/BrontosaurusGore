@@ -2,19 +2,29 @@
 #include "HealthComponent.h"
 
 
-HealthComponent::HealthComponent(healthPoint aMaxHealth)
+CHealthComponent::CHealthComponent()
 {
-	myMaxHeath = aMaxHealth;
-	myCurrentHealth = myMaxHeath;
+	myMaxHeath = 0;
+	myCurrentHealth = 0;
 	myIsAlive = true;
 }
 
 
-HealthComponent::~HealthComponent()
+CHealthComponent::~CHealthComponent()
 {
 }
 
-void HealthComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
+void CHealthComponent::SetMaxHealth(const healthPoint aHealthPointValue)
+{
+	myMaxHeath = aHealthPointValue;
+}
+
+void CHealthComponent::SetHealth(const healthPoint aHealthPointValue)
+{
+	myCurrentHealth = aHealthPointValue;
+}
+
+void CHealthComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -34,12 +44,12 @@ void HealthComponent::Receive(const eComponentMessageType aMessageType, const SC
 		break;
 	}
 }
-void HealthComponent::Destroy()
+void CHealthComponent::Destroy()
 {
 
 }
 
-void HealthComponent::TakeDamage(const healthPoint aDamage)
+void CHealthComponent::TakeDamage(const healthPoint aDamage)
 {
 	if(aDamage < 0)
 	{
@@ -63,7 +73,7 @@ void HealthComponent::TakeDamage(const healthPoint aDamage)
 		myCurrentHealth -= aDamage;
 	}
 }
-void HealthComponent::Heal(const healthPoint aHealAmount)
+void CHealthComponent::Heal(const healthPoint aHealAmount)
 {
 	if (aHealAmount < 0)
 	{

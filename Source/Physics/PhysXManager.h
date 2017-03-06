@@ -1,4 +1,5 @@
 #pragma once
+#include "Include/apex_1.4/UserRenderResourceManager.h"
 
 namespace physx
 {
@@ -12,11 +13,12 @@ namespace physx
 	class PxGeometry;
 	class PxRigidStatic;
 	class PxVec3;
+	class PxCooking;
 }
 
 namespace Physics
 {
-
+	class CApex;
 	class CPhysXAllocator;
 	class CPhysXErrorHander;
 
@@ -65,8 +67,10 @@ namespace Physics
 		physx::PxPhysics* myPhysics;
 		physx::PxPvd* myPvd;
 		physx::PxDefaultCpuDispatcher* myDispatcher;
+		physx::PxCooking* myCooking;
 
 		CPhysXAllocator * myPhysXAllocatorCallback;
 		CPhysXErrorHander * myPhysXErrorHandlerCallback;
+		CApex* myApex;
 	};
 }

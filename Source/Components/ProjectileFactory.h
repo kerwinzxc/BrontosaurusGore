@@ -13,8 +13,8 @@ public:
 	inline static CProjectileFactory* GetInstance();
 	void Init(CGameObjectManager* aGameObjectManager, CModelComponentManager* aModelComponentManagerPointer);
 	void Update(float aDeltaTime);
-	void ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition);
-	void ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition, unsigned int aIndex);
+	void ShootProjectile(SProjectileData* someData,const CU::Vector3f& aDirection,const CU::Vector3f& aSpawnPosition);
+	void ShootProjectile(SProjectileData* someData,const CU::Vector3f& aDirection, const CU::Vector3f& aSpawnPosition, unsigned int aIndex);
 	void CreateNewProjectileBuffer(std::string aProjctileName, unsigned int aSuggestedProjectileBufferSize);
 private:
 	void CreateProjectile(unsigned int aIndex);

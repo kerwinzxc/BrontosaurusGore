@@ -11,6 +11,9 @@
 #include <pvd/PxPvd.h>
 #include <extensions/PxRigidBodyExt.h>
 #include "SharedPhysicsPointer.h"
+#include "Include/apex_1.4/Apex.h"
+#include "CommonUtilities/CommonUtilities.h"
+#include "Apex.h"
 
 //#include <extensions/PxDefaultErrorCallback.h>
 //#include <extensions/PxDefaultAllocator.h>
@@ -109,6 +112,7 @@ namespace Physics
 		, myFoundation(nullptr)
 		, myPvd(nullptr)
 		, myDispatcher(nullptr)
+		, myCooking(nullptr)
 	{
 		PHYSICS_LOG("Initializing PhysX\n");
 		myPhysXAllocatorCallback = new CPhysXAllocator();
@@ -145,9 +149,19 @@ namespace Physics
 
 		myPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *myFoundation, physx::PxTolerancesScale(), recordMemoryAllocations, myPvd);
 		PX_ERRORCHECK(myPhysics != nullptr, "PxCreatePhysics failed!\n");
+		PxCookingParams cookingParams = PxCookingParams(physx::PxTolerancesScale());
+		myCooking = PxCreateCooking(PX_PHYSICS_VERSION, myPhysics->getFoundation(), cookingParams);
+		PX_ERRORCHECK(myCooking != nullptr, "PxCreateCooking failed!\n");
 
 		myScene = CreateScene();
 
+
+		CApex::SApexInit apexInit;
+		apexInit.physics = myPhysics;
+		apexInit.cooking = myCooking;
+		apexInit.pvd = myPvd;
+		apexInit.foundation = myFoundation;
+		myApex = new CApex(apexInit);
 	}
 	CPhysXManager::~CPhysXManager()
 	{
@@ -161,6 +175,7 @@ namespace Physics
 		SAFE_RELEASE(myScene);
 		SAFE_RELEASE(myPhysics);
 		SAFE_RELEASE(myFoundation);
+		SAFE_DELETE(myApex);
 	}
 
 
@@ -233,8 +248,6 @@ namespace Physics
 
 		return pxScene;
 	}
-
-
 
 	PxMaterial* CPhysXManager::CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution)
 	{

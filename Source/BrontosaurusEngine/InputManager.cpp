@@ -20,7 +20,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/FocusChange.h"
 
-CInputManager* CInputManager::ourInstance(nullptr);
+CInputManager* CInputManager::ourInstance = nullptr;
 
 CInputManager::CInputManager()
 	: myKeys(20)
@@ -60,7 +60,6 @@ CInputManager::~CInputManager()
 
 	SAFE_DELETE(myDInputWrapper);
 	SAFE_DELETE(myXInputWrapper);
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eFocusChanged);
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
@@ -134,7 +133,6 @@ void CInputManager::UpdateMouse()
 
 		CU::Vector2f mousePosition(myLastMousePosition + mouseDeltaNormalized);
 		mousePosition.Clamp(CU::Vector2f::Zero, CU::Vector2f::One);
-		//CU::Vector2f mousePositionNormalized(mousePosition / windowSizeF);
 
 		myLastMousePosition = mousePosition;
 
@@ -171,7 +169,6 @@ void CInputManager::UpdateMouse()
 					}
 				}
 
-				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
 			}
 			if (myDInputWrapper->IsMouseButtonReleased(static_cast<CU::eMouseButtons>(i)) == true)
 			{
@@ -187,50 +184,30 @@ void CInputManager::UpdateMouse()
 						break;
 					}
 				}
-				//PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
-			}
-			int a = myDInputWrapper->GetMouseWheelPos();
-			if (a != myLastMouseWheelPosition)
-			{
-				if (a != 0)
-				{
-					CU::SInputMessage mouseWheelChanged;
-					mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
-					mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
-					mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
-
-					for (CU::CInputMessenger* messenger : myMessengers)
-					{
-						if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
-						{
-							break;
-						}
-					}
-					myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
-				}
-				else
-				{
-					myLastMouseWheelPosition = 0;
-				}
 			}
 		}
 
-		//if (myDInputWrapper->IsMouseButtonPressed(CU::eMouseButtons::LBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::LBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonReleased(CU::eMouseButtons::LBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::LBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonPressed(CU::eMouseButtons::RBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseClicked(mousePosition, CU::eMouseButtons::RBUTTON)));
-		//}
-		//if (myDInputWrapper->IsMouseButtonReleased(CU::eMouseButtons::RBUTTON) == true)
-		//{
-		//	PostMaster::GetInstance().SendLetter(Message(eMessageType::eMouseMessage, MouseReleased(mousePosition, CU::eMouseButtons::RBUTTON)));
-		//}
+		int mouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
+		if (mouseWheelPosition != myLastMouseWheelPosition)
+		{
+			if (mouseWheelPosition != 0)
+			{
+				CU::SInputMessage mouseWheelChanged;
+				mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - mouseWheelPosition;
+				mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - mouseWheelPosition;
+				mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
+
+				for (CU::CInputMessenger* messenger : myMessengers)
+				{
+					if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
+					{
+						break;
+					}
+				}
+			}
+
+			myLastMouseWheelPosition = mouseWheelPosition;
+		}
 
 		myDInputWrapper->SetMousePosition(middleOfWindow.x, middleOfWindow.y);
 	}

@@ -17,24 +17,17 @@ namespace CU
 		: myValue(nullptr)
 		, myIsBorrowed(false)
 	{
-		myValue = new picojson::value();
+		//myValue = new picojson::value();
 	}
 
 	CJsonValue::CJsonValue(const CJsonValue& aValue)
-		: myValue(nullptr)
-		, myIsBorrowed(false)
+		: myValue(aValue.myValue)
+		, myIsBorrowed(true)
 	{
-		if (aValue.myValue != nullptr)
-		{
-			myValue = new picojson::value(*aValue.myValue);
-		}
-	}
-
-	CJsonValue::CJsonValue(const picojson::value& aValue)
-		: myValue(nullptr)
-		, myIsBorrowed(false)
-	{
-		myValue = new picojson::value(aValue);
+		//if (aValue.myValue != nullptr)
+		//{
+		//	myValue = new picojson::value(*aValue.myValue);
+		//}
 	}
 
 	CJsonValue::CJsonValue(const std::string& aFilePath)

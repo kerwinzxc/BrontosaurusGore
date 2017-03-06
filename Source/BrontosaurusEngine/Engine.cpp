@@ -82,11 +82,11 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myRenderer = new CRenderer();
 
 	myLineDrawer = new CLineDrawer();
-	CFontEngineFacade::CreateInstance();
-	myFontEngine = CFontEngineFacade::GetInstance();
-	myConsole = new CConsole();
-	myConsole->Init();
-	myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
+	//CFontEngineFacade::CreateInstance();
+	//myFontEngine = CFontEngineFacade::GetInstance();
+	//myConsole = new CConsole();
+	//myConsole->Init();
+	//myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
 
 	bool result;
 	Audio::CAudioInterface::CreateInstance();
@@ -103,7 +103,7 @@ void CEngine::Render()
 	myDXFramework->ClearDepthStencil();
 	myDXFramework->ClearScreen();
 
-	myDebugInfoDrawer->UpdateFPSCounter();
+	//myDebugInfoDrawer->UpdateFPSCounter();
 
 
 	myRenderer->Render();
@@ -167,7 +167,7 @@ void CEngine::Start()
 
 	
 	myInitCallbackFunction();
-	myConsole->GetLuaFunctions();
+	//myConsole->GetLuaFunctions();
 
 	if (myThreadRender == true)
 	{
@@ -178,6 +178,7 @@ void CEngine::Start()
 		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
 	}
 
+	SetForegroundWindow(myWindowsWindow->GetHWND());
 	while (CEngine::GetInstance()->GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();
@@ -186,14 +187,14 @@ void CEngine::Start()
 		myRenderer->SwapWrite();
 
 		myWindowsWindow->Update();
-		bool consoleIsActive = myConsole->Update(myTimerManager->GetTimer(myTimerH).GetDeltaTime().GetSeconds());
+		bool consoleIsActive = false;// = myConsole->Update(myTimerManager->GetTimer(myTimerH).GetDeltaTime().GetSeconds());
 		if (consoleIsActive == false)
 		{
 			myUpdateCallbackFunction(myTimerManager->GetTimer(myTimerH).GetDeltaTime());
 		}
 
-		myDebugInfoDrawer->Update();
-		myDebugInfoDrawer->Render(myWindowSize);
+		//myDebugInfoDrawer->Update();
+		//myDebugInfoDrawer->Render(myWindowSize);
 
 
 		Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
@@ -206,7 +207,7 @@ void CEngine::Start()
 	
 		myRenderCallbackFunction();
 
-		myConsole->Render();
+		//myConsole->Render();
 		if (myThreadRender == false)
 		{
 			Render();

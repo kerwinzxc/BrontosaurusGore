@@ -207,17 +207,17 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\apexShared\general\RenderDebug\public\;$(ProjectDir)Include\pxShared\;$(SolutionDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;ApexFrameworkDEBUG_x64.lib;Apex_ParticlesDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;$(SolutionDir)..\LibDependencies\apex\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4006  /IGNORE:4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -228,13 +228,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -298,7 +298,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -306,10 +306,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;ApexFramework_x64.lib;APEX_ClothingGPU_x64.lib;APEX_Destructible_x64.lib;APEX_Legacy_x64.lib;APEX_Particles_x64.lib;APEX_TurbulenceFS_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\apex\;$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4006  /IGNORE:4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -322,7 +322,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -330,7 +330,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -346,7 +346,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions); _RETAIL_BUILD</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include\physx;$(ProjectDir)Include\apex_1.4\;$(ProjectDir)Include\pxShared;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -354,7 +354,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -362,6 +362,164 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Apex.h" />
+    <ClInclude Include="ApexRenderResourceManager.h" />
+    <ClInclude Include="ApexResourceCallback.h" />
+    <ClInclude Include="Include\apex_1.4\Actor.h" />
+    <ClInclude Include="Include\apex_1.4\Apex.h" />
+    <ClInclude Include="Include\apex_1.4\ApexCudaContextManager.h" />
+    <ClInclude Include="Include\apex_1.4\ApexDefs.h" />
+    <ClInclude Include="Include\apex_1.4\ApexDesc.h" />
+    <ClInclude Include="Include\apex_1.4\ApexInterface.h" />
+    <ClInclude Include="Include\apex_1.4\ApexNameSpace.h" />
+    <ClInclude Include="Include\apex_1.4\ApexSDK.h" />
+    <ClInclude Include="Include\apex_1.4\ApexSDKCachedData.h" />
+    <ClInclude Include="Include\apex_1.4\ApexSDKVersionString.h" />
+    <ClInclude Include="Include\apex_1.4\ApexUsingNamespace.h" />
+    <ClInclude Include="Include\apex_1.4\Asset.h" />
+    <ClInclude Include="Include\apex_1.4\AssetPreview.h" />
+    <ClInclude Include="Include\apex_1.4\AssetPreviewScene.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\AttractorFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\AttractorFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\BasicFSAsset.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\JetFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\JetFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\ModuleBasicFS.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\NoiseFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\NoiseFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\VortexFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\VortexFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\WindFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicfs\WindFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\basicios\BasicIosActor.h" />
+    <ClInclude Include="Include\apex_1.4\basicios\BasicIosAsset.h" />
+    <ClInclude Include="Include\apex_1.4\basicios\ModuleBasicIos.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingActor.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingAsset.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingAssetAuthoring.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingCollision.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingPhysicalMesh.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingPreview.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingRenderProxy.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ClothingVelocityCallback.h" />
+    <ClInclude Include="Include\apex_1.4\clothing\ModuleClothing.h" />
+    <ClInclude Include="Include\apex_1.4\Context.h" />
+    <ClInclude Include="Include\apex_1.4\ConvexHullMethod.h" />
+    <ClInclude Include="Include\apex_1.4\CudaTestManager.h" />
+    <ClInclude Include="Include\apex_1.4\Curve.h" />
+    <ClInclude Include="Include\apex_1.4\CustomBufferIterator.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleActor.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleActorJoint.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleAsset.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\DestructiblePreview.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\DestructibleRenderable.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\ExplicitHierarchicalMesh.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\FractureToolsAPI.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\FractureToolsStructs.h" />
+    <ClInclude Include="Include\apex_1.4\destructible\ModuleDestructible.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterActor.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterAsset.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterGeoms.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterLodParamDesc.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\EmitterPreview.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterActor.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterAsset.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\GroundEmitterPreview.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterActor.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterAsset.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\ImpactEmitterPreview.h" />
+    <ClInclude Include="Include\apex_1.4\emitter\ModuleEmitter.h" />
+    <ClInclude Include="Include\apex_1.4\fieldsampler\ModuleFieldSampler.h" />
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldActor.h" />
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldAsset.h" />
+    <ClInclude Include="Include\apex_1.4\forcefield\ForceFieldPreview.h" />
+    <ClInclude Include="Include\apex_1.4\forcefield\ModuleForceField.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\IofxActor.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\IofxAsset.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\IofxRenderable.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\IofxRenderCallback.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\Modifier.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\ModifierDefs.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\ModuleIofx.h" />
+    <ClInclude Include="Include\apex_1.4\iofx\RenderVolume.h" />
+    <ClInclude Include="Include\apex_1.4\IosAsset.h" />
+    <ClInclude Include="Include\apex_1.4\IProgressListener.h" />
+    <ClInclude Include="Include\apex_1.4\legacy\ModuleIofxLegacy.h" />
+    <ClInclude Include="Include\apex_1.4\legacy\ModuleLegacy.h" />
+    <ClInclude Include="Include\apex_1.4\loader\ModuleLoader.h" />
+    <ClInclude Include="Include\apex_1.4\Lock.h" />
+    <ClInclude Include="Include\apex_1.4\MirrorScene.h" />
+    <ClInclude Include="Include\apex_1.4\Module.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterized.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterizedMacroses.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterizedTraits.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParameterized_types.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvParamUtils.h" />
+    <ClInclude Include="Include\apex_1.4\nvparameterized\NvSerializer.h" />
+    <ClInclude Include="Include\apex_1.4\particles\EffectPackageActor.h" />
+    <ClInclude Include="Include\apex_1.4\particles\EffectPackageAsset.h" />
+    <ClInclude Include="Include\apex_1.4\particles\ModuleParticles.h" />
+    <ClInclude Include="Include\apex_1.4\particles\ParticlesPreview.h" />
+    <ClInclude Include="Include\apex_1.4\PhysX0\PhysXSDKVersion.h" />
+    <ClInclude Include="Include\apex_1.4\PhysX3\PhysXSDKVersion.h" />
+    <ClInclude Include="Include\apex_1.4\PhysXObjectDesc.h" />
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ModuleParticleIos.h" />
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ParticleIosActor.h" />
+    <ClInclude Include="Include\apex_1.4\pxparticleios\ParticleIosAsset.h" />
+    <ClInclude Include="Include\apex_1.4\PxStreamFromFileBuf.h" />
+    <ClInclude Include="Include\apex_1.4\Renderable.h" />
+    <ClInclude Include="Include\apex_1.4\RenderBufferData.h" />
+    <ClInclude Include="Include\apex_1.4\RenderContext.h" />
+    <ClInclude Include="Include\apex_1.4\RenderDataFormat.h" />
+    <ClInclude Include="Include\apex_1.4\RenderDataProvider.h" />
+    <ClInclude Include="Include\apex_1.4\RenderDebugInterface.h" />
+    <ClInclude Include="Include\apex_1.4\RenderMesh.h" />
+    <ClInclude Include="Include\apex_1.4\RenderMeshActor.h" />
+    <ClInclude Include="Include\apex_1.4\RenderMeshActorDesc.h" />
+    <ClInclude Include="Include\apex_1.4\RenderMeshAsset.h" />
+    <ClInclude Include="Include\apex_1.4\ResourceCallback.h" />
+    <ClInclude Include="Include\apex_1.4\ResourceProvider.h" />
+    <ClInclude Include="Include\apex_1.4\RWLockable.h" />
+    <ClInclude Include="Include\apex_1.4\Scene.h" />
+    <ClInclude Include="Include\apex_1.4\ScopedPhysXLock.h" />
+    <ClInclude Include="Include\apex_1.4\Shape.h" />
+    <ClInclude Include="Include\apex_1.4\TestBase.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterActor.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterAsset.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\FlameEmitterPreview.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourceActor.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourceAsset.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\HeatSourcePreview.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\ModuleTurbulenceFS.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\SubstanceSourceActor.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\SubstanceSourceAsset.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSActor.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSAsset.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceFSPreview.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceRenderable.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\TurbulenceRenderCallback.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourceActor.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourceAsset.h" />
+    <ClInclude Include="Include\apex_1.4\turbulencefs\VelocitySourcePreview.h" />
+    <ClInclude Include="Include\apex_1.4\UserOpaqueMesh.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderBoneBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderBoneBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderCallback.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderIndexBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderIndexBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderInstanceBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderInstanceBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderResource.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderResourceDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderResourceManager.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderSpriteBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderSpriteBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderSurfaceBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderSurfaceBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderVertexBuffer.h" />
+    <ClInclude Include="Include\apex_1.4\UserRenderVertexBufferDesc.h" />
+    <ClInclude Include="Include\apex_1.4\VertexFormat.h" />
     <ClInclude Include="Include\characterkinematic\PxBoxController.h" />
     <ClInclude Include="Include\characterkinematic\PxCapsuleController.h" />
     <ClInclude Include="Include\characterkinematic\PxCharacter.h" />
@@ -533,6 +691,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Apex.cpp" />
+    <ClCompile Include="ApexRenderResourceManager.cpp" />
+    <ClCompile Include="ApexResourceCallback.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
@@ -548,6 +709,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ModelViewerRelease|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl" />
+    <None Include="Include\apex_1.4\nvparameterized\NvParamUtils.inl" />
+    <None Include="Include\apex_1.4\nvparameterized\NvSerializer.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

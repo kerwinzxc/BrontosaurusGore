@@ -22,7 +22,7 @@ CProjectileFactory::~CProjectileFactory()
 	ourInstance = nullptr;
 }
 
-void CProjectileFactory::ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition)
+void CProjectileFactory::ShootProjectile(SProjectileData* someData,const CU::Vector3f& aDirection,const CU::Vector3f& aSpawnPosition)
 {
 	for(unsigned int i = 0; i < myPassiveProjectiles.Size(); i++)
 	{
@@ -34,7 +34,7 @@ void CProjectileFactory::ShootProjectile(SProjectileData* someData, CU::Vector3f
 	}
 	DL_PRINT("Refactoring gone wrong in ProjectileFactory yell at Marcus");
 }
-void CProjectileFactory::ShootProjectile(SProjectileData* someData, CU::Vector3f aDirection, CU::Vector3f aSpawnPosition, unsigned int aIndex)
+void CProjectileFactory::ShootProjectile(SProjectileData* someData,const CU::Vector3f& aDirection,const CU::Vector3f& aSpawnPosition, unsigned int aIndex)
 {
 	if (myPassiveProjectiles[aIndex]->projectileBuffer.Size() > 0)
 	{
