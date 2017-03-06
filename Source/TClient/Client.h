@@ -50,7 +50,7 @@ private:
 	short myId;
 
 	std::string myName;
-	const char* myServerIp;
+	std::string myServerIp;
 	CU::TimeUnit myServerPingTime;
 	bool myServerIsPinged;
 
