@@ -551,7 +551,7 @@ void CRenderer::UpdatePointlightBuffer(const CPointLightInstance& aPointLightIns
 	lightBuffer.pointLight.position = aPointLightInstance.GetPosition();
 	lightBuffer.pointLight.color = aPointLightInstance.GetColor();
 	lightBuffer.pointLight.intensity = aPointLightInstance.GetInstensity();
-	lightBuffer.pointLight.range = aPointLightInstance.GetRange() * 100;
+	lightBuffer.pointLight.range = aPointLightInstance.GetRange();
 	lightBuffer.cubemapMipcount = 11;
 
 	DEVICE_CONTEXT->Map(myPointlightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);

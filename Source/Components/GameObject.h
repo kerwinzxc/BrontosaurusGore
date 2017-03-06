@@ -33,7 +33,7 @@ public:
 
 	inline void SetName(const CU::DynamicString& aName);
 	inline const CU::DynamicString& GetName() const;
-
+	void Move(const CU::Vector3f& aVector3);
 private:
 	void Destroy() override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData) override;

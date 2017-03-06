@@ -380,7 +380,7 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 	float3 normal = PS_ObjectNormal(input).color.xyz;
 	float3 emissive = PS_Emissive(input).color.xyz;
 	float3 albedo = PS_Albedo(input).color.xyz;
-	float4 RoughnessMetalnessAO = float4(1,1,1,1);//roughnessMetalnessAO.Sample(samplerWrap, input.uv.xy);
+	float4 RoughnessMetalnessAO = float4(1,0,1,1);//roughnessMetalnessAO.Sample(samplerWrap, input.uv.xy);
 
 	float3 metalness = RoughnessMetalnessAO.yyy;
 

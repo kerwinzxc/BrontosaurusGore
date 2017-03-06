@@ -67,4 +67,5 @@ void LinkObject(const int target, const int anOtherComponent)
 	CComponent* const otherComponent = CComponentManager::GetInstance().GetComponent(anOtherComponent);
 
 	gameObject->AddComponent(otherComponent);
+	gameObject->Move(CU::Vector3f(0, 0, 0 ));
 }

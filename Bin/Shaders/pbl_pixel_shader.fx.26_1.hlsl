@@ -68,11 +68,13 @@ float PS_Depth(PosTex_InputPixel input)
 
 float3 WorldPosition(PosTex_InputPixel input, float aDepth)
 {
-	float4 viewPos = float4(input.tex.x * 2 - 1, (1 - input.tex.y) * 2.f, aDepth, 1);
+	float4 viewPos = float4(input.tex.x * 2 - 1, (input.tex.y * 2 - 1), aDepth, 1);
 	viewPos = mul(projectionInverse, viewPos);
+	
 	viewPos = mul(cameraSpace, viewPos);
 	
 	viewPos = viewPos / viewPos.w;
+	//viewPos.z = 0;
 	
 	return viewPos.xyz;
 }
@@ -378,7 +380,7 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
 	float3 normal = PS_ObjectNormal(input).color.xyz;
 	float3 emissive = PS_Emissive(input).color.xyz;
 	float3 albedo = PS_Albedo(input).color.xyz;
-	float4 RoughnessMetalnessAO = float4(1,1,1,1);//roughnessMetalnessAO.Sample(samplerWrap, input.uv.xy);
+	float4 RoughnessMetalnessAO = float4(1,0,1,1);//roughnessMetalnessAO.Sample(samplerWrap, input.uv.xy);
 
 	float3 metalness = RoughnessMetalnessAO.yyy;
 
@@ -492,11 +494,11 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
     	float3 directionDiffuse = color.rgb * pointLight.intensity * lightRange;
     	float3 distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
     	float3 visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
-    	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
+    	directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
 
 	
 
-		output.color = float4(worldPos,1);//float4(ambientDiffuse + ambientSpecularity + /*directionDiffuse +*/ directionSpecularity + emissive, 1.0f);
+		output.color = float4(/*ambientDiffuse + ambientSpecularity +*/ directionDiffuse + directionSpecularity/* + emissive*/, 1.0f);
 	}
 	return output;
 }

@@ -91,6 +91,13 @@ bool CGameObject::IsGameObject()
 	return true;
 }
 
+void CGameObject::Move(const CU::Vector3f& aVector3)
+{
+	SComponentMessageData data;
+	data.myVector3f = GetToWorldTransform().GetPosition();
+	NotifyOnlyComponents(eComponentMessageType::eMoving, data);
+}
+
 void CGameObject::Destroy()
 {
 	for (unsigned int i = 0; i < myComponents.Size(); ++i)
