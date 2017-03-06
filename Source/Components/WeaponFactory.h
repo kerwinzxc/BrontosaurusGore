@@ -20,6 +20,7 @@ public:
 private:
 	CU::GrowingArray<SWeaponData*> myWeaponDataList;
 	CU::GrowingArray<SAmmoData*> myAmmoDataList;
+	CU::GrowingArray<CWeapon*> myWeaponList;
 	CGameObjectManager* myGameObjectManagerPointer;
 	CModelComponentManager* myModelComponentManagerPointer;
 };
