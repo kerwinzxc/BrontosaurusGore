@@ -680,9 +680,13 @@
     <ClInclude Include="Include\vehicle\PxVehicleUtilSetup.h" />
     <ClInclude Include="Include\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="Include\vehicle\PxVehicleWheels.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Foundation.h" />
+    <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="PhysXAllocator.h" />
     <ClInclude Include="PhysXErrorHander.h" />
     <ClInclude Include="PhysXManager.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="SharedPhysicsPointer.h" />
     <ClInclude Include="SmartPhysicsPointer.h" />
     <ClInclude Include="stdafx.h" />
@@ -690,9 +694,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Apex.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Foundation.cpp" />
+    <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ModelViewer|Win32'">Create</PrecompiledHeader>

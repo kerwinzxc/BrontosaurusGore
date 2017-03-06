@@ -1060,6 +1060,18 @@
     <ClInclude Include="Apex.h">
       <Filter>Apex</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsScene.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="Foundation.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1077,6 +1089,10 @@
     <ClCompile Include="Apex.cpp">
       <Filter>Apex</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsScene.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Foundation.cpp" />
+    <ClCompile Include="Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">
