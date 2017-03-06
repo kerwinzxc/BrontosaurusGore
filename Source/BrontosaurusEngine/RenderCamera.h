@@ -17,6 +17,8 @@ public:
 	inline CU::Camera& GetCamera();
 
 	inline CRenderPackage& GetRenderPackage();
+	inline bool GetIsShadowCamera() const;
+	inline void SetIsShadowCamera(bool aValue);
 
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
@@ -26,6 +28,7 @@ private:
 	CU::Camera myCamera;
 	CRenderPackage myRenderPackage;
 	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
+	
 	bool myIsShadowCamera;
 };
 
@@ -43,3 +46,14 @@ inline CU::Camera & CRenderCamera::GetCamera()
 {
 	return myCamera;
 }
+
+inline bool CRenderCamera::GetIsShadowCamera() const
+{
+	return myIsShadowCamera;
+}
+
+inline void CRenderCamera::SetIsShadowCamera(bool aValue)
+{
+	myIsShadowCamera = aValue;
+}
+
