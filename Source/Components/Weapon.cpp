@@ -2,6 +2,7 @@
 #include "Weapon.h"
 #include "ProjectileFactory.h"
 #include "WeaponData.h"
+#include "AmmoCheckData.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData)
 {
@@ -20,11 +21,12 @@ void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		SComponentMessageData selectAmmoTypeData;
-		selectAmmoTypeData.myString = myWeaponData->name.c_str();
-		myUser->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, selectAmmoTypeData);
+
 		SComponentMessageData directionData;
-		directionData.myVector3f = aDirection;
+		SAmmoCheckData tempAmmoCheckData;
+		tempAmmoCheckData.ammoType = myWeaponData->name.c_str();
+		tempAmmoCheckData.shootingDirection = aDirection;
+		directionData.myAmmoCheckData = &tempAmmoCheckData;
 		myUser->NotifyComponents(eComponentMessageType::eCheckIfHaveAmmoForShooting, directionData);
 	
 	}

@@ -54,6 +54,10 @@
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
 
+//Hard code necessary includes
+#include "AmmoReplenishData.h"
+//
+
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
@@ -174,20 +178,27 @@ void CPlayState::Load()
 		playerObject->AddComponent(ammoComponent);
 		SComponentMessageData addHandGunData;
 		SComponentMessageData giveAmmoData;
+
 		addHandGunData.myString = "Handgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
+		SAmmoReplenishData tempAmmoReplensihData;
+		tempAmmoReplensihData.ammoType = "Handgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 		addHandGunData.myString = "Shotgun";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
+		tempAmmoReplensihData.ammoType = "Shotgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 		addHandGunData.myString = "PlasmaRifle";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 1000;
+		tempAmmoReplensihData.ammoType = "PlasmaRifle";
+		tempAmmoReplensihData.replenishAmount = 1000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		Component::CEnemy::SetPlayer(playerObject);

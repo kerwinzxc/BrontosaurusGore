@@ -23,6 +23,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+#include "ThreadedPostmaster/PrintMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -313,6 +314,7 @@ bool CServerMain::Update()
 	while (myIsRunning)
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds();
 

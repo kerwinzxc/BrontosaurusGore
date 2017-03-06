@@ -32,6 +32,9 @@
     <Filter Include="Message\SendNetworkMessageMessageMessage">
       <UniqueIdentifier>{baff239b-2c2e-4b32-be51-d5705d4a1dfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\Print">
+      <UniqueIdentifier>{05fedbef-0ccc-481b-bb28-2c9fc0350e73}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Message\ConnectMessage">
       <UniqueIdentifier>{d2feedd4-f20e-4879-9a79-94b6c5883ca5}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="ConectedMessage.cpp">
       <Filter>Message\ConectedMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintMessage.cpp">
+      <Filter>Message\Print</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="ConectedMessage.h">
       <Filter>Message\ConectedMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintMessage.h">
+      <Filter>Message\Print</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -128,6 +128,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Postmaster.h" />
     <ClInclude Include="PostOffice.h" />
+    <ClInclude Include="PrintMessage.h" />
     <ClInclude Include="SendNetowrkMessageMessage.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClCompile Include="ConetctMessage.cpp" />
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
+    <ClCompile Include="PrintMessage.cpp" />
     <ClCompile Include="SendNetowrkMessageMessage.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>

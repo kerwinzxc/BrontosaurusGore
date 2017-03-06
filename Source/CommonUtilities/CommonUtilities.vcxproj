@@ -379,6 +379,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="CommonUtilities.h" />
+    <ClInclude Include="ConsolePrinter.h" />
     <ClInclude Include="CountDown.h" />
     <ClInclude Include="dbtweener.h" />
     <ClInclude Include="DL_Assert.h" />
@@ -482,6 +483,7 @@
     <ClCompile Include="AlarmClock.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandLineManager.cpp" />
+    <ClCompile Include="ConsolePrinter.cpp" />
     <ClCompile Include="CountDown.cpp" />
     <ClCompile Include="dbtweener.cpp" />
     <ClCompile Include="DL_Debug.cpp" />
