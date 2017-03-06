@@ -5,35 +5,6 @@
 
 Postmaster::Threaded::CPostmaster* Postmaster::Threaded::CPostmaster::ourInstance = nullptr;
 
-
-void Postmaster::Threaded::CPostmaster::WaitForMessages()
-{
-	std::unique_lock<std::mutex> lock(myMessageWaitLock);
-	myMessageWaitCondition.wait(lock, [this] { return this->ShouldRun(); });
-}
-
-void Postmaster::Threaded::CPostmaster::Start()
-{
-	myThread = new std::thread(&Postmaster::Threaded::CPostmaster::Run, this);
-}
-
-void Postmaster::Threaded::CPostmaster::HandleMessages()
-{
-	HandleBroadcastMessages();
-	HandleNarrowcastMessages();
-}
-
-void Postmaster::Threaded::CPostmaster::StopThread()
-{
-	Stop();
-	if(myThread != nullptr)
-	{
-		myThread->join();
-		delete myThread;
-		myThread = nullptr;
-	}
-}
-
 Postmaster::Threaded::CPostOffice&  Postmaster::Threaded::CPostmaster::AddThreadOffice()
 {
 	std::thread::id threadId = std::this_thread::get_id();
@@ -68,11 +39,8 @@ Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadO
 
 void Postmaster::Threaded::CPostmaster::Broadcast(Message::IMessage* aMessage)
 {
-	
 	if (aMessage != nullptr)
 	{
-		//myMessageQueue.Push(aMessage);
-		//myMessageWaitCondition.notify_one();
 		GetThreadOffice().BroadcastGlobal(aMessage);
 	}
 }
@@ -87,7 +55,12 @@ void Postmaster::Threaded::CPostmaster::BroadcastLocal(Message::IMessage* aMessa
 
 void Postmaster::Threaded::CPostmaster::Narrowcast(Message::IMessage* aMessage, IObject* aSourceObject)
 {
+	//TODO: Handle narrowcast messages like breadcast messages;
 	if(aMessage != nullptr)
+	{
+		GetThreadOffice().NarrowcastGlobal(aMessage, aSourceObject);
+	}
+	/*if(aMessage != nullptr)
 	{
 		NarrowcastStruct temp;
 		temp.message = aMessage;
@@ -95,7 +68,7 @@ void Postmaster::Threaded::CPostmaster::Narrowcast(Message::IMessage* aMessage, 
 
 		myNarrowMessageQueue.Push(temp);
 		myMessageWaitCondition.notify_one();
-	}
+	}*/
 }
 
 void Postmaster::Threaded::CPostmaster::NarrowcastLocal(Message::IMessage* aMessage, IObject* aSourceObject)
@@ -121,71 +94,34 @@ void Postmaster::Threaded::CPostmaster::Unsubscribe(ISubscriber* aSubscriber)
 	GetThreadOffice().Unsubscribe(aSubscriber);
 }
 
-bool Postmaster::Threaded::CPostmaster::ShouldRun() const
+void Postmaster::Threaded::CPostmaster::HandleOutgoingBroadcast(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue)
 {
-	return myMessageQueue.IsEmpty() == false || myNarrowMessageQueue.IsEmpty() == false || myIsRunning == false;
-}
-
-void Postmaster::Threaded::CPostmaster::AppendOutgoing(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue)
-{
-	myMessageQueue.Append(aLocklessQueue);
-	myMessageWaitCondition.notify_one();
-}
-
-void Postmaster::Threaded::CPostmaster::HandleBroadcastMessages()
-{
-	/*while (myMessageQueue.IsEmpty() == false)
-	{
-		Message::IMessage* message = myMessageQueue.Pop();
-		std::map<std::thread::id, CPostOffice*>::iterator it;
-		for (it = myOffices.begin(); it != myOffices.end(); ++it)
-		{
-			myOfficeLock.lock();
-			it->second->Broadcast(message->Copy());
-			myOfficeLock.unlock();
-		}
-		delete message;
-	}*/
-	
-	
 	CU::GrowingArray<Message::IMessage*> buffer;
-	buffer.Init(myMessageQueue.Size());
-
-	while(myMessageQueue.IsEmpty() == false)
+	buffer.Init(aLocklessQueue.Size());
+	while (aLocklessQueue.IsEmpty() == false)
 	{
-		buffer.Add(myMessageQueue.Pop());
+		buffer.Add(aLocklessQueue.Pop());
 	}
 	std::map<std::thread::id, CPostOffice*>::iterator it;
 	for (it = myOffices.begin(); it != myOffices.end(); ++it)
 	{
 		Container::CLocklessQueue<Message::IMessage*> bufferQueue;
-		for(int i = 0; i < buffer.Size(); ++i)
+		for (int i = 0; i < buffer.Size(); ++i)
 		{
 			Message::IMessage* message = buffer[i];
 			bufferQueue.Push(message->Copy());
 		}
 		it->second->AppendMessages(bufferQueue);
 	}
+
 	buffer.DeleteAll();
 }
 
-void Postmaster::Threaded::CPostmaster::HandleNarrowcastMessages()
+void Postmaster::Threaded::CPostmaster::HandleOutgoingNarrowcast(Container::CLocklessQueue<NarrowcastStruct>& aLocklessQueue)
 {
-	while (myNarrowMessageQueue.IsEmpty() == false)
+	while (aLocklessQueue.IsEmpty() == false)
 	{
-
-		NarrowcastStruct nMessage = myNarrowMessageQueue.Pop();
-
-		/*while(myNarrowMessageQueue.TryPop(nMessage) == 
-			Container::CLocklessQueue<NarrowcastStruct>::Error::Blocked)
-		{
-			
-		}
-
-		if(nMessage.message == nullptr)
-		{
-			return;;
-		}*/
+		NarrowcastStruct nMessage = aLocklessQueue.Pop();
 
 		std::map<std::thread::id, CPostOffice*>::iterator it;
 		for (it = myOffices.begin(); it != myOffices.end(); ++it)
@@ -198,16 +134,12 @@ void Postmaster::Threaded::CPostmaster::HandleNarrowcastMessages()
 	}
 }
 
+Postmaster::Threaded::CPostmaster::CPostmaster()
+{
+}
+
 Postmaster::Threaded::CPostmaster::~CPostmaster()
 {
-	myMessageQueue.DeleteAll();
-
-	while (myNarrowMessageQueue.IsEmpty() == false)
-	{
-		NarrowcastStruct temp = myNarrowMessageQueue.Pop();
-		delete temp.message;
-	}
-
 	for (auto it = myOffices.begin(); it != myOffices.end(); ++it)
 	{
 		delete it->second;

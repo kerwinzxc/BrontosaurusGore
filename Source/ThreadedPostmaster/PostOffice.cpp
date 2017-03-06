@@ -17,9 +17,13 @@ void Postmaster::Threaded::CPostOffice::HandleMessages()
 {
 	if (myOutgoingQueue.IsEmpty() == false)
 	{
-		CPostmaster::GetInstance().AppendOutgoing(myOutgoingQueue);
+		CPostmaster::GetInstance().HandleOutgoingBroadcast(myOutgoingQueue);
 	}
-	
+	if(myOutgoingQueue.IsEmpty() == false)
+	{
+		CPostmaster::GetInstance().HandleOutgoingNarrowcast(myOutgoingNarrowQueue);
+	}
+
 	HandleBroadcastMessages();
 	HandleNarrowcastMessages();
 }
@@ -30,7 +34,6 @@ void Postmaster::Threaded::CPostOffice::Unsubscribe(ISubscriber* aSubscriber)
 {
 	UnsubscribeBroadcast(aSubscriber);
 	UnsubscribeNarrowcast(aSubscriber);
-	
 }
 
 void Postmaster::Threaded::CPostOffice::AppendMessages(Container::CLocklessQueue<Postmaster::Message::IMessage*>& aBufferQueue)
@@ -41,6 +44,15 @@ void Postmaster::Threaded::CPostOffice::AppendMessages(Container::CLocklessQueue
 void Postmaster::Threaded::CPostOffice::BroadcastGlobal(Message::IMessage* aMessage)
 {
 	myOutgoingQueue.Push(aMessage);
+}
+
+void Postmaster::Threaded::CPostOffice::NarrowcastGlobal(Message::IMessage* aMessage, IObject* aObject)
+{
+	NarrowcastStruct message;
+	message.message = aMessage;
+	message.sourceObject = aObject;
+
+	myOutgoingNarrowQueue.Push(message);
 }
 
 void Postmaster::Threaded::CPostOffice::HandleBroadcastMessages()
@@ -62,17 +74,6 @@ void Postmaster::Threaded::CPostOffice::HandleNarrowcastMessages()
 	while (myNarrowMessageQueue.IsEmpty() == false)
 	{
 		NarrowcastStruct nMessage = myNarrowMessageQueue.Pop();
-
-		/*while (myNarrowMessageQueue.TryPop(nMessage) == 
-			Container::CLocklessQueue<NarrowcastStruct>::Error::Blocked)
-		{
-			
-		}
-
-		if(nMessage.message == nullptr)
-		{
-			return;
-		}*/
 
 		NarrowSubscriberList& objectList = myNarrowSubstribers[static_cast<unsigned>(nMessage.message->GetType())];
 

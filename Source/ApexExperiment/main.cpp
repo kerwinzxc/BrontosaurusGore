@@ -61,7 +61,7 @@ void InitEngine()
 
 int main(int argc, char* argv[])
 {
-	Postmaster::Threaded::CPostmaster::GetInstance().Start();
+	Postmaster::Threaded::CPostmaster::Create();
 	DL_Debug::Debug::CreateInstance();
 
 	InitEngine();
@@ -71,7 +71,6 @@ int main(int argc, char* argv[])
 	PostMaster::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Stop();
 	Postmaster::Threaded::CPostmaster::Destroy();
 
 	return 0;
