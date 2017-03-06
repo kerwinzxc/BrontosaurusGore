@@ -9,6 +9,7 @@ enum class ePackageType: __int8
 	eConnectResponse,
 	eChat,
 	ePosition,
+	ePlayerPosition,
 	eImportantResponse,
 	eLoadLevel,
 	eClientReady,
