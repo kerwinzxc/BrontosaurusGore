@@ -16,10 +16,11 @@ public:
 	void LoadWeapons();
 	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
-	void MakeWeaponModel(CGameObject* aOwner, SWeaponData* someWeaponData);
+	void MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon);
 private:
 	CU::GrowingArray<SWeaponData*> myWeaponDataList;
 	CU::GrowingArray<SAmmoData*> myAmmoDataList;
+	CU::GrowingArray<CWeapon*> myWeaponList;
 	CGameObjectManager* myGameObjectManagerPointer;
 	CModelComponentManager* myModelComponentManagerPointer;
 };

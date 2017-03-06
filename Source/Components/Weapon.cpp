@@ -7,6 +7,8 @@ CWeapon::CWeapon(SWeaponData* aWeaponData)
 {
 	myElapsedFireTimer = 0.0f;
 	myWeaponData = aWeaponData;
+	myUser = nullptr;
+	myWeaponObject = nullptr;
 }
 
 
@@ -71,5 +73,13 @@ void CWeapon::Update(float aDeltaTime)
 	if(myElapsedFireTimer < myWeaponData->fireRate)
 	{
 		myElapsedFireTimer += aDeltaTime;
+	}
+}
+
+void CWeapon::RotateXAxees(const float aRotationAmount)
+{
+	if(myWeaponObject != nullptr)
+	{
+		myWeaponObject->GetLocalTransform().Rotate(aRotationAmount, CU::Axees::X);	
 	}
 }

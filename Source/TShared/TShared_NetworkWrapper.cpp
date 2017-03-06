@@ -93,6 +93,20 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 	aNetworkMessage->PackMessage();
 	const StreamType& streamType = aNetworkMessage->GetSerializedData();
 
+
+	if (streamType.size() > 512)
+	{
+		std::string errorMessage;
+		errorMessage = "Sent to big data package over the network.";
+		errorMessage += " Tried to send to adress: ";
+		errorMessage += aRecieverAdress;
+		errorMessage += " Tried to send to port: ";
+		errorMessage += aRecieverPort;
+		errorMessage += " Size of data package: ";
+		errorMessage += std::to_string(streamType.size());
+		DL_ASSERT(errorMessage.c_str());
+	}
+
 	const unsigned tempBufferSize = aNetworkMessage->GetSerializedData().size();
 	SNetworkPackageHeader aHeader = aNetworkMessage->GetHeader();
 
@@ -214,6 +228,7 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 	const unsigned dataSize = bytes - sizeof(header);
 
 	char * data = new char[dataSize];
+	ZeroMemory(data, dataSize);
 
 	memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
 

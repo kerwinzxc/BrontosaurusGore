@@ -18,6 +18,7 @@ CNetworkMessage::~CNetworkMessage()
 
 void CNetworkMessage::PackMessage()
 {
+	myStream.clear();
 	DoSerialize(myStream);
 }
 

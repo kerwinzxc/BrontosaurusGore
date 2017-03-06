@@ -113,6 +113,8 @@ void CClient::Update()
 
 	while (myIsRunning)
 	{
+
+		myServerPingTime = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
 		if(myTimerManager.Size() == 0)
@@ -143,6 +145,7 @@ void CClient::Update()
 		case ePackageType::ePing:
 			if (myState == eClientState::CONECTED)
 			{
+				//DL_PRINT("CLIENT:Ping");
 				SNetworkPackageHeader header;
 				header.mySenderID = myId;
 				header.myTargetID = ID_SERVER;
@@ -155,6 +158,7 @@ void CClient::Update()
 			break;
 		case ePackageType::ePingResponse:
 			{
+				//DL_PRINT("CLIENT:PingRespons");
 				myCurrentPing = myServerPingTime;
 				myServerPingTime = 0;
 				myServerIsPinged = false;
@@ -174,10 +178,12 @@ void CClient::Update()
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+			std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
 
 			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
+			//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
 			comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
+			//CU::Vector3f temp2 = comp->GetParent()->GetWorldPosition();
 			comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 		}

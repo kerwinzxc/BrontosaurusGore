@@ -61,19 +61,25 @@ void CCameraComponent::Pitch(const float aPitch)
 	const float PitchCap = 0.99f;
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-
+	SComponentMessageData rotationData;
 	float lookAtHeight = parentTransform.myForwardVector.y;
 	if (lookAtHeight < PitchCap && lookAtHeight > -PitchCap)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 	else if (lookAtHeight > PitchCap && aPitch > 0.f)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 	else if (lookAtHeight < -PitchCap && aPitch < 0.f)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 }
 

@@ -15,6 +15,7 @@ CWeaponFactory::CWeaponFactory()
 {
 	myWeaponDataList.Init(10);
 	myAmmoDataList.Init(10);
+	myWeaponList.Init(200);
 	myGameObjectManagerPointer = nullptr;
 	myModelComponentManagerPointer = nullptr;
 }
@@ -30,6 +31,8 @@ CWeaponFactory::~CWeaponFactory()
 	myAmmoDataList.DeleteAll();
 	myWeaponDataList.Destroy();
 	myAmmoDataList.Destroy();
+	myWeaponList.DeleteAll();
+	myWeaponList.Destroy();
 }
 
 void CWeaponFactory::LoadWeapons()
@@ -80,6 +83,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 			SComponentMessageData newWeaponMessage;
 			newWeaponMessage.myWeapon = newWeapon;
 			aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem, newWeaponMessage);
+			myWeaponList.Add(newWeapon);
 			return;
 		}
 	}
@@ -96,6 +100,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CWeaponSystemComponen
 			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i]);
 			SAmmoData* newAmmoData = myAmmoDataList[i];
 			aWeaponSystemToGiveAWeaponTo->AddWeapon(newWeapon, newAmmoData);
+			myWeaponList.Add(newWeapon);
 			return;
 		}
 	}
@@ -109,10 +114,11 @@ void CWeaponFactory::Init(CGameObjectManager* aGameObjectPointer, CModelComponen
 	myModelComponentManagerPointer = aModelComponentManager;
 }
 
-void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, SWeaponData* someWeaponData)
+void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 {
-	CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(someWeaponData->modelFilePath.c_str());
+	CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
 	CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 	newWeaponObject->AddComponent(newWeaponModelComponent);
 	aOwner->AddComponent(newWeaponObject);
+	aWeapon->SetWeaponObject(newWeaponObject);
 }
