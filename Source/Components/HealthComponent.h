@@ -2,11 +2,11 @@
 #include "HealthPoint.h"
 #include "Component.h"
 
-class HealthComponent : public CComponent
+class CHealthComponent : public CComponent
 {
 public:
-	HealthComponent();
-	~HealthComponent();
+	CHealthComponent();
+	~CHealthComponent();
 
 	void SetMaxHealth(const healthPoint aHealthPointValue);
 	void SetHealth(const healthPoint aHealthPointValue);
