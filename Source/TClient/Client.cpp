@@ -88,7 +88,7 @@ void CClient::Ping()
 		SNetworkPackageHeader header;
 		header.mySenderID = myId;
 		header.myTargetID = ID_SERVER;
-		header.myPackageType = static_cast<char>(ePackageType::ePing);
+		header.myPackageType = (ePackageType::ePing);
 		header.myTimeStamp = 100;
 
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
@@ -150,7 +150,7 @@ void CClient::Update()
 				SNetworkPackageHeader header;
 				header.mySenderID = myId;
 				header.myTargetID = ID_SERVER;
-				header.myPackageType = static_cast<char>(ePackageType::ePingResponse);
+				header.myPackageType = (ePackageType::ePingResponse);
 				header.myTimeStamp = 100;
 
 				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
@@ -235,7 +235,7 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	myServerIp = anIp;
 
 	SNetworkPackageHeader header;
-	header.myPackageType = static_cast<char>(ePackageType::eConnect);
+	header.myPackageType = (ePackageType::eConnect);
 	header.myTargetID = ID_SERVER;
 	header.mySenderID = ID_ALL;
 	header.myTimeStamp = myTimer.GetLifeTime().GetMilliseconds();

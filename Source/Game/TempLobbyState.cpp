@@ -8,6 +8,13 @@
 #include "ThreadedPostmaster/ConetctMessage.h"
 #include "ThreadedPostmaster/ConectedMessage.h"
 #include "TShared/TShared_NetworkWrapper.h"
+#include "JsonValue.h"
+#include "StateStack/StateStack.h"
+#include "PlayState.h"
+#include "LoadState.h"
+#include "TClient/ClientMessageManager.h"
+#include "TShared/NetworkMessage_LoadLevel.h"
+#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -57,7 +64,14 @@ void CTempLobbyState::Select()
 	case eLobbyState::eEnterName:
 		myLobbyState = eLobbyState::eEnterIpAndName;
 		break;
-	case eLobbyState::eSelectLevel: break;
+	case eLobbyState::eSelectLevel:
+		{
+			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
+			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
+			netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+		}
+		break;
 	default: break;
 	}
 }
@@ -220,11 +234,38 @@ void CTempLobbyState::LevelSelect()
 	string += myIP;
 
 	myTextINstance.SetTextLine(0, string.c_str());
-	myTextINstance.SetTextLine(1, "# Please Select level");
+
+
+	if (myIsPlayer == true)
+	{
+		myTextINstance.SetTextLine(1, "# Please Select level");
+		
+		CU::CJsonValue levelsFile;
+
+		std::string errorString = levelsFile.Parse("Json/LevelList.json");
+		if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+		CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+		for (int i = 0; i < levelsArray.Size(); ++i)
+		{
+			myTextINstance.SetTextLine(2 + i, levelsArray[i].GetString().c_str());
+		}
+
+		if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
+		{
+			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
+		}
+	}
+	else
+	{
+		myTextINstance.SetTextLine(1, "# Waiting for other player to select a level");
+	}
 }
 
 eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 {
+	
 
 	myBlinkeyTimer += aDeltaTime;
 	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
@@ -317,6 +358,8 @@ eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
 {
 	myLobbyState = eLobbyState::eSelectLevel;
 	myIsPlayer = aCharPressed.myID == ID_FREE;
+	
+	myCurrentLine = 2;
 
 	return eMessageReturn::eContinue;
 }

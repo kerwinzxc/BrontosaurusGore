@@ -99,7 +99,7 @@ void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName
 	ClientID newClientId = currentFreeId++;
 	myClients[newClientId] = newClient;
 	SNetworkPackageHeader acceptPackage;
-	acceptPackage.myPackageType = static_cast<char>(ePackageType::eConnectResponse);
+	acceptPackage.myPackageType = (ePackageType::eConnectResponse);
 	acceptPackage.mySenderID = ID_SERVER;
 	acceptPackage.myTargetID = newClientId;
 	acceptPackage.myTimeStamp = myTimerManager.GetTimer(myTimerHandle).GetLifeTime().GetMilliseconds();
@@ -137,7 +137,7 @@ void CServerMain::RecievePingResponse(SNetworkPackageHeader aHeader)
 void CServerMain::Ping(ClientID aClientID)
 {
 	SNetworkPackageHeader header;
-	header.myPackageType = static_cast<char>(ePackageType::ePing);
+	header.myPackageType = (ePackageType::ePing);
 	header.mySenderID = ID_SERVER;
 	header.myTargetID = aClientID;
 
@@ -176,7 +176,7 @@ void CServerMain::DisconectClient(ClientID aClient)
 
 	SNetworkPackageHeader header;
 	header.mySenderID = ID_SERVER;
-	header.myPackageType = static_cast<char>(ePackageType::eChat);
+	header.myPackageType = (ePackageType::eChat);
 	header.myTimeStamp = GetCurrentTime();
 
 	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>(header);
@@ -297,7 +297,7 @@ void CServerMain::StartGame()
 	SNetworkPackageHeader header;
 	header.myTargetID = ID_ALL;
 	header.mySenderID = ID_SERVER;
-	header.myPackageType = static_cast<char>(ePackageType::eServerReady);
+	header.myPackageType = (ePackageType::eServerReady);
 	header.myTimeStamp = GetCurrentTime();
 
 	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
@@ -334,7 +334,7 @@ bool CServerMain::Update()
 			SNetworkPackageHeader header;
 			header.myTargetID = currentMessage->GetHeader().mySenderID;
 			header.mySenderID = ID_SERVER;
-			header.myPackageType = static_cast<char>(ePackageType::eImportantResponse);
+			header.myPackageType = (ePackageType::eImportantResponse);
 			header.myTimeStamp = static_cast<int>(GetCurrentTime());
 
 			CImportantNetworkMessage* ResponseMessage = myMessageManager->CreateMessage<CImportantNetworkMessage>(header);
@@ -359,7 +359,7 @@ bool CServerMain::Update()
 			//std::cout << "Ping message recievd from client " << std::endl;
 			//DL_PRINT("SERVER:Ping");
 			SNetworkPackageHeader newHeader;
-			newHeader.myPackageType = static_cast<char>(ePackageType::ePingResponse);
+			newHeader.myPackageType = (ePackageType::ePingResponse);
 			newHeader.mySenderID = ID_SERVER;
 			newHeader.myTargetID = currentMessage->GetHeader().mySenderID;
 			newHeader.myTimeStamp = 100;

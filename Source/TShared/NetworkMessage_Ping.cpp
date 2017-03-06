@@ -5,7 +5,7 @@
 
 CNetworkMessage_Ping::CNetworkMessage_Ping()
 {
-	myHeader.myPackageType = static_cast<char>(ePackageType::ePing);
+	myHeader.myPackageType = (ePackageType::ePing);
 }
 
 

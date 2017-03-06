@@ -9,13 +9,13 @@ struct SNetworkPackageHeader
 {
 	SNetworkPackageHeader()
 	{
-		myPackageType = static_cast<char>(ePackageType::eZero);
+		myPackageType = ePackageType::eZero;
 		myTargetID = mySenderID;
 		mySenderID = mySenderID;
 		myTimeStamp = 0;
 	}
 
-	__int8 myPackageType; //TODO: change to ePackageType 
+	ePackageType myPackageType; //TODO: change to ePackageType 
 	__int32 myTimeStamp;
 	__int16 mySenderID;
 	__int16 myTargetID;
