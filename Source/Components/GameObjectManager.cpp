@@ -104,6 +104,11 @@ void CGameObjectManager::SendObjectsDoneMessage()
 	}
 }
 
+const CU::GrowingArray<CGameObject*>& CGameObjectManager::GetObjects() const
+{
+	return myObjectsCreated;
+}
+
 ComponentId CGameObjectManager::CreateMatrix(const CU::Matrix44f& aMatrix44f)
 {
 	if (myFreeMatrices.Size() == 0)
