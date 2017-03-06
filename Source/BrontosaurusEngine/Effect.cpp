@@ -62,7 +62,6 @@ CEffect::~CEffect()
 	//SAFE_RELEASE(myGeometryShader);
 	//SAFE_RELEASE(myPixelShader);
 	//SAFE_RELEASE(myLayout);
-
 }
 
 void CEffect::Activate()
@@ -74,10 +73,11 @@ void CEffect::Activate()
 	myFramework->GetDeviceContext()->IASetPrimitiveTopology(myTopology);
 }
 
-void CEffect::ActivateForDepth()
+
+void CEffect::ActivateForDepth(ID3D11PixelShader* aShadowShader)
 {
 	myFramework->GetDeviceContext()->VSSetShader(myVertexShader, NULL, 0);
-	myFramework->GetDeviceContext()->PSSetShader(NULL, NULL, 0);
+	myFramework->GetDeviceContext()->PSSetShader(aShadowShader, NULL, 0);
 	myFramework->GetDeviceContext()->GSSetShader(NULL, NULL, 0);
 	myFramework->GetDeviceContext()->IASetInputLayout(myLayout);
 	myFramework->GetDeviceContext()->IASetPrimitiveTopology(myTopology);
