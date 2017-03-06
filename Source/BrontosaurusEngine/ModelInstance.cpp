@@ -183,12 +183,12 @@ void CModelInstance::Render()
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
 }
 
-void CModelInstance::Update(const CU::Time aDeltaTime)
+void CModelInstance::Update(const CU::Time& aDeltaTime)
 {
 	myAnimationCounter += aDeltaTime.GetSeconds();
 }
 
-void CModelInstance::SetTransformation(CU::Matrix44f& aTransformation)
+void CModelInstance::SetTransformation(const CU::Matrix44f& aTransformation)
 {
 	myTransformation = aTransformation;
 }
