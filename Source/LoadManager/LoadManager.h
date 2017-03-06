@@ -1,5 +1,5 @@
 #pragma once
-#include "Game/PlayState.h"
+#include "../Game/PlayState.h"
 
 class CScene;
 

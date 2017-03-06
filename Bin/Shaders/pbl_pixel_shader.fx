@@ -494,11 +494,11 @@ PixelOutput PS_PBL(PosTex_InputPixel input)
     	float3 directionDiffuse = color.rgb * pointLight.intensity * lightRange;
     	float3 distribution = PS_Distribution(input, -direction, worldPosition).color.xxx;
     	float3 visibility = PS_Visibility(input, -direction, worldPosition).color.xxx;
-    	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
+    	directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility * pointLight.intensity * lightRange;
 
 	
 
-		output.color = float4(ambientDiffuse + ambientSpecularity + /*directionDiffuse +*/ directionSpecularity + emissive, 1.0f);
+		output.color = float4(/*ambientDiffuse + ambientSpecularity +*/ directionDiffuse + directionSpecularity/* + emissive*/, 1.0f);
 	}
 	return output;
 }

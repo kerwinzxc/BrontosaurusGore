@@ -24,7 +24,7 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 	CU::CJsonValue PositionObject = someData.myData.at("position");
 
-	const float unityScale = 100;
+	const float unityScale = 1;
 
 	const float positionX = PositionObject.at("x").GetFloat() * unityScale * -1;
 	const float positionY = PositionObject.at("y").GetFloat() * unityScale;

@@ -91,7 +91,7 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	D3D_PRIMITIVE_TOPOLOGY topology			= D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	//Put effects in a manager mebe?
 	CEffect* effect = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, topology);
-	CSurface* surface = new CSurface(modelPath, scene.myTextures);
+	CSurface* surface = new CSurface("Models/Textures/", scene.myTextures);
 	//CSurface* surface = new CSurface(texturePaths);
 
 	if (scene.mySphereColData.radius > 0.0f)

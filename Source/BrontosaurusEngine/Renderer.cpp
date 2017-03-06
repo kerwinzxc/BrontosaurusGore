@@ -215,11 +215,11 @@ void CRenderer::Render()
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
 
-	/*myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0,0,0.33,0.33), &gBuffer.GetAlbedo());
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0,0,0.33,0.33), &gBuffer.GetAlbedo());
 
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.33, 0., 0.66, 0.33), &gBuffer.GetNormal());
 
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.66, 0., 1.0, 0.33), gBuffer.GetDepth());*/
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, CU::Vector4f(0.66, 0., 1.0, 0.33), gBuffer.GetDepth());
 }
 
 void CRenderer::SwapWrite()
@@ -683,18 +683,18 @@ void CRenderer::CreateBlendStates()
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 
 		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_COLOR;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
 

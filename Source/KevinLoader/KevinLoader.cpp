@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "KevinLoader.h"
-#include "../CommonUtilities/DL_Debug.h"
-//#include "../CommonUtilities/PJWrapper.h"
-#include "../BrontosaurusEngine/Console.h"
 #include <fstream>
-#include <string>
+#include "../Components/ComponentManager.h"
+#include "../LoadManager/LoadManager.h"
+#include "../Components/GameObjectManager.h"
+#include "../CommonUtilities/DL_Debug.h"
 
 namespace KLoader
 {
@@ -117,10 +117,6 @@ namespace KLoader
 
 		const CU::CJsonValue currentComponent = componentsObject[aIdString];
 		const std::string& type = currentComponent["type"].GetString();
-		if(type == "Light")
-		{
-			int i = 0;
-		}
 		if (myLoadFunctions.count(type) == 0)
 		{
 			PrintMissingComponents(type);
@@ -201,6 +197,8 @@ namespace KLoader
 			 }
 
 			 myLinkObjects[currentID] = currentLink;
+
+
 		}
 		return eError::NO_LOADER_ERROR;
 	}

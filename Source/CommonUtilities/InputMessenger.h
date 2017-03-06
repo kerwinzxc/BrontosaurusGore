@@ -1,5 +1,6 @@
 #pragma once
 #include "EInputMessengerType.h"
+#include "StaticArray.h"
 
 namespace CU
 {
