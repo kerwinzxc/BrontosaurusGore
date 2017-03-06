@@ -71,5 +71,8 @@ void CWeapon::Update(float aDeltaTime)
 
 void CWeapon::RotateXAxees(const float aRotationAmount)
 {
-	myWeaponObject->GetLocalTransform().Rotate(aRotationAmount, CU::Axees::X);
+	if(myWeaponObject != nullptr)
+	{
+		myWeaponObject->GetLocalTransform().Rotate(aRotationAmount, CU::Axees::X);	
+	}
 }
