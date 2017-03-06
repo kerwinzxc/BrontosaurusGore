@@ -54,9 +54,9 @@ public:
 	//Edvin testar med kamera
 	void Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList, CRenderCamera& aRenderToCamera);
 
-	void Update(const CU::Time aDeltaTime);
+	void Update(const CU::Time& aDeltaTime);
 
-	void SetTransformation(CU::Matrix44f& aTransformation);
+	void SetTransformation(const CU::Matrix44f& aTransformation);
 	void SetPosition(CU::Vector3f aPosition);
 	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
