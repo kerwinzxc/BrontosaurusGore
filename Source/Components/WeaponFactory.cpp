@@ -109,10 +109,11 @@ void CWeaponFactory::Init(CGameObjectManager* aGameObjectPointer, CModelComponen
 	myModelComponentManagerPointer = aModelComponentManager;
 }
 
-void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, SWeaponData* someWeaponData)
+void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 {
-	CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(someWeaponData->modelFilePath.c_str());
+	CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
 	CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 	newWeaponObject->AddComponent(newWeaponModelComponent);
 	aOwner->AddComponent(newWeaponObject);
+	aWeapon->SetWeaponObject(newWeaponObject);
 }

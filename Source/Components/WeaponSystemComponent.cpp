@@ -48,7 +48,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	{
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
-		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast()->GetData());
+		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast());
 
 		break;
 	}
@@ -76,6 +76,14 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		myTemporaryAmmoDataList.RemoveAll();
 		myTemporaryAmmoDataList.Destroy();
+		break;
+	}
+	case eComponentMessageType::eRotateWeaponX:
+	{
+		for(unsigned int i = 0; i < myWeapons.Size(); i++)
+		{
+			myWeapons[i]->RotateXAxees(aMessageData.myFloat);
+		}
 		break;
 	}
 	default:
