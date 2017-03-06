@@ -6,6 +6,8 @@
 #include "..\CommonUtilities\EKeyboardKeys.h"
 #include "..\CommonUtilities\EInputReturn.h"
 
+#include "..\BrontosaurusEngine\Engine.h"
+
 #ifdef INTIFY
 #error "You are breaking windows API"
 #endif // INTIFY
@@ -75,7 +77,7 @@ CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessa
 
 void CInputComponent::MouseMoved(const CU::Vector2f aMouseDeltaNormalized)
 {
-	const float yaw = aMouseDeltaNormalized.x;
+	const float yaw = aMouseDeltaNormalized.x * (WINDOW_SIZE_F.x / WINDOW_SIZE_F.y);
 	const float pitch = aMouseDeltaNormalized.y;
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();

@@ -41,12 +41,12 @@ CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISC
 
 CClient::~CClient()
 {
-	CClientMessageManager::DestroyInstance();
 	myIsRunning = false;
 	while (!myCanQuit)
 	{
 		continue;
 	}
+	CClientMessageManager::DestroyInstance();
 }
 
 bool CClient::StartClient()

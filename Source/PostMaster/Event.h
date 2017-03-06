@@ -9,7 +9,7 @@ namespace GUI
 
 
 class State;
-class PauseMenu;
+class CPauseMenuState;
 class GUICursor;
 class CPlayState;
 class StateStack;
@@ -34,7 +34,7 @@ public:
 	virtual ~Event() {}
 
 	virtual eMessageReturn DoEvent(State*) const { return eMessageReturn::eContinue; }
-	virtual eMessageReturn DoEvent(PauseMenu*) const { return eMessageReturn::eContinue; }
+	virtual eMessageReturn DoEvent(CPauseMenuState*) const { return eMessageReturn::eContinue; }
 	virtual eMessageReturn DoEvent(GUICursor*) const { return eMessageReturn::eContinue; }
 	virtual eMessageReturn DoEvent(CPlayState*) const { return eMessageReturn::eContinue; }
 	virtual eMessageReturn DoEvent(StateStack*) const { return eMessageReturn::eContinue; }

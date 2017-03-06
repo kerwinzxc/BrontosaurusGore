@@ -8,6 +8,7 @@ class CSprite;
 class CSpriteInstance
 {
 public:
+	CSpriteInstance(const char* aTexturePath);
 	CSpriteInstance(const char* aTexturePath, const CU::Vector2f& aSize, const CU::Vector2f& aPosition = CU::Vector2f::Zero,
 		const CU::Vector2f& aPivot = {0.f,0.f}, const CU::Vector4f& aRect = {0.f, 0.f , 1.f , 1.f},
 		const  CU::Vector4f& aColour = { 1.f, 1.f , 1.f , 1.f }, const bool aShouldAutoSize = false);
