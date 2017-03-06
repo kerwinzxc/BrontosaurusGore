@@ -11,6 +11,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myActiveWeaponIndex = 0;
 	myWeapons.Init(5);
 	myIsShooting = false;
+	myTemporaryAmmoDataList.Init(5);
 }
 
 
@@ -47,20 +48,42 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	{
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
+		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast());
+
 		break;
 	}
 	case eComponentMessageType::eChangeWeapon:
 	{
-		unsigned int index = myActiveWeaponIndex + aMessageData.myInt;
+		short index = myActiveWeaponIndex + aMessageData.myInt;
 		if (index < 0)
 		{
 			index = myWeapons.Size() - 1;
 		}
-		if (index >= myWeapons.Size())
+		else if (static_cast<unsigned int>(index) >= myWeapons.Size())
 		{
 			index = 0;
 		}
-		myActiveWeaponIndex = index;
+		myActiveWeaponIndex = static_cast<unsigned int>(index);
+		break;
+	}
+	case eComponentMessageType::eObjectDone:
+	{
+		for(unsigned int i = 0 ; i < myTemporaryAmmoDataList.Size(); i++)
+		{
+			SComponentMessageData newAmmoTypeMessage;
+			newAmmoTypeMessage.myAmmoData = myTemporaryAmmoDataList[i];
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddNewAmmoType, newAmmoTypeMessage);
+		}
+		myTemporaryAmmoDataList.RemoveAll();
+		myTemporaryAmmoDataList.Destroy();
+		break;
+	}
+	case eComponentMessageType::eRotateWeaponX:
+	{
+		for(unsigned int i = 0; i < myWeapons.Size(); i++)
+		{
+			myWeapons[i]->RotateXAxees(aMessageData.myFloat);
+		}
 		break;
 	}
 	default:
@@ -99,4 +122,14 @@ void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMes
 	{
 		myIsShooting = false;
 	}
+}
+
+void CWeaponSystemComponent::GiveWepon(const char* aWeaponName)
+{
+	WeaponFactoryPointer->CreateWeapon(aWeaponName, this);
+}
+
+void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
+{
+	myWeapons.Add(aWeapon);
 }

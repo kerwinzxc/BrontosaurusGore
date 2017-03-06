@@ -24,6 +24,7 @@
 CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager(nullptr), myWeaponFactory(nullptr), myMainTimer(0), myInGame(false), myIsLoaded(false), myWeaponSystemManager(nullptr)
 {
 	myIsRunning = false;
+	myTime = 0;
 }
 
 
@@ -104,10 +105,15 @@ void CGameServer::CreateManagersAndFactories()
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
 	//DL_PRINT("In Update");
-	CNetworkComponent* temp = CNetworkComponentManager::GetInstance()->GetComponent(0);
-	if (temp != nullptr)
+	myTime += aDeltaTime.GetMilliseconds();
+	if (myTime >= 60)
 	{
-		temp->GetParent()->NotifyComponents(eComponentMessageType::eHeal, SComponentMessageData());
+		CNetworkComponent* temp = CNetworkComponentManager::GetInstance()->GetComponent(0);
+		if (temp != nullptr)
+		{
+			temp->GetParent()->NotifyComponents(eComponentMessageType::eHeal, SComponentMessageData());
+		}
+		myTime = 0;
 	}
 	return true;
 }

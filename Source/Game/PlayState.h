@@ -49,6 +49,7 @@ public:
 
 	CGameObjectManager* GetGameObjectManager();
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
+	inline CAmmoComponentManager* GetAmmoManager();
 	inline bool IsLoaded() const;
 
 private:
@@ -66,6 +67,8 @@ private:
 	CInputComponentManager* myInputComponentManager;
 
 	CMovementComponent* myMovementComponent;
+	class CCameraComponent* myCameraComponent;
+	friend struct SEncapsulationBreaker;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
@@ -80,4 +83,9 @@ inline bool CPlayState::IsLoaded() const
 inline CWeaponSystemManager* CPlayState::GetCWeaponSystemManager()
 {
 	return myWeaponSystemManager;
+}
+
+inline CAmmoComponentManager* CPlayState::GetAmmoManager()
+{
+	return myAmmoComponentManager;
 }

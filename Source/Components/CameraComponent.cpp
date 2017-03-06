@@ -44,6 +44,8 @@ bool CCameraComponent::Answer(const eComponentQuestionType aQuestionType, SCompo
 		return true;
 	case eComponentQuestionType::eGetCameraLookat:
 		return GetLookat(aQuestionData.myVector3f);
+	case eComponentQuestionType::eGetCameraPosition:
+		return GetPosition(aQuestionData.myVector3f);
 	}
 
 	return false;
@@ -59,19 +61,25 @@ void CCameraComponent::Pitch(const float aPitch)
 	const float PitchCap = 0.99f;
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-
+	SComponentMessageData rotationData;
 	float lookAtHeight = parentTransform.myForwardVector.y;
 	if (lookAtHeight < PitchCap && lookAtHeight > -PitchCap)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 	else if (lookAtHeight > PitchCap && aPitch > 0.f)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 	else if (lookAtHeight < -PitchCap && aPitch < 0.f)
 	{
 		parentTransform.Rotate(aPitch, CU::Axees::X);
+		rotationData.myFloat = aPitch;
+		GetParent()->NotifyParent(eComponentMessageType::eRotateWeaponX, rotationData);
 	}
 }
 
@@ -80,6 +88,17 @@ bool CCameraComponent::GetLookat(CU::Vector3f& aLookat)
 	if (GetParent())
 	{
 		aLookat = GetParent()->GetToWorldTransform().myForwardVector.GetNormalized();
+		return true;
+	}
+
+	return false;
+}
+
+bool CCameraComponent::GetPosition(CU::Vector3f& aPosition)
+{
+	if (GetParent())
+	{
+		aPosition = GetParent()->GetToWorldTransform().myPosition;
 		return true;
 	}
 

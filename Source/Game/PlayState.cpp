@@ -49,6 +49,10 @@
 #include "PostMaster/SendNetworkMessage.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "PauseMenu.h"
+#include "StateStack/StateStack.h"
+#include "CommonUtilities/InputMessage.h"
+#include <CommonUtilities/EKeyboardKeys.h>
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -57,6 +61,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myScene(nullptr)
 	, myModelComponentManager(nullptr)
 	, myMovementComponent(nullptr)
+	, myCameraComponent(nullptr)
 	, myAmmoComponentManager(nullptr)
 	, myWeaponFactory(nullptr)
 	, myWeaponSystemManager(nullptr)
@@ -134,16 +139,27 @@ void CPlayState::Load()
 
 	//create hard coded player:
 	{
-		CCameraComponent* cameraComponent = new CCameraComponent();
-		CComponentManager::GetInstance().RegisterComponent(cameraComponent);
-		cameraComponent->SetCamera(playerCamera);
-		CGameObject* playerObject = myGameObjectManager->CreateGameObject();
-		playerObject->GetLocalTransform().SetPosition(0, 0, 0);
-		Component::CEnemy::SetPlayer(playerObject);
-		CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-		cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
-		cameraObject->AddComponent(cameraComponent);
-		playerObject->AddComponent(cameraObject);
+		CCameraComponent* cameraComponent = myCameraComponent;
+		if (cameraComponent == nullptr)
+		{
+			DL_PRINT_WARNING("No camera found in scene, creating default at height 1.80m at position (0, 0, 0)");
+			cameraComponent = new CCameraComponent();
+			CComponentManager::GetInstance().RegisterComponent(cameraComponent);
+			cameraComponent->SetCamera(playerCamera);
+
+			CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
+			cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+			cameraObject->AddComponent(cameraComponent);
+		}
+
+		CGameObject* playerObject = cameraComponent->GetParent()->GetParent();
+		if (playerObject == nullptr)
+		{
+			playerObject = myGameObjectManager->CreateGameObject();
+			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+		}
+
+		playerObject->AddComponent(cameraComponent->GetParent());
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
@@ -151,6 +167,7 @@ void CPlayState::Load()
 
 		myMovementComponent = new CMovementComponent();
 		playerObject->AddComponent(myMovementComponent);
+
 		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
@@ -172,13 +189,15 @@ void CPlayState::Load()
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
 		giveAmmoData.myInt = 1000;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		Component::CEnemy::SetPlayer(playerObject);
 	}
 	
 
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
-	myScene->SetCubemap("purpleCubemap.dds");
+	myScene->SetCubemap("default_cubemap.dds");
 	
 	myIsLoaded = true;
 	
@@ -196,11 +215,12 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponent->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
-	myScene->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
+
+	myScene->Update(aDeltaTime);
 
 	return myStatus;
 }
@@ -220,6 +240,7 @@ void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 
 void CPlayState::Pause()
 {
+	myStateStack.PushState(new CPauseMenuState(myStateStack));
 }
 
 eMessageReturn CPlayState::Recieve(const Message& aMessage)
@@ -229,7 +250,15 @@ eMessageReturn CPlayState::Recieve(const Message& aMessage)
 
 CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
-	CU::CInputMessenger::RecieveInput(aInputMessage);
+	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
+	{
+		Pause();
+	}
+	else
+	{
+		CU::CInputMessenger::RecieveInput(aInputMessage);
+	}
+	
 	return CU::eInputReturn::eKeepSecret;
 }
 
@@ -246,16 +275,13 @@ void CPlayState::CreateManagersAndFactories()
 
 	myScene = new CScene();
 
-	//LoadManager::GetInstance().SetCurrentPlayState(this);
-	//LoadManager::GetInstance().SetCurrentScene(myScene);
-
-
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
+	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager);
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);

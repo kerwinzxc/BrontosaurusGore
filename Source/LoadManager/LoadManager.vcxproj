@@ -341,6 +341,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="LoadAmmoComponent.h" />
     <ClInclude Include="LoadCamera.h" />
     <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
@@ -360,6 +361,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LoadAmmoComponent.cpp" />
     <ClCompile Include="LoadCamera.cpp" />
     <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />

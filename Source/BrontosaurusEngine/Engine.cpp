@@ -178,6 +178,7 @@ void CEngine::Start()
 		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
 	}
 
+	SetForegroundWindow(myWindowsWindow->GetHWND());
 	while (CEngine::GetInstance()->GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();

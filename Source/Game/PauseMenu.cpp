@@ -1,89 +1,90 @@
 #include "stdafx.h"
 #include "PauseMenu.h"
 
-#include "../PostMaster/PostMaster.h"
-#include "../PostMaster/Message.h"
-#include "../PostMaster/Event.h"
-#include "../PostMaster/PopCurrentState.h"
+//#include "Audio/AudioInterface.h"
 
-#include "GUI/GUIManager.h"
-#include "BrontosaurusEngine/Skybox.h"
-#include "BrontosaurusEngine/Renderer.h"
 #include "BrontosaurusEngine/Engine.h"
-#include "Audio/AudioInterface.h"
+#include "BrontosaurusEngine/Renderer.h"
 
-#include "Game.h"
-#include "ThreadedPostmaster/Postmaster.h"
+#include "BrontosaurusEngine/SpriteInstance.h"
+#include "CommonUtilities/InputMessage.h"
+#include <CommonUtilities/EKeyboardKeys.h>
+#include "CommonUtilities/EInputReturn.h"
 
-PauseMenu::PauseMenu(StateStack& aStateStack)
-	: State(aStateStack, eInputMessengerType::ePauseMenu)
-	, myGUIManager(nullptr)
+CPauseMenuState::CPauseMenuState(StateStack& aStateStack)
+	: State(aStateStack, eInputMessengerType::ePauseMenu, 2)
+	, myPauseScreenSprite(nullptr)
 {
 }
 
-
-PauseMenu::~PauseMenu()
+CPauseMenuState::~CPauseMenuState()
 {
-	SAFE_DELETE(myGUIManager);
+	SAFE_DELETE(myPauseScreenSprite);
 }
 
-void PauseMenu::Init()
+void CPauseMenuState::Init()
 {
-	myGUIManager = new GUI::GUIManager();
-	myGUIManager->Init("Models/mainMenu/pauseMenu.fbx"); 
+	myPauseScreenSprite = new CSpriteInstance("Sprites/PauseMenu/pauseMenu.dds");
 }
 
-eStateStatus PauseMenu::Update(const CU::Time & aDeltaTime)
+eStateStatus CPauseMenuState::Update(const CU::Time& aDeltaTime)
 {
-	myGUIManager->Update(aDeltaTime);
-
 	return myStatus;
 }
 
-void PauseMenu::Render()
+void CPauseMenuState::Render()
 {
-	myGUIManager->Render();
+	if (myPauseScreenSprite)
+	{
+		SChangeStatesMessage* changeStateMessage = new SChangeStatesMessage();
+		changeStateMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStateMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage->myBlendState = eBlendState::eAddBlend;
+		RENDERER.AddRenderMessage(changeStateMessage);
+
+		myPauseScreenSprite->Render();
+	}
 }
 
-void PauseMenu::OnEnter(const bool /*aLetThroughRender*/)
+void CPauseMenuState::OnEnter(const bool /*aLetThroughRender*/)
 {
-	myGUIManager->RestartRenderAndUpdate();
-	//PostMaster::GetInstance().Subscribe(this, eMessageType::eStateMessage);
-	//PostMaster::GetInstance().Subscribe(this, eMessageType::eKeyboardMessage);
 }
 
-void PauseMenu::OnExit(const bool /*aLetThroughRender*/)
+void CPauseMenuState::OnExit(const bool /*aLetThroughRender*/)
 {
-	myGUIManager->PauseRenderAndUpdate();
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eStateMessage);
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eKeyboardMessage);
 }
 
-
-eMessageReturn PauseMenu::Recieve(const Message & aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
-bool PauseMenu::GetLetThroughRender() const
+bool CPauseMenuState::GetLetThroughRender() const
 {
 	return true;
 }
 
-void PauseMenu::Resume()
+void CPauseMenuState::Resume()
 {
-	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eStateStackMessage, PopCurrentState()));
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
+	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PopCurrentState());
 }
 
-void PauseMenu::LevelSelect()
-{
-}
-
-void PauseMenu::MainMenu()
+void CPauseMenuState::LevelSelect()
 {
 }
 
-void PauseMenu::Quit()
+void CPauseMenuState::MainMenu()
 {
+}
+
+void CPauseMenuState::Quit()
+{
+}
+
+CU::eInputReturn CPauseMenuState::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	{
+		if (aInputMessage.myKey == CU::eKeys::ESCAPE || aInputMessage.myKey == CU::eKeys::P)
+		{
+			myStatus = eStateStatus::ePop;
+		}
+	}
+
+	return CU::eInputReturn::eKeepSecret;
 }

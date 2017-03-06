@@ -192,7 +192,7 @@ void CServerMain::DisconectClient(ClientID aClient)
 
 void CServerMain::UpdatePing(CU::Time aDeltaTime)
 {
-	for (auto pendingPing : myPendingPings)
+	/*for (auto pendingPing : myPendingPings)
 	{
 		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
 
@@ -204,7 +204,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 			DisconectClient(pendingPing.first);
 			break;
 		}
-	}
+	}*/
 }
 
 void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
@@ -282,7 +282,7 @@ bool CServerMain::CheckIfClientsReady() const
 {
 	for (auto client : myClients)
 	{
-		if (client.second.IsReady == false)
+		if (client.second.IsReady == false)// || myClients.size() < 2)
 		{
 			return false;
 		}
@@ -357,6 +357,7 @@ bool CServerMain::Update()
 		case ePackageType::ePing:
 		{
 			//std::cout << "Ping message recievd from client " << std::endl;
+			//DL_PRINT("SERVER:Ping");
 			SNetworkPackageHeader newHeader;
 			newHeader.myPackageType = static_cast<char>(ePackageType::ePingResponse);
 			newHeader.mySenderID = ID_SERVER;
@@ -369,6 +370,7 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePingResponse:
 		{
+			//DL_PRINT("SERVER:PingRespons");
 			RecievePingResponse(currentMessage->GetHeader());
 		}
 		break;
@@ -468,5 +470,15 @@ bool CServerMain::Update()
 eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
 {
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
+
+	/*CNetworkMessage* temp = aSendNetowrkMessageMessage.UnpackHolder();
+	if (temp->GetHeader().myPackageType == static_cast<char>(ePackageType::ePosition))
+	{
+		CNetworkMessage_Position* position = temp->CastTo<CNetworkMessage_Position>();
+		int x = position->GetPosition().x;
+		int y = position->GetPosition().y;
+		int z = position->GetPosition().z;
+	}*/
+
 	return eMessageReturn::eContinue;
 }

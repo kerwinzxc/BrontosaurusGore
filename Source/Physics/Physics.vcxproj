@@ -214,10 +214,10 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;ApexFrameworkDEBUG_x64.lib;Apex_ParticlesDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;$(SolutionDir)..\LibDependencies\apex\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4006  /IGNORE:4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -306,10 +306,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;ApexFramework_x64.lib;APEX_ClothingGPU_x64.lib;APEX_Destructible_x64.lib;APEX_Legacy_x64.lib;APEX_Particles_x64.lib;APEX_TurbulenceFS_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\apex\;$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/IGNORE:4006  /IGNORE:4221 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
@@ -363,6 +363,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Apex.h" />
+    <ClInclude Include="ApexRenderResourceManager.h" />
+    <ClInclude Include="ApexResourceCallback.h" />
     <ClInclude Include="Include\apex_1.4\Actor.h" />
     <ClInclude Include="Include\apex_1.4\Apex.h" />
     <ClInclude Include="Include\apex_1.4\ApexCudaContextManager.h" />
@@ -680,13 +682,9 @@
     <ClInclude Include="Include\vehicle\PxVehicleUtilSetup.h" />
     <ClInclude Include="Include\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="Include\vehicle\PxVehicleWheels.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="Foundation.h" />
-    <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="PhysXAllocator.h" />
     <ClInclude Include="PhysXErrorHander.h" />
     <ClInclude Include="PhysXManager.h" />
-    <ClInclude Include="Shape.h" />
     <ClInclude Include="SharedPhysicsPointer.h" />
     <ClInclude Include="SmartPhysicsPointer.h" />
     <ClInclude Include="stdafx.h" />
@@ -694,13 +692,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Apex.cpp" />
-    <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="Foundation.cpp" />
-    <ClCompile Include="PhysicsScene.cpp" />
+    <ClCompile Include="ApexRenderResourceManager.cpp" />
+    <ClCompile Include="ApexResourceCallback.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
-    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ModelViewer|Win32'">Create</PrecompiledHeader>

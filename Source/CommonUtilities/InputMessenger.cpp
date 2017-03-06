@@ -6,7 +6,7 @@
 
 namespace CU
 {
-	CU::StaticArray<CInputMessenger*, static_cast<int>(eInputMessengerType::eLength)> CInputMessenger::ourInstances(nullptr);
+	CU::StaticArray<CInputMessenger*, static_cast<int>(eInputMessengerType::eLength)> CInputMessenger::ourInstances = nullptr;
 
 	CInputMessenger::CInputMessenger(const eInputMessengerType aMessengerType, const int aPriority)
 		: myListeners(4u)

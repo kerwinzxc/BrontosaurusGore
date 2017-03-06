@@ -44,5 +44,7 @@ private:
 	bool myIsRunning;
 	bool myInGame;
 	bool myIsLoaded;
+
+	float myTime;
 };
 

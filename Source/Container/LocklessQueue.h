@@ -6,7 +6,7 @@
 //TODO: Check if there is a way to make this better
 namespace Container
 {
-	template<typename T>
+	template<typename T, unsigned int QueueLimit = 5000>
 	class CLocklessQueue : public IQueue<T>
 	{
 	public:
@@ -21,7 +21,7 @@ namespace Container
 		~CLocklessQueue();
 
 		void Push(T aValue) override;
-		void Append(IQueue<T>& aQueue) override;
+		void Append(IQueue<T, QueueLimit>& aQueue) override;
 		T Pop() override;
 
 		Error TryPush(const T aValue);
@@ -41,40 +41,42 @@ namespace Container
 	
 }
 
-template <typename T>
-Container::CLocklessQueue<T>::CLocklessQueue() : IQueue<T>(), myPushing(false), myPoping(false)
+template <typename T, unsigned int QueueLimit = 5000>
+Container::CLocklessQueue<T, QueueLimit>::CLocklessQueue() : IQueue<T, QueueLimit>(), myPushing(false), myPoping(false)
 {
 }
 
-template <typename T>
-Container::CLocklessQueue<T>::~CLocklessQueue()
+template <typename T, unsigned int QueueLimit = 5000>
+Container::CLocklessQueue<T, QueueLimit>::~CLocklessQueue()
 {
-	this->CLocklessQueue<T>::RemoveAll();
+	this->CLocklessQueue<T, QueueLimit>::RemoveAll();
 }
 
-template <typename T>
-void Container::CLocklessQueue<T>::Push(T aValue)
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::CLocklessQueue<T, QueueLimit>::Push(T aValue)
 {
-	typename IQueue<T>::QueueItem* item = new typename IQueue<T>::QueueItem;
+	typename IQueue<T, QueueLimit>::QueueItem* item = new typename IQueue<T, QueueLimit>::QueueItem;
 	item->value = aValue;
 
 	std::lock_guard<std::mutex> guard(myLock);
-	if(IQueue<T>::myHead == nullptr)
+	if(IQueue<T, QueueLimit>::myHead == nullptr)
 	{
-		IQueue<T>::myHead = item;
+		IQueue<T, QueueLimit>::myHead = item;
 	}
 	else
 	{
-		IQueue<T>::myTail->next = item;
+		IQueue<T, QueueLimit>::myTail->next = item;
 	}
 
-	IQueue<T>::myTail = item;
+	IQueue<T, QueueLimit>::myTail = item;
 
-	IQueue<T>::IncrementCount();
+	IQueue<T, QueueLimit>::IncrementCount();
+
+	IQueue<T, QueueLimit>::CheckQueueLength();
 }
 
-template <typename T>
-void Container::CLocklessQueue<T>::Append(IQueue<T>& aQueue)
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::CLocklessQueue<T, QueueLimit>::Append(IQueue<T, QueueLimit>& aQueue)
 {
 	if(aQueue.IsEmpty() == true)
 	{
@@ -82,14 +84,14 @@ void Container::CLocklessQueue<T>::Append(IQueue<T>& aQueue)
 	}
 	std::lock_guard<std::mutex> guard(myLock);
 
-	IQueue<T>::Append(aQueue);
+	IQueue<T, QueueLimit>::Append(aQueue);
 }
 
-template <typename T>
-T Container::CLocklessQueue<T>::Pop()
+template <typename T, unsigned int QueueLimit = 5000>
+T Container::CLocklessQueue<T, QueueLimit>::Pop()
 {
 
-	typename IQueue<T>::QueueItem* item = IQueue<T>::myHead;
+	typename IQueue<T, QueueLimit>::QueueItem* item = IQueue<T, QueueLimit>::myHead;
 	
 	if(item == nullptr)
 	{
@@ -97,8 +99,8 @@ T Container::CLocklessQueue<T>::Pop()
 	}
 
 	myLock.lock();
-	IQueue<T>::myHead = item->next;
-	IQueue<T>::DecrementCount();
+	IQueue<T, QueueLimit>::myHead = item->next;
+	IQueue<T, QueueLimit>::DecrementCount();
 	myLock.unlock();
 
 	T value = item->value;
@@ -107,51 +109,51 @@ T Container::CLocklessQueue<T>::Pop()
 	return value;
 }
 
-template <typename T>
-typename Container::CLocklessQueue<T>::Error Container::CLocklessQueue<T>::TryPush(const T aValue)
+template <typename T, unsigned int QueueLimit = 5000>
+typename Container::CLocklessQueue<T, QueueLimit>::Error Container::CLocklessQueue<T, QueueLimit>::TryPush(const T aValue)
 {
 	myPushing = true;
 
-	if(myPoping == true && IQueue<T>::Size() <= 1)
+	if(myPoping == true && IQueue<T, QueueLimit>::Size() <= 1)
 	{
 		myPushing = false;
 		return Error::Blocked;
 	}
 
-	typename IQueue<T>::QueueItem* item = new typename IQueue<T>::QueueItem;
+	typename IQueue<T, QueueLimit>::QueueItem* item = new typename IQueue<T, QueueLimit>::QueueItem;
 	item->value = aValue;
 
 	std::lock_guard<std::mutex> guard(myLock);
-	if (IQueue<T>::myHead == nullptr)
+	if (IQueue<T, QueueLimit>::myHead == nullptr)
 	{
-		IQueue<T>::myHead = item;
+		IQueue<T, QueueLimit>::myHead = item;
 	}
 	else
 	{
-		IQueue<T>::myTail->next = item;
+		IQueue<T, QueueLimit>::myTail->next = item;
 	}
 
-	IQueue<T>::myTail = item;
+	IQueue<T, QueueLimit>::myTail = item;
 
-	IQueue<T>::IncrementCount();
+	IQueue<T, QueueLimit>::IncrementCount();
 
 	myPushing = false;
 
 	return Error::Ok;
 }
 
-template <typename T>
-typename Container::CLocklessQueue<T>::Error Container::CLocklessQueue<T>::TryPop(T& aValue)
+template <typename T, unsigned int QueueLimit = 5000>
+typename Container::CLocklessQueue<T, QueueLimit>::Error Container::CLocklessQueue<T, QueueLimit>::TryPop(T& aValue)
 {
 	myPoping = true;
 
-	if (myPushing == true && IQueue<T>::Size() <= 1)
+	if (myPushing == true && IQueue<T, QueueLimit>::Size() <= 1)
 	{
 		myPoping = false;
 		return Error::Blocked;
 	}
 
-	typename IQueue<T>::QueueItem* item = IQueue<T>::myHead;
+	typename IQueue<T, QueueLimit>::QueueItem* item = IQueue<T>::myHead;
 
 	if(item == nullptr)
 	{
@@ -159,9 +161,9 @@ typename Container::CLocklessQueue<T>::Error Container::CLocklessQueue<T>::TryPo
 		return Error::Empty;
 	}
 
-	IQueue<T>::myHead = item->next;
+	IQueue<T, QueueLimit>::myHead = item->next;
 	
-	IQueue<T>::DecrementCount();
+	IQueue<T, QueueLimit>::DecrementCount();
 
 	myPoping = false;
 
@@ -174,25 +176,25 @@ typename Container::CLocklessQueue<T>::Error Container::CLocklessQueue<T>::TryPo
 	return Error::Ok;
 }
 
-template <typename T>
-void Container::CLocklessQueue<T>::DeleteAll()
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::CLocklessQueue<T, QueueLimit>::DeleteAll()
 {
 	std::lock_guard<std::mutex> lock(myLock);
-	for (typename IQueue<T>::QueueItem* item = IQueue<T>::myHead; item != nullptr; )
+	for (typename IQueue<T, QueueLimit>::QueueItem* item = IQueue<T, QueueLimit>::myHead; item != nullptr; )
 	{
-		IQueue<T>::DecrementCount();
-		typename IQueue<T>::QueueItem* itemToDelete = item;
+		IQueue<T, QueueLimit>::DecrementCount();
+		typename IQueue<T, QueueLimit>::QueueItem* itemToDelete = item;
 		item = item->next;
 		delete itemToDelete->value;
 		delete itemToDelete;
 	}
-	IQueue<T>::myHead = nullptr;
-	IQueue<T>::myTail = nullptr;
+	IQueue<T, QueueLimit>::myHead = nullptr;
+	IQueue<T, QueueLimit>::myTail = nullptr;
 }
 
-template <typename T>
-void Container::CLocklessQueue<T>::RemoveAll()
+template <typename T, unsigned int QueueLimit = 5000>
+void Container::CLocklessQueue<T, QueueLimit>::RemoveAll()
 {
 	std::lock_guard<std::mutex> lock(myLock);
-	IQueue<T>::RemoveAll();
+	IQueue<T, QueueLimit>::RemoveAll();
 }

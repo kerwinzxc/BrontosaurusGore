@@ -1,24 +1,19 @@
 #pragma once
-#include "../StateStack\State.h"
-#include "../PostMaster/Subscriber.h"
+#include "../StateStack/State.h"
 
-namespace GUI
-{
-	class GUIManager;
-}
+class CSpriteInstance;
 
-class PauseMenu : public State/*, public Subscriber*/
+class CPauseMenuState : public State
 {
 public:
-	PauseMenu(StateStack& aStateStack);
-	~PauseMenu();
+	CPauseMenuState(StateStack& aStateStack);
+	~CPauseMenuState();
 
 	void Init() override;
 	eStateStatus Update(const CU::Time& aDeltaTime) override;
 	void Render() override;
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
-	eMessageReturn Recieve(const Message & aMessage);
 	bool GetLetThroughRender() const override;
 
 	void Resume();
@@ -26,7 +21,8 @@ public:
 	void MainMenu();
 	void Quit();
 
-private:
-	GUI::GUIManager* myGUIManager;
-};
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
+private:
+	CSpriteInstance* myPauseScreenSprite;
+};

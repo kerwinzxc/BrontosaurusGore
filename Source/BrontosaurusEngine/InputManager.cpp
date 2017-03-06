@@ -20,7 +20,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/FocusChange.h"
 
-CInputManager* CInputManager::ourInstance(nullptr);
+CInputManager* CInputManager::ourInstance = nullptr;
 
 CInputManager::CInputManager()
 	: myKeys(20)
@@ -185,30 +185,28 @@ void CInputManager::UpdateMouse()
 					}
 				}
 			}
-			int a = myDInputWrapper->GetMouseWheelPos();
-			if (a != myLastMouseWheelPosition)
-			{
-				if (a != 0)
-				{
-					CU::SInputMessage mouseWheelChanged;
-					mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
-					mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - myDInputWrapper->GetMouseWheelPos();
-					mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
+		}
 
-					for (CU::CInputMessenger* messenger : myMessengers)
-					{
-						if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
-						{
-							break;
-						}
-					}
-					myLastMouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
-				}
-				else
+		int mouseWheelPosition = myDInputWrapper->GetMouseWheelPos();
+		if (mouseWheelPosition != myLastMouseWheelPosition)
+		{
+			if (mouseWheelPosition != 0)
+			{
+				CU::SInputMessage mouseWheelChanged;
+				mouseWheelChanged.myMouseWheelDelta.x = myLastMouseWheelPosition - mouseWheelPosition;
+				mouseWheelChanged.myMouseWheelDelta.y = myLastMouseWheelPosition - mouseWheelPosition;
+				mouseWheelChanged.myType = CU::eInputType::eScrollWheelChanged;
+
+				for (CU::CInputMessenger* messenger : myMessengers)
 				{
-					myLastMouseWheelPosition = 0;
+					if (messenger->RecieveInput(mouseWheelChanged) == CU::eInputReturn::eKeepSecret)
+					{
+						break;
+					}
 				}
 			}
+
+			myLastMouseWheelPosition = mouseWheelPosition;
 		}
 
 		myDInputWrapper->SetMousePosition(middleOfWindow.x, middleOfWindow.y);
