@@ -5,6 +5,7 @@
 #include "../CommonUtilities/DL_Debug.h"
 #include "../TServer/ServerMain.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../CommonUtilities/ConsolePrinter.h"
 
 
 int main(int argc, char* argv[])
@@ -13,7 +14,7 @@ int main(int argc, char* argv[])
 	//CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();
-
+	CommonUtilities::CConsolePrinter::Create();
 	CServerMain server;
 	server.StartServer();
 
