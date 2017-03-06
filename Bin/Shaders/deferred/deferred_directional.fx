@@ -1,4 +1,6 @@
 #include <..\Fullscreen\structs.fx>
+#include <..\oncePerFrame.fx>
+
 
 //**********************************************//
 //					TEXTURES					//
@@ -11,7 +13,7 @@ Texture2D deferred_RMAO			: register(t3);
 Texture2D deferred_emissive     : register(t4);
 Texture2D deferred_depth        : register(t5);
 
-Texture2D shadowBuffer          : register(t6);
+Texture2D shadowBuffer          : register(t7);
 
 //**********************************************//
 //					SAMPLERS					//
@@ -24,17 +26,7 @@ SamplerState samplerWrap        : register(s1);
 //					C-BUFFER					//
 //**********************************************//
 
-cbuffer ConstantBuffer			: register(b0)
-{
-	float4x4 cameraSpaceInversed;
-	float4x4 projectionSpace;
-
-	float4x4 shadowCamInverse;
-	float4x4 shadowCamProjection;
-
-	float garbageo[4];
-}
-
+// OncePer Framebuffer defined in oncePerFrame.fx
 
 // lägg till i ^
 cbuffer CameraBuffer			: register(b1)
@@ -51,7 +43,7 @@ cbuffer directionalLight        : register(b2)
 		float intensity;
 		float3 direction;
 		float shadowCasting;
-	} directioanLight;
+	} directionalLight;
 }
 
 
@@ -160,6 +152,33 @@ float3 CameraPosition(float4x4 aCameraSpace)
 	return cameraPosition.xyz;
 }
 
+float Shadow(float3 worldPosition)
+{
+	if (directionalLight.shadowCasting == 0.0f)
+	{
+		return 1.0f;
+	}
+
+
+	float4 shadowCamPosition = worldPosition;
+
+	shadowCamPosition = mul(shadowCamInverse, shadowCamPosition);
+	shadowCamPosition = mul(shadowCamProjection, shadowCamPosition);
+
+	shadowCamPosition /= shadowCamPosition.w;
+
+	float2 texCord;
+	texCord.x = shadowCamPosition.x * 0.5f + 0.5f;
+	texCord.y = shadowCamPosition.y * -0.5f + 0.5f;
+	float shadowCamDepth = shadowBuffer.SampleLevel(samplerWrap, texCord, 0).x;
+
+	if (shadowCamDepth < shadowCamPosition.z - 0.001f && shadowCamDepth != 0.f)
+	{
+		return 0.0f;
+	}
+	return 1.0f;
+}
+
 Output PS_PosTex(PosTex_InputPixel inputPixel)
 {
 	Output output;
@@ -172,7 +191,8 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 		output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		return output;
 	}
-
+	float3 worldPosition = WorldPosition(uv, depth);
+	float3 cameraPosition = CameraPosition(cameraSpace);
 
 	float3 albedo = deferred_diffuse.Sample(samplerWrap, uv).xyz;
 	float3 normal = Normal(uv);
@@ -185,13 +205,6 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float1 roughness = RMAO.x;
 	float3 substance = (float3(0.04f, 0.04f, 0.04f) - (float3(0.04f, 0.04f, 0.04f) * metalness)) + albedo * metalness;
 
-	float3 worldPosition = WorldPosition(uv, depth);
-	
-
-
-	float3 cameraPosition = CameraPosition(cameraSpace);
-
-
 	float3 toEye = normalize(cameraPosition - worldPosition);
 	float1 VdotN = dot(toEye.xyz, normal);
 	VdotN = saturate(VdotN);
@@ -202,9 +215,9 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	fresnel = substance + fresnel;
 
 	// DIF
-	float3 lightColor = directioanLight.color;
-	float3 lambert = Lambert(normal, directioanLight.direction);
-	float3 toLight = -directioanLight.direction;
+	float3 lightColor = directionalLight.color;
+	float3 lambert = Lambert(normal, directionalLight.direction);
+	float3 toLight = -directionalLight.direction;
 	float3 halfvec = normalize(toLight + toEye);
 	float LdotH = dot(toLight, halfvec);
 	LdotH = saturate(LdotH);
@@ -217,14 +230,15 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 
 	// SPEC hugger
-	lightColor = directioanLight.color;
-	float3 distribution = Distribution(directioanLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
-	float3 visibility = Visibility(directioanLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
+	lightColor = directionalLight.color;
+	float3 distribution = Distribution(directionalLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
+	float3 visibility = Visibility(directionalLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
 	float3 directionSpecularity = lightColor * lambert * dirrfresnel * distribution * visibility;
 
+	float shadow = Shadow(worldPosition);
 
-	float3 finalColor = directionDiffuse + directionSpecularity;
-	finalColor *= directioanLight.intensity;
+	float3 finalColor = (directionDiffuse + directionSpecularity);
+	finalColor *= directionalLight.intensity * shadow;
 	output.color = float4(finalColor, 1.0f);
 	return output;
 }
