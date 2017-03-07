@@ -59,6 +59,14 @@
 #include "AmmoReplenishData.h"
 //
 
+
+//PHYSICS
+#include "../Physics/Foundation.h"
+#include "../Physics/Physics.h"
+#include "../Physics/PhysicsScene.h"
+#include "../Physics/PhysicsActorDynamic.h"
+
+
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
@@ -76,6 +84,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myMovementComponentManager(nullptr)
 	, myIsLoaded(false)
 {
+	myPhysicsScene = nullptr;
+	myActor = nullptr;
 }
 
 CPlayState::~CPlayState()
@@ -94,6 +104,8 @@ CPlayState::~CPlayState()
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
+	SAFE_DELETE(myPhysicsScene);
+	SAFE_DELETE(myActor);
 }
 
 void CPlayState::Load()
@@ -119,6 +131,13 @@ void CPlayState::Load()
 	
 	myWeaponFactory->LoadWeapons();
 
+	Physics::CFoundation::Create();
+	Physics::CPhysics* physics = Physics::CFoundation::GetInstance().CreatePhysics();
+	myPhysicsScene = physics->CreateScene();
+
+	Physics::CShape* shape = physics->CreateBoxShape({ 0.5f, 0.5f, 0.5f });
+	myActor = physics->CreateDynamicActor(shape, false, 10.f, true, true);
+	myPhysicsScene->AddActor(myActor);
 
 
 
@@ -173,6 +192,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myAmmoComponentManager->Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
+	myPhysicsScene->Simulate(aDeltaTime.GetSeconds());
 
 	return myStatus;
 }
