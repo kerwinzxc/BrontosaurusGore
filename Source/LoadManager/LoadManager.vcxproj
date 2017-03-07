@@ -346,8 +346,10 @@
     <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadHealthComponent.h" />
+    <ClInclude Include="LoadInputComponent.h" />
     <ClInclude Include="LoadManager.h" />
     <ClInclude Include="LoadModel.h" />
+    <ClInclude Include="LoadMovementComponent.h" />
     <ClInclude Include="LoadNetworkComponent.h" />
     <ClInclude Include="LoadObject.h" />
     <ClInclude Include="LoadColliderComponent.h" />
@@ -366,8 +368,10 @@
     <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadHealthComponent.cpp" />
+    <ClCompile Include="LoadInputComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
     <ClCompile Include="LoadModel.cpp" />
+    <ClCompile Include="LoadMovementComponent.cpp" />
     <ClCompile Include="LoadNetworkComponent.cpp" />
     <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="LoadColliderComponent.cpp" />

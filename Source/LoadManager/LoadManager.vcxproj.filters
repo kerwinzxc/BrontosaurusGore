@@ -51,6 +51,12 @@
     <ClInclude Include="LoadAmmoComponent.h">
       <Filter>LoadThings\LoadAmmoComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadMovementComponent.h">
+      <Filter>LoadThings\LoadMovmentComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadInputComponent.h">
+      <Filter>LoadThings\LoadInputController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -99,6 +105,12 @@
     </ClCompile>
     <ClCompile Include="LoadAmmoComponent.cpp">
       <Filter>LoadThings\LoadAmmoComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadMovementComponent.cpp">
+      <Filter>LoadThings\LoadMovmentComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadInputComponent.cpp">
+      <Filter>LoadThings\LoadInputController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +161,12 @@
     </Filter>
     <Filter Include="LoadThings\LoadAmmoComponent">
       <UniqueIdentifier>{337458a1-a63e-405e-9779-7fcdeb6364f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadMovmentComponent">
+      <UniqueIdentifier>{9c3fb45e-65bd-4fb9-ba5d-1f16846851fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadInputController">
+      <UniqueIdentifier>{d5e172ed-b3f6-4548-9e11-92076b5c4057}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

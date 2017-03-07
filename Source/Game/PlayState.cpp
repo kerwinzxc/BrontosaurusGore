@@ -142,7 +142,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
+	//TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
 	
 	//myGameObjectManager->SendObjectsDoneMessage();
 
@@ -163,7 +163,8 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	myMovementComponent->Update(aDeltaTime);
+	//myMovementComponent->Update(aDeltaTime);
+	myMovementComponentManager->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
