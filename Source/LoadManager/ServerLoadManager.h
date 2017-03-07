@@ -48,3 +48,7 @@ private:
 	friend void CGameServer::Load(const int aLevelIndex);
 };
 
+#define GET_SERVERLOADMANAGER(LOCAL_VARIABLE)									\
+CServerLoadManager* LOCAL_VARIABLE_invisiblePtr = CServerLoadManager::GetInstance();	\
+if (LOCAL_VARIABLE_invisiblePtr == nullptr) { return NULL_COMPONENT; }	\
+CServerLoadManager& LOCAL_VARIABLE = *LOCAL_VARIABLE_invisiblePtr

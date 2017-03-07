@@ -28,6 +28,7 @@ class CProjectileComponentManager;
 class CProjectileFactory;
 class CInputComponentManager;
 class CNetworkComponentManager;
+class CMovementComponentManager;
 
 class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
@@ -51,6 +52,7 @@ public:
 	CGameObjectManager* GetGameObjectManager();
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline CAmmoComponentManager* GetAmmoManager();
+	inline CMovementComponentManager* GetMovementComponentManager();
 	inline bool IsLoaded() const;
 private:
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
@@ -67,6 +69,7 @@ private:
 	CProjectileFactory* myProjectileFactory;
 	CEnemyComponentManager* myEnemyComponentManager;
 	CInputComponentManager* myInputComponentManager;
+	CMovementComponentManager* myMovementComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	class CCameraComponent* myCameraComponent;
@@ -90,4 +93,9 @@ inline CWeaponSystemManager* CPlayState::GetCWeaponSystemManager()
 inline CAmmoComponentManager* CPlayState::GetAmmoManager()
 {
 	return myAmmoComponentManager;
+}
+
+inline CMovementComponentManager * CPlayState::GetMovementComponentManager()
+{
+	return myMovementComponentManager;
 }

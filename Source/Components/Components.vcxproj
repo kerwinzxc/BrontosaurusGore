@@ -382,6 +382,7 @@
     <ClInclude Include="EnemyComponentManager.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
@@ -437,6 +438,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
+    <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
