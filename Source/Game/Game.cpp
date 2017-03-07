@@ -20,7 +20,7 @@
 //#include "PostMaster/Message.h"
 //#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
-CGame::CGame(): mySplashScreen(nullptr)
+CGame::CGame()
 {
 }
 
