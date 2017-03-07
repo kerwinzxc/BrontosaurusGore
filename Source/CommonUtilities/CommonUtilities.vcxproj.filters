@@ -390,6 +390,7 @@
     <ClInclude Include="EInputMessengerType.h">
       <Filter>Input\Recieving</Filter>
     </ClInclude>
+    <ClInclude Include="ConsolePrinter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -486,6 +487,7 @@
     <ClCompile Include="InputMessenger.cpp">
       <Filter>Input\Recieving</Filter>
     </ClCompile>
+    <ClCompile Include="ConsolePrinter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CommonUtilities.rc" />

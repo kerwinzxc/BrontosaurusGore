@@ -70,7 +70,7 @@ void CFontEngine::LoadFonts(std::string aFontJsonFile)
 
 		CFT_Font* font = CreateFace(fontFile.c_str());
 		font->SetSize(fontSize, 0, 0);
-		font->SetLineHeight(lineHeight);	
+		font->SetLineHeight(lineHeight);
 
 		myFaces[fontName] = font;
 	}

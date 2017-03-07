@@ -19,7 +19,9 @@ CMessageManager::CMessageManager()
 
 CMessageManager::~CMessageManager()
 {
+	myMutex.lock();
 	CMessageStorage::DestroyInstance();
+	myMutex.unlock();
 }
 
 CNetworkMessage* CMessageManager::CreateMessage(const SNetworkMessageHolder& aMessageHolder)

@@ -5,22 +5,22 @@
 #include "../CommonUtilities/DL_Debug.h"
 #include "../TServer/ServerMain.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../CommonUtilities/ConsolePrinter.h"
 
 
 int main(int argc, char* argv[])
 {
-	Postmaster::Threaded::CPostmaster::GetInstance().Start();
+	Postmaster::Threaded::CPostmaster::Create();
 	//CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();
-
+	CommonUtilities::CConsolePrinter::Create();
 	CServerMain server;
 	server.StartServer();
 
 	//CommandLineManager::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();
 	//PostMaster::DestroyInstance();
-	Postmaster::Threaded::CPostmaster::GetInstance().Stop();
 	Postmaster::Threaded::CPostmaster::Destroy();
 
     return 0;

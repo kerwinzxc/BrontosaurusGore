@@ -198,6 +198,8 @@
     <ClInclude Include="SendNetworkMessage.h">
       <Filter>Events\SendNetworkMessage</Filter>
     </ClInclude>
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Events">

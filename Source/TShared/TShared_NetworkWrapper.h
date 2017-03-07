@@ -10,7 +10,7 @@
 
 
 //dynamic id defines
-enum ePreDefId
+enum ePreDefId: short
 {
 	ID_ALL = 0,
 	ID_ALL_BUT_ME,

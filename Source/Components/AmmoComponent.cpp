@@ -2,6 +2,8 @@
 #include "AmmoComponent.h"
 #include "AmmoData.h"
 #include "GeneralAmmoData.h"
+#include "AmmoCheckData.h"
+#include "AmmoReplenishData.h"
 
 CAmmoComponent::CAmmoComponent()
 {
@@ -19,19 +21,24 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eCheckIfHaveAmmoForShooting:
-			if(mySelectedAmmoType >= 0 && mySelectedAmmoType < myGeneralAmmoDataList.Size())
+	{
+		ChangeSelectedAmmoType(aMessageData.myAmmoCheckData->ammoType);
+		if (mySelectedAmmoType >= 0 && mySelectedAmmoType < myGeneralAmmoDataList.Size())
+		{
+			if (myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount > 0)
 			{
-				if (myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount > 0)
-				{
-					myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount--;
-					GetParent()->NotifyComponents(eComponentMessageType::eShoot, aMessageData);
-				}	
+				myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount--;
+				SComponentMessageData shootData;
+				shootData.myVector3f = aMessageData.myAmmoCheckData->shootingDirection;
+				GetParent()->NotifyComponents(eComponentMessageType::eShoot, shootData);
 			}
-			else
-			{
-				DL_PRINT("Something went wrong when trying to shoot. Tell Marcus and ask him to fix it");
-			}
+		}
+		else
+		{
+			DL_PRINT("Something went wrong when trying to shoot. Tell Marcus and ask him to fix it");
+		}
 		break;
+	}
 	case eComponentMessageType::eAddNewAmmoType:
 	{
 		SGeneralAmmoData* newGeneralAmmoData = new SGeneralAmmoData();
@@ -40,27 +47,16 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 		myGeneralAmmoDataList.Add(newGeneralAmmoData);
 		break;
 	}
-	case eComponentMessageType::eChangeSelectedAmmoType:
-	{
-		for(unsigned int i = 0; i < myGeneralAmmoDataList.Size(); i++)
-		{
-			if(myGeneralAmmoDataList[i]->ammoTypeData->ammoForWeaponName == aMessageData.myString)
-			{
-				mySelectedAmmoType = i;
-				break;
-			}
-		}	
-		break;
-	}
 	case eComponentMessageType::eGiveAmmo:
 	{
-		if(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myInt > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
+		ChangeSelectedAmmoType(aMessageData.myAmmoReplenishData->ammoType);
+		if(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
 		{
 			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
 		}
 		else
 		{
-			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myInt;
+			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount;
 		}
 		break;
 	}
@@ -77,4 +73,17 @@ void CAmmoComponent::Update(float aDeltaTime)
 {
 	aDeltaTime;
 	//this function doesn't do anthing anymore :/;
+}
+
+void CAmmoComponent::ChangeSelectedAmmoType(const char* aAmmoType)
+{
+	for (unsigned int i = 0; i < myGeneralAmmoDataList.Size(); i++)
+	{
+		if (myGeneralAmmoDataList[i]->ammoTypeData->ammoForWeaponName == aAmmoType)
+		{
+			mySelectedAmmoType = i;
+			return;
+		}
+	}
+	DL_PRINT("Couldn't find what to select as ammo. This might cause some bugs.");
 }

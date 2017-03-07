@@ -5,7 +5,7 @@
 
 CNetworkMessage_Connect::CNetworkMessage_Connect()
 {
-	myHeader.myPackageType = static_cast<char>(ePackageType::eConnect);
+	myHeader.myPackageType = (ePackageType::eConnect);
 }
 
 

@@ -27,9 +27,11 @@
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ConetctMessage.h"
+#include "../ThreadedPostmaster/ConectedMessage.h"
 
 
-CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(nullptr), myServerPingTime(0), myServerIsPinged(false)
+CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
@@ -86,12 +88,12 @@ void CClient::Ping()
 		SNetworkPackageHeader header;
 		header.mySenderID = myId;
 		header.myTargetID = ID_SERVER;
-		header.myPackageType = static_cast<char>(ePackageType::ePing);
+		header.myPackageType = (ePackageType::ePing);
 		header.myTimeStamp = 100;
 
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
-		myNetworkWrapper.Send(tempMessagePing, myServerIp, SERVER_PORT);
+		myNetworkWrapper.Send(tempMessagePing, myServerIp.c_str(), SERVER_PORT);
 
 		//myNetworkWrapper.Send(header, nullptr, 0, myServerIp, SERVER_PORT);
 		myServerIsPinged = true;
@@ -138,8 +140,7 @@ void CClient::Update()
 				myState = eClientState::CONECTED;
 
 				std::cout << "Conected to server got id:" << myId << std::endl;
-				std::cout << "Starting chat" << std::endl;
-				//myChat.StartChat();
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
 			}
 			break;
 		case ePackageType::ePing:
@@ -149,11 +150,11 @@ void CClient::Update()
 				SNetworkPackageHeader header;
 				header.mySenderID = myId;
 				header.myTargetID = ID_SERVER;
-				header.myPackageType = static_cast<char>(ePackageType::ePingResponse);
+				header.myPackageType = (ePackageType::ePingResponse);
 				header.myTimeStamp = 100;
 
 				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
-				myNetworkWrapper.Send(newMessage, myServerIp, SERVER_PORT);
+				myNetworkWrapper.Send(newMessage, myServerIp.c_str(), SERVER_PORT);
 			}
 			break;
 		case ePackageType::ePingResponse:
@@ -228,7 +229,7 @@ void CClient::Update()
 
 void CClient::Send(CNetworkMessage* aNetworkMessage)
 {
-	myNetworkWrapper.Send(aNetworkMessage, myServerIp, SERVER_PORT);
+	myNetworkWrapper.Send(aNetworkMessage, myServerIp.c_str(), SERVER_PORT);
 }
 
 bool CClient::Connect(const char* anIp, std::string aClientName)
@@ -239,7 +240,7 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	myServerIp = anIp;
 
 	SNetworkPackageHeader header;
-	header.myPackageType = static_cast<char>(ePackageType::eConnect);
+	header.myPackageType = (ePackageType::eConnect);
 	header.myTargetID = ID_SERVER;
 	header.mySenderID = ID_ALL;
 	header.myTimeStamp = myTimer.GetLifeTime().GetMilliseconds();
@@ -265,5 +266,11 @@ short CClient::GetID()
 eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
 {
 	Send(aSendNetowrkMessageMessage.UnpackHolder());
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CClient::DoEvent(const CConectMessage& aConectMessage)
+{
+	Connect(aConectMessage.myIP.c_str(), aConectMessage.myName);
 	return eMessageReturn::eContinue;
 }
