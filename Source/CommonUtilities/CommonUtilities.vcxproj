@@ -412,6 +412,7 @@
     <ClInclude Include="MemoryLeekLogger.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="ReverseGrowingArray.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="StaticMemoryPool.h" />
     <ClInclude Include="MessageKyle.h" />
     <ClInclude Include="picojson.h" />

@@ -54,7 +54,7 @@ PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
 {
 	PixelOutput output;
 	output.diffuse = diffuse.Sample(samplerWrap, input.uv);
-	if (output.diffuse.a <= 0.30f)
+	if (output.diffuse.a <= ALPHA_THRESHOLD)
 	{
 		discard;
 	}

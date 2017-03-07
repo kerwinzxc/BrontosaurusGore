@@ -184,3 +184,9 @@ SRenderSpotLight::SRenderSpotLight()
 {
 
 }
+
+SRenderModelShadowMessage::SRenderModelShadowMessage()
+	: SRenderMessage(SRenderMessage::eRenderMessageType::eRenderModelShadow)
+{
+	myModelID = -1;
+}

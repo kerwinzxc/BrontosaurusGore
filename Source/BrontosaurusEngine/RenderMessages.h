@@ -74,6 +74,7 @@ struct SRenderMessage
 		eSetCubemapResource,
 		eClear,
 		eRenderModelDeferred,
+		eRenderModelShadow,
 		eRenderDirectionalLight,
 		eRenderPointLight,
 		eRenderSpotLight,
@@ -207,6 +208,13 @@ struct SRenderModelDeferredMessage : SRenderMessage
 {
 	SRenderModelDeferredMessage();
 	SDeferredRenderModelParams myRenderParams;
+	int myModelID;
+};
+
+struct SRenderModelShadowMessage : SRenderMessage
+{
+	SRenderModelShadowMessage();
+	SShadowRenderModelParams myRenderParams;
 	int myModelID;
 };
 

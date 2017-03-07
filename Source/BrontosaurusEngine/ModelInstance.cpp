@@ -183,7 +183,44 @@ void CModelInstance::Render()
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
 }
 
-void CModelInstance::Update(const CU::Time& aDeltaTime)
+void CModelInstance::Render(CRenderCamera & aRenderToCamera)
+{
+	SRenderMessage* message = nullptr;
+	if (aRenderToCamera.GetIsShadowCamera())
+	{
+		message = new SRenderModelShadowMessage();
+		SRenderModelShadowMessage* msg = reinterpret_cast<SRenderModelShadowMessage*>(message);
+		msg->myModelID = myModel;
+		msg->myRenderParams.myTransform = myTransformation;
+		msg->myRenderParams.myTransformLastFrame = myLastFrame;
+		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
+		if (myHasAnimations == true)
+		{
+			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
+			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aAnimationTime = myAnimationCounter;
+		}
+		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
+	}
+	else
+	{
+		message = new SRenderModelDeferredMessage();
+		SRenderModelDeferredMessage* msg = reinterpret_cast<SRenderModelDeferredMessage*>(message);
+		msg->myModelID = myModel;
+		msg->myRenderParams.myTransform = myTransformation;
+		msg->myRenderParams.myTransformLastFrame = myLastFrame;
+		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
+		if (myHasAnimations == true)
+		{
+			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
+			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aAnimationTime = myAnimationCounter;
+		}
+	}
+	aRenderToCamera.AddRenderMessage(message);
+}
+
+void CModelInstance::Update(const CU::Time aDeltaTime)
 {
 	myAnimationCounter += aDeltaTime.GetSeconds();
 }

@@ -3,7 +3,7 @@
 class CPlayerNetworkComponent: public CComponent
 {
 public:
-	CPlayerNetworkComponent();
+	CPlayerNetworkComponent(const unsigned aID);
 	~CPlayerNetworkComponent();
 
 private:

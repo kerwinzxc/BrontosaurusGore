@@ -26,6 +26,7 @@
 #include "ComponentManager.h"
 
 #include "LoadManager.h"
+#include "ServerLoadManager.h"
 
 //#include "../CommonUtilities/MemoryLeekLogger.h"
 // TODO: reference additional headers your program requires here

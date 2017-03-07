@@ -7,6 +7,7 @@ class CGameObjectManager;
 class CAmmoComponentManager;
 class CWeaponSystemManager;
 class CWeaponFactory;
+class CMovementComponentManager;
 
 class CGameServer
 {
@@ -18,6 +19,7 @@ public:
 	void Start();
 
 	CGameObjectManager& GetGameObjectManager();
+	inline CMovementComponentManager* GetMovementComponentManager();
 
 	void Load(const int aLevelIndex);
 
@@ -32,6 +34,7 @@ private:
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
 	CWeaponFactory* myWeaponFactory;
+	CMovementComponentManager* myMovementComponentManager;
 
 
 	CU::TimerManager myTimerManager;
@@ -48,3 +51,7 @@ private:
 	float myTime;
 };
 
+CMovementComponentManager* CGameServer::GetMovementComponentManager()
+{
+	return myMovementComponentManager;
+}

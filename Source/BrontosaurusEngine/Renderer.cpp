@@ -33,7 +33,7 @@ CRenderer::CRenderer()
 {
 	myIsRunning = true;
 
-	mySettings.HDR = true;
+	mySettings.HDR = false;
 	mySettings.Bloom = false;
 	mySettings.Motionblur = false;
 	mySettings.CromaticAberration = false;
@@ -94,11 +94,8 @@ void CRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)
 
 void CRenderer::Render()
 {
-
-
 	myTimers.UpdateTimers();
 	UpdateBuffer();
-
 
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
@@ -137,7 +134,8 @@ void CRenderer::Render()
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
-
+	renderTo->Activate();
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
 	Downsample(*renderTo);
 	HDR();
 	Bloom();
@@ -149,7 +147,6 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
 
 
 	RenderGUI();
@@ -436,7 +433,6 @@ void CRenderer::UpdateBuffer()
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
 
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
-	
 	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = myCamera.GetProjection();
 
 	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
@@ -474,12 +470,10 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
 	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
 	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
-
 	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-
-	DEVICE_CONTEXT->PSSetShaderResources(7, 1, &msg->myShadowBuffer.GetDepthResource());
+	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetDepthResource());
 }
 
 void CRenderer::CreateRasterizerStates()
@@ -891,7 +885,10 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myCamera = msg->myCamera;
 		UpdateBuffer();
 
-		msg->CameraRenderPackage.Clear();
+		ID3D11DeviceContext* context = DEVICE_CONTEXT;
+		float clearColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		context->ClearRenderTargetView(msg->CameraRenderPackage.GetRenderTargetView(), clearColour);
+		context->ClearDepthStencilView(msg->CameraRenderPackage.GetDepthStencilView(), D3D11_CLEAR_DEPTH, 1.f, 0);
 		msg->CameraRenderPackage.Activate();
 		
 		for (unsigned int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
@@ -937,6 +934,15 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eRenderModelDepth:
 	{
 		SRenderModelDepthMessage* msg = static_cast<SRenderModelDepthMessage*>(aRenderMesage);
+		CModel* model = CEngine::GetInstance()->GetModelManager()->GetModel(msg->myModelID);
+		if (!model) break;
+		model->Render(msg->myRenderParams);
+		++aDrawCallCount;
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eRenderModelShadow:
+	{
+		SRenderModelShadowMessage* msg = static_cast<SRenderModelShadowMessage*>(aRenderMesage);
 		CModel* model = CEngine::GetInstance()->GetModelManager()->GetModel(msg->myModelID);
 		if (!model) break;
 		model->Render(msg->myRenderParams);
@@ -1047,8 +1053,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderToIntermediate* msg = static_cast<SRenderToIntermediate*>(aRenderMesage);
 		myIntermediatePackage.Activate();
+
 		myFullScreenHelper.DoEffect(
-			CFullScreenHelper::eEffectType::eCopy, 
+			msg->useDepthResource ? CFullScreenHelper::eEffectType::eCopyDepth : CFullScreenHelper::eEffectType::eCopy,
 			msg->myRect, 
 			msg->useDepthResource ? msg->myRenderPackage.GetDepthResource() : msg->myRenderPackage.GetResource());
 		break;
