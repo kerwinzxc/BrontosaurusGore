@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../CommonUtilities/matrix44.h"
-#include "../CommonUtilities/DynamicString.h"
 #include "../CommonUtilities/Vector2.h"
 #include "../CommonUtilities/Camera.h"
 
@@ -75,6 +74,7 @@ struct SRenderMessage
 		eSetCubemapResource,
 		eClear,
 		eRenderModelDeferred,
+		eRenderModelShadow,
 		eRenderDirectionalLight,
 		eRenderPointLight,
 		eRenderSpotLight,
@@ -211,6 +211,13 @@ struct SRenderModelDeferredMessage : SRenderMessage
 	int myModelID;
 };
 
+struct SRenderModelShadowMessage : SRenderMessage
+{
+	SRenderModelShadowMessage();
+	SShadowRenderModelParams myRenderParams;
+	int myModelID;
+};
+
 struct SSetShadowBuffer : SRenderMessage
 {
 	SSetShadowBuffer();
@@ -298,7 +305,7 @@ struct SRenderTextMessage : SRenderMessage
 {
 	SRenderTextMessage();
 	CU::Vector4f myColor;
-	CU::GrowingArray<CU::DynamicString> myStrings;
+	CU::GrowingArray<std::string> myStrings;
 	CU::Vector2f myPosition;
 	CText *myText;
 	CU::Vector2f myLineHeight;

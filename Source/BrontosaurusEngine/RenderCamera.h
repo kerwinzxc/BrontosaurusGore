@@ -3,6 +3,7 @@
 #include "RenderPackage.h"
 
 struct  SRenderMessage;
+struct  ID3D11PixelShader;
 
 class CRenderCamera
 {
@@ -12,21 +13,27 @@ public:
 
 	void InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
 	void InitOrthographic(const float aWidth, const float aHeight, const float aFar, const float aNear, const int aTextureWidth, const int aTextureHeight, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
-	
+	void ShadowInit();
+
 	inline void SetCamera(const CU::Camera& aCamera);
 	inline CU::Camera& GetCamera();
 
 	inline CRenderPackage& GetRenderPackage();
+	inline bool GetIsShadowCamera() const;
 
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void Render();
 
+	ID3D11PixelShader* GetShadowShader();
 private:
 	CU::Camera myCamera;
 	CRenderPackage myRenderPackage;
 	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
 	bool myIsShadowCamera;
+
+	ID3D11PixelShader* myShadowPS;
+
 };
 
 inline CRenderPackage & CRenderCamera::GetRenderPackage() 
@@ -42,4 +49,9 @@ inline void CRenderCamera::SetCamera(const CU::Camera & aCamera)
 inline CU::Camera & CRenderCamera::GetCamera()
 {
 	return myCamera;
+}
+
+inline bool CRenderCamera::GetIsShadowCamera() const
+{
+	return myIsShadowCamera;
 }

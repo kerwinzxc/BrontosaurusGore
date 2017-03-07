@@ -27,6 +27,7 @@
 #include "Components/ProjectileComponentManager.h"
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
+#include "Components/MovementComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -54,6 +55,9 @@
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
 
+
+#include "../Components/PlayerNetworkComponent.h"
+
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
 //
@@ -72,6 +76,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileComponentManager(nullptr)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
+	, myMovementComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 }
@@ -87,6 +92,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
+	SAFE_DELETE(myMovementComponentManager);
 
 	CNetworkComponentManager::Destroy();
 
@@ -106,12 +112,13 @@ void CPlayState::Load()
 	Lights::SDirectionalLight dirLight;
 	dirLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	dirLight.direction = { -1.0f, -1.0f, 1.0f, 1.0f };
+	dirLight.shadowIndex = 0;
 	myScene->AddDirectionalLight(dirLight);
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -144,7 +151,7 @@ void CPlayState::Load()
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
-	myScene->SetCubemap("default_cubemap.dds");
+	myScene->SetCubemap("purpleCubemap.dds");
 	
 	myIsLoaded = true;
 	
@@ -160,7 +167,7 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	myMovementComponent->Update(aDeltaTime);
+	myMovementComponentManager->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
@@ -225,6 +232,7 @@ void CPlayState::CreateManagersAndFactories()
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
+	myMovementComponentManager = new CMovementComponentManager();
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
@@ -265,7 +273,7 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
 		playerObject->AddComponent(inputComponent);
 
-		myMovementComponent = new CMovementComponent();
+		myMovementComponent = myMovementComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(myMovementComponent);
 
 		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
@@ -296,6 +304,11 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		tempAmmoReplensihData.replenishAmount = 1000;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		CPlayerNetworkComponent* network = new CPlayerNetworkComponent();
+		CComponentManager::GetInstance().RegisterComponent(network);
+
+		playerObject->AddComponent(network);
 
 		Component::CEnemy::SetPlayer(playerObject);
 	}

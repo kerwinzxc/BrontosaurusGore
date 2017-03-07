@@ -44,6 +44,9 @@
     <Filter Include="Message\LoadLevelMessage">
       <UniqueIdentifier>{eb503b53-c5f8-4a07-a5cb-1b591e6ab7a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\SetClientIDMessage">
+      <UniqueIdentifier>{f6e8b8c3-3259-4f50-be2c-a35ad26843cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -69,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="LoadLevelMessage.cpp">
       <Filter>Message\LoadLevelMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="SetClientIDMessage.cpp">
+      <Filter>Message\SetClientIDMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="LoadLevelMessage.h">
       <Filter>Message\LoadLevelMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="SetClientIDMessage.h">
+      <Filter>Message\SetClientIDMessage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

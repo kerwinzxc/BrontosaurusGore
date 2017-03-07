@@ -191,7 +191,7 @@ void CDebugInfoDrawer::UpdateFPSCounter()
 		myRenderThreadTimers->ResetTimer(myUpdateTextTimer_RenderThread);
 
 		const int currentFPS = static_cast<int>(myRenderThreadTimers->GetTimer(myFPSTimer).GetFPS());
-		myOutputTexts[eDebugText_FPS]->SetText(CU::DynamicString("FPS: ") + currentFPS);
+		myOutputTexts[eDebugText_FPS]->SetText(std::string("FPS: ") + std::to_string(currentFPS));
 
 		if (currentFPS < 30)
 		{
@@ -226,7 +226,7 @@ void CDebugInfoDrawer::UpdateLogicFPSCounter()
 		myLogicThreadTimers->ResetTimer(myUpdateTextTimer);
 
 		const int currentFPS = static_cast<int>(myLogicThreadTimers->GetTimer(myLogicFPSTimer).GetFPS());
-		myOutputTexts[eDebugText_LogicFPS]->SetText(CU::DynamicString("LOGIC FPS: ") + currentFPS);
+		myOutputTexts[eDebugText_LogicFPS]->SetText(std::string("LOGIC FPS: ") + std::to_string(currentFPS));
 
 		if (currentFPS < 30)
 		{
@@ -254,11 +254,11 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 		int memUsedMB = static_cast<int>(memCounter.WorkingSetSize / 1024 / 1024);
 		if (memUsedkB < 1000)
 		{
-			myOutputTexts[eDebugText_MemoryUsage]->SetText(CU::DynamicString("MEMORY (kB): ") + memUsedkB);
+			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::string("MEMORY (kB): ") + std::to_string(memUsedkB));
 		}
 		else
 		{
-			myOutputTexts[eDebugText_MemoryUsage]->SetText(CU::DynamicString("MEMORY (MB): ") + memUsedMB);
+			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::string("MEMORY (MB): ") + std::to_string(memUsedMB));
 		}
 
 		if (memUsedMB > 1500)
@@ -278,7 +278,7 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 
 void CDebugInfoDrawer::UpdateDrawCallsCounter()
 {
-	myOutputTexts[eDebugText_DrawCalls]->SetText(CU::DynamicString("DRAWCALLS: ") + myDrawCallsCount);
+	myOutputTexts[eDebugText_DrawCalls]->SetText(std::string("DRAWCALLS: ") + std::to_string(myDrawCallsCount));
 	if (myDrawCallsCount > 2000)
 	{
 		myOutputTexts[eDebugText_DrawCalls]->SetColor(CU::Vector4f(CTextInstance::Red.x * 0.5f, CTextInstance::Red.y * 0.5f, CTextInstance::Red.z * 0.5f, 1.f));

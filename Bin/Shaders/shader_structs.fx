@@ -1,4 +1,13 @@
 
+//******************************//
+//			TWEAKERS			//
+//******************************//
+#define ALPHA_THRESHOLD	0.30f
+
+//******************************//
+//			STRUCTS				//
+//******************************//
+
 struct Pos_InputVertex
 {
     float4 position : POSITION;

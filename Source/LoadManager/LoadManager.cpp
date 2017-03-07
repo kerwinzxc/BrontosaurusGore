@@ -15,6 +15,8 @@
 #include "LoadNetworkComponent.h"
 #include "LoadWeaponSystemComponent.h"
 #include "LoadAmmoComponent.h"
+#include "LoadMovementComponent.h"
+#include "LoadInputComponent.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -59,6 +61,8 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemComponent);
 	loader.RegisterComponentLoadFunction("AmmoComponent", LoadAmmoComponent);
+	loader.RegisterComponentLoadFunction("MovementComponent", LoadMovementComponent);
+	loader.RegisterComponentLoadFunction("InputComponent", LoadInputComponent);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);

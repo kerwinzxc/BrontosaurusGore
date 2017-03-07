@@ -8,7 +8,6 @@
 #include <matrix44.h>
 #include <StringHelper.h>
 #include <ThreadPool.h>
-#include <DynamicString.h>
 
 #include "GUIModleHelper.h"
 #include "FBXLoader.h"
@@ -26,7 +25,7 @@ CModelManager::~CModelManager()
 }
 
 
-const CModelManager::ModelId CModelManager::LoadModel(const CU::DynamicString& aModelPath)
+const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelPath)
 {
 	if (myModelList.Size() >= ourMaxNumberOfModels)
 	{
@@ -51,7 +50,7 @@ const CModelManager::ModelId CModelManager::LoadModel(const CU::DynamicString& a
 
 		myModels[aModelPath.c_str()] = newModelID;
 
-		if (aModelPath.Find("standardEnemy") != CU::DynamicString::FoundNone)
+		if (aModelPath.find("standardEnemy") != std::string::npos)
 		{
 			int br = 0;
 			br++;
@@ -282,7 +281,7 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 
 
 
-bool CModelManager::CreateModel(const CU::DynamicString& aModelPath, ModelId aNewModel)
+bool CModelManager::CreateModel(const std::string& aModelPath, ModelId aNewModel)
 {
 	return CModelLoader::LoadModel(aModelPath.c_str(), &myModelList[aNewModel]/*tempModelPointer*/);
 }

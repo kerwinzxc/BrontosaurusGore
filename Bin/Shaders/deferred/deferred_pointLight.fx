@@ -200,8 +200,6 @@ Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 	fresnel = fresnel / (6 - 5 * roughness);
 	fresnel = substance + fresnel;
 
-
-
 	float3 difference = worldPosition - pointLight.position;
 
 	float lightRange = length(difference) / pointLight.range;

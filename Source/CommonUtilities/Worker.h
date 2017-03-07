@@ -1,6 +1,6 @@
 #pragma once
 #include <thread>
-#include "DynamicString.h"
+
 
 namespace CU
 {
@@ -26,7 +26,7 @@ namespace CU
 		std::thread *myThread;
 		ThreadPool *myPool;
 		bool isActive;
-		DynamicString myLogString;
+		std::string myLogString;
 		TimerHandle myTimerHandle;
 	};
 }

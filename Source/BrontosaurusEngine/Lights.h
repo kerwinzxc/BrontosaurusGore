@@ -22,7 +22,7 @@ namespace Lights
 		CU::Vector3f color;
 		float intensity = 1.0f;
 		CU::Vector3f direction;
-		float shadowCasting;
+		int shadowIndex;
 	};
 
 	struct SPointLight

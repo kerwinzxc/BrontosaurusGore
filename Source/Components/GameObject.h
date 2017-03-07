@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include "../CommonUtilities/matrix44.h"
-#include "../CommonUtilities/DynamicString.h"
 
 #ifndef _RETAIL_BUILD
 #define NAMED_GAME_OBJECTS
@@ -33,8 +32,8 @@ public:
 	void MarkForDestruction();
 	bool IsGameObject() override;
 
-	inline void SetName(const CU::DynamicString& aName);
-	inline const CU::DynamicString& GetName() const;
+	inline void SetName(const std::string& aName);
+	inline const std::string& GetName() const;
 	void Move(const CU::Vector3f& aDispl);
 	void Face(const CU::Vector3f& aDirection);
 private:
@@ -52,11 +51,11 @@ private:
 	ComponentId myTransformId;
 	CU::GrowingArray<CComponent*> myComponents;
 	CGameObjectManager& myManager;
-	CU::DynamicString myName;
+	std::string myName;
 };
 
 
-inline void CGameObject::SetName(const CU::DynamicString& aName)
+inline void CGameObject::SetName(const std::string& aName)
 {
 #ifdef NAMED_GAME_OBJECTS
 	myName = aName;
@@ -65,7 +64,7 @@ inline void CGameObject::SetName(const CU::DynamicString& aName)
 #endif // NAMED_GAME_OBJECTS
 }
 
-inline const CU::DynamicString& CGameObject::GetName() const
+inline const std::string& CGameObject::GetName() const
 {
 #ifdef NAMED_GAME_OBJECTS
 	return myName;

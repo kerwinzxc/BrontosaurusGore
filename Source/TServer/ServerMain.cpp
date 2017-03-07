@@ -383,7 +383,7 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-
+			SendTo(currentMessage);
 		}
 		break;
 		case ePackageType::ePosition:

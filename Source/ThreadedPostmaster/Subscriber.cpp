@@ -81,3 +81,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CLoadLevelMessage& aLoadLe
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CSetClientIDMessage & aSetClientIDMessage)
+{
+	return eMessageReturn();
+}

@@ -387,7 +387,6 @@
     <ClInclude Include="DL_StackWalker.h" />
     <ClInclude Include="double_linked_list.h" />
     <ClInclude Include="DynamicMemoryPool.h" />
-    <ClInclude Include="DynamicString.h" />
     <ClInclude Include="EInputMessage.h" />
     <ClInclude Include="EInputMessengerType.h" />
     <ClInclude Include="EInputReturn.h" />
@@ -413,6 +412,7 @@
     <ClInclude Include="MemoryLeekLogger.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="ReverseGrowingArray.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="StaticMemoryPool.h" />
     <ClInclude Include="MessageKyle.h" />
     <ClInclude Include="picojson.h" />
@@ -488,7 +488,6 @@
     <ClCompile Include="dbtweener.cpp" />
     <ClCompile Include="DL_Debug.cpp" />
     <ClCompile Include="DL_StackWalker.cpp" />
-    <ClCompile Include="DynamicString.cpp" />
     <ClCompile Include="example_postMastercpp.h" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="InputListener.cpp" />

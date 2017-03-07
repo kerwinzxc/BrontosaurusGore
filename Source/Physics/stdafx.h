@@ -14,6 +14,10 @@
 #define SAFE_RELEASE(comptr) if (comptr != nullptr) { comptr->release(); comptr = nullptr; }
 #endif
 
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(POINTER) delete POINTER; POINTER = nullptr
+#endif
+
 #include <utility>
 
 #include "../CommonUtilities/GrowingArray.h"

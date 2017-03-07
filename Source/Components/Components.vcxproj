@@ -382,8 +382,10 @@
     <ClInclude Include="EnemyComponentManager.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
+    <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
     <ClInclude Include="WeaponDefines.h" />
@@ -437,8 +439,10 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
+    <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkComponentManager.cpp" />
+    <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
