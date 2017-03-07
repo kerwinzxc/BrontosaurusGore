@@ -68,6 +68,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			
 			}
 		}
+
+		if(myWeaponData->shouldRayCast == true)
+		{
+			//DO RayCastStuff plz
+		}
 	}
 }
 void CWeapon::Update(float aDeltaTime)

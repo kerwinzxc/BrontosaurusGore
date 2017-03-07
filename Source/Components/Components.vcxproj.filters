@@ -123,6 +123,7 @@
       <Filter>NetworkComponent</Filter>
     </ClCompile>
     <ClCompile Include="NetworkComponentManager.cpp" />
+    <ClCompile Include="PlayerNetworkComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -292,6 +293,7 @@
     <ClInclude Include="AmmoReplenishData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerNetworkComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
