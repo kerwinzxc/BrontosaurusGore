@@ -200,6 +200,7 @@ void CModelInstance::Render(CRenderCamera & aRenderToCamera)
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
+		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
 	}
 	else
 	{
