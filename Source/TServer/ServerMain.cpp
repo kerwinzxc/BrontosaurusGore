@@ -23,7 +23,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/PostOffice.h"
-#include "ThreadedPostmaster/PrintMessage.h"
+#include "../ThreadedPostmaster/PrintMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
