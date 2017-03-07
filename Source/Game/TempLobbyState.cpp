@@ -278,7 +278,11 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	myBlinkeyTimer += aDeltaTime;
 	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
 	{
-		myBlinkeyState = !myBlinkeyState;
+		myBlinkeyState = true;
+	}
+	else
+	{
+		myBlinkeyState = false;
 	}
 
 	switch (myLobbyState)
