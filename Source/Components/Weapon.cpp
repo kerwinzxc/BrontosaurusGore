@@ -45,22 +45,45 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
-			CU::Vector3f rotatedDirection = aDirection;
+			CU::Vector3f rotatedDirection = aDirection.GetNormalized();
+			rotatedDirection.Normalize();
+			rotatedDirection.Print();
+			CU::Vector2f rotatedRadians;
 			if(myWeaponData->randomSpreadAngleX > 0)
 			{
 				float randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleX);
-				float randomXAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleX) / 2.0f;
+				float randomReducer = (rand() % 100 + 1) / 100.0f;
+				randomNumber *= randomReducer;
+				float randomXAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleX) / 2.0f * randomReducer;
 				randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleY);
 				float randomXRadian = randomXAngle * PI / 180.0f;
-				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(randomXRadian);
+				rotatedRadians.x = randomXRadian;
+				
+				//rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(randomXRadian);
 			}
 			if (myWeaponData->randomSpreadAngleY > 0)
 			{
 				float randomNumber = static_cast<float>(rand() % myWeaponData->randomSpreadAngleY);
-				float randomYAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f;
+				float randomReducer = (rand() % 100 + 1) / 100.0f;
+				randomNumber *= randomReducer;
+				float randomYAngle = randomNumber - static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f * randomReducer;
 				float randomYRadian = randomYAngle * PI / 180.0f;
-				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(randomYRadian);
+				rotatedRadians.y = randomYRadian;
+				
+				//rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(randomYRadian);
 			}
+
+			float rotatedAngleLEnght =  rotatedRadians.Length2() * 180.0f / PI;
+			if(static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f *static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f< rotatedRadians.Length2() * 180.0f / PI * 180.0f / PI)
+			{
+				rotatedRadians.Normalize();
+				rotatedRadians *= static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f * PI / 180.0f;
+			}
+			//CU::Matrix44f
+			
+			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
+			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
+			rotatedDirection.Normalize();
 			if(CProjectileFactory::GetInstance() != nullptr)
 			{
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, rotatedDirection, /*myUser->GetWorldPosition()*/shootPosition);
