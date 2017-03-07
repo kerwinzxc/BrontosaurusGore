@@ -79,14 +79,22 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				rotatedRadians.Normalize();
 				rotatedRadians *= static_cast<float>(myWeaponData->randomSpreadAngleY) / 2.0f * PI / 180.0f;
 			}
-			//CU::Matrix44f
-			
-			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
+			CU::Matrix44f rotatedMatrix = myUser->GetLocalTransform();
+			rotatedMatrix.LookAt(rotatedMatrix.GetPosition() + aDirection);
+			rotatedMatrix.Rotate(rotatedRadians.x, CU::Axees::Y);
+			rotatedMatrix.Rotate(rotatedRadians.y, CU::Axees::X);
+			rotatedMatrix.Move(CU::Vector3f(0.0f, 0.0f, 10.0f));
+			CU::Matrix44f unRotatedMatrix = myUser->GetLocalTransform();
+			unRotatedMatrix.LookAt(unRotatedMatrix.GetPosition() + aDirection);
+			CU::Vector3f direction = rotatedMatrix.GetPosition() - unRotatedMatrix.GetPosition();
+			direction.Normalize();
+
+			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
-			rotatedDirection.Normalize();
+			rotatedDirection.Normalize();*/
 			if(CProjectileFactory::GetInstance() != nullptr)
 			{
-				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, rotatedDirection, /*myUser->GetWorldPosition()*/shootPosition);
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
 			}
