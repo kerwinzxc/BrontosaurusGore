@@ -112,6 +112,7 @@
     </ClInclude>
     <ClInclude Include="Tshared_NetworkId.h" />
     <ClInclude Include="MessageStorage.h" />
+    <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -157,5 +158,6 @@
       <Filter>NetworkMessage\Ready</Filter>
     </ClCompile>
     <ClCompile Include="MessageStorage.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
   </ItemGroup>
 </Project>

@@ -31,6 +31,8 @@
 #include "../ThreadedPostmaster/ConectedMessage.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
 #include "../ThreadedPostmaster/LoadLevelMessage.h"
+#include "../ThreadedPostmaster/SetClientIDMessage.h"
+#include "../Components/PlayerNetworkComponent.h"
 
 
 CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
@@ -271,4 +273,10 @@ eMessageReturn CClient::DoEvent(const CConectMessage& aConectMessage)
 {
 	Connect(aConectMessage.myIP.c_str(), aConectMessage.myName);
 	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CClient::DoEvent(const CSetClientIDMessage & aMessage)
+{
+	aMessage.GetPlayerComponent()->SetID(myId);
+	return eMessageReturn();
 }
