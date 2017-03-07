@@ -27,6 +27,7 @@
 #include "Components/ProjectileComponentManager.h"
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
+#include "Components/MovementComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -72,6 +73,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileComponentManager(nullptr)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
+	, myMovementComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 }
@@ -87,6 +89,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
+	SAFE_DELETE(myMovementComponentManager);
 
 	CNetworkComponentManager::Destroy();
 
@@ -289,6 +292,7 @@ void CPlayState::CreateManagersAndFactories()
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
+	myMovementComponentManager = new CMovementComponentManager();
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
