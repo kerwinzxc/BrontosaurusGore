@@ -1,12 +1,10 @@
 #pragma once
+#include "../ThreadedPostmaster/Subscriber.h"
+#include "../ThreadedPostmaster/PostOffice.h" //removed this include bc its not used here but got 84 errors of other files not knowing what std atomic was... give me a noose
+
 #include "../TShared/TShared_NetworkWrapper.h"
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
-#include "../TShared/MessageManager.h"
-//#include "Chat.h"
-#include "../PostMaster/Subscriber.h"
-#include "../ThreadedPostmaster/Subscriber.h"
-#include "../ThreadedPostmaster/PostOffice.h"
 
 enum class eClientState
 {
@@ -55,7 +53,6 @@ private:
 	CU::TimeUnit myServerPingTime;
 	bool myServerIsPinged;
 
-	bool myIsRunning;
-	bool myCanQuit;
+	std::atomic_bool myIsRunning;
+	std::atomic_bool myCanQuit;
 };
-
