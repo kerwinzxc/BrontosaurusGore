@@ -56,10 +56,10 @@ void CTempLobbyState::Select()
 		switch (myCurrentLine)
 		{
 		case 0:
-			myLobbyState = eLobbyState::eEnterIp;
+			//myLobbyState = eLobbyState::eEnterIp;
 			break;
 		case 1:
-			myLobbyState = eLobbyState::eEnterName;
+			//myLobbyState = eLobbyState::eEnterName;
 			break;
 		case 3:
 			Conect();
@@ -85,14 +85,14 @@ void CTempLobbyState::Select()
 
 void CTempLobbyState::Back()
 {
-	if (myLobbyState == eLobbyState::eEnterIp)
+	if (myCurrentLine == 0)
 	{
 		if (myIP.empty() == false)
 		{
 			myIP.erase(myIP.end() - 1);
 		}
 	}
-	else if	(myLobbyState == eLobbyState::eEnterName)
+	else if	(myCurrentLine == 1)
 	{
 		if (myName.empty() == false)
 		{
@@ -207,14 +207,14 @@ void CTempLobbyState::LobbyMenu()
 	myTextINstance.SetText("");
 
 	(string = "IP: ") += myIP.c_str();
-	if (myLobbyState == eLobbyState::eEnterIp && myBlinkeyState == true)
+	if (myCurrentLine == 0 && myBlinkeyState == true)
 	{
 		string += "I";
 	}
 	myTextINstance.SetTextLine(0, string);
 
 	(string = "Name: ") += myName.c_str();
-	if (myLobbyState == eLobbyState::eEnterName && myBlinkeyState == true)
+	if (myCurrentLine == 1 && myBlinkeyState == true)
 	{
 		string += "I";
 	}
@@ -341,7 +341,7 @@ bool CTempLobbyState::GetLetThroughUpdate() const
 eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 {
 	const std::string ipCheck = "1234567890.";
-	if (myLobbyState == eLobbyState::eEnterIp)
+	if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 0)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
@@ -350,7 +350,7 @@ eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 			myIP += inputChar;
 		}
 	}
-	else if (myLobbyState == eLobbyState::eEnterName)
+	else if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 1)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
