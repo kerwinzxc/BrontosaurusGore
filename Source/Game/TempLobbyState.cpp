@@ -57,9 +57,31 @@ void CTempLobbyState::Select()
 		{
 		case 0:
 			//myLobbyState = eLobbyState::eEnterIp;
+			do
+			{
+				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+				{
+					myCurrentLine += 1;
+				}
+				else
+				{
+					myCurrentLine = 0;
+				}
+			} while (IsSelectable(myCurrentLine) == false);
 			break;
 		case 1:
 			//myLobbyState = eLobbyState::eEnterName;
+			do
+			{
+				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+				{
+					myCurrentLine += 1;
+				}
+				else
+				{
+					myCurrentLine = 0;
+				}
+			} while (IsSelectable(myCurrentLine) == false);
 			break;
 		case 3:
 			Conect();
