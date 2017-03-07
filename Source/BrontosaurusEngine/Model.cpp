@@ -499,7 +499,7 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	params.myTransform = aParamObj.myTransform;
 	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
 	params.myRenderToDepth = false;
-	UpdateCBuffer(aParamObj);
+	UpdateCBuffer(params);
 }
 
 void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)
