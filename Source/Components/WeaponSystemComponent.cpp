@@ -3,6 +3,8 @@
 #include "Weapon.h"
 #include "WeaponFactory.h"
 #include "PlayerControls.h"
+#include "AmmoReplenishData.h"
+#include "AmmoData.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -73,6 +75,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			SComponentMessageData newAmmoTypeMessage;
 			newAmmoTypeMessage.myAmmoData = myTemporaryAmmoDataList[i];
 			GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddNewAmmoType, newAmmoTypeMessage);
+			SAmmoReplenishData ammoReplenishData;
+			ammoReplenishData.ammoType = myTemporaryAmmoDataList[i]->ammoForWeaponName.c_str();
+			ammoReplenishData.replenishAmount = myTemporaryAmmoDataList[i]->maxAmmo;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &ammoReplenishData;
+			GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 		}
 		myTemporaryAmmoDataList.RemoveAll();
 		myTemporaryAmmoDataList.Destroy();

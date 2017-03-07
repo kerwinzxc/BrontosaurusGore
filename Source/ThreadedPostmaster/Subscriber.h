@@ -11,10 +11,16 @@ class ConsoleCalledUpon;
 class DrawCallsCount;
 class CServerReadyMessage;
 class CSendNetowrkMessageMessage;
+class CConectMessage;
+class CConectedMessage;
+class CLoadLevelMessage;
 
 namespace Postmaster
 {
-	
+	namespace Message
+	{
+		class CPrintMessage;
+	}
 
 	class ISubscriber
 	{
@@ -31,5 +37,9 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CNetworkPosMessageEvent& aPositionEvent);
 		virtual eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
 		virtual eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage);
+		virtual eMessageReturn DoEvent(const Message::CPrintMessage& aPrintMessage);
+		virtual eMessageReturn DoEvent(const CConectMessage& aConectMessage);
+		virtual eMessageReturn DoEvent(const CConectedMessage& aConectedMessage);
+		virtual eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage);
 	};
 }

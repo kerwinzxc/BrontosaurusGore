@@ -75,7 +75,7 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, CU::DynamicStrin
 
 	if (aLineNumber > myStrings.Size())
 	{
-		for (int i = 0; i < aLineNumber - myStrings.Size(); ++i)
+		for (int i = 0; i < aLineNumber - myStrings.Size() +1; ++i)
 		{
 			myStrings.Add("");
 		}

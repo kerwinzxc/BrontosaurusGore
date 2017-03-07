@@ -6,7 +6,7 @@
 
 CNetworkMessage::CNetworkMessage()
 {
-	myHeader.myPackageType = 0;
+	myHeader.myPackageType = static_cast<ePackageType>(0);
 	myHeader.myTargetID = ID_SERVER;
 }
 
@@ -45,7 +45,7 @@ void CNetworkMessage::SetExplicitHeader(SNetworkPackageHeader& aHeader)
 void CNetworkMessage::SetHeader(SNetworkPackageHeader aHeader)
 {
 	myHeader = aHeader;
-	myHeader.myPackageType = static_cast<char>(GetPackageType());
+	myHeader.myPackageType = (GetPackageType());
 }
 
 const SNetworkPackageHeader& CNetworkMessage::GetHeader() const

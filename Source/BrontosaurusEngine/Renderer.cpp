@@ -5,6 +5,7 @@
 #include "PointLightInstance.h"
 #include "Lights.h"
 #include "Model.h"
+#include "Text.h"
 #include "Sprite.h"
 #include "Skybox.h"
 #include "StreakEmitterInstance.h"

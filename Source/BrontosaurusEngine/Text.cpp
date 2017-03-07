@@ -6,7 +6,7 @@
 #include "ConstBufferTemplate.h"
 #include "Effect.h"
 #include <minwinbase.h>
-
+#include "Allignment.h"
 
 struct SVertexConstantBufferType
 {

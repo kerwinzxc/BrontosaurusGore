@@ -2,7 +2,7 @@
 #include <functional>
 #include "../CommonUtilities/vector2.h"
 #include "../FontEngine/FontEngineFacade.h"
-#include "TextInstance.h"
+//#include "TextInstance.h"
 
 class CParticleEmitterManager;
 class CFireEmitterManager;
@@ -64,7 +64,7 @@ struct SInitEngineParams
 {
 	SInitWindowParams myWindowParams;
 	std::function<void()> myInitCallbackFunction;
-	std::function<void(const CU::Time&)> myUpdateCallbackFunction;
+	std::function<bool(const CU::Time&)> myUpdateCallbackFunction;
 	std::function<void()>  myRenderCallbackFunction;
 	unsigned int myDebugFlags;
 	bool myThreadRender;
@@ -133,7 +133,7 @@ private:
 	CU::TimerHandle myTimerH;
 
 	std::function<void()>  myInitCallbackFunction;
-	std::function<void(const CU::Time&)>  myUpdateCallbackFunction;
+	std::function<bool(const CU::Time&)>  myUpdateCallbackFunction;
 	std::function<void()>  myRenderCallbackFunction;
 	
 	CU::Vector2ui myWindowSize;

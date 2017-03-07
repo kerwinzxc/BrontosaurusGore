@@ -56,6 +56,7 @@ void CWeaponFactory::LoadWeapons()
 		newWeaponData->randomSpreadAngleX = levelsArray[i].at("RandomSpreadAngleX").GetInt();
 		newWeaponData->randomSpreadAngleY = levelsArray[i].at("RandomSpreadAngleY").GetInt();
 		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();
+		newWeaponData->shouldRayCast = levelsArray[i].at("ShouldRayCast").GetBool();
 		newProjectileData->projectileModelFilePath = levelsArray[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(levelsArray[i].at("Damage").GetFloat());
 		newProjectileData->movementSpeed = levelsArray[i].at("ProjectileMovementSpeed").GetFloat();

@@ -82,11 +82,11 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myRenderer = new CRenderer();
 
 	myLineDrawer = new CLineDrawer();
-	//CFontEngineFacade::CreateInstance();
-	//myFontEngine = CFontEngineFacade::GetInstance();
-	//myConsole = new CConsole();
-	//myConsole->Init();
-	//myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
+	CFontEngineFacade::CreateInstance();
+	myFontEngine = CFontEngineFacade::GetInstance();
+	myConsole = new CConsole();
+	myConsole->Init();
+	myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
 
 	bool result;
 	Audio::CAudioInterface::CreateInstance();
@@ -165,9 +165,10 @@ void CEngine::Start()
 	//http ://stackoverflow.com/questions/10876342/equivalent-of-setthreadpriority-on-linux-pthreads
 #endif
 
-	
-	myInitCallbackFunction();
-	//myConsole->GetLuaFunctions();
+	if (myInitCallbackFunction != nullptr)
+	{
+		myInitCallbackFunction();
+	}
 
 	if (myThreadRender == true)
 	{
@@ -179,7 +180,7 @@ void CEngine::Start()
 	}
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
-	while (CEngine::GetInstance()->GetIsRunning())
+	while (GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();
 		myInputManager->Update();
@@ -190,7 +191,10 @@ void CEngine::Start()
 		bool consoleIsActive = false;// = myConsole->Update(myTimerManager->GetTimer(myTimerH).GetDeltaTime().GetSeconds());
 		if (consoleIsActive == false)
 		{
-			myUpdateCallbackFunction(myTimerManager->GetTimer(myTimerH).GetDeltaTime());
+			if (myUpdateCallbackFunction(myTimerManager->GetTimer(myTimerH).GetDeltaTime()) == false)
+			{
+				Shutdown();
+			}
 		}
 
 		//myDebugInfoDrawer->Update();
@@ -249,7 +253,8 @@ CEngine::CEngine()
 	, myThreadPool(nullptr)
 	, myParticleEmitterManager(nullptr)
 	, myFireEmitterManager(nullptr)
-	,myRendererIsRunning(true)
+	, myConsole(nullptr)
+	, myRendererIsRunning(false)
 {
 }
 

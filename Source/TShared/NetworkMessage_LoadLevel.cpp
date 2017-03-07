@@ -4,7 +4,7 @@
 
 CNetworkMessage_LoadLevel::CNetworkMessage_LoadLevel(): myLevelIndex(0)
 {
-	myHeader.myPackageType = static_cast<char>(ePackageType::eLoadLevel);
+	myHeader.myPackageType = (ePackageType::eLoadLevel);
 }
 
 

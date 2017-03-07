@@ -34,7 +34,7 @@ public:
 	short GetID();
 
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
-
+	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
 private:
 
 	//CChat myChat;
@@ -50,7 +50,7 @@ private:
 	short myId;
 
 	std::string myName;
-	const char* myServerIp;
+	std::string myServerIp;
 	CU::TimeUnit myServerPingTime;
 	bool myServerIsPinged;
 

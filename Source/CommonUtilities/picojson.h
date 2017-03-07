@@ -754,7 +754,9 @@ namespace picojson {
       }
       IS('n', "ull", ctx.set_null());
       IS('f', "alse", ctx.set_bool(false));
-      IS('t', "rue", ctx.set_bool(true));
+	  IS('t', "rue", ctx.set_bool(true));
+	  IS('F', "alse", ctx.set_bool(false));
+	  IS('T', "rue", ctx.set_bool(true));
 #undef IS
     case '"':
       return ctx.parse_string(in);

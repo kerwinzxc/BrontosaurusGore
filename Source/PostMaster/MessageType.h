@@ -13,6 +13,7 @@ enum class eMessageType
 	eChangeLevel,
 	eGameEventMessage,
 	eNetworkMessage,
+	ePrint,
 	eLength,
 };
 

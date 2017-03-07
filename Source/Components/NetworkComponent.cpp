@@ -34,7 +34,7 @@ void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const 
 		CU::Vector3f temp;
 		if (instance != nullptr)
 		{
-			temp.z += static_cast<float>((rand() % 200 +1)/100.f);
+			temp.z += static_cast<float>((rand() % 500 +1)/100.f);
 			GetParent()->GetLocalTransform().Rotate(static_cast<float>(((rand() % 30 + 1) - 15) * (PI / 180.f)),static_cast<CU::Axees>(rand() % 3));
 			GetParent()->GetLocalTransform().Move(temp);
 

@@ -61,3 +61,23 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CServerReadyMessage& aSend
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const Message::CPrintMessage& aPrintMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CConectMessage& aConectMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CConectedMessage& aConectedMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	return eMessageReturn::eContinue;
+}

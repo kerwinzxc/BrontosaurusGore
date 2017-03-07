@@ -54,6 +54,10 @@
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
 
+//Hard code necessary includes
+#include "AmmoReplenishData.h"
+//
+
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
@@ -136,65 +140,8 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-
-
-	//create hard coded player:
-	{
-		CCameraComponent* cameraComponent = myCameraComponent;
-		if (cameraComponent == nullptr)
-		{
-			DL_PRINT_WARNING("No camera found in scene, creating default at height 1.80m at position (0, 0, 0)");
-			cameraComponent = new CCameraComponent();
-			CComponentManager::GetInstance().RegisterComponent(cameraComponent);
-			cameraComponent->SetCamera(playerCamera);
-
-			CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
-			cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
-			cameraObject->AddComponent(cameraComponent);
-		}
-
-		CGameObject* playerObject = cameraComponent->GetParent()->GetParent();
-		if (playerObject == nullptr)
-		{
-			playerObject = myGameObjectManager->CreateGameObject();
-			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
-		}
-
-		playerObject->AddComponent(cameraComponent->GetParent());
-
-		CInputComponent* inputComponent = new CInputComponent();
-		CComponentManager::GetInstance().RegisterComponent(inputComponent);
-		playerObject->AddComponent(inputComponent);
-
-		myMovementComponent = new CMovementComponent();
-		playerObject->AddComponent(myMovementComponent);
-
-		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
-		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
-		playerObject->AddComponent(weaponSystenComponent);
-		playerObject->AddComponent(ammoComponent);
-		SComponentMessageData addHandGunData;
-		SComponentMessageData giveAmmoData;
-		addHandGunData.myString = "Handgun";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-		addHandGunData.myString = "Shotgun";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 100;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-		addHandGunData.myString = "PlasmaRifle";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eChangeSelectedAmmoType, addHandGunData);
-		giveAmmoData.myInt = 1000;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		Component::CEnemy::SetPlayer(playerObject);
-	}
+	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
 	
-
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
@@ -287,4 +234,70 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+}
+
+void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
+{
+	//create hard coded player:
+	{
+		CCameraComponent* cameraComponent = myCameraComponent;
+		if (cameraComponent == nullptr)
+		{
+			DL_PRINT_WARNING("No camera found in scene, creating default at height 1.80m at position (0, 0, 0)");
+			cameraComponent = new CCameraComponent();
+			CComponentManager::GetInstance().RegisterComponent(cameraComponent);
+			cameraComponent->SetCamera(aCamera);
+
+			CGameObject* cameraObject = myGameObjectManager->CreateGameObject();
+			cameraObject->GetLocalTransform().SetPosition(0.f, 1.8f, 0.f);
+			cameraObject->AddComponent(cameraComponent);
+		}
+
+		CGameObject* playerObject = cameraComponent->GetParent()->GetParent();
+		if (playerObject == nullptr)
+		{
+			playerObject = myGameObjectManager->CreateGameObject();
+			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+		}
+
+		playerObject->AddComponent(cameraComponent->GetParent());
+
+		CInputComponent* inputComponent = new CInputComponent();
+		CComponentManager::GetInstance().RegisterComponent(inputComponent);
+		playerObject->AddComponent(inputComponent);
+
+		myMovementComponent = new CMovementComponent();
+		playerObject->AddComponent(myMovementComponent);
+
+		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+		playerObject->AddComponent(weaponSystenComponent);
+		playerObject->AddComponent(ammoComponent);
+		SComponentMessageData addHandGunData;
+		SComponentMessageData giveAmmoData;
+
+		addHandGunData.myString = "Handgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		SAmmoReplenishData tempAmmoReplensihData;
+		tempAmmoReplensihData.ammoType = "Handgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "Shotgun";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		tempAmmoReplensihData.ammoType = "Shotgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "PlasmaRifle";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		tempAmmoReplensihData.ammoType = "PlasmaRifle";
+		tempAmmoReplensihData.replenishAmount = 1000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		Component::CEnemy::SetPlayer(playerObject);
+	}
 }

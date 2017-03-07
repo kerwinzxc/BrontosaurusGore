@@ -32,6 +32,18 @@
     <Filter Include="Message\SendNetworkMessageMessageMessage">
       <UniqueIdentifier>{baff239b-2c2e-4b32-be51-d5705d4a1dfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\Print">
+      <UniqueIdentifier>{05fedbef-0ccc-481b-bb28-2c9fc0350e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\ConnectMessage">
+      <UniqueIdentifier>{d2feedd4-f20e-4879-9a79-94b6c5883ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\ConectedMessage">
+      <UniqueIdentifier>{579d5494-06f4-43b1-b768-3b8d8cc4dd6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\LoadLevelMessage">
+      <UniqueIdentifier>{eb503b53-c5f8-4a07-a5cb-1b591e6ab7a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -45,6 +57,18 @@
     </ClCompile>
     <ClCompile Include="SendNetowrkMessageMessage.cpp">
       <Filter>Message\SendNetworkMessageMessageMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="ConetctMessage.cpp">
+      <Filter>Message\ConnectMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="ConectedMessage.cpp">
+      <Filter>Message\ConectedMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintMessage.cpp">
+      <Filter>Message\Print</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadLevelMessage.cpp">
+      <Filter>Message\LoadLevelMessage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +92,18 @@
     </ClInclude>
     <ClInclude Include="SendNetowrkMessageMessage.h">
       <Filter>Message\SendNetworkMessageMessageMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="ConetctMessage.h">
+      <Filter>Message\ConnectMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="ConectedMessage.h">
+      <Filter>Message\ConectedMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintMessage.h">
+      <Filter>Message\Print</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadLevelMessage.h">
+      <Filter>Message\LoadLevelMessage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

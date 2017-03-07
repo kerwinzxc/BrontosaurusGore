@@ -24,16 +24,7 @@ namespace Postmaster
 			static void Create();
 			static void Destroy();
 			static CPostmaster& GetInstance();
-
-			//Run the postmaster. This does not start a separate thread
-			void Run();
-			//Makes a new thread that runs "Run"
-			void Start();
-			//Deliver messages to the associated postoffices. Call this function if you don't call "Run"
-			void HandleMessages();
-			void Stop();
-			void StopThread();
-
+			
 			//Create a local post office (for that thread)
 			CPostOffice& AddThreadOffice();
 			//Get the post office (for that thread)
@@ -55,26 +46,14 @@ namespace Postmaster
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
 			//Unsubscribe from all your subscriptions
 			void Unsubscribe(ISubscriber* aSubscriber);
-			bool ShouldRun() const;
 		protected:
-			void AppendOutgoing(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue);
-
-			void WaitForMessages();
-			void HandleBroadcastMessages();
-			void HandleNarrowcastMessages();
-
+			void HandleOutgoingBroadcast(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue);
+			void HandleOutgoingNarrowcast(Container::CLocklessQueue<NarrowcastStruct>& aLocklessQueue);
 			
-
 			static CPostmaster* ourInstance;
 
 			std::map<std::thread::id, CPostOffice*> myOffices;
-			Container::CLocklessQueue<Message::IMessage*> myMessageQueue;
-			Container::CLocklessQueue<NarrowcastStruct> myNarrowMessageQueue;
-			volatile bool myIsRunning;
 			std::mutex myOfficeLock;
-			std::mutex myMessageWaitLock;
-			std::condition_variable myMessageWaitCondition;
-			std::thread* myThread;
 		private:
 			CPostmaster();
 			~CPostmaster();
@@ -101,27 +80,5 @@ inline Postmaster::Threaded::CPostmaster& Postmaster::Threaded::CPostmaster::Get
 	}
 
 	return *ourInstance;
-}
-
-inline void Postmaster::Threaded::CPostmaster::Run()
-{
-	while (myIsRunning == true)
-	{
-		WaitForMessages();
-		HandleMessages();
-	}
-}
-
-
-
-inline void Postmaster::Threaded::CPostmaster::Stop()
-{
-	myIsRunning = false;
-	myMessageWaitCondition.notify_one();
-}
-
-
-inline Postmaster::Threaded::CPostmaster::CPostmaster() : myIsRunning(true), myThread(nullptr)
-{
 }
 
