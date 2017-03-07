@@ -2,6 +2,7 @@
 #include "ThreadPool.h"
 #include "DL_Debug.h"
 #include "TimerManager.h"
+#include "ThreadNamer.h"
 
 namespace CU
 {
@@ -106,6 +107,7 @@ namespace CU
 				myPool->myTimerMgr->StartTimer(myTimerHandle);
 			}
 			myWork.DoWork();
+			CU::SetThreadName("Worker thread");
 		}
 	}
 }

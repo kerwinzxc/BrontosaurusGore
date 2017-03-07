@@ -229,7 +229,7 @@ void CTempLobbyState::Init()
 
 void CTempLobbyState::LobbyMenu()
 {
-	CU::DynamicString string;
+	std::string string;
 	myTextINstance.SetText("");
 
 	(string = "IP: ") += myIP.c_str();

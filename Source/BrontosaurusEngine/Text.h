@@ -32,13 +32,13 @@ struct ID3D11DeviceContext;
 class CText
 {
 public:
-	CText(const CU::DynamicString& aFontPath);
+	CText(const std::string& aFontPath);
 	CText(const CText & aCoolText);
-	CText(const CU::DynamicString& aFontPath, const int aPixelSize);
+	CText(const std::string& aFontPath, const int aPixelSize);
 	~CText();
 
 
-	void Render(const CU::GrowingArray<CU::DynamicString>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement);
+	void Render(const CU::GrowingArray<std::string>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement);
 	float GetlineHeight() const;
 	CU::Vector2i CalculateRectPixelSize(const std::string& aText);
 private:

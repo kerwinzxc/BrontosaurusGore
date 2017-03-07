@@ -3,8 +3,12 @@
 class CPlayerNetworkComponent: public CComponent
 {
 public:
-	CPlayerNetworkComponent(const unsigned aID);
+	CPlayerNetworkComponent();
 	~CPlayerNetworkComponent();
+
+	void SetID(const unsigned aID);
+
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
 	unsigned myID;

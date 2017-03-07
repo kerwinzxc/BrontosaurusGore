@@ -6,7 +6,6 @@
 #include <map>
 #include "../SSArgument/SSArgument.h"
 #include "../../LuaSource/lua-5.3.3/src/lua.hpp"
-#include "../../CommonUtilities/DynamicString.h"
 
 #include "../file_watcher.h"
 
@@ -57,7 +56,7 @@ namespace SSlua
 
 		SSArgument CallLuaFunction(const std::string& aFunctionName, const ArgumentList& someArguments, const bool aShouldReturnFlag = false);
 
-		static bool CheckArguments(const CU::DynamicString &aFunctionName,const CU::GrowingArray<eSSType> &aListOfTypes,const ArgumentList &anArgumentList); 
+		static bool CheckArguments(const std::string &aFunctionName,const CU::GrowingArray<eSSType> &aListOfTypes,const ArgumentList &anArgumentList); 
 
 		//Alex
 		void PrintDocumentation();

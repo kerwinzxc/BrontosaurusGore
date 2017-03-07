@@ -55,6 +55,9 @@
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
 
+
+#include "../Components/PlayerNetworkComponent.h"
+
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
 //
@@ -162,7 +165,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	//TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
+	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
 	
 	//myGameObjectManager->SendObjectsDoneMessage();
 
@@ -183,7 +186,6 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	//myMovementComponent->Update(aDeltaTime);
 	myMovementComponentManager->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
@@ -291,7 +293,7 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
 		playerObject->AddComponent(inputComponent);
 
-		myMovementComponent = new CMovementComponent();
+		myMovementComponent = myMovementComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(myMovementComponent);
 
 		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
@@ -322,6 +324,11 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		tempAmmoReplensihData.replenishAmount = 1000;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		CPlayerNetworkComponent* network = new CPlayerNetworkComponent();
+		CComponentManager::GetInstance().RegisterComponent(network);
+
+		playerObject->AddComponent(network);
 
 		Component::CEnemy::SetPlayer(playerObject);
 	}

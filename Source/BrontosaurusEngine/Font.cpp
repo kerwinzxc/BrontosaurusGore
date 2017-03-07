@@ -12,7 +12,7 @@
 
 #include <d3dcommon.h>
 
-CFont::CFont(const CU::DynamicString& aFontPath)
+CFont::CFont(const std::string& aFontPath)
 	: myCharacters(CHAR_MAX)
 	, myCharacterAtlas(nullptr)
 	, myEffect(nullptr)
@@ -29,7 +29,7 @@ CFont::~CFont()
 	SAFE_DELETE(myEffect);
 }
 
-void CFont::LoadFont(const CU::DynamicString& aFontPath)
+void CFont::LoadFont(const std::string& aFontPath)
 {
 	std::ifstream fontFile(aFontPath.c_str());
 	if (fontFile.good() == false)
@@ -57,7 +57,7 @@ void CFont::LoadFont(const CU::DynamicString& aFontPath)
 	std::string texturePath = line.substr(position + std::strlen("file=\""));
 	texturePath.pop_back();
 
-	texturePath = aFontPath.SubStr(0, aFontPath.Size() - 4).c_str();
+	texturePath = aFontPath.substr(0, aFontPath.size() - 4).c_str();
 	texturePath += ".dds";
 	LoadTexture(texturePath.c_str());
 

@@ -322,11 +322,11 @@ namespace SSlua
 		return SSArgument();
 	}
 
-	bool LuaWrapper::CheckArguments(const CU::DynamicString& aFunctionName, const CU::GrowingArray<eSSType>& aListOfTypes, const ArgumentList& anArgumentList)
+	bool LuaWrapper::CheckArguments(const std::string& aFunctionName, const CU::GrowingArray<eSSType>& aListOfTypes, const ArgumentList& anArgumentList)
 	{
 		if (aListOfTypes.Size() > anArgumentList.Size())
 		{
-			CU::DynamicString errorMsg = CU::DynamicString("ERROR! Lua C function ") + aFunctionName + " got " + anArgumentList.Size() + "arguments expected " + aListOfTypes.Size();
+			std::string errorMsg = std::string("ERROR! Lua C function ") + aFunctionName + " got " + std::to_string(anArgumentList.Size()) + "arguments expected " + std::to_string(aListOfTypes.Size());
 			errorMsg += " ( ";
 			for (unsigned int i = 0; i < aListOfTypes.Size(); ++i)
 			{
@@ -348,7 +348,7 @@ namespace SSlua
 		{
 			if (aListOfTypes[i] != anArgumentList[i].GetType())
 			{
-				CU::DynamicString errorMsg = CU::DynamicString("ERROR! Lua C function ") + aFunctionName + " got a " + anArgumentList[i].GetTypeName() +" as argument nr "+ i + 1 +" expected a " + SSArgument::GetTypeName(aListOfTypes[i]);
+				std::string errorMsg = std::string("ERROR! Lua C function ") + aFunctionName + " got a " + anArgumentList[i].GetTypeName() +" as argument nr "+ std::to_string(i + 1) +" expected a " + SSArgument::GetTypeName(aListOfTypes[i]);
 				ERROR_MESSAGE(stringToWstring(errorMsg.c_str()).c_str());
 				DL_ASSERT(errorMsg.c_str());
 				return false;

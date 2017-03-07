@@ -2,7 +2,6 @@
 #include "../CommonUtilities/StaticArray.h"
 #include <Vector3.h>
 #include <Vector4.h>
-#include <DynamicString.h>
 
 #ifndef STATIC_SIZEOF
 #define STATIC_SIZEOF(x) {char STATIC_SIZEOF_TEMP[(x)]; STATIC_SIZEOF_TEMP = 1;}
@@ -52,7 +51,7 @@ struct SEmitterData
 		//STATIC_SIZEOF(sizeof(*this));
 	}
 
-	CU::DynamicString TexturePath;
+	std::string TexturePath;
 
 
 	CU::Vector4f StartColor;
