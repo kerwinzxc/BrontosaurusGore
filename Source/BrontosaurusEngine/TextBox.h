@@ -1,5 +1,4 @@
 #pragma once
-#include "../CommonUtilities/DynamicString.h"
 #include "../CommonUtilities/vector2.h"
 #define Pling NewLine
 
@@ -11,7 +10,7 @@ public:
 	CTextBox();
 	~CTextBox();
 
-	void AddText(CU::DynamicString myString);
+	void AddText(std::string myString);
 	void NewLine();
 	void RemoveLine();
 	void Clear();

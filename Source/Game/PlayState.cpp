@@ -109,12 +109,13 @@ void CPlayState::Load()
 	Lights::SDirectionalLight dirLight;
 	dirLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	dirLight.direction = { -1.0f, -1.0f, 1.0f, 1.0f };
+	dirLight.shadowIndex = 0;
 	myScene->AddDirectionalLight(dirLight);
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -147,7 +148,7 @@ void CPlayState::Load()
 	//myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
-	myScene->SetCubemap("default_cubemap.dds");
+	myScene->SetCubemap("purpleCubemap.dds");
 	
 	myIsLoaded = true;
 	

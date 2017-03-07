@@ -1072,6 +1072,10 @@
     <ClInclude Include="ApexResourceCallback.h">
       <Filter>Apex\ResourceCallback</Filter>
     </ClInclude>
+    <ClInclude Include="Foundation.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsScene.h" />
+    <ClInclude Include="Shape.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1095,6 +1099,10 @@
     <ClCompile Include="ApexResourceCallback.cpp">
       <Filter>Apex\ResourceCallback</Filter>
     </ClCompile>
+    <ClCompile Include="Foundation.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsScene.cpp" />
+    <ClCompile Include="Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">

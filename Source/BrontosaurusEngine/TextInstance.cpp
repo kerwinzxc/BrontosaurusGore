@@ -27,7 +27,7 @@ CTextInstance::~CTextInstance()
 	//SAFE_DELETE(myText);
 }
 
-void CTextInstance::Init(const CU::DynamicString& aFontPath)
+void CTextInstance::Init(const std::string& aFontPath)
 {
 	//maybe shouldn't be pointer
 	myText = new CText(aFontPath);
@@ -49,7 +49,7 @@ void CTextInstance::Render() const
 	}
 }
 
-bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const CU::DynamicString& aString)
+bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const std::string& aString)
 {
 	if (aLineNumber < myStrings.Size() && aLineNumber >= 0)
 	{
@@ -66,7 +66,7 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const CU::Dynami
 	return false;
 }
 
-bool CTextInstance::SetTextLine(const unsigned int aLineNumber, CU::DynamicString&& aString)
+bool CTextInstance::SetTextLine(const unsigned int aLineNumber, std::string&& aString)
 {
 	if (aLineNumber < myStrings.Size() && aLineNumber >= 0)
 	{
@@ -90,17 +90,17 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, CU::DynamicStrin
 	return false;
 }
 
-void CTextInstance::SetTextLines(const CU::GrowingArray<CU::DynamicString>& someLines)
+void CTextInstance::SetTextLines(const CU::GrowingArray<std::string>& someLines)
 {
 	myStrings = someLines;
 }
 
-void CTextInstance::SetTextLines(CU::GrowingArray<CU::DynamicString>&& someLines)
+void CTextInstance::SetTextLines(CU::GrowingArray<std::string>&& someLines)
 {
 	myStrings = std::move(someLines);
 }
 
-const CU::GrowingArray<CU::DynamicString>& CTextInstance::GetTextLines()
+const CU::GrowingArray<std::string>& CTextInstance::GetTextLines()
 {
 	return myStrings;
 }
@@ -113,7 +113,7 @@ float CTextInstance::GetlineHeight() const
 CU::Vector2f CTextInstance::GetQuadSizeNormalized() const
 {
 	CU::Vector2f rectPixelSize;
-	for (const CU::DynamicString& str : myStrings)
+	for (const std::string& str : myStrings)
 	{
 		CU::Vector2f stringSize(myText->CalculateRectPixelSize(str.c_str()));
 		rectPixelSize.x = max(stringSize.x, rectPixelSize.x);

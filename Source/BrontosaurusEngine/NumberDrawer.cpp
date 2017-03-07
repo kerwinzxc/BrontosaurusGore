@@ -16,7 +16,7 @@ CNumberDrawer::~CNumberDrawer()
 	mySpriteInstances.DeleteAll();
 }
 
-void CNumberDrawer::Init(const CU::DynamicString& anImageFilePath, const CU::Vector2f& aSize, const CU::Vector2f& aPosition, const bool aHorizontalSprite)
+void CNumberDrawer::Init(const std::string& anImageFilePath, const CU::Vector2f& aSize, const CU::Vector2f& aPosition, const bool aHorizontalSprite)
 {
 	mySpriteData.myImageFilPath = anImageFilePath;
 	mySpriteData.mySize = aSize;

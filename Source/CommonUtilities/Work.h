@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <functional>
 #include <atomic>
-#include "DynamicString.h"
 
 namespace DL_Debug
 {
@@ -29,7 +28,7 @@ namespace CU
 		void DoWork();
 		inline ePriority GetPriority();
 
-		CU::DynamicString myLogMessage;
+		std::string myLogMessage;
 		DL_Debug::eLogTypes myToWhatLog;
 	private:
 		ePriority myPrio;

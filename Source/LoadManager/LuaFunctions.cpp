@@ -3,16 +3,15 @@
 #include "../Components/GameObjectManager.h"
 #include "BrontosaurusEngine/Engine.h"
 #include "Game/Game.h"
-#include "CommonUtilities/DynamicString.h"
-#include "..\Components/GameObject.h"
-#include "..\Components/Component.h"
-#include "..\Components/ComponentManager.h"
+#include "../Components/GameObject.h"
+#include "../Components/Component.h"
+#include "../Components/ComponentManager.h"
 #include "Components/ModelComponentManager.h"
-#include "BrontosaurusEngine\ModelManager.h"
+#include "BrontosaurusEngine/ModelManager.h"
 #include "LoadManager.h"
 #include "Scene.h"
 #include "Game/PlayState.h"
-#include "Components\AudioSourceComponentManager.h"
+#include "Components/AudioSourceComponentManager.h"
 
 #include "Components/ParticleEmitterComponentManager.h"
 
@@ -35,21 +34,21 @@ SSlua::ArgumentList LuaFunctions::CreateObject(SSlua::ArgumentList anArgumentLis
 {
 	if (anArgumentList.Size() != 2)
 	{
-		DL_ASSERT((CU::DynamicString("Lua engine error: Engine.CreateObject expected 2 arguments (string,table) got ") + anArgumentList.Size()).c_str());
+		DL_ASSERT((std::string("Lua engine error: Engine.CreateObject expected 2 arguments (string,table) got ") + std::to_string(anArgumentList.Size())).c_str());
 	}
 
 	if (anArgumentList[0].GetType() != eSSType::STRING)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected string as first argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected string as first argument got ");
 		errorString += anArgumentList[0].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 
-	const CU::DynamicString name(anArgumentList[0].GetString());
+	const std::string name(anArgumentList[0].GetString());
 
 	if (anArgumentList[1].GetType() != eSSType::TABLE)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
@@ -112,7 +111,7 @@ SSlua::ArgumentList LuaFunctions::CreateModel(SSlua::ArgumentList anArgumentList
 {
 	SSlua::LuaWrapper::CheckArguments("CreateModel", { eSSType::STRING }, anArgumentList);
 
-	CU::DynamicString modelPath(anArgumentList[0].GetString());
+	std::string modelPath(anArgumentList[0].GetString());
 	modelPath += ".fbx";
 
 	CModelComponent* component = CModelComponentManager::GetInstance().CreateComponent(modelPath.c_str());
@@ -146,73 +145,73 @@ SSlua::ArgumentList LuaFunctions::CreateParticleEmitterComponent(SSlua::Argument
 #pragma region craycray
 	if (anArgumentList[0].GetType() != eSSType::STRING)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[1].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[2].GetType() != eSSType::TABLE)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[3].GetType() != eSSType::TABLE)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[4].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[5].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[6].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[7].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[8].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[9].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[10].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}
 	if (anArgumentList[11].GetType() != eSSType::NUMBER)
 	{
-		CU::DynamicString errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
+		std::string errorString("Lua engine error: Engine.CreateObject expected a table as second argument got ");
 		errorString += anArgumentList[1].GetTypeName();
 		DL_ASSERT(errorString.c_str());
 	}

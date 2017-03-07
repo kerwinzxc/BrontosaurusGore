@@ -12,6 +12,7 @@
 #include "../PostMaster/KeyCharPressed.h"
 #include "../CommonUtilities/EKeyboardKeys.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../Game/stdafx.h"
 
 CConsole::CConsole()
 {
@@ -70,7 +71,7 @@ bool CConsole::Update(float aDeltaTime)
 			myElapsedAnimationTimer = 0.0f;
 			if (myHaveIAfterCurrentText == true)
 			{
-				myCurrentText->SetText(myCurrentText->GetText().SubStr(0, myCurrentText->GetText().Size() - 1));
+				myCurrentText->SetText(myCurrentText->GetText().substr(0, myCurrentText->GetText().size() - 1));
 
 			}
 			else
@@ -183,7 +184,7 @@ eMessageReturn CConsole::TakeKeyBoardInputPressedChar(const char aKey)
 	{
 		if (myHaveIAfterCurrentText == true)
 		{
-			myCurrentText->SetText(myCurrentText->GetText().SubStr(0, myCurrentText->GetText().Size() - 1));
+			myCurrentText->SetText(myCurrentText->GetText().substr(0, myCurrentText->GetText().size() - 1));
 			myHaveIAfterCurrentText = false;
 			myElapsedAnimationTimer = myAnimationTimerCooldown;
 		}
@@ -195,14 +196,14 @@ eMessageReturn CConsole::TakeKeyBoardInputPressedChar(const char aKey)
 			{
 				myTextLog[i]->SetPosition(myTextLog[i]->GetPosition() + CU::Vector2f(0.0f, -0.05f));
 			}
-			CU::DynamicString error = CheckIfTextIsCommand(myCurrentText->GetText());
+			std::string error = CheckIfTextIsCommand(myCurrentText->GetText());
 			DL_PRINT(error.c_str());
 			myCurrentText->SetText("");
 			mySuggestedCommand->SetText("");
 		}
 		else if (aKey == '\b')
 		{
-			myCurrentText->SetText(myCurrentText->GetText().SubStr(0, myCurrentText->GetText().Size() - 1));
+			myCurrentText->SetText(myCurrentText->GetText().substr(0, myCurrentText->GetText().size() - 1));
 			if (myCurrentText->GetText() == "")
 			{
 				mySuggestedCommand->SetText("");
@@ -232,7 +233,7 @@ eMessageReturn CConsole::TakeKeyBoardInput(const CU::eKeys aKey)
 		{
 		case CU::eKeys::UP:
 		{
-			if (myCurrentText->GetText().Empty() || myCurrentText->GetText() == '|')
+			if (myCurrentText->GetText().empty() || myCurrentText->GetText() == "|")
 			{
 				if (!myTextLog.Empty())
 				{
@@ -282,9 +283,9 @@ eMessageReturn CConsole::TakeKeyBoardInput(const CU::eKeys aKey)
 	return eMessageReturn::eContinue;
 }
 
-const CU::DynamicString CConsole::CheckIfTextIsCommand(const CU::DynamicString& aText)
+const std::string CConsole::CheckIfTextIsCommand(const std::string& aText)
 {
-	const CU::DynamicString LuaFunction("-lua ");
+	const std::string LuaFunction("-lua ");
 	if (aText == "GodMode")
 	{
 		//doGodMode();
@@ -294,9 +295,9 @@ const CU::DynamicString CConsole::CheckIfTextIsCommand(const CU::DynamicString& 
 	{
 		PrintCommands();
 	}
-	else if (aText.Find(LuaFunction) == 0)
+	else if (aText.find(LuaFunction) == 0)
 	{
-		std::string pieceOfCode = aText.SubStr(LuaFunction.Size(), aText.Size() - LuaFunction.Size()).c_str();
+		std::string pieceOfCode = aText.substr(LuaFunction.size(), aText.size() - LuaFunction.size()).c_str();
 		if (!SSlua::LuaWrapper::GetInstance().DoString(pieceOfCode))
 		{
 			std::string luaError;
@@ -324,31 +325,31 @@ const CU::DynamicString CConsole::CheckIfTextIsCommand(const CU::DynamicString& 
 	return aText + " was not found.";
 }
 
-CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString)
+std::string CConsole::ParseAndRunFunction(const std::string& aString)
 {
 	
-	int currentLetter = aString.FindFirst(' ');
-	if (currentLetter ==CU::DynamicString::FoundNone)
+	int currentLetter = aString.find_first_of(' ');
+	if (currentLetter ==std::string::npos)
 	{
-		currentLetter = aString.Size();
+		currentLetter = aString.size();
 	}
 
-	const CU::DynamicString commandName = aString.SubStr(0, currentLetter);
+	const std::string commandName = aString.substr(0, currentLetter);
 
 	if (myLuaFunctions.count(std::string(commandName.c_str())) == 0)
 	{
-		return CU::DynamicString("ERROR: Could not find a command with the name -> ") + commandName;
+		return std::string("ERROR: Could not find a command with the name -> ") + commandName;
 	}
 
 	SSlua::ArgumentList arguments;
 	arguments.Init(1);
-	while (currentLetter != aString.Size())
+	while (currentLetter != aString.size())
 	{
 		const int beginingOfArg = currentLetter + 1;
 		if (aString[beginingOfArg] == '"')
 		{
 			bool isCorrect = false;
-			for (currentLetter += 1; currentLetter < aString.Size(); currentLetter++)
+			for (currentLetter += 1; currentLetter < aString.size(); currentLetter++)
 			{
 				if (aString[currentLetter] == '"')
 				{
@@ -362,11 +363,11 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 				return "ERROR: string was not closed! please close it by using \" at the end";
 			}
 
-			arguments.Add(SSArgument(aString.SubStr(beginingOfArg + 1, currentLetter - beginingOfArg - 1).c_str()));
+			arguments.Add(SSArgument(aString.substr(beginingOfArg + 1, currentLetter - beginingOfArg - 1).c_str()));
 		}
 		else
 		{
-			for (currentLetter += 1; currentLetter < aString.Size(); currentLetter++)
+			for (currentLetter += 1; currentLetter < aString.size(); currentLetter++)
 			{
 				if (aString[currentLetter] == ' ')
 				{
@@ -374,15 +375,15 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 				}
 			}
 
-			const CU::DynamicString argumentString = aString.SubStr(beginingOfArg, currentLetter - beginingOfArg);
+			const std::string argumentString = aString.substr(beginingOfArg, currentLetter - beginingOfArg);
 
-			if (argumentString.IsBool())
+			if (CU::StringHelper::IsBool(argumentString))
 			{
-				arguments.Add(SSArgument(argumentString.AsBool()));
+				arguments.Add(SSArgument(CU::StringHelper::ToBool(argumentString)));
 			}
-			else if (argumentString.IsFloat())
+			else if (CU::StringHelper::IsFloat(argumentString))
 			{
-				arguments.Add(SSArgument(argumentString.AsFloat()));
+				arguments.Add(SSArgument(std::stof(argumentString)));
 			}
 			else
 			{
@@ -407,15 +408,15 @@ CU::DynamicString CConsole::ParseAndRunFunction(const CU::DynamicString& aString
 		resultString -= ", ";
 	}
 
-	return CU::DynamicString(resultString.c_str());
+	return std::string(resultString.c_str());
 }
 
 
-void CConsole::Print(const CU::DynamicString & aText)
+void CConsole::Print(const std::string & aText)
 {
 	myCurrentText->SetText(aText);
 	myTextLog.Add(new CTextInstance(*myCurrentText));
-	CU::DynamicString error = CheckIfTextIsCommand(myCurrentText->GetText());
+	std::string error = CheckIfTextIsCommand(myCurrentText->GetText());
 	DL_PRINT(error.c_str());
 	for (unsigned short i = 0; i < myTextLog.Size(); i++)
 	{

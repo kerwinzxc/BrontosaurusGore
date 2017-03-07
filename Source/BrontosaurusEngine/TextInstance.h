@@ -1,9 +1,11 @@
 #pragma once
-#include "../CommonUtilities/DynamicString.h"
 #include "../CommonUtilities/vector4.h"
 #include "../CommonUtilities/vector2.h"
 #include "Text.h"
 #include "Allignment.h"
+#include <string>
+#include "../CommonUtilities/GrowingArray.h"
+#include "../CommonUtilities/DL_Debug.h"
 
 class CText;
 
@@ -23,7 +25,7 @@ public:
 	CTextInstance(const CTextInstance& aTextInstance);
 	~CTextInstance();
 
-	void Init(const CU::DynamicString& aFontPath = "Default");
+	void Init(const std::string& aFontPath = "Default");
 	void Render() const;
 
 	void SetLineGap();
@@ -34,14 +36,14 @@ public:
 	inline void SetColor(const CU::Vector4f& aColor);
 	inline const CU::Vector4f& GetColor() const;
 
-	bool SetTextLine(const unsigned int aLineNumber, const CU::DynamicString& aString);
-	bool SetTextLine(const unsigned int aLineNumber, CU::DynamicString&& aString);
-	void SetTextLines(const CU::GrowingArray<CU::DynamicString>& someLines);
-	void SetTextLines(CU::GrowingArray<CU::DynamicString>&& someLines);
-	const CU::GrowingArray<CU::DynamicString> &GetTextLines();
+	bool SetTextLine(const unsigned int aLineNumber, const std::string& aString);
+	bool SetTextLine(const unsigned int aLineNumber, std::string&& aString);
+	void SetTextLines(const CU::GrowingArray<std::string>& someLines);
+	void SetTextLines(CU::GrowingArray<std::string>&& someLines);
+	const CU::GrowingArray<std::string> &GetTextLines();
 
-	inline void SetText(const CU::DynamicString& aString);
-	inline CU::DynamicString GetText() const;
+	inline void SetText(const std::string& aString);
+	inline std::string GetText() const;
 	float GetlineHeight() const;
 
 	CU::Vector2f GetQuadSizeNormalized() const;
@@ -50,8 +52,8 @@ public:
 
 	CTextInstance& operator=(const CTextInstance& aTextInstance);
 private:
-	//CU::DynamicString myString;
-	CU::GrowingArray<CU::DynamicString> myStrings;
+	//std::string myString;
+	CU::GrowingArray<std::string> myStrings;
 	CU::Vector4f myColor;
 	CU::Vector2f myPosition;
 	CText* myText;
@@ -80,17 +82,17 @@ inline const CU::Vector4f& CTextInstance::GetColor() const
 	return myColor;
 }
 
-inline void CTextInstance::SetText(const CU::DynamicString& aString)
+inline void CTextInstance::SetText(const std::string& aString)
 {
 
 	myStrings.RemoveAll();
 	int lastPosition = 0;
-	for (int i = 0; i < aString.Size(); ++i)
+	for (int i = 0; i < aString.size(); ++i)
 	{
 		if (aString.at(i) == '\n')
 		{
 			DL_PRINT_WARNING("Warning slow! consider using different set text method");
-			const CU::DynamicString explainingString(aString.SubStr(lastPosition, i - lastPosition));
+			const std::string explainingString(aString.substr(lastPosition, i - lastPosition));
 			myStrings.Add(explainingString);
 			lastPosition = i + 1;
 		}
@@ -102,15 +104,15 @@ inline void CTextInstance::SetText(const CU::DynamicString& aString)
 	}
 	else
 	{
-		const  CU::DynamicString lastExplaingString(aString.SubStr(lastPosition, aString.Size() - lastPosition));
+		const  std::string lastExplaingString(aString.substr(lastPosition, aString.size() - lastPosition));
 		myStrings.Add(lastExplaingString);
 	}
 }
 
-inline CU::DynamicString CTextInstance::GetText() const
+inline std::string CTextInstance::GetText() const
 {
 
-	CU::DynamicString string;
+	std::string string;
 	for (unsigned int i = 0; i < myStrings.Size(); ++i)
 	{
 		if (i != 0)

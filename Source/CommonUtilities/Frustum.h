@@ -3,7 +3,7 @@
 
 namespace CU
 {
-	struct AABB;
+	struct Sphere;
 }
 
 
@@ -19,8 +19,7 @@ namespace CU
 
 		//fov in degrees
 		void SetFrustum(float aFar, float aNear, float aFOV, float aWidth, float aHeight);
-		bool IsInside(const CU::AABB& aAABB);
-
+		bool IsInside(const CU::Sphere& aSphere);
 	private:
 		CU::PlaneVolume<float> myPlanes;
 	};

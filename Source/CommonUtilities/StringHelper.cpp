@@ -35,6 +35,53 @@ namespace CU
 
 		return aStringToClean;
 	}
+
+	bool StringHelper::IsBool(std::string aString)
+	{
+		return aString == "true" || aString == "false" || aString == "True" || aString == "False" || aString == "TRUE" || aString == "FALSE";
+	}
+
+	bool StringHelper::ToBool(std::string astring)
+	{
+		if (astring == "true" || astring == "True" || astring == "TRUE")
+		{
+			return true;
+		}
+		if(astring == "false" || astring == "False" || astring == "FALSE")
+		{
+			return false;
+		}
+		DL_ASSERT("Could not convert");
+		return false;
+	}
+
+	bool StringHelper::IsFloat(std::string aString)
+	{
+		const std::string number = "1234567890.";
+		for (int i = 0; i < aString.size(); ++i)
+		{
+			if (number.find(aString[i]) == std::string::npos)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool StringHelper::IsInt(std::string aString)
+	{
+		const std::string number = "1234567890";
+		for (int i = 0; i < aString.size(); ++i)
+		{
+			if (number.find(aString[i]) == std::string::npos)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
 
 std::string& operator-=(std::string& aLeft, const std::string& aRight)

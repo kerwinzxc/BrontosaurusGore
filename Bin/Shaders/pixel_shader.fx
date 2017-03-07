@@ -547,32 +547,32 @@ PixelOutput PS_PBL(PosNormBinormTanTex_InputPixel input)
 
 	for(uint i = 0; i < numberOfPointLights; ++i)
 	{
-    	float3 difference = (myPointLights[i].position.xyz) - input.worldPosition.xyz;
-    	float l = length(difference);
+		float3 difference = (myPointLights[i].position.xyz) - input.worldPosition.xyz;
+		float l = length(difference);
 
-    	float lightRange = l / myPointLights[i].range;
+		float lightRange = l / myPointLights[i].range;
 		lightRange = saturate(lightRange);
 		lightRange = 1.0f - lightRange;
 
 
-    	float3 direction = normalize(difference);
-    	float4 color = (float4)0;
-    	lightColor = myPointLights[i].color.rgb;
-    	lambert = PS_Lambert(input, normal, -direction).color.xyz;
-    	toLight = direction;
-    	halfvec = normalize(toLight + toEye);
-    	LdotH = dot(toLight, halfvec);
-    	LdotH = saturate(LdotH);
-    	LdotH = 1.0f - LdotH;
-    	LdotH = pow(LdotH, 5);
-    	Dirrfresnel = LdotH * (1.f - substance);
-    	Dirrfresnel = substance + Dirrfresnel;
-    	color = float4(metalnessAlbedo * myPointLights[i].color.rgb * lambert * (one - Dirrfresnel), 1.0f);
-    	directionDiffuse += color.rgb * myPointLights[i].intensity * lightRange;
-    	distribution = PS_Distribution(input, -direction).color.xxx;
-    	visibility = PS_Visibility(input, -direction).color.xxx;
-    	//float3 directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility;
-    	directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * myPointLights[i].intensity * lightRange;
+		float3 direction = normalize(difference);
+		float4 color = (float4)0;
+		lightColor = myPointLights[i].color.rgb;
+		lambert = PS_Lambert(input, normal, -direction).color.xyz;
+		toLight = direction;
+		halfvec = normalize(toLight + toEye);
+		LdotH = dot(toLight, halfvec);
+		LdotH = saturate(LdotH);
+		LdotH = 1.0f - LdotH;
+		LdotH = pow(LdotH, 5);
+		Dirrfresnel = LdotH * (1.f - substance);
+		Dirrfresnel = substance + Dirrfresnel;
+		color = float4(metalnessAlbedo * myPointLights[i].color.rgb * lambert * (one - Dirrfresnel), 1.0f);
+		directionDiffuse += color.rgb * myPointLights[i].intensity * lightRange;
+		distribution = PS_Distribution(input, -direction).color.xxx;
+		visibility = PS_Visibility(input, -direction).color.xxx;
+		//float3 directionSpecularity = lightColor * lambert * Dirrfresnel * distribution * visibility;
+		directionSpecularity += lightColor * lambert * Dirrfresnel * distribution * visibility * myPointLights[i].intensity * lightRange;
 
 
 

@@ -34,7 +34,7 @@ struct TextInstanceBufferType
 };
 
 
-CText::CText(const CU::DynamicString& aFontPath): myVertexConstantBuffer(nullptr), myPixelConstantBuffer(nullptr)
+CText::CText(const std::string& aFontPath): myVertexConstantBuffer(nullptr), myPixelConstantBuffer(nullptr)
 {
 	myFont = CFontEngineFacade::GetInstance().GetFace(aFontPath.c_str());
 	//myFont.SetSize(32, 0, 0);
@@ -47,7 +47,7 @@ CText::CText(const CText& aCoolText)
 	InitBuffers();
 }
 
-CText::CText(const CU::DynamicString & aFontPath, const int aPixelSize):
+CText::CText(const std::string & aFontPath, const int aPixelSize):
 	myVertexBuffer(nullptr),
 	myPixelConstantBuffer(nullptr)
 {
@@ -87,7 +87,7 @@ CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWSt
 	return CU::Vector2f(stringWidth, 0);
 }
 
-void CText::Render(const CU::GrowingArray<CU::DynamicString>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement)
+void CText::Render(const CU::GrowingArray<std::string>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement)
 {
 	CU::Vector2f penPosition = aPosition;
 
