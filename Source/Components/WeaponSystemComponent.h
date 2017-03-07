@@ -13,7 +13,7 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 	void Update(float aDelta);
-	void GiveWepon(const char* aWeaponName);
+	void GiveWeapon(const char* aWeaponName);
 	void AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData);
 private:
 	void HandleKeyPressed(const SComponentMessageData& aMessageData);

@@ -33,7 +33,7 @@ int LoadWeaponSystemComponent(KLoader::SLoadedComponentData someData)
 			for (unsigned short i = 0; i < levelsArray.Size(); i++)
 			{
 				std::string newWeaponName = levelsArray[i].GetString().c_str();
-				newWeaponSystemComponent->GiveWepon(newWeaponName.c_str());
+				newWeaponSystemComponent->GiveWeapon(newWeaponName.c_str());
 			}
 		}
 		return newWeaponSystemComponent->GetId();
