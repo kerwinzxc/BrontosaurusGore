@@ -22,7 +22,7 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "TempLobbyState.h"
 
-CGame::CGame()
+CGame::CGame(): mySplashScreen(nullptr)
 {
 }
 
