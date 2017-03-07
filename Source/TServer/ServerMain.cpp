@@ -379,6 +379,11 @@ bool CServerMain::Update()
 			HandleChatMessage(currentMessage->CastTo<CNetworkMessage_ChatMessage>());
 		}
 		break;
+		case ePackageType::ePlayerPosition:
+		{
+
+		}
+		break;
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position* position = currentMessage->CastTo<CNetworkMessage_Position>();

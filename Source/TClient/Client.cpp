@@ -175,6 +175,11 @@ void CClient::Update()
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
 			}
 			break;
+		case ePackageType::ePlayerPosition:
+		{
+
+		}
+		break;
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
