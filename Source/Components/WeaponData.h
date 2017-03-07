@@ -9,4 +9,5 @@ struct SWeaponData
 	unsigned short randomSpreadAngleX;
 	unsigned short randomSpreadAngleY;
 	unsigned short projectilesFiredPerShot;
+	bool shouldRayCast;
 };

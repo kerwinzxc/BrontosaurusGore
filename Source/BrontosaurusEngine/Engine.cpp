@@ -84,8 +84,8 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myLineDrawer = new CLineDrawer();
 	CFontEngineFacade::CreateInstance();
 	myFontEngine = CFontEngineFacade::GetInstance();
-	//myConsole = new CConsole();
-	//myConsole->Init();
+	myConsole = new CConsole();
+	myConsole->Init();
 	myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
 
 	bool result;
