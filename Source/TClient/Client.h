@@ -35,6 +35,7 @@ public:
 
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
+	eMessageReturn DoEvent(const CSetClientIDMessage& aMessage) override;
 private:
 
 	//CChat myChat;
