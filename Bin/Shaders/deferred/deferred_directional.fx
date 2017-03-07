@@ -13,7 +13,7 @@ Texture2D deferred_RMAO			: register(t3);
 Texture2D deferred_emissive     : register(t4);
 Texture2D deferred_depth        : register(t5);
 
-Texture2D shadowBuffer          : register(t7);
+Texture2D shadowBuffer          : register(t8);
 
 //**********************************************//
 //					SAMPLERS					//
@@ -28,7 +28,7 @@ SamplerState samplerWrap        : register(s1);
 
 // OncePer Framebuffer defined in oncePerFrame.fx
 
-// lägg till i ^
+// Add to once per frame buffer mebe?
 cbuffer CameraBuffer			: register(b1)
 {
 	float4x4 projectionInverse;
@@ -42,7 +42,7 @@ cbuffer directionalLight        : register(b2)
 		float3 color;
 		float intensity;
 		float3 direction;
-		float shadowCasting;
+		int shadowIndex;
 	} directionalLight;
 }
 
@@ -101,7 +101,6 @@ float Distribution(float3 lightDirection, float3 normal, float roughness, float3
 	return distribution;
 }
 
-	//mebe only able to run PBL if we're using PosNormBinormTanTex.
 float Visibility(float3 lightDirection, float3 normal, float roughness, float3 cameraPosition, float3 worldPosition)
 {
 	float3 toLight = -lightDirection;
@@ -152,31 +151,37 @@ float3 CameraPosition(float4x4 aCameraSpace)
 	return cameraPosition.xyz;
 }
 
-float Shadow(float3 worldPosition)
+float ShadowBuffer(float3 worldPosition)
 {
-	if (directionalLight.shadowCasting == 0.0f)
-	{
-		return 1.0f;
-	}
-
-
-	float4 shadowCamPosition = worldPosition;
+	float output = 1.0f;
+	float4 shadowCamPosition = float4(worldPosition, 1.0f);
 
 	shadowCamPosition = mul(shadowCamInverse, shadowCamPosition);
 	shadowCamPosition = mul(shadowCamProjection, shadowCamPosition);
-
 	shadowCamPosition /= shadowCamPosition.w;
 
 	float2 texCord;
 	texCord.x = shadowCamPosition.x * 0.5f + 0.5f;
 	texCord.y = shadowCamPosition.y * -0.5f + 0.5f;
-	float shadowCamDepth = shadowBuffer.SampleLevel(samplerWrap, texCord, 0).x;
+	float shadowCamDepth = shadowBuffer.Sample(samplerWrap, texCord).x;
 
 	if (shadowCamDepth < shadowCamPosition.z - 0.001f && shadowCamDepth != 0.f)
 	{
-		return 0.0f;
+		output = 0.0f;
 	}
-	return 1.0f;
+	if (directionalLight.shadowIndex == -1)
+	{
+		output = 1.0f;
+	}
+	if (texCord.x < 0.0f || texCord.x > 1.0f)
+	{
+		output = 1.0f;
+	}
+	if (texCord.y < 0.0f || texCord.y > 1.0f)
+	{
+		output = 1.0f;
+	}
+	return output;
 }
 
 Output PS_PosTex(PosTex_InputPixel inputPixel)
@@ -235,7 +240,8 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 visibility = Visibility(directionalLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
 	float3 directionSpecularity = lightColor * lambert * dirrfresnel * distribution * visibility;
 
-	float shadow = Shadow(worldPosition);
+
+	float shadow = ShadowBuffer(worldPosition);
 
 	float3 finalColor = (directionDiffuse + directionSpecularity);
 	finalColor *= directionalLight.intensity * shadow;
