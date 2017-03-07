@@ -390,6 +390,7 @@
     <ClInclude Include="EInputMessengerType.h">
       <Filter>Input\Recieving</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
