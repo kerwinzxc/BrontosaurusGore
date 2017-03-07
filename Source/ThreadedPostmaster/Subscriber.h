@@ -13,6 +13,7 @@ class CServerReadyMessage;
 class CSendNetowrkMessageMessage;
 class CConectMessage;
 class CConectedMessage;
+class CLoadLevelMessage;
 
 namespace Postmaster
 {
@@ -39,5 +40,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const Message::CPrintMessage& aPrintMessage);
 		virtual eMessageReturn DoEvent(const CConectMessage& aConectMessage);
 		virtual eMessageReturn DoEvent(const CConectedMessage& aConectedMessage);
+		virtual eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage);
 	};
 }

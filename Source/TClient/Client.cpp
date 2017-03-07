@@ -1,37 +1,39 @@
 #include "stdafx.h"
 #include "Client.h"
-
-#include "ClientMessageManager.h"
-#include "ServerReadyMessage.h"
-
-#include "../CommonUtilities/CommonUtilities.h"
 #include "../CommonUtilities/DL_Debug.h"
-#include "../CommonUtilities/ThreadPool.h"
-#include "../CommonUtilities/ThreadNamer.h"
-
-#include "../BrontosaurusEngine/Engine.h"
-
+#include <iostream>
 #include "../TShared/PackageType.h"
 #include "../TShared/NetworkMessage_Ping.h"
 #include "../TShared/NetworkMessage_PingResponse.h"
 #include "../TShared/NetworkMesssage_Connect.h"
 #include "../TShared/NetworkMessage_ConectResponse.h"
 #include "../TShared/NetworkMessage_Position.h"
+#include "../CommonUtilities/CommonUtilities.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
+#include "ClientMessageManager.h"
+#include "../PostMaster/EMessageReturn.h"
+#include "../PostMaster/Message.h"
+//#include "../PostMaster/Event.h"
+//#include "../PostMaster/PostMaster.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../BrontosaurusEngine/Engine.h"
+#include "../CommonUtilities/ThreadPool.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "ServerReadyMessage.h"
+#include "../CommonUtilities/ThreadNamer.h"
+
 
 #include "../Components/NetworkComponentManager.h"
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
-
-#include "../PostMaster/EMessageReturn.h"
-#include "../ThreadedPostmaster/Postmaster.h"
-#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/ConetctMessage.h"
 #include "../ThreadedPostmaster/ConectedMessage.h"
+#include "../TShared/NetworkMessage_LoadLevel.h"
+#include "../ThreadedPostmaster/LoadLevelMessage.h"
 
 
-CClient::CClient(): myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
+CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
@@ -48,7 +50,6 @@ CClient::~CClient()
 	{
 		continue;
 	}
-
 	CClientMessageManager::DestroyInstance();
 }
 
@@ -63,7 +64,7 @@ bool CClient::StartClient()
 void CClient::Disconect()
 {
 	myState = eClientState::DISCONECTED;
-	DL_PRINT("Disconected from server");
+	std::cout << "Disconected from server";
 	myServerIsPinged = false;
 	//myChat.StopChat();
 }
@@ -76,7 +77,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 
 		if (myServerPingTime >= 10)
 		{
-			DL_PRINT("Server is not responding");
+			std::cout << "Server is not responding" << std::endl;
 			Disconect();
 		}
 	}
@@ -120,7 +121,7 @@ void CClient::Update()
 		myServerPingTime = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
-		if(myTimerManager.Size() == 0)
+		if (myTimerManager.Size() == 0)
 		{
 			break;
 		}
@@ -131,7 +132,7 @@ void CClient::Update()
 
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
-		switch (static_cast<ePackageType>(currentMessage->GetHeader().myPackageType))
+		switch ((currentMessage->GetHeader().myPackageType))
 		{
 		case ePackageType::eConnectResponse:
 			if (myState == eClientState::CONECTING)
@@ -140,7 +141,7 @@ void CClient::Update()
 				myId = conectResponseMessage->myClientId;
 				myState = eClientState::CONECTED;
 
-				DL_PRINT("Conected to server got id: %d", myId);
+				std::cout << "Conected to server got id:" << myId << std::endl;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
 			}
 			break;
@@ -148,35 +149,30 @@ void CClient::Update()
 			if (myState == eClientState::CONECTED)
 			{
 				//DL_PRINT("CLIENT:Ping");
-				SNetworkPackageHeader header;
-				header.mySenderID = myId;
-				header.myTargetID = ID_SERVER;
-				header.myPackageType = (ePackageType::ePingResponse);
-				header.myTimeStamp = 100;
 
 				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
 				myNetworkWrapper.Send(newMessage, myServerIp.c_str(), SERVER_PORT);
 			}
 			break;
 		case ePackageType::ePingResponse:
-			{
-				//DL_PRINT("CLIENT:PingRespons");
-				myCurrentPing = myServerPingTime;
-				myServerPingTime = 0;
-				myServerIsPinged = false;
-			}
-			break;
+		{
+			//DL_PRINT("CLIENT:PingRespons");
+			myCurrentPing = myServerPingTime;
+			myServerPingTime = 0;
+			myServerIsPinged = false;
+		}
+		break;
 		case ePackageType::eChat:
-			{
-				CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
-				DL_PRINT(chatMessage->myChatMessage.c_str());
-			}
-			break;
+		{
+			CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
+			std::cout << chatMessage->myChatMessage << std::endl;
+		}
+		break;
 		case ePackageType::eServerReady:
-			{
-				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
-			}
-			break;
+		{
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
+		}
+		break;
 		case ePackageType::ePlayerPosition:
 		{
 
@@ -185,7 +181,7 @@ void CClient::Update()
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			DL_PRINT("Got position message with ID: %u and position: X: %f, Y: %f, Z: %f", positionMessage->GetID(), positionMessage->GetPosition().x, positionMessage->GetPosition().y, positionMessage->GetPosition().z);
+			//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
 
 			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
 			//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
@@ -193,6 +189,13 @@ void CClient::Update()
 			//CU::Vector3f temp2 = comp->GetParent()->GetWorldPosition();
 			comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
+		}
+		break;
+		case ePackageType::eLoadLevel:
+		{
+			CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+			
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
 		}
 		break;
 		case ePackageType::eZero:
@@ -239,12 +242,6 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	myState = eClientState::CONECTING;
 
 	myServerIp = anIp;
-
-	SNetworkPackageHeader header;
-	header.myPackageType = (ePackageType::eConnect);
-	header.myTargetID = ID_SERVER;
-	header.mySenderID = ID_ALL;
-	header.myTimeStamp = myTimer.GetLifeTime().GetMilliseconds();
 
 	CNetworkMessage_Connect* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Connect>("__Server");
 	message->myClientName = aClientName;

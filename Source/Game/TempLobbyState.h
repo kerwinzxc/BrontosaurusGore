@@ -43,6 +43,7 @@ public:
 
 	eMessageReturn DoEvent(const KeyCharPressed& aCharPressed) override;
 	eMessageReturn DoEvent(const CConectedMessage& aCharPressed) override;
+	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
 
 private:
 	CTextInstance myTextINstance;

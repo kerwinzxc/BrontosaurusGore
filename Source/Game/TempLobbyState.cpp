@@ -15,6 +15,7 @@
 #include "TClient/ClientMessageManager.h"
 #include "TShared/NetworkMessage_LoadLevel.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -95,10 +96,13 @@ void CTempLobbyState::Select()
 		break;
 	case eLobbyState::eSelectLevel:
 		{
-			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
-			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
-			netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			if (myIsPlayer == true)
+			{
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
+				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			}
 		}
 		break;
 	default: break;
@@ -395,5 +399,11 @@ eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
 	
 	myCurrentLine = 2;
 
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CTempLobbyState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
 	return eMessageReturn::eContinue;
 }
