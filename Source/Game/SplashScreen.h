@@ -11,11 +11,11 @@ enum class eFadeState
 
 class CSpriteInstance;
 
-class CSplashScreen : public State, public Postmaster::ISubscriber
+class CSplashScreenState : public State, public Postmaster::ISubscriber
 {
 public:
-	CSplashScreen(StateStack& aStateStack);
-	~CSplashScreen();
+	CSplashScreenState(StateStack& aStateStack);
+	~CSplashScreenState();
 
 	eStateStatus Update(const CU::Time& aDeltaTime) override;
 	void Render() override;

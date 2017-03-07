@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TextBox.h"
-
+#include "TextInstance.h"
 
 CTextBox::CTextBox()
 {
