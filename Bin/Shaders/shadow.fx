@@ -37,9 +37,7 @@ struct PixelOutput
 //					FRAGMENT					//
 //**********************************************//
 
-float3 PS_ObjectNormal(PosNormBinormTanTex_InputPixel input);
-
-PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
+PixelOutput PS_PosTex(PosNormBinormTanTex_InputPixel input)
 {
 	PixelOutput output;
 	float alpha = diffuse.Sample(samplerWrap, input.uv).a;
@@ -47,14 +45,8 @@ PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
 	{
 		discard;
 	}
-
+	output.shadow = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	output.shadow.xyz = input.position.zzz;
-	output.shadow.a = 1.0f;
+	output.shadow /= input.position.w;
 	return output;
-}
-
-
-PixelOutput PS_PosNormBinormTanTexBones(PosNormBinormTanTex_InputPixel input)
-{
-	return PS_PosNormBinormTanTex(input);
 }
