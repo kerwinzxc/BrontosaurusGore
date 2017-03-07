@@ -289,9 +289,6 @@
     <ClInclude Include="CUTime.h">
       <Filter>Timer</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicString.h">
-      <Filter>String</Filter>
-    </ClInclude>
     <ClInclude Include="CUstring.h">
       <Filter>String</Filter>
     </ClInclude>
@@ -432,9 +429,6 @@
     </ClCompile>
     <ClCompile Include="CUTime.cpp">
       <Filter>Timer</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicString.cpp">
-      <Filter>String</Filter>
     </ClCompile>
     <ClCompile Include="CountDown.cpp">
       <Filter>CountDown</Filter>

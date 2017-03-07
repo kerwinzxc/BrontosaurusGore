@@ -40,11 +40,11 @@ public:
 private:
 	void UpdateCommandSuggestions(const std::string& aStringToCompare);
 	size_t CConsole::MakeCommandSuggestions(const std::string& aStringToCompare, const std::string& aStringToEvaluate);
-	const CU::DynamicString CheckIfTextIsCommand(const CU::DynamicString& aText);
-	void Print(const CU::DynamicString& aText);
+	const std::string CheckIfTextIsCommand(const std::string& aText);
+	void Print(const std::string& aText);
 	void PrintCommands();
 
-	CU::DynamicString ParseAndRunFunction(const CU::DynamicString& aString);
+	std::string ParseAndRunFunction(const std::string& aString);
 
 
 	std::map<std::string, SSlua::LuaCallbackFunction> myLuaFunctions;

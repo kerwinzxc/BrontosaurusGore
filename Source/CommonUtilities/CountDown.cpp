@@ -65,7 +65,7 @@ namespace CU
 				myOutputText->SetColor(CTextInstance::Yellow);
 			}
 
-			CU::DynamicString timeString = "";
+			std::string timeString = "";
 			if (years > 0)
 			{
 				timeString += years;

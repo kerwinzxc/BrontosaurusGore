@@ -181,7 +181,7 @@ CTextBitmap CFT_Font::RenderChar(FT_UInt aGlyphIndex)
 
 	if (error != 0)
 	{
-		CU::DynamicString bla("Freetype load glyph failed check on \"https://www.freetype.org/freetype2/docs/reference/ft2-error_code_values.html#FT_Err_XXX\" code: ");
+		std::string bla("Freetype load glyph failed check on \"https://www.freetype.org/freetype2/docs/reference/ft2-error_code_values.html#FT_Err_XXX\" code: ");
 		bla += error;
 		DL_ASSERT(bla.c_str());
 	}
@@ -189,7 +189,7 @@ CTextBitmap CFT_Font::RenderChar(FT_UInt aGlyphIndex)
 	error = FT_Render_Glyph(myFace->glyph, FT_RENDER_MODE_NORMAL);
 	if (error != 0)
 	{
-		CU::DynamicString bla("Freetype render glyph failed check on \"https://www.freetype.org/freetype2/docs/reference/ft2-error_code_values.html#FT_Err_XXX\" code: ");
+		std::string bla("Freetype render glyph failed check on \"https://www.freetype.org/freetype2/docs/reference/ft2-error_code_values.html#FT_Err_XXX\" code: ");
 		bla += error;
 		DL_ASSERT(bla.c_str());
 	}

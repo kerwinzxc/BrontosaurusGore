@@ -13,7 +13,6 @@
 // TODO: reference additional headers your program requires here
 #include <assert.h>
 #include "../CommonUtilities/GrowingArray.h"
-#include "../CommonUtilities/DynamicString.h"
 
 //#include <ft2build.h>
 //#include FT_FREETYPE_H
