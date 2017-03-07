@@ -95,10 +95,13 @@ void CTempLobbyState::Select()
 		break;
 	case eLobbyState::eSelectLevel:
 		{
-			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
-			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
-			netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			if (myIsPlayer == true)
+			{
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
+				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			}
 		}
 		break;
 	default: break;

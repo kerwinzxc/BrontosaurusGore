@@ -76,3 +76,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CConectedMessage& aConecte
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	return eMessageReturn::eContinue;
+}
