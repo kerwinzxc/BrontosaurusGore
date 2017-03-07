@@ -15,6 +15,7 @@
 #include "TClient/ClientMessageManager.h"
 #include "TShared/NetworkMessage_LoadLevel.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -398,5 +399,11 @@ eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
 	
 	myCurrentLine = 2;
 
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CTempLobbyState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
 	return eMessageReturn::eContinue;
 }
