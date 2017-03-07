@@ -5,6 +5,9 @@
 
 namespace CU
 {
+	class Sphere;
+
+
 	class Camera
 	{
 	public:
@@ -58,7 +61,7 @@ namespace CU
 		inline float GetNear();
 		inline const CU::CFrustum& GetFrustum();
 		
-		bool IsInside(const CU::AABB& aAABB);
+		bool IsInside(const CU::Sphere& aAABB);
 
 	private:
 		// Describes the orientation of the camera in regard to world space (or 
