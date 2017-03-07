@@ -6,8 +6,7 @@ struct SWeaponData
 	std::string name;
 	std::string modelFilePath;
 	float fireRate;
-	unsigned short randomSpreadAngleX;
-	unsigned short randomSpreadAngleY;
+	unsigned short randomSpreadAngle;
 	unsigned short projectilesFiredPerShot;
 	bool shouldRayCast;
 };
