@@ -31,10 +31,10 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 			}
 			else if (dist2 < myDetectionRange2)
 			{
-				const CU::Vector3f displ = difNorm * mySpeed * aDeltaTime.GetSeconds();
-				GetParent()->Move(displ);
-
-
+				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
+				//const CU::Vector3f displ = difNorm * mySpeed * aDeltaTime.GetSeconds();
+				GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.0f, movementAmount));
+				
 			}
 			if (dist2 < myDetectionRange2)
 			{

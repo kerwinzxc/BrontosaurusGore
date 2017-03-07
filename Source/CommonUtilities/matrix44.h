@@ -583,6 +583,10 @@ namespace CU
 
 		Matrix44& LookAt(const Vector3<TYPE>& aLookFrom, const Vector3<TYPE>& aLookTo)
 		{
+			if(aLookFrom == aLookTo)
+			{
+				return *this;
+			}
 			static const CU::Vector3f objectUpVector(0.0f, 1.0f, 0.0f);
 
 			float xSize = myRightVector.Length();
