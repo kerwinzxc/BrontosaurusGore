@@ -3,10 +3,6 @@
 #include "StaticArray.h"
 #include "DL_Assert.h"
 
-//#include <string>
-//#include <fstream>
-//#include <unordered_map>
-
 namespace DL_Debug
 {
 	const unsigned short CONSOLE_TEXT_COLOR_RED = 12;

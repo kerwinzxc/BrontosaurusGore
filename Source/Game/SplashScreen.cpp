@@ -9,7 +9,7 @@
 #define MAX_ALPHA 1.0f
 #define MIN_APLHA 0.0f
 
-CSplashScreen::CSplashScreen(StateStack& aStateStack)
+CSplashScreenState::CSplashScreenState(StateStack& aStateStack)
 	: State(aStateStack, eInputMessengerType::eSplashScreen)
 	, myStayTime(1.5f)
 {
@@ -19,13 +19,13 @@ CSplashScreen::CSplashScreen(StateStack& aStateStack)
 	myStayTimer = 0.f;
 }
 
-CSplashScreen::~CSplashScreen()
+CSplashScreenState::~CSplashScreenState()
 {
 	mySprites.DeleteAll();
 	myCurrentSprite = nullptr; //deleted in mySprites
 }
 
-eStateStatus CSplashScreen::Update(const CU::Time& aDeltaTime)
+eStateStatus CSplashScreenState::Update(const CU::Time& aDeltaTime)
 {
 	if (mySprites.Size() == 0) myIsDone = true;
 
@@ -44,18 +44,18 @@ eStateStatus CSplashScreen::Update(const CU::Time& aDeltaTime)
 	return eStateStatus::eKeep;
 }
 
-void CSplashScreen::Render()
+void CSplashScreenState::Render()
 {
 	if(myCurrentSprite != nullptr)
 		myCurrentSprite->Render();
 }
 
-void CSplashScreen::AddPicture(const char* aPath)
+void CSplashScreenState::AddPicture(const char* aPath)
 {	// 								             size           pos			Pivot				rect					 colour
 	mySprites.Add(new CSpriteInstance(aPath, { 1.f, 1.f }, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f, 1.f, 1.f }, { 1.f, 1.f, 1.f, 0.f }));
 }
 
-void CSplashScreen::UserWantsToContinue()
+void CSplashScreenState::UserWantsToContinue()
 {
 	if (CheckIfMorePicsInArray() == true)
 	{
@@ -67,7 +67,7 @@ void CSplashScreen::UserWantsToContinue()
 	}
 }
 
-void CSplashScreen::FadeIn(const CU::Time& aDeltaTime)
+void CSplashScreenState::FadeIn(const CU::Time& aDeltaTime)
 {
 	CU::Vector4f color = myCurrentSprite->GetColor();
 
@@ -87,7 +87,7 @@ void CSplashScreen::FadeIn(const CU::Time& aDeltaTime)
 	myCurrentSprite->SetColor(color);
 }
 
-void CSplashScreen::FadeOut(const CU::Time& aDeltaTime)
+void CSplashScreenState::FadeOut(const CU::Time& aDeltaTime)
 {
 	CU::Vector4f color = myCurrentSprite->GetColor();
 
@@ -100,7 +100,7 @@ void CSplashScreen::FadeOut(const CU::Time& aDeltaTime)
 	myCurrentSprite->SetColor(color);
 }
 
-void CSplashScreen::SetNextPic()
+void CSplashScreenState::SetNextPic()
 {
 	unsigned int index = mySprites.Find(myCurrentSprite) + 1;
 
@@ -108,7 +108,7 @@ void CSplashScreen::SetNextPic()
 	myFadeState = eFadeState::eFadingIn;
 }
 
-bool CSplashScreen::CheckIfMorePicsInArray()
+bool CSplashScreenState::CheckIfMorePicsInArray()
 {
 	if (mySprites.Find(myCurrentSprite) == mySprites.Size() - 1)
 		return false;
@@ -116,7 +116,7 @@ bool CSplashScreen::CheckIfMorePicsInArray()
 	return true;
 }
 
-void CSplashScreen::OnEnter(const bool /*aLetThroughRender*/)
+void CSplashScreenState::OnEnter(const bool /*aLetThroughRender*/)
 {
 	if (mySprites.Size() == 0) return;
 	assert(mySprites.Size() > 0 && "You need to add something to the splashScreen");
@@ -128,6 +128,6 @@ void CSplashScreen::OnEnter(const bool /*aLetThroughRender*/)
 	}
 }
 
-void CSplashScreen::OnExit(const bool /*aLetThroughRender*/)
+void CSplashScreenState::OnExit(const bool /*aLetThroughRender*/)
 {
 }

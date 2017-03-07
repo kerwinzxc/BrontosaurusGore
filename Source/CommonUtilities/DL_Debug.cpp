@@ -292,23 +292,17 @@ namespace DL_Debug
 
 		int returnValue = MessageBoxA(nullptr, buffer, "Error (press 'abort' to exit program, 'retry' to debug, 'ignore' to continue", MB_ABORTRETRYIGNORE);
 
-		if (returnValue == IDABORT)
+		switch (returnValue)
 		{
+		case IDABORT:
 			exit(1);
-		}
-		else if (returnValue == IDRETRY)
-		{
+			break;
+		case IDRETRY:
 			DL_ASSERT(buffer);
+			break;
+		case IDIGNORE:
+			break;
 		}
-		else if (returnValue == IDIGNORE)
-		{
-			return;
-		}
-		//if (returnValue == IDCANCEL)
-		//{
-		//	assert(false); // TODO: FIX MINIDUMP AND SHIT
-		//	exit(1);
-		//}
 #else
 		aMessage;
 		//implement mbx for unix
@@ -327,25 +321,17 @@ namespace DL_Debug
 
 		int returnValue = MessageBoxW(nullptr, buffer, L"Error (press 'abort' to exit program, 'retry' to debug, 'ignore' to continue", MB_ABORTRETRYIGNORE);
 
-		if (returnValue == IDABORT)
+		switch (returnValue)
 		{
+		case IDABORT:
 			exit(1);
-		}
-		else if (returnValue == IDRETRY)
-		{
+			break;
+		case IDRETRY:
 			DL_ASSERT(buffer);
+			break;
+		case IDIGNORE:
+			break;
 		}
-		else if (returnValue == IDIGNORE)
-		{
-			return;
-		}
-
-		//int returnValue = MessageBoxW(nullptr, buffer, L"Error (press cancel to quit, press retry to try to continue", MB_RETRYCANCEL);
-		//if (returnValue == IDCANCEL)
-		//{
-		//	assert(false); // TODO: FIX MINIDUMP AND SHIT
-		//	exit(1);
-		//}
 #else
 		aMessage;
 		//implement mbx for unix

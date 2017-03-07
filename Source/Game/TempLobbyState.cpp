@@ -15,10 +15,18 @@
 #include "TClient/ClientMessageManager.h"
 #include "TShared/NetworkMessage_LoadLevel.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
-CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState), myLobbyState(eLobbyState::eEnterIpAndName), myCurrentLine(0), myTextInputSelected(false), myBlinkeyTimer(0), myBlinkeyState(false)
+CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState)
+, myLobbyState(eLobbyState::eEnterIpAndName)
+, myCurrentLine(0)
+, myTextInputSelected(false)
+, myBlinkeyTimer(0)
+, myBlinkeyState(false)
+, myIsPlayer(false)
+, myStateStatus(eStateStatus::eKeep)
 {
 }
 
@@ -49,10 +57,32 @@ void CTempLobbyState::Select()
 		switch (myCurrentLine)
 		{
 		case 0:
-			myLobbyState = eLobbyState::eEnterIp;
+			//myLobbyState = eLobbyState::eEnterIp;
+			do
+			{
+				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+				{
+					myCurrentLine += 1;
+				}
+				else
+				{
+					myCurrentLine = 0;
+				}
+			} while (IsSelectable(myCurrentLine) == false);
 			break;
 		case 1:
-			myLobbyState = eLobbyState::eEnterName;
+			//myLobbyState = eLobbyState::eEnterName;
+			do
+			{
+				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+				{
+					myCurrentLine += 1;
+				}
+				else
+				{
+					myCurrentLine = 0;
+				}
+			} while (IsSelectable(myCurrentLine) == false);
 			break;
 		case 3:
 			Conect();
@@ -66,10 +96,13 @@ void CTempLobbyState::Select()
 		break;
 	case eLobbyState::eSelectLevel:
 		{
-			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
-			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
-			netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			if (myIsPlayer == true)
+			{
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
+				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__Server");
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			}
 		}
 		break;
 	default: break;
@@ -78,14 +111,14 @@ void CTempLobbyState::Select()
 
 void CTempLobbyState::Back()
 {
-	if (myLobbyState == eLobbyState::eEnterIp)
+	if (myCurrentLine == 0)
 	{
 		if (myIP.empty() == false)
 		{
 			myIP.erase(myIP.end() - 1);
 		}
 	}
-	else if	(myLobbyState == eLobbyState::eEnterName)
+	else if	(myCurrentLine == 1)
 	{
 		if (myName.empty() == false)
 		{
@@ -156,6 +189,9 @@ void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 	case CU::eKeys::BACK:
 		Back();
 		break;
+	case CU::eKeys::ESCAPE:
+		myStateStatus = eStateStatus::ePop;
+		break;
 	default: break;
 	}
 }
@@ -197,14 +233,14 @@ void CTempLobbyState::LobbyMenu()
 	myTextINstance.SetText("");
 
 	(string = "IP: ") += myIP.c_str();
-	if (myLobbyState == eLobbyState::eEnterIp && myBlinkeyState == true)
+	if (myCurrentLine == 0 && myBlinkeyState == true)
 	{
 		string += "I";
 	}
 	myTextINstance.SetTextLine(0, string);
 
 	(string = "Name: ") += myName.c_str();
-	if (myLobbyState == eLobbyState::eEnterName && myBlinkeyState == true)
+	if (myCurrentLine == 1 && myBlinkeyState == true)
 	{
 		string += "I";
 	}
@@ -265,12 +301,14 @@ void CTempLobbyState::LevelSelect()
 
 eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 {
-	
-
 	myBlinkeyTimer += aDeltaTime;
 	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
 	{
-		myBlinkeyState = !myBlinkeyState;
+		myBlinkeyState = true;
+	}
+	else
+	{
+		myBlinkeyState = false;
 	}
 
 	switch (myLobbyState)
@@ -301,7 +339,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	default: break;
 	}
 
-	return eStateStatus::eKeep;
+	return myStateStatus;
 }
 
 void CTempLobbyState::Render()
@@ -333,7 +371,7 @@ bool CTempLobbyState::GetLetThroughUpdate() const
 eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 {
 	const std::string ipCheck = "1234567890.";
-	if (myLobbyState == eLobbyState::eEnterIp)
+	if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 0)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
@@ -342,7 +380,7 @@ eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 			myIP += inputChar;
 		}
 	}
-	else if (myLobbyState == eLobbyState::eEnterName)
+	else if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 1)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
@@ -361,5 +399,11 @@ eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
 	
 	myCurrentLine = 2;
 
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CTempLobbyState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
 	return eMessageReturn::eContinue;
 }

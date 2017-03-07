@@ -34,7 +34,11 @@ namespace CU
 		: myValue(nullptr)
 		, myIsBorrowed(false)
 	{
-		Parse(aFilePath);
+		std::string errroMessage = Parse(aFilePath);
+		if (!errroMessage.empty())
+		{
+			DL_MESSAGE_BOX("Error parsing json file %s: %s", aFilePath.c_str(), errroMessage.c_str());
+		}
 	}
 
 	CJsonValue::~CJsonValue()
@@ -189,7 +193,7 @@ namespace CU
 		}
 		if (IsObject() == false)
 		{
-			JSON_ERROR("json value is not an object");
+			JSON_ERROR("json value is not an object, it's %s", myValue->to_str().c_str());
 			return false;
 		}
 
@@ -208,7 +212,7 @@ namespace CU
 		}
 		if (IsBool() == false)
 		{
-			JSON_ERROR("json value is not bool");
+			JSON_ERROR("json value is not bool, it's %s", myValue->to_str().c_str());
 			return false;
 		}
 
@@ -224,7 +228,7 @@ namespace CU
 		}
 		if (IsNumber() == false)
 		{
-			JSON_ERROR("json value is not number");
+			JSON_ERROR("json value is not number, it's %s", myValue->to_str().c_str());
 			return 0.0;
 		}
 
@@ -257,7 +261,7 @@ namespace CU
 		}
 		if (IsString() == false)
 		{
-			JSON_ERROR("json value is not string, returning \"\"");
+			JSON_ERROR("json value is not string, returning \"\", it's %s", myValue->to_str().c_str());
 			return nullString;
 		}
 
@@ -285,7 +289,7 @@ namespace CU
 		if (IsObject() == false)
 		{
 			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array");
+			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
 			type = eJsoneValueType::JSON_NULL; //remove warning
 			return Vector2f();
 		}
@@ -309,7 +313,7 @@ namespace CU
 		if (IsObject() == false)
 		{
 			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array");
+			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
 			type = eJsoneValueType::JSON_NULL; //remove warning
 			return Vector3f();
 		}
@@ -331,9 +335,7 @@ namespace CU
 		}
 		if (IsObject() == false)
 		{
-			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array");
-			type = eJsoneValueType::JSON_NULL; //remove warning
+			JSON_ERROR("json value is not an object, it's %s", myValue->to_str().c_str());
 			return Vector4f();
 		}
 		if (Size() != 4)
@@ -355,9 +357,7 @@ namespace CU
 		}
 		if (IsArray() == false)
 		{
-			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array");
-			type = eJsoneValueType::JSON_NULL; //remove warning
+			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
 			return CJsonValue();
 		}
 
