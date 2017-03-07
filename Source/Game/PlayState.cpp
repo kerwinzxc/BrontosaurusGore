@@ -163,7 +163,6 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
-	//myMovementComponent->Update(aDeltaTime);
 	myMovementComponentManager->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime);
 	myWeaponSystemManager->Update(aDeltaTime);
@@ -270,7 +269,7 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
 		playerObject->AddComponent(inputComponent);
 
-		myMovementComponent = new CMovementComponent();
+		myMovementComponent = myMovementComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(myMovementComponent);
 
 		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
