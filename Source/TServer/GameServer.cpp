@@ -106,7 +106,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 {
 	//DL_PRINT("In Update");
 	myTime += aDeltaTime.GetMilliseconds();
-	if (myTime >= 60)
+	if (myTime >= 120)
 	{
 		CNetworkComponent* temp = CNetworkComponentManager::GetInstance()->GetComponent(0);
 		if (temp != nullptr)
