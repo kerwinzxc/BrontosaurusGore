@@ -67,12 +67,12 @@ void CGameEventMessenger::Render()
 	}
 }
 
-void CGameEventMessenger::AddMessage(CU::GrowingArray<CU::DynamicString> someText)
+void CGameEventMessenger::AddMessage(CU::GrowingArray<std::string> someText)
 {
 	myTextQueue.Push(someText);
 }
 
-void CGameEventMessenger::SetMessage(CU::GrowingArray<CU::DynamicString> someStrings)
+void CGameEventMessenger::SetMessage(CU::GrowingArray<std::string> someStrings)
 {
 	if (myInTweener != nullptr)
 	{

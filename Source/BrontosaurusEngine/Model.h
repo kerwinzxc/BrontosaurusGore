@@ -86,7 +86,7 @@ public:
 
 	void Render(SForwardRenderModelParams& aParamObj);
 	void Render(SDeferredRenderModelParams& aParamObj);
-
+	void Render(SShadowRenderModelParams& aParamObj);
 
 	inline bool GetInitialized() const;
 	inline const SSphereColData& GetCollisionData() const;
@@ -124,6 +124,8 @@ private:
 	bool InitBuffers(const CLoaderMesh * aLoadedMesh);
 	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
+	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
+
 
 
 	inline void SetBoundingBox(const CU::AABB& aAABB);

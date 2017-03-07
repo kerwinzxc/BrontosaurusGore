@@ -9,9 +9,10 @@
 #include "Skybox.h"
 #include "ParticleEmitterInstance.h"
 #include "FireEmitterInstance.h"
+#include "..\CommonUtilities\Sphere.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
-#define SHADOWBUFFER_DIM 2048
+#define SHADOWBUFFER_DIM 3000
 
 CScene::CScene()
 {
@@ -23,7 +24,8 @@ CScene::CScene()
 
 	myCubemap = nullptr;
 
-	myShadowCamera.InitOrthographic(2500, 2500, 2500.f, 50.f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
+	myShadowCamera.InitOrthographic(32, 32, 100, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
+	myShadowCamera.ShadowInit();
 }
 
 CScene::~CScene()
@@ -60,7 +62,7 @@ void CScene::Render()
 	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
 
 	CU::Vector3f shadowCamDirection = { myDirectionalLight.direction.x, myDirectionalLight.direction.y, myDirectionalLight.direction.z };
-	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 500);
+	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 15);
 	myShadowCamera.GetCamera().SetPosition(shadowCameraPosition);
 	myShadowCamera.GetCamera().LookAt(myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition());
 
@@ -99,11 +101,11 @@ void CScene::Render()
 			continue;
 		}
 
-		CU::AABB lightBB;
-		lightBB.myCenterPos = myPointLights[i].GetPosition();
-		lightBB.myRadius = myPointLights[i].GetRange();
+		CU::Sphere lightSphere;
+		lightSphere.myCenterPos = myPointLights[i].GetPosition();
+		lightSphere.myRadius = myPointLights[i].GetRange();
 
-		if (myShadowCamera.GetCamera().IsInside(lightBB) == false)
+		if (myShadowCamera.GetCamera().IsInside(lightSphere) == false)
 		{
 			continue;
 		}
@@ -126,7 +128,7 @@ void CScene::Render()
 			continue;
 		}*/
 
-		myModels[i]->Render(nullptr, culledPointlights, myShadowCamera);
+		myModels[i]->Render(myShadowCamera);
 	}
 
 
@@ -149,8 +151,6 @@ void CScene::Render()
 	SRenderDirectionalLight light;
 	light.directionalLight = myDirectionalLight;
 	RENDERER.AddRenderMessage(new SRenderDirectionalLight(light));
-
-
 
 	SChangeStatesMessage* changeStateMessage = new SChangeStatesMessage();
 	changeStateMessage->myBlendState = eBlendState::eAlphaBlend;
@@ -181,16 +181,13 @@ void CScene::Render()
 
 		myParticleEmitters[i]->Render(GetCamera(eCameraType::ePlayerOneCamera));
 	}
-
-
 	// DRAW SHADOWBUFFER
-
 	//SRenderToIntermediate * interMSG = new SRenderToIntermediate();
-	//interMSG->myRect = { 0.0f, 0.0f, 0.25f, 0.25f };
-	//interMSG->useDepthResource = true;
+	//interMSG->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
+	//interMSG->useDepthResource = false;
 	//interMSG->myRenderPackage = myShadowCamera.GetRenderPackage();
 	//RENDERER.AddRenderMessage(interMSG);
-
+	//RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
 
 InstanceID CScene::AddModelInstance(CModelInstance* aModelInstance)
@@ -384,64 +381,64 @@ void CScene::GenerateCubemap()
 	return;
 
 
-	SChangeStatesMessage statemsg;
-	SSetCameraMessage cameraMsg;
-	CU::VectorOnStack<CPointLightInstance, 8> culledPointlights;
+	//SChangeStatesMessage statemsg;
+	//SSetCameraMessage cameraMsg;
+	//CU::VectorOnStack<CPointLightInstance, 8> culledPointlights;
 
-	static float piOver2 = 3.1415926f / 2.0f;
+	//static float piOver2 = 3.1415926f / 2.0f;
 
-	CU::Matrix33f rotations[6];
-	rotations[1] = CU::Matrix33f::CreateRotateAroundY(-piOver2);
-	rotations[0] = CU::Matrix33f::CreateRotateAroundY(piOver2);
-	rotations[3] = CU::Matrix33f::CreateRotateAroundX(piOver2);
-	rotations[2] = CU::Matrix33f::CreateRotateAroundX(-piOver2);
-	rotations[4] = CU::Matrix33f::Identity;
-	rotations[5] = CU::Matrix33f::CreateRotateAroundY(PI);
+	//CU::Matrix33f rotations[6];
+	//rotations[1] = CU::Matrix33f::CreateRotateAroundY(-piOver2);
+	//rotations[0] = CU::Matrix33f::CreateRotateAroundY(piOver2);
+	//rotations[3] = CU::Matrix33f::CreateRotateAroundX(piOver2);
+	//rotations[2] = CU::Matrix33f::CreateRotateAroundX(-piOver2);
+	//rotations[4] = CU::Matrix33f::Identity;
+	//rotations[5] = CU::Matrix33f::CreateRotateAroundY(PI);
 
-	CU::Camera camera;
-	camera.Init(90.f, width, height, 1.0f, 100.f);
+	//CU::Camera camera;
+	//camera.Init(90.f, width, height, 1.0f, 100.f);
 
-	for (int i = 0; i < 6; ++i)
-	{
-		myCubemap->ActivateForRender(i);
-		cameraMsg.myCamera = camera;
-		cameraMsg.myCamera.SetTransformation(rotations[i]);
-		RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
+	//for (int i = 0; i < 6; ++i)
+	//{
+	//	myCubemap->ActivateForRender(i);
+	//	cameraMsg.myCamera = camera;
+	//	cameraMsg.myCamera.SetTransformation(rotations[i]);
+	//	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
 
-		if (mySkybox)
-		{
-			statemsg.myBlendState = eBlendState::eNoBlend;
-			statemsg.myRasterizerState = eRasterizerState::eNoCulling;
-			statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
-			statemsg.mySamplerState = eSamplerState::eWrap;
-			RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
-			SRenderSkyboxMessage* msg = new SRenderSkyboxMessage();
-			mySkybox->AddRef();
-			msg->mySkybox = mySkybox;
-			RENDERER.AddRenderMessage(msg);
-			statemsg.myRasterizerState = eRasterizerState::eDefault;
-			statemsg.myDepthStencilState = eDepthStencilState::eDefault;
-			statemsg.myBlendState = eBlendState::eNoBlend;
-			statemsg.mySamplerState = eSamplerState::eClamp;
-			RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
-		}
-		
-		
-		// mebe not neededo? - said Greedo
-		CU::Vector3f lightDir = myDirectionalLight.direction;
-		myDirectionalLight.direction = CU::Vector3f::Zero;
-		//
-		for (unsigned int j = 0; j < myModels.Size(); ++j)
-		{
-			if (myModels[j] == nullptr || myModels[j]->ShouldRender() == false)
-			{
-				continue;
-			}
-			myModels[j]->Render(&myDirectionalLight, culledPointlights);
-		}
-		myDirectionalLight.direction = lightDir;
-	}
+	//	if (mySkybox)
+	//	{
+	//		statemsg.myBlendState = eBlendState::eNoBlend;
+	//		statemsg.myRasterizerState = eRasterizerState::eNoCulling;
+	//		statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	//		statemsg.mySamplerState = eSamplerState::eWrap;
+	//		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+	//		SRenderSkyboxMessage* msg = new SRenderSkyboxMessage();
+	//		mySkybox->AddRef();
+	//		msg->mySkybox = mySkybox;
+	//		RENDERER.AddRenderMessage(msg);
+	//		statemsg.myRasterizerState = eRasterizerState::eDefault;
+	//		statemsg.myDepthStencilState = eDepthStencilState::eDefault;
+	//		statemsg.myBlendState = eBlendState::eNoBlend;
+	//		statemsg.mySamplerState = eSamplerState::eClamp;
+	//		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+	//	}
+	//	
+	//	
+	//	// mebe not neededo? - said Greedo
+	//	CU::Vector3f lightDir = myDirectionalLight.direction;
+	//	myDirectionalLight.direction = CU::Vector3f::Zero;
+	//	//
+	//	for (unsigned int j = 0; j < myModels.Size(); ++j)
+	//	{
+	//		if (myModels[j] == nullptr || myModels[j]->ShouldRender() == false)
+	//		{
+	//			continue;
+	//		}
+	//		myModels[j]->Render(&myDirectionalLight, culledPointlights);
+	//	}
+	//	myDirectionalLight.direction = lightDir;
+	//}
 
-	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
-	myCubemap->SetShaderResource();
+	//RENDERER.AddRenderMessage(new SActivateRenderToMessage());
+	//myCubemap->SetShaderResource();
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Camera.h"
 #include "AABB.h"
+#include "Sphere.h"
 
 
 namespace CU
@@ -174,18 +175,12 @@ namespace CU
 	}
 
 
-	bool Camera::IsInside(const CU::AABB& aAABB)
+	bool Camera::IsInside(const CU::Sphere& aSphere)
 	{
 		CU::Matrix44f inverse = GetInverse();
-
-		CU::AABB box = aAABB; 
-		box.myCenterPos = aAABB.myCenterPos * inverse;
-		box.myMinPos = aAABB.myMinPos * inverse;
-		box.myMaxPos = aAABB.myMaxPos * inverse;
-
-		return myFrustum.IsInside(box);
-
-
+		CU::Sphere sphere = aSphere;
+		sphere.myCenterPos = aSphere.myCenterPos * inverse;
+		return myFrustum.IsInside(aSphere);
 	}
 
 	void Camera::SetPosition(const CU::Vector3f& aPosition)

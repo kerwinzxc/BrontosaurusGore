@@ -2,6 +2,7 @@
 #include "RenderCamera.h"
 #include "Renderer.h"
 #include "Engine.h"
+#include "ShaderManager.h"
 #include "RenderMessages.h"
 
 
@@ -9,6 +10,7 @@ CRenderCamera::CRenderCamera()
 {
 	myRenderQueue.Init(32);
 	myIsShadowCamera = false;
+	myShadowPS = nullptr;
 }
 
 
@@ -32,6 +34,12 @@ void CRenderCamera::InitOrthographic(const float aWidth, const float aHeight, co
 	myRenderPackage.Init(size, aTexture, aFormat);
 }
 
+void CRenderCamera::ShadowInit()
+{
+	myIsShadowCamera = true;
+	myShadowPS = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3);
+}
+
 void CRenderCamera::AddRenderMessage(SRenderMessage * aRenderMessage)
 {
 	myRenderQueue.Add(aRenderMessage);
@@ -45,5 +53,10 @@ void CRenderCamera::Render()
 	camqueueMsg->CameraRenderQueue = myRenderQueue;
 	RENDERER.AddRenderMessage(camqueueMsg);
 	myRenderQueue.RemoveAll(); // these are deleted on the render thread
+}
+
+ID3D11PixelShader* CRenderCamera::GetShadowShader()
+{
+	return myShadowPS;
 }
 

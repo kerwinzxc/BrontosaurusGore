@@ -1,4 +1,7 @@
 #include <..\Fullscreen\structs.fx>
+#include <..\oncePerFrame.fx>
+
+
 
 //**********************************************//
 //					TEXTURES					//
@@ -21,17 +24,6 @@ SamplerState samplerWrap        : register(s1);
 //**********************************************//
 //					C-BUFFER					//
 //**********************************************//
-
-cbuffer ConstantBuffer          : register(b0)
-{
-	float4x4 cameraSpaceInversed;
-	float4x4 projectionSpace;
-
-	float4x4 shadowCamInverse;
-	float4x4 shadowCamProjection;
-
-	float garbageo[4];
-}
 
 cbuffer ProjectionInverse      : register(b1)
 {

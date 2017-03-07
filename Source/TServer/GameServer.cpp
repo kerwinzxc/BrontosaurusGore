@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "GameServer.h"
-#include "../Components/ComponentManager.h"
-#include "../Components/GameObjectManager.h"
-#include "../Components/AmmoComponentManager.h"
-#include "../Components/WeaponFactory.h"
-#include "../Components/WeaponSystemManager.h"
-#include "../Components/NetworkComponentManager.h"
 #include "../KevinLoader/KevinLoader.h"
 #include "../KevinLoader/KLoaderError.h"
-#include "../LoadManager/ServerLoadManager.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+
+//Managers
+#include "../LoadManager/ServerLoadManager.h"
+#include "../Components/ComponentManager.h"
+#include "../Components/GameObjectManager.h"
+#include "../Components/NetworkComponentManager.h"
+#include "../Components/MovementComponentManager.h"
+
+#include "../Components/AmmoComponentManager.h"
+#include "../Components/WeaponSystemManager.h"
+#include "../Components/WeaponFactory.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -21,7 +25,15 @@
 
 
 
-CGameServer::CGameServer(): myAmmoComponentManager(nullptr), myGameObjectManager(nullptr), myWeaponFactory(nullptr), myMainTimer(0), myInGame(false), myIsLoaded(false), myWeaponSystemManager(nullptr)
+CGameServer::CGameServer():
+	myAmmoComponentManager(nullptr)
+	,myGameObjectManager(nullptr)
+	,myWeaponFactory(nullptr)
+	,myMainTimer(0)
+	,myInGame(false)
+	,myIsLoaded(false)
+	,myWeaponSystemManager(nullptr)
+	,myMovementComponentManager(nullptr)
 {
 	myIsRunning = false;
 	myTime = 0;
@@ -96,6 +108,7 @@ void CGameServer::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 
 	myGameObjectManager = new CGameObjectManager();
+	myMovementComponentManager = new CMovementComponentManager();
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();

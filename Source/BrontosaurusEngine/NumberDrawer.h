@@ -1,6 +1,5 @@
 #pragma once
 #include "SpriteInstance.h"
-#include "DynamicString.h"
 
 namespace
 {
@@ -13,7 +12,7 @@ public:
 	CNumberDrawer();
 	~CNumberDrawer();
 
-	void Init(const CU::DynamicString& anImageFilePath, const CU::Vector2f& aSize, const CU::Vector2f& aPosition, const bool aHorizontalSprite = false);
+	void Init(const std::string& anImageFilePath, const CU::Vector2f& aSize, const CU::Vector2f& aPosition, const bool aHorizontalSprite = false);
 	void Render();
 
 	long GetNumber()const;
@@ -29,7 +28,7 @@ private:
 
 	struct
 	{
-		CU::DynamicString myImageFilPath;
+		std::string myImageFilPath;
 		CU::Vector2f mySize;
 		CU::Point2f myPosition;
 		bool mySpriteIsHorizontal;

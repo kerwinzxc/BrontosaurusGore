@@ -2,6 +2,7 @@
 #include "ServerLoadManager.h"
 #include "LoadObject.h"
 #include "LoadNetworkComponent.h"
+#include "LoadMovementComponent.h"
 
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
@@ -46,6 +47,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
+	loader.RegisterComponentLoadFunction("MovementComponent", ServerLoadMovementComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);

@@ -23,7 +23,7 @@ public:
 private:
 	struct SParticleEmitterComparer
 	{
-		CU::DynamicString myTexturePath;
+		std::string myTexturePath;
 		unsigned int myNumOfParticles;
 		ParticleEmitterID myID;
 

@@ -360,6 +360,35 @@ void CModel::Render(SDeferredRenderModelParams& aParamObj)
 	}
 }
 
+void CModel::Render(SShadowRenderModelParams& aParamObj)
+{
+	myForwardEffect->ActivateForDepth(aParamObj.aPixelshader);
+
+	if (mySurface != nullptr)
+	{
+		mySurface->Activate();
+	}
+
+	UpdateCBuffer(aParamObj);
+
+	UINT stride = myVertexSize;
+	UINT offset = 0;
+
+	SLodData& currentLodModel = GetCurrentLODModel(aParamObj.myTransform.GetPosition());
+
+	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
+	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	if (myLODModels.GetLast().myIndexBuffer == nullptr)
+	{
+		DEVICE_CONTEXT->Draw(currentLodModel.myVertexCount, 0);
+	}
+	else
+	{
+		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
+	}
+}
+
 void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 {
 	// WorldSpace thingy
@@ -458,6 +487,19 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
 		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
 	}
+}
+
+void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
+{
+	SDeferredRenderModelParams params;
+	params.aAnimationLooping = aParamObj.aAnimationLooping;
+	params.aAnimationState = aParamObj.aAnimationState;
+	params.aAnimationTime = aParamObj.aAnimationTime;
+	params.aHighlightIntencity = aParamObj.aHighlightIntencity;
+	params.myTransform = aParamObj.myTransform;
+	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
+	params.myRenderToDepth = false;
+	UpdateCBuffer(params);
 }
 
 void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)

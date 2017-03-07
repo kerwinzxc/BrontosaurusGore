@@ -2,7 +2,7 @@
 #include "PlayerNetworkComponent.h"
 
 
-CPlayerNetworkComponent::CPlayerNetworkComponent()
+CPlayerNetworkComponent::CPlayerNetworkComponent(const unsigned aID) : myID(aID)
 {
 }
 

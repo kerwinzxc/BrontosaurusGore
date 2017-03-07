@@ -30,7 +30,7 @@ public:
 
 	
 	void Activate();
-	void ActivateForDepth();
+	void ActivateForDepth(ID3D11PixelShader* aShadowShader = nullptr);
 
 private:
 	CDXFramework* myFramework;

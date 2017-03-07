@@ -23,7 +23,7 @@ struct SCharacterInfo
 class CFont
 {
 public:
-	CFont(const CU::DynamicString& aFontPath);
+	CFont(const std::string& aFontPath);
 	~CFont();
 
 	inline const SCharacterInfo& GetCharacterInfo(const char aCharacter) const;
@@ -35,7 +35,7 @@ public:
 	inline unsigned int DecRef();
 
 private:
-	void LoadFont(const CU::DynamicString& aFontPath);
+	void LoadFont(const std::string& aFontPath);
 	void LoadTexture(const char* aFontPath);
 	void CreateEffect();
 

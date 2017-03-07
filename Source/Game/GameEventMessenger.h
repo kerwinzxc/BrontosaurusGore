@@ -16,9 +16,9 @@ public:
 	void Update(const float aDeltaTime);
 	void Render();
 
-	void AddMessage(CU::GrowingArray<CU::DynamicString>someText);
+	void AddMessage(CU::GrowingArray<std::string>someText);
 private:
-	void SetMessage(CU::GrowingArray<CU::DynamicString>someStrings);
+	void SetMessage(CU::GrowingArray<std::string>someStrings);
 
 	CU::Tween* myInTweener;
 	CU::Tween* myOutTweener;
@@ -28,6 +28,6 @@ private:
 
 	CTextInstance myText;
 
-	CU::Queue<CU::GrowingArray<CU::DynamicString>> myTextQueue;
+	CU::Queue<CU::GrowingArray<std::string>> myTextQueue;
 };
 

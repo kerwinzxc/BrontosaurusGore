@@ -18,7 +18,6 @@
 #include "../CommonUtilities/StaticArray.h"
 #include "../CommonUtilities/VectorOnStack.h"
 #include "../CommonUtilities/EMouseButtons.h"
-#include "../CommonUtilities/DynamicString.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../CommonUtilities/vector2.h"
 #include "../CommonUtilities/vector3.h"

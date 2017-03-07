@@ -22,6 +22,15 @@ namespace CU
 	wchar_t* CharToWChar(wchar_t aBuffer[], const char* aText);
 	std::wstring StringToWString(const std::string& aString);
 	std::string& FindAndErase(std::string& aStringToClean, const std::string& aSubStringToErase);
+
+	namespace StringHelper
+	{
+		bool IsBool(std::string aString);
+		bool ToBool(std::string astring);
+
+		bool IsFloat(std::string aString);
+		bool IsInt(std::string aString);
+	}
 }
 
 std::string& operator-=(std::string& aLeft, const std::string& aRight);

@@ -10,6 +10,9 @@
 
 //Legacy ?
 //Size of a vertex can be found in the FBX loader model, along with all data and number of vertices. 
+
+struct ID3D11PixelShader;
+
 struct SVertexDataCube
 {
 	CU::Vector4f position;
@@ -46,6 +49,9 @@ struct SOncePerFrameBuffer
 
 	float fogStart;
 	float fogEnd;
+
+	unsigned int shadows;
+	float garbage[3];
 };
 
 struct SAnimationBoneStruct 
@@ -80,4 +86,16 @@ struct SDeferredRenderModelParams
 	float aHighlightIntencity = 0.f;
 
 	bool myRenderToDepth = false;
+};
+
+struct SShadowRenderModelParams
+{
+	CU::Matrix44f myTransform;
+	CU::Matrix44f myTransformLastFrame;
+
+	const char* aAnimationState = nullptr;
+	float aAnimationTime = 0.0f;
+	bool aAnimationLooping = true;
+	float aHighlightIntencity = 0.f;
+	ID3D11PixelShader* aPixelshader;
 };
