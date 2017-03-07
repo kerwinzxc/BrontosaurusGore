@@ -48,13 +48,15 @@ private:
 	CTextInstance myTextINstance;
 	
 	eLobbyState myLobbyState;
+	eStateStatus myStateStatus;
+
 	unsigned char myCurrentLine;
-	bool myTextInputSelected;
 
 	std::string myIP;
 	std::string myName;
 	CU::Time myBlinkeyTimer;
 
+	bool myTextInputSelected;
 	bool myBlinkeyState;
 	bool myIsPlayer;
 };

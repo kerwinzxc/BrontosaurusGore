@@ -18,7 +18,14 @@
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
-CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState), myLobbyState(eLobbyState::eEnterIpAndName), myCurrentLine(0), myTextInputSelected(false), myBlinkeyTimer(0), myBlinkeyState(false)
+CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, eInputMessengerType::eTempLobbyState)
+, myLobbyState(eLobbyState::eEnterIpAndName)
+, myCurrentLine(0)
+, myTextInputSelected(false)
+, myBlinkeyTimer(0)
+, myBlinkeyState(false)
+, myIsPlayer(false)
+, myStateStatus(eStateStatus::eKeep)
 {
 }
 
@@ -156,6 +163,9 @@ void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 	case CU::eKeys::BACK:
 		Back();
 		break;
+	case CU::eKeys::ESCAPE:
+		myStateStatus = eStateStatus::ePop;
+		break;
 	default: break;
 	}
 }
@@ -265,8 +275,6 @@ void CTempLobbyState::LevelSelect()
 
 eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 {
-	
-
 	myBlinkeyTimer += aDeltaTime;
 	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
 	{
@@ -301,7 +309,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	default: break;
 	}
 
-	return eStateStatus::eKeep;
+	return myStateStatus;
 }
 
 void CTempLobbyState::Render()
