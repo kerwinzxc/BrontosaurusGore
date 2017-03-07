@@ -54,7 +54,7 @@ private:
 	CU::TimeUnit myServerPingTime;
 	bool myServerIsPinged;
 
-	bool myIsRunning;
-	bool myCanQuit;
+	std::atomic_bool myIsRunning;
+	std::atomic_bool myCanQuit;
 };
 

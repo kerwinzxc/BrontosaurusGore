@@ -1,32 +1,32 @@
 #include "stdafx.h"
 #include "Client.h"
+
+#include "ClientMessageManager.h"
+#include "ServerReadyMessage.h"
+
+#include "../CommonUtilities/CommonUtilities.h"
 #include "../CommonUtilities/DL_Debug.h"
-#include <iostream>
+#include "../CommonUtilities/ThreadPool.h"
+#include "../CommonUtilities/ThreadNamer.h"
+
+#include "../BrontosaurusEngine/Engine.h"
+
 #include "../TShared/PackageType.h"
 #include "../TShared/NetworkMessage_Ping.h"
 #include "../TShared/NetworkMessage_PingResponse.h"
 #include "../TShared/NetworkMesssage_Connect.h"
 #include "../TShared/NetworkMessage_ConectResponse.h"
 #include "../TShared/NetworkMessage_Position.h"
-#include "../CommonUtilities/CommonUtilities.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
-#include "ClientMessageManager.h"
-#include "../PostMaster/EMessageReturn.h"
-#include "../PostMaster/Message.h"
-#include "../PostMaster/Event.h"
-#include "../PostMaster/PostMaster.h"
-#include "../ThreadedPostmaster/Postmaster.h"
-#include "../BrontosaurusEngine/Engine.h"
-#include "../CommonUtilities/ThreadPool.h"
-#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
-#include "ServerReadyMessage.h"
-#include "../CommonUtilities/ThreadNamer.h"
-
 
 #include "../Components/NetworkComponentManager.h"
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
+
+#include "../PostMaster/EMessageReturn.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/ConetctMessage.h"
 #include "../ThreadedPostmaster/ConectedMessage.h"
 
@@ -48,6 +48,7 @@ CClient::~CClient()
 	{
 		continue;
 	}
+
 	CClientMessageManager::DestroyInstance();
 }
 
@@ -62,7 +63,7 @@ bool CClient::StartClient()
 void CClient::Disconect()
 {
 	myState = eClientState::DISCONECTED;
-	std::cout << "Disconected from server";
+	DL_PRINT("Disconected from server");
 	myServerIsPinged = false;
 	//myChat.StopChat();
 }
@@ -75,7 +76,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 
 		if (myServerPingTime >= 10)
 		{
-			std::cout << "Server is not responding" << std::endl;
+			DL_PRINT("Server is not responding");
 			Disconect();
 		}
 	}
@@ -139,7 +140,7 @@ void CClient::Update()
 				myId = conectResponseMessage->myClientId;
 				myState = eClientState::CONECTED;
 
-				std::cout << "Conected to server got id:" << myId << std::endl;
+				DL_PRINT("Conected to server got id: %d", myId);
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
 			}
 			break;
@@ -168,7 +169,7 @@ void CClient::Update()
 		case ePackageType::eChat:
 			{
 				CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
-				std::cout << chatMessage->myChatMessage << std::endl;
+				DL_PRINT(chatMessage->myChatMessage.c_str());
 			}
 			break;
 		case ePackageType::eServerReady:
@@ -184,7 +185,7 @@ void CClient::Update()
 		case ePackageType::ePosition:
 		{
 			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+			DL_PRINT("Got position message with ID: %u and position: X: %f, Y: %f, Z: %f", positionMessage->GetID(), positionMessage->GetPosition().x, positionMessage->GetPosition().y, positionMessage->GetPosition().z);
 
 			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
 			//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
