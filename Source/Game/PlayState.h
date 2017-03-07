@@ -8,6 +8,7 @@
 namespace CU
 {
 	class Time;
+	class Camera;
 }
 
 class CGameObjectManager;
@@ -51,7 +52,8 @@ public:
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline CAmmoComponentManager* GetAmmoManager();
 	inline bool IsLoaded() const;
-
+private:
+	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
 private:
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
