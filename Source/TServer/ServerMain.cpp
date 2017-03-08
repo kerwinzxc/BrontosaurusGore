@@ -22,7 +22,7 @@
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/PrintMessage.h"
-#include "TShared/NetworkMessage_SpawnOtherPlayer.h"
+#include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 
 std::thread* locLoadingThread = nullptr;
 

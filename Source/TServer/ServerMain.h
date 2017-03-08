@@ -10,7 +10,7 @@
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "../TShared/NetworkMessageHolder.h"
 #include "../ThreadedPostmaster/Subscriber.h"
-#include "ServerPlayerNetworkComponent.h"
+#include "../Components/ServerPlayerNetworkComponent.h"
 
 
 enum class eServerState
