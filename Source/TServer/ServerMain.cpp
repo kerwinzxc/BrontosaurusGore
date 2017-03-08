@@ -240,7 +240,7 @@ void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
 	default:
 		if (myClients.count(header.myTargetID) > 0)
 		{
-			myNetworkWrapper.Send(aNetworkMessage, myClients.at(header.myTargetID).myIP.c_str(), myClients.at(header.myTargetID).myIP.c_str());
+			myNetworkWrapper.Send(aNetworkMessage, myClients.at(header.myTargetID).myIP.c_str(), myClients.at(header.myTargetID).myPort.c_str());
 		}
 		break;
 	}
@@ -440,7 +440,7 @@ bool CServerMain::Update()
 				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
-				SendTo(currentMessage);
+				SendTo(loadLevelMessage);
 				
 			}
 			break;
