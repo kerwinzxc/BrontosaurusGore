@@ -122,10 +122,18 @@ void CWeaponSystemComponent::Update(float aDelta)
 		myWeapons[i]->Update(aDelta);
 	}
 	SComponentQuestionData ammoLeftQuestionData;
-	ammoLeftQuestionData.myString = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+	SAmmoLeftData ammoLeftData;
+	ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+	ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
 	if(GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString , ammoLeftQuestionData) == true)
 	{
-		myActiveWeaponAmmoLeftText->SetText(ammoLeftQuestionData.myString);
+		std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
+		ammoLeftText += ": ";
+		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
+		ammoLeftText += "/";
+		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
+
+		myActiveWeaponAmmoLeftText->SetText(ammoLeftText);
 	}
 	myActiveWeaponAmmoLeftText->Render();
 }

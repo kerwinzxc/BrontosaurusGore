@@ -94,13 +94,9 @@ bool CAmmoComponent::Answer(const eComponentQuestionType aQuestionType, SCompone
 	{
 	case eComponentQuestionType::eGetAmmoLeftString:
 	{
-		ChangeSelectedAmmoType(aQuestionData.myString);
-		std::string ammoLeftText = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->ammoForWeaponName;
-		ammoLeftText += ": ";
-		ammoLeftText += std::to_string(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount);
-		ammoLeftText += "/";
-		ammoLeftText += std::to_string(myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo);
-		aQuestionData.myString = ammoLeftText.c_str();
+		ChangeSelectedAmmoType(aQuestionData.myAmmoLeftData->weaponName);
+		aQuestionData.myAmmoLeftData->ammoLeft = myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount;
+		aQuestionData.myAmmoLeftData->maxAmmo = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
 		return true;
 		break;
 	}
