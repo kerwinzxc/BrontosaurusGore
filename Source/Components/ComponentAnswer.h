@@ -10,6 +10,12 @@ enum class eComponentQuestionType
 	eLength,
 };
 
+struct SAmmoLeftData
+{
+	const char* weaponName;
+	unsigned short ammoLeft;
+	unsigned short maxAmmo;
+};
 struct SComponentQuestionData
 {
 	SComponentQuestionData() : myVector3f() {}
@@ -19,5 +25,6 @@ struct SComponentQuestionData
 		CU::Vector3f myVector3f;
 		bool myBool;
 		const char* myString;
+		SAmmoLeftData* myAmmoLeftData;
 	};
 };
