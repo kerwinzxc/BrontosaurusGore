@@ -3,6 +3,7 @@
 #include "DL_Debug.h"
 #include "TimerManager.h"
 #include "ThreadNamer.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 namespace CU
 {
@@ -63,7 +64,9 @@ namespace CU
 					myPool->myNormalPrioWork.size() <= 0 && 
 					myPool->myHighPrioWork.size() <= 0)
 				{
+					Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(false);
 					myPool->myCondition.wait(lock); // threads pile up and wait for instructions.
+					Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(false);
 				}
 
 				if (myPool->isStopped == true)

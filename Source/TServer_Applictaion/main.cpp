@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
 	//CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();
-	CommonUtilities::CConsolePrinter::Create();
 	CServerMain server;
 	server.StartServer();
 

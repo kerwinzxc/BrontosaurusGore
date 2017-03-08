@@ -27,6 +27,10 @@ namespace Postmaster
 			
 			//Create a local post office (for that thread)
 			CPostOffice& AddThreadOffice();
+
+			//Set office active
+			void SetOfficeActive(bool anActive);
+
 			//Get the post office (for that thread)
 			CPostOffice& GetThreadOffice();
 
@@ -46,6 +50,7 @@ namespace Postmaster
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
 			//Unsubscribe from all your subscriptions
 			void Unsubscribe(ISubscriber* aSubscriber);
+			
 		protected:
 			void HandleOutgoingBroadcast(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue);
 			void HandleOutgoingNarrowcast(Container::CLocklessQueue<NarrowcastStruct>& aLocklessQueue);

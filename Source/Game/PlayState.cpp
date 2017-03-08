@@ -186,6 +186,7 @@ void CPlayState::Load()
 	loadPlaystateTimer.Update();
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 }
 
 void CPlayState::Init()
