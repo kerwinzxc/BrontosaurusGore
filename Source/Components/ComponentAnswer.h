@@ -7,6 +7,7 @@ enum class eComponentQuestionType
 	eGetCameraLookat,
 	eGetCameraPosition,
 	eGetAmmoLeftString,
+	eGetCameraObject,
 	eLength,
 };
 
@@ -26,5 +27,6 @@ struct SComponentQuestionData
 		bool myBool;
 		const char* myString;
 		SAmmoLeftData* myAmmoLeftData;
+		CGameObject* myGameObject;
 	};
 };
