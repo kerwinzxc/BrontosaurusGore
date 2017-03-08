@@ -11,6 +11,13 @@ namespace CU
 	class Camera;
 }
 
+namespace Physics
+{
+	class CPhysicsScene;
+	class CPhysicsActor;
+}
+
+
 class CGameObjectManager;
 class CScene;
 class CModelComponentManager;
@@ -29,6 +36,7 @@ class CProjectileFactory;
 class CInputComponentManager;
 class CNetworkComponentManager;
 class CMovementComponentManager;
+class CColliderComponentManager;
 
 class CPlayState : public State/* , public Postmaster::ISubscriber*/
 {
@@ -57,6 +65,11 @@ public:
 private:
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
 private:
+	Physics::CPhysicsScene* myPhysicsScene;
+	Physics::CPhysicsActor* myActor;
+	CColliderComponentManager* myColliderComponentManager;
+
+
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
 

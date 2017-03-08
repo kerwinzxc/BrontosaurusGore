@@ -68,6 +68,7 @@
 #include "../Physics/Physics.h"
 #include "../Physics/PhysicsScene.h"
 #include "../Physics/PhysicsActorDynamic.h"
+#include "ColliderComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -89,6 +90,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 {
 	myPhysicsScene = nullptr;
 	myActor = nullptr;
+	myColliderComponentManager = nullptr;
 }
 
 CPlayState::~CPlayState()
@@ -109,6 +111,7 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	SAFE_DELETE(myPhysicsScene);
 	SAFE_DELETE(myActor);
+	SAFE_DELETE(myColliderComponentManager);
 }
 
 void CPlayState::Load()
@@ -134,9 +137,14 @@ void CPlayState::Load()
 	
 	myWeaponFactory->LoadWeapons();
 
+
 	Physics::CFoundation::Create();
 	Physics::CPhysics* physics = Physics::CFoundation::GetInstance().CreatePhysics();
 	myPhysicsScene = physics->CreateScene();
+
+	myColliderComponentManager = new CColliderComponentManager();
+	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
+	myColliderComponentManager->SetPhysics(physics);
 
 	Physics::CShape* shape = physics->CreateBoxShape({ 0.5f, 0.5f, 0.5f });
 	myActor = physics->CreateDynamicActor(shape, false, 10.f, true, true);
