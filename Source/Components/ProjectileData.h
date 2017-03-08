@@ -2,7 +2,8 @@
 #include "HealthPoint.h"
 struct SProjectileData
 {
-	healthPoint damage;
-	float movementSpeed;
 	std::string projectileModelFilePath;
+	float movementSpeed;
+	float maximumTravelRange;
+	healthPoint damage;
 };
