@@ -50,6 +50,9 @@
     <Filter Include="Message\PlayerPositionUpdated">
       <UniqueIdentifier>{f8c6c912-206f-4575-bd54-faa3a15f9614}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\OtherPlayerSpawned">
+      <UniqueIdentifier>{bfaffe28-fac7-4363-b634-2aea3e426493}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -81,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="PlayerPositionMessage.cpp" />
     <ClCompile Include="SpawnOtherPlayerMessage.cpp" />
+    <ClCompile Include="OtherPlayerSpawned.cpp">
+      <Filter>Message\OtherPlayerSpawned</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -121,5 +127,8 @@
     </ClInclude>
     <ClInclude Include="PlayerPositionMessage.h" />
     <ClInclude Include="SpawnOtherPlayerMessage.h" />
+    <ClInclude Include="OtherPlayerSpawned.h">
+      <Filter>Message\OtherPlayerSpawned</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

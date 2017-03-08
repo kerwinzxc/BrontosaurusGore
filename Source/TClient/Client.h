@@ -5,6 +5,7 @@
 #include "../TShared/TShared_NetworkWrapper.h"
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
+#include "../Components/NetworkPlayerReciverComponent.h"
 
 enum class eClientState
 {
@@ -58,4 +59,6 @@ private:
 	std::atomic_bool myCanQuit;
 
 	CU::Vector3f myLatestPlayerPosition;
+
+	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
 };

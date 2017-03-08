@@ -127,6 +127,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="NarrowcastStruct.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="OtherPlayerSpawned.h" />
     <ClInclude Include="PlayerPositionMessage.h" />
     <ClInclude Include="Postmaster.h" />
     <ClInclude Include="PostOffice.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />
+    <ClCompile Include="OtherPlayerSpawned.cpp" />
     <ClCompile Include="PlayerPositionMessage.cpp" />
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
