@@ -60,6 +60,7 @@
 
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
+#include "ThreadedPostmaster/OtherPlayerSpawned.h"
 //
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -246,7 +247,15 @@ void CPlayState::CreateManagersAndFactories()
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
+	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models\chromeBall\chromeBall.fbx");
+	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
+	playerReciver->SetPlayerID(aPlayerID);
+	CComponentManager::GetInstance().RegisterComponent(playerReciver);
+	otherPlayer->AddComponent(model);
+	otherPlayer->AddComponent(playerReciver);
 
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
 void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)

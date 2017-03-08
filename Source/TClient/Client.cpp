@@ -38,6 +38,7 @@
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
 #include "../Components/ServerPlayerNetworkComponent.h"
+#include "../ThreadedPostmaster/OtherPlayerSpawned.h"
 
 
 CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
@@ -312,4 +313,10 @@ eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 		myLatestPlayerPosition = aMessage.myPosition;
 	}
 	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CClient::DoEvent(const COtherPlayerSpawned& aMassage)
+{
+	myNetworkRecieverComonents[aMassage.GetComponent()->GetPlayerID()] = aMassage.GetComponent();
+	return eMessageReturn::eStop;
 }
