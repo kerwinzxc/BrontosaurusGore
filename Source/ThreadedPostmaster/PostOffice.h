@@ -29,8 +29,10 @@ namespace Postmaster
 			void Subscribe(ISubscriber* aSubscriber, eMessageType aType);
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
 			void Unsubscribe(ISubscriber* aSubscriber);
+			bool GetIsActive();
 		protected:
-
+			void SetActive(bool anActive);
+			
 			void AppendMessages(Container::CLocklessQueue<Message::IMessage*>& aBufferQueue);
 
 			void BroadcastGlobal(Message::IMessage* aMessage);
@@ -50,7 +52,7 @@ namespace Postmaster
 
 			Container::CLocklessQueue<Message::IMessage*> myMessageQueue;
 			Container::CLocklessQueue<NarrowcastStruct> myNarrowMessageQueue;
-			
+			std::atomic<bool> myIsActive;
 			typedef std::vector<ISubscriber*> SubscriberList;
 			typedef std::map<IObject*, SubscriberList> NarrowSubscriberList;
 			typedef std::array<SubscriberList, static_cast<unsigned>(eMessageType::eLength)> SubscriberMessageList;
@@ -65,7 +67,7 @@ namespace Postmaster
 	}
 }
 
-inline Postmaster::Threaded::CPostOffice::CPostOffice()
+inline Postmaster::Threaded::CPostOffice::CPostOffice() : myIsActive(true)
 {
 }
 

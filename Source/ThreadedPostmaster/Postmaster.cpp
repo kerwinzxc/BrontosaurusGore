@@ -23,6 +23,19 @@ Postmaster::Threaded::CPostOffice&  Postmaster::Threaded::CPostmaster::AddThread
 	return *newOffice;
 }
 
+void Postmaster::Threaded::CPostmaster::SetOfficeActive(bool anActive)
+{
+	std::thread::id threadId = std::this_thread::get_id();
+
+	std::lock_guard<std::mutex> lock(myOfficeLock);
+	std::map<std::thread::id, CPostOffice*>::iterator it = myOffices.find(threadId);
+
+	if (it != myOffices.end())
+	{
+		it->second->SetActive(anActive);
+	}
+}
+
 Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadOffice()
 {
 	std::thread::id threadId = std::this_thread::get_id();
@@ -105,6 +118,7 @@ void Postmaster::Threaded::CPostmaster::HandleOutgoingBroadcast(Container::CLock
 	std::map<std::thread::id, CPostOffice*>::iterator it;
 	for (it = myOffices.begin(); it != myOffices.end(); ++it)
 	{
+		if(it->second->GetIsActive() == true)
 		{
 			Container::CLocklessQueue<Message::IMessage*> bufferQueue;
 			for (int i = 0; i < buffer.Size(); ++i)
@@ -128,9 +142,12 @@ void Postmaster::Threaded::CPostmaster::HandleOutgoingNarrowcast(Container::CLoc
 		std::map<std::thread::id, CPostOffice*>::iterator it;
 		for (it = myOffices.begin(); it != myOffices.end(); ++it)
 		{
-			myOfficeLock.lock();
-			it->second->Narrowcast(nMessage.message->Copy(), nMessage.sourceObject);
-			myOfficeLock.unlock();
+			if(it->second->GetIsActive() == true)
+			{
+				myOfficeLock.lock();
+				it->second->Narrowcast(nMessage.message->Copy(), nMessage.sourceObject);
+				myOfficeLock.unlock();
+			}
 		}
 		delete nMessage.message;
 	}

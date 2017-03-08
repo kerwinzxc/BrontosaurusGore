@@ -132,7 +132,7 @@ void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMes
 	}
 }
 
-void CWeaponSystemComponent::GiveWepon(const char* aWeaponName)
+void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
 {
 	WeaponFactoryPointer->CreateWeapon(aWeaponName, this);
 }
