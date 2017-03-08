@@ -96,3 +96,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CSpawnOtherPlayerMessage& 
 {
 	return  eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const COtherPlayerSpawned& aOtherPlayerSpawnedMessage)
+{
+	return eMessageReturn::eContinue;
+}
