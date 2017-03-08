@@ -46,6 +46,12 @@ bool CCameraComponent::Answer(const eComponentQuestionType aQuestionType, SCompo
 		return GetLookat(aQuestionData.myVector3f);
 	case eComponentQuestionType::eGetCameraPosition:
 		return GetPosition(aQuestionData.myVector3f);
+	case eComponentQuestionType::eGetCameraObject:
+	{
+		aQuestionData.myGameObject = GetParent();
+		return true;
+		break;
+	}
 	}
 
 	return false;
