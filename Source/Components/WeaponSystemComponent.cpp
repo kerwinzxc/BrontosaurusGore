@@ -5,6 +5,8 @@
 #include "PlayerControls.h"
 #include "AmmoReplenishData.h"
 #include "AmmoData.h"
+#include "TextInstance.h"
+#include "WeaponData.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -14,6 +16,11 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myWeapons.Init(5);
 	myIsShooting = false;
 	myTemporaryAmmoDataList.Init(5);
+	myActiveWeaponAmmoLeftText = new CTextInstance();
+	myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
+	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
+	myActiveWeaponAmmoLeftText->SetText("");
+	myActiveWeaponAmmoLeftText->Init();
 }
 
 
@@ -114,6 +121,13 @@ void CWeaponSystemComponent::Update(float aDelta)
 	{
 		myWeapons[i]->Update(aDelta);
 	}
+	SComponentQuestionData ammoLeftQuestionData;
+	ammoLeftQuestionData.myString = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+	if(GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString , ammoLeftQuestionData) == true)
+	{
+		myActiveWeaponAmmoLeftText->SetText(ammoLeftQuestionData.myString);
+	}
+	myActiveWeaponAmmoLeftText->Render();
 }
 
 void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)
