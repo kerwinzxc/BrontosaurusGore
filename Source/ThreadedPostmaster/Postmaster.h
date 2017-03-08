@@ -44,9 +44,9 @@ namespace Postmaster
 			//Narrowcast message to this thread.
 			void NarrowcastLocal(Message::IMessage* aMessage, IObject* aSourceObject);
 
-			
+			//Subscriptions will only be valid on the thread they subscribe from.
 			void Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType);
-			//Subscribe to messages from the given object
+			//Subscribe to messages from the given object. Subscriptions will only be valid on the thread they subscribe from.
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
 			//Unsubscribe from all your subscriptions
 			void Unsubscribe(ISubscriber* aSubscriber);
