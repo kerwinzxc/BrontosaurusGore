@@ -129,5 +129,6 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
 		aWeapon->SetWeaponObject(newWeaponObject);
 		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
+		aWeapon->SetModelVisibility(false);
 	}
 }

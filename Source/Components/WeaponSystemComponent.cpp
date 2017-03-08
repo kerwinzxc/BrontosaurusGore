@@ -64,6 +64,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eChangeWeapon:
 	{
 		short index = myActiveWeaponIndex + aMessageData.myInt;
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 		if (index < 0)
 		{
 			index = myWeapons.Size() - 1;
@@ -73,6 +74,8 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			index = 0;
 		}
 		myActiveWeaponIndex = static_cast<unsigned int>(index);
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+		DL_PRINT("can see %u", myActiveWeaponIndex);
 		break;
 	}
 	case eComponentMessageType::eObjectDone:
@@ -91,13 +94,10 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		myTemporaryAmmoDataList.RemoveAll();
 		myTemporaryAmmoDataList.Destroy();
-		break;
-	}
-	case eComponentMessageType::eRotateWeaponX:
-	{
-		for(unsigned int i = 0; i < myWeapons.Size(); i++)
+
+		if(myActiveWeaponIndex >= 0 && myActiveWeaponIndex < myWeapons.Size())
 		{
-			myWeapons[i]->RotateXAxees(aMessageData.myFloat);
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		}
 		break;
 	}

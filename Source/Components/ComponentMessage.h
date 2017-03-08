@@ -70,7 +70,6 @@ enum class eComponentMessageType
 	eHeal,
 	eTookDamage,
 	eDied,
-	eRotateWeaponX,
 	eLength,
 };
 

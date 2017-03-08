@@ -148,7 +148,7 @@ void CPlayState::Load()
 
 	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
 	
-	//myGameObjectManager->SendObjectsDoneMessage();
+	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
