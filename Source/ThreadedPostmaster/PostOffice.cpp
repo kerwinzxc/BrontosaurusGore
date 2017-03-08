@@ -36,6 +36,16 @@ void Postmaster::Threaded::CPostOffice::Unsubscribe(ISubscriber* aSubscriber)
 	UnsubscribeNarrowcast(aSubscriber);
 }
 
+bool Postmaster::Threaded::CPostOffice::GetIsActive()
+{
+	return myIsActive;
+}
+
+void Postmaster::Threaded::CPostOffice::SetActive(bool anActive)
+{
+	myIsActive = false;
+}
+
 void Postmaster::Threaded::CPostOffice::AppendMessages(Container::CLocklessQueue<Postmaster::Message::IMessage*>& aBufferQueue)
 {
 	myMessageQueue.Append(aBufferQueue);
