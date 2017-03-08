@@ -1,6 +1,7 @@
 #pragma once
 #include "../PostMaster/EMessageReturn.h"
 #include "../PostMaster/NetworkPosMessageEvent.h"
+#include "SpawnOtherPlayerMessage.h"
 
 class PushState;
 class PopCurrentState;
@@ -15,6 +16,8 @@ class CConectMessage;
 class CConectedMessage;
 class CLoadLevelMessage;
 class CSetClientIDMessage;
+class CPlayerPositionMessage;
+class CSpawnOtherPlayerMessage;
 
 namespace Postmaster
 {
@@ -43,5 +46,7 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CConectedMessage& aConectedMessage);
 		virtual eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage);
 		virtual eMessageReturn DoEvent(const CSetClientIDMessage& aSetClientIDMessage);
+		virtual eMessageReturn DoEvent(const CPlayerPositionMessage& aPlayerPositionMessage);
+		virtual eMessageReturn DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage);
 	};
 }

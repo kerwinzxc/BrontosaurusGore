@@ -26,6 +26,7 @@
 #include "../GUI/GUIPixelConstantBuffer.h"
 #include "LineDrawer.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
@@ -790,6 +791,7 @@ void CRenderer::DoRenderQueue()
 
 	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DrawCallsCount(drawCalls));
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 }
 
 void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from pekare to reference

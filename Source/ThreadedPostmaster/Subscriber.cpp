@@ -84,5 +84,15 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CLoadLevelMessage& aLoadLe
 
 eMessageReturn Postmaster::ISubscriber::DoEvent(const CSetClientIDMessage & aSetClientIDMessage)
 {
-	return eMessageReturn();
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CPlayerPositionMessage& aPlayerPositionMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage)
+{
+	return  eMessageReturn::eContinue;
 }

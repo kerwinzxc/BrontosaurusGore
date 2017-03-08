@@ -4,6 +4,8 @@
 #include "PackageType.h"
 #include "MessageStorage.h"
 
+#define SERIALIZE(aValue, aStreamType) serialize(aValue, aStreamType)
+#define DESERIALIZE(aValue, aStreamType) aValue = deserialize<decltype(aValue)>(aStreamType)
 
 struct SNetworkPackageHeader
 {

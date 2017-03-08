@@ -13,11 +13,13 @@
 #include "TClient/ClientMessageManager.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "TClient/ServerReadyMessage.h"
 
 CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::eLoadState)
 	, myLevelIndex(aLevelIndex)
 	, myGotOkFromServer(false)
+	, myNumberOfPlayersToSpawnBeforeStarting(1)
 {
 	myPlayState = nullptr;
 }
@@ -71,7 +73,7 @@ eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(readyMessage));
 	}
 
-	if (myGotOkFromServer == true)
+	if (myGotOkFromServer == true && myNumberOfPlayersToSpawnBeforeStarting == 0)
 	{
 		myStateStack.SwapState(myPlayState);
 		CBackgroundLoadingManager::GetInstance().Clear();
@@ -109,5 +111,13 @@ void CLoadState::OnExit(const bool /*aLetThroughRender*/)
 eMessageReturn CLoadState::DoEvent(const CServerReadyMessage& aServerReadyMessageMessageMessage)
 {
 	myGotOkFromServer = true;
+	myNumberOfPlayersToSpawnBeforeStarting = aServerReadyMessageMessageMessage.myNumberOfPlayers;
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CLoadState::DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage)
+{
+	myPlayState->SpawnOtherPlayer(aSpawnOtherPlayerMessage.myPlayerID);
+	myNumberOfPlayersToSpawnBeforeStarting--;
 	return eMessageReturn::eContinue;
 }

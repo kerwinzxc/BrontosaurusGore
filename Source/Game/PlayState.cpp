@@ -244,6 +244,11 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 }
 
+void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
+{
+
+}
+
 void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
 {
 	//create hard coded player:

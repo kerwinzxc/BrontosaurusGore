@@ -47,6 +47,9 @@
     <Filter Include="Message\SetClientIDMessage">
       <UniqueIdentifier>{f6e8b8c3-3259-4f50-be2c-a35ad26843cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\PlayerPositionUpdated">
+      <UniqueIdentifier>{f8c6c912-206f-4575-bd54-faa3a15f9614}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -76,6 +79,8 @@
     <ClCompile Include="SetClientIDMessage.cpp">
       <Filter>Message\SetClientIDMessage</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerPositionMessage.cpp" />
+    <ClCompile Include="SpawnOtherPlayerMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -114,5 +119,7 @@
     <ClInclude Include="SetClientIDMessage.h">
       <Filter>Message\SetClientIDMessage</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerPositionMessage.h" />
+    <ClInclude Include="SpawnOtherPlayerMessage.h" />
   </ItemGroup>
 </Project>
