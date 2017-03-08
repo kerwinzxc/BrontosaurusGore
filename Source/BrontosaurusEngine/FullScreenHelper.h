@@ -38,6 +38,7 @@ public:
 		//eDeferredPointLight,
 		eDeferredSpotLight,
 		eCopyDepth,
+		eColorGrading,
 		eSize,
 	};
 
