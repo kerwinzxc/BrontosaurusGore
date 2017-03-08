@@ -123,9 +123,12 @@
       <Filter>NetworkComponent</Filter>
     </ClCompile>
     <ClCompile Include="NetworkComponentManager.cpp" />
-    <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
+    <ClCompile Include="PlayerNetworkComponent.cpp">
+      <Filter>PlayerNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -295,9 +298,12 @@
     <ClInclude Include="AmmoReplenishData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
+    <ClInclude Include="PlayerNetworkComponent.h">
+      <Filter>PlayerNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPlayerNetworkComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -356,6 +362,12 @@
     </Filter>
     <Filter Include="NetworkComponent">
       <UniqueIdentifier>{cf66b67e-3cd9-4e22-b239-4d940bdcb3f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayerNetwork">
+      <UniqueIdentifier>{99d9f00f-198f-4dce-b936-14664660d642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerPlayerNetwork">
+      <UniqueIdentifier>{6d33be8b-ef92-4cd0-bb9c-57ff330ee525}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

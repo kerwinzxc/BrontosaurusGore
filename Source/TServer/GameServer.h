@@ -27,6 +27,7 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
+	CServerPlayerNetworkComponent* AddPlayer() const;
 private:
 
 

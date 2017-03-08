@@ -154,6 +154,7 @@
     <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
+    <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
     <ClInclude Include="NetworkMesssage_Connect.h" />
     <ClInclude Include="PackageType.h" />
     <ClInclude Include="SerializeHelper.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
+    <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
     <ClCompile Include="NetworkMesssage_Connect.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

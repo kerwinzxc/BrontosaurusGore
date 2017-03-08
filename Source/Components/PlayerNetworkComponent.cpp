@@ -4,7 +4,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TClient/ClientMessageManager.h"
-#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/PlayerPositionMessage.h"
 
 
 CPlayerNetworkComponent::CPlayerNetworkComponent() : myID(0)
@@ -29,21 +29,10 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 	{
 	case eComponentMessageType::eMoving:
 	{
-		CClientMessageManager* instance = CClientMessageManager::GetInstance();
-		if (instance == nullptr)
-		{
-			//DL_PRINT("woop");
-		}
-
-	//	CNetworkMessage_PlayerPositionMessage * positionMessage = instance->CreateMessage<CNetworkMessage_PlayerPositionMessage>(static_cast<unsigned>(ID_ALL));
-
-		//positionMessage->SetPosition(GetParent()->GetWorldPosition());
-		//positionMessage->SetID(myID);
-
-		//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(positionMessage));
-
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(GetParent()->GetWorldPosition(), myID));
 	}
 	break;
+	default: break;
 	}
 
 

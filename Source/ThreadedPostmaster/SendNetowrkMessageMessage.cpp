@@ -32,52 +32,15 @@ eMessageReturn CSendNetowrkMessageMessage::DoEvent(::Postmaster::ISubscriber& aS
 
 CNetworkMessage* CSendNetowrkMessageMessage::UnpackHolder() const
 {
-	CClientMessageManager* messageManagerInstance = CClientMessageManager::GetInstance();
-	CServerMessageManager* messageManagerInstance2 = CServerMessageManager::GetInstance();
+	CMessageManager* messageManagerInstance = CClientMessageManager::GetInstance();
 	if (messageManagerInstance == nullptr)
 	{
-		if (messageManagerInstance2 == nullptr)
+		messageManagerInstance = CServerMessageManager::GetInstance();
+		if (messageManagerInstance == nullptr)
 		{
-			return nullptr;
+			DL_ASSERT("No message manager available");
 		}
 	}
 
-	switch (static_cast<ePackageType>(myNetworkMessage.myHeader.myPackageType))
-	{
-	case ePackageType::eClientReady:
-		{
-			CNetworkMessage_ClientReady* ClientReadyMessage;
-			if (messageManagerInstance2 == nullptr)
-			{
-				ClientReadyMessage = messageManagerInstance->CreateMessage<CNetworkMessage_ClientReady>(myNetworkMessage);
-				return ClientReadyMessage;
-			}
-			ClientReadyMessage = messageManagerInstance2->CreateMessage<CNetworkMessage_ClientReady>(myNetworkMessage);
-			return ClientReadyMessage;
-		}
-	case ePackageType::eLoadLevel:
-		{
-			CNetworkMessage_LoadLevel* message;
-			if (messageManagerInstance2 == nullptr)
-			{
-				message = messageManagerInstance->CreateMessage<CNetworkMessage_LoadLevel>(myNetworkMessage);
-				return message;
-			}
-			message = messageManagerInstance2->CreateMessage<CNetworkMessage_LoadLevel>(myNetworkMessage);
-			return message;
-		}
-	case ePackageType::ePosition:
-	{
-		CNetworkMessage_Position* message;
-		if (messageManagerInstance2 == nullptr)
-		{
-			message = messageManagerInstance->CreateMessage<CNetworkMessage_Position>(myNetworkMessage);
-			return message;
-		}
-		message = messageManagerInstance2->CreateMessage<CNetworkMessage_Position>(myNetworkMessage);
-		return message;
-	}
-	default: 
-		return nullptr;
-	}
+	return messageManagerInstance->CreateMessage(myNetworkMessage);
 }

@@ -46,6 +46,9 @@ public:
 	void Pause();
 	void CreateManagersAndFactories();
 
+
+	void SpawnOtherPlayer(unsigned aPlayerID);
+
 	eMessageReturn Recieve(const Message& aMessage);
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 

@@ -33,6 +33,11 @@
 #include "../ThreadedPostmaster/LoadLevelMessage.h"
 #include "../ThreadedPostmaster/SetClientIDMessage.h"
 #include "../Components/PlayerNetworkComponent.h"
+#include "../ThreadedPostmaster/PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
+#include "../TShared/NetworkMessage_ServerReady.h"
+#include "../Components/ServerPlayerNetworkComponent.h"
 
 
 CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
@@ -108,6 +113,7 @@ void CClient::Ping()
 void CClient::Update()
 {
 	float currentTime = 0.f;
+	CU::Time positionWaitTime(0);
 
 	std::string pingString;
 	pingString = "Ping: ";
@@ -129,7 +135,7 @@ void CClient::Update()
 		}
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
-
+		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
 		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
 
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
@@ -172,12 +178,19 @@ void CClient::Update()
 		break;
 		case ePackageType::eServerReady:
 		{
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage());
+			CNetworkMessage_ServerReady* serverReady = currentMessage->CastTo<CNetworkMessage_ServerReady>();
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage(serverReady->GetNumberOfPlayers()));
 		}
 		break;
 		case ePackageType::ePlayerPosition:
 		{
 
+		}
+		break;
+		case ePackageType::eSpawnOtherPlayer:
+		{
+			CNetworkMessage_SpawnOtherPlayer* spawnPlayer = currentMessage->CastTo<CNetworkMessage_SpawnOtherPlayer>();
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSpawnOtherPlayerMessage(spawnPlayer->GetPlayerID()));
 		}
 		break;
 		case ePackageType::ePosition:
@@ -212,6 +225,17 @@ void CClient::Update()
 			Ping();
 			currentTime = 0.f;
 		}
+
+		if (positionWaitTime.GetMilliseconds() > 32)
+		{
+			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__Server");
+
+			message->SetPosition(myLatestPlayerPosition);
+			message->SetID(myId);
+
+			Send(message);
+		}
+
 
 		//const std::string chatMessage = myChat.GetChatMessage();
 
@@ -279,4 +303,13 @@ eMessageReturn CClient::DoEvent(const CSetClientIDMessage & aMessage)
 {
 	aMessage.GetPlayerComponent()->SetID(myId);
 	return eMessageReturn();
+}
+
+eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
+{
+	if (aMessage.myId == myId)
+	{
+		myLatestPlayerPosition = aMessage.myPosition;
+	}
+	return eMessageReturn::eContinue;
 }

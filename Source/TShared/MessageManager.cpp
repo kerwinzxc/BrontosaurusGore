@@ -10,6 +10,7 @@
 #include "NetworkMessage_LoadLevel.h"
 #include "NetworkMessage_ClientReady.h"
 #include "NetworkMessage_ServerReady.h"
+#include "NetworkMessage_PlayerPositionMessage.h"
 
 CMessageManager::CMessageManager()
 {
@@ -55,6 +56,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_ClientReady>(aHeader);
 	case ePackageType::eServerReady: 
 		return CreateMessage<CNetworkMessage_ServerReady>(aHeader);
+	case ePackageType::ePlayerPosition:
+		return CreateMessage<CNetworkMessage_PlayerPositionMessage>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

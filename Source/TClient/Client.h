@@ -34,6 +34,7 @@ public:
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
 	eMessageReturn DoEvent(const CSetClientIDMessage& aMessage) override;
+	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
 private:
 
 	//CChat myChat;
@@ -55,4 +56,6 @@ private:
 
 	std::atomic_bool myIsRunning;
 	std::atomic_bool myCanQuit;
+
+	CU::Vector3f myLatestPlayerPosition;
 };

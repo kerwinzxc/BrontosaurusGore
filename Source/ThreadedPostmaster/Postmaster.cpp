@@ -105,13 +105,15 @@ void Postmaster::Threaded::CPostmaster::HandleOutgoingBroadcast(Container::CLock
 	std::map<std::thread::id, CPostOffice*>::iterator it;
 	for (it = myOffices.begin(); it != myOffices.end(); ++it)
 	{
-		Container::CLocklessQueue<Message::IMessage*> bufferQueue;
-		for (int i = 0; i < buffer.Size(); ++i)
 		{
-			Message::IMessage* message = buffer[i];
-			bufferQueue.Push(message->Copy());
+			Container::CLocklessQueue<Message::IMessage*> bufferQueue;
+			for (int i = 0; i < buffer.Size(); ++i)
+			{
+				Message::IMessage* message = buffer[i];
+				bufferQueue.Push(message->Copy());
+			}
+			it->second->AppendMessages(bufferQueue);
 		}
-		it->second->AppendMessages(bufferQueue);
 	}
 
 	buffer.DeleteAll();

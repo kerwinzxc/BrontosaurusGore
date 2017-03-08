@@ -3,7 +3,7 @@
 #include "../ThreadedPostmaster/Subscriber.h"
 
 
-CServerReadyMessage::CServerReadyMessage(eMessageType aMessageType): IMessage(aMessageType)
+CServerReadyMessage::CServerReadyMessage(unsigned aNumberOfPlayers): IMessage(eMessageType::eNetworkMessage), myNumberOfPlayers(aNumberOfPlayers)
 {
 }
 
@@ -14,7 +14,7 @@ CServerReadyMessage::~CServerReadyMessage()
 
 Postmaster::Message::IMessage* CServerReadyMessage::Copy()
 {
-	return new CServerReadyMessage();
+	return new CServerReadyMessage(myNumberOfPlayers);
 }
 
 eMessageReturn CServerReadyMessage::DoEvent(::Postmaster::ISubscriber& aSubscriber) const

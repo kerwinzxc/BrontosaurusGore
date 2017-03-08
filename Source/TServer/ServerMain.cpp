@@ -13,17 +13,16 @@
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
 #include <array>
-#include "../TShared/NetworkMessage_ClientReady.h"
 
 #include "../KevinLoader/KevinLoader.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
-#include "../TShared/NetworkMessage_ClientReady.h"
 #include "ServerMessageManager.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/PrintMessage.h"
+#include "TShared/NetworkMessage_SpawnOtherPlayer.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -303,7 +302,28 @@ void CServerMain::StartGame()
 
 	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
 
+	message->SetNumberOfPlayers(myClients.size()-1);
+
 	SendTo(message);
+
+	for (auto client : myClients)
+	{
+		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer();
+
+		myClients.at(client.first).myComponent = playerNetworkComponent;
+
+		for (auto secondClient : myClients)
+		{
+			if (secondClient.first != client.first)
+			{
+				CNetworkMessage_SpawnOtherPlayer* message2/*the sequel to message*/ = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnOtherPlayer>(secondClient.first);
+
+				message2->SetPlayerId(client.first);
+
+				SendTo(message2);
+			}
+		}
+	}
 }
 
 bool CServerMain::Update()
@@ -383,7 +403,7 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-			SendTo(currentMessage);
+			
 		}
 		break;
 		case ePackageType::ePosition:
@@ -425,10 +445,10 @@ bool CServerMain::Update()
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
 
-				//if (CheckIfClientsReady() == true)
-				//{
-				//	StartGame();
-				//}
+				/*if (CheckIfClientsReady() == true)
+				{
+					StartGame();
+				}*/
 			}
 			break;
 		case ePackageType::eZero:
