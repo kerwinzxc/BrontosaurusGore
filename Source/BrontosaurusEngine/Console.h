@@ -2,6 +2,7 @@
 #include <map>
 #include "../PostMaster/Subscriber.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../CommonUtilities/InputMessenger.h"
 
 namespace CU
 {
@@ -19,7 +20,7 @@ namespace SSlua
 
 class CTextInstance;
 
-class CConsole : public Postmaster::ISubscriber
+class CConsole : public Postmaster::ISubscriber, public CU::CInputMessenger
 {
 public:
 	CConsole();
@@ -37,6 +38,8 @@ public:
 	void Render();
 
 	eMessageReturn DoEvent(const KeyCharPressed& aCharPressed) override;
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
+
 private:
 	void UpdateCommandSuggestions(const std::string& aStringToCompare);
 	size_t CConsole::MakeCommandSuggestions(const std::string& aStringToCompare, const std::string& aStringToEvaluate);

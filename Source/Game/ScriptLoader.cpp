@@ -21,6 +21,7 @@ void ScriptLoader::RegisterLuaFunctions(SSlua::LuaWrapper& aLuaWrapper)
 	aLuaWrapper.RegisterFunction(GetMessageType, "GetMessageType", "Argument: string representing a message type, return value: number that is the actual message type. Returns -1 if the string doesn't match any id. Use this when subscribing to messages", true);
 	aLuaWrapper.RegisterFunction(SpawnParticles, "SpawnParticles", "First argument: effect type (string), second argument: position to spawn at (three numbers xyz). Example: SpawnParticles(\"blood\", GetPosition(GetParent()))", true);
 	aLuaWrapper.RegisterFunction(ComponentGetParentPosition, "GetParentPosition", "Get the position of the component's gameobject. First argument: component id(number)", false);
+	aLuaWrapper.RegisterFunction(ChangeLevel, "ChangeLevel", "Changes to level specified with either level name or level index in LevelList.json", true);
 
 #ifndef _RETAIL_BUILD
 

@@ -55,6 +55,9 @@ void CWeaponFactory::LoadWeapons()
 		newWeaponData->modelPositionX = levelsArray[i].at("ModelPositionX").GetFloat();
 		newWeaponData->modelPositionY = levelsArray[i].at("ModelPositionY").GetFloat();
 		newWeaponData->modelPositionZ = levelsArray[i].at("ModelPositionZ").GetFloat();
+		newWeaponData->shootPositionX = levelsArray[i].at("ShootPositionX").GetFloat();
+		newWeaponData->shootPositionY = levelsArray[i].at("ShootPositionY").GetFloat();
+		newWeaponData->shootPositionZ = levelsArray[i].at("ShootPositionZ").GetFloat();
 		newWeaponData->fireRate = levelsArray[i].at("FireRate").GetFloat();
 		newWeaponData->randomSpreadAngle = levelsArray[i].at("RandomSpreadAngle").GetInt();
 		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();

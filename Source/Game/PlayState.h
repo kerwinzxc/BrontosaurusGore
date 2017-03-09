@@ -56,6 +56,7 @@ public:
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline CAmmoComponentManager* GetAmmoManager();
 	inline CMovementComponentManager* GetMovementComponentManager();
+	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline bool IsLoaded() const;
 private:
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
@@ -101,4 +102,10 @@ inline CAmmoComponentManager* CPlayState::GetAmmoManager()
 inline CMovementComponentManager * CPlayState::GetMovementComponentManager()
 {
 	return myMovementComponentManager;
+}
+
+inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
+{
+	assert(myEnemyComponentManager);
+	return myEnemyComponentManager;
 }

@@ -133,7 +133,7 @@ void CTempLobbyState::Conect()
 
 	if (myName.empty())
 	{
-		const CU::GrowingArray<std::string> names({"Ralle", "Adam", "Fröken", "Stefan"});
+		const CU::GrowingArray<std::string> names({"Ralle", "Adam", "Fröken", "Stefan", "Ralle", "Adam", "Fröken", "Stefan" , "Ralle", "Adam", "Fröken", "Stefan", "Bjarne Stroustrup"});
 		const CU::GrowingArray<std::string>::size_type randIndex = rand() % names.Size();
 
 		myName = names.At(randIndex);
@@ -292,6 +292,9 @@ void CTempLobbyState::LevelSelect()
 		{
 			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
 		}
+
+		const unsigned int freeLine = myTextINstance.GetTextLines().Size();
+		myTextINstance.SetTextLine(freeLine + 1, "# Other players can now join!");
 	}
 	else
 	{

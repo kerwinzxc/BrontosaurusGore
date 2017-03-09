@@ -35,6 +35,8 @@ public:
 	eMessageReturn DoEvent(const PopCurrentState& aPopCurrent) override;
 	eMessageReturn DoEvent(const ::PushState& aPushState) override;
 
+	eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage) override;
+
 private:
 	const eStateStatus UpdateState(const CU::Time& aDeltaTime);
 	void UpdateStateAtIndex(const CU::Time& aDeltaTime, const short aIndex);
