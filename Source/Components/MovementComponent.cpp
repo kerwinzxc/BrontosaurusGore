@@ -6,7 +6,7 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #define vodi void
-static const float gravityDeceleration = 29.82f;
+static const float gravityAcceleration = 9.82f * 2.0f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
@@ -26,6 +26,7 @@ CMovementComponent::CMovementComponent()
 	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
 	myIsJumping = false;
 	myHaveDoubleJumped = false;
+	myIsGrounded = true;
 	myJumpDistance = playerControls["JumpHeight"].GetFloat();
 	mySecondJumpDistance = playerControls["SecondJumpHeight"].GetFloat();
 	myJumpTimeUntilTop = 2.0f;
@@ -113,21 +114,36 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		}
 	}
 	myVelocity.y = CalculateJumpVelocity(aDeltaTime);
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	
-	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
+	DL_PRINT("%f", myVelocity.y);
+
+
+		
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerGrounded, groundeddata) == true)
 	{
-		parentTransform.GetPosition().y = 0.0f;
-		DeavtivateJump();
+		myIsGrounded = groundeddata.myBool;
+		if (groundeddata.myBool == true)
+		{
+			DeavtivateJump();
+		}
+
 	}
 
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
-	CU::Vector3f position = parentTransform.GetPosition();
-	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
-	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-
+	SComponentQuestionData data;
+	data.myVector4f = myVelocity * rotation * aDeltaTime.GetSeconds();
+	data.myVector4f.w = aDeltaTime.GetSeconds();
+	
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		CU::Vector3f position = parentTransform.GetPosition();
+		parentTransform.SetPosition(data.myVector3f);
+		//parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
@@ -155,11 +171,11 @@ void CMovementComponent::KeyReleased(const ePlayerControls aPlayerControl)
 
 float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
 {
-	if(myIsJumping == true)
+
+	if(myIsJumping == true || myIsGrounded == false)
 	{
-		
 		myElapsedJumpTime += aDeltaTime.GetSeconds();
-		myJumpVelocity -= gravityDeceleration * aDeltaTime.GetSeconds();
+		myJumpVelocity -= gravityAcceleration * aDeltaTime.GetSeconds();
 		return myJumpVelocity;
 	}
 	else
@@ -171,7 +187,7 @@ float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
 void CMovementComponent::ActivateJump()
 {
 	myIsJumping = true;
-	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
+	myJumpVelocity = sqrtf(gravityAcceleration * myJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
 }
 void CMovementComponent::DeavtivateJump()
@@ -183,6 +199,6 @@ void CMovementComponent::DeavtivateJump()
 void CMovementComponent::ActivateDoubleJump()
 {
 	myHaveDoubleJumped = true;
-	myJumpVelocity = sqrtf(gravityDeceleration * mySecondJumpDistance * 2);
+	myJumpVelocity = sqrtf(gravityAcceleration * mySecondJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
 }

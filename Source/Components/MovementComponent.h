@@ -33,4 +33,6 @@ private:
 	float myJumpTimeUntilTop;
 	bool myIsJumping;
 	bool myHaveDoubleJumped;
+
+	bool myIsGrounded;
 };
