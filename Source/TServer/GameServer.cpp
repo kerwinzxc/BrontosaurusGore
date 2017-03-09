@@ -138,10 +138,11 @@ bool CGameServer::IsLoaded() const
 
 CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 {
-	CGameObject* gameObject = myGameObjectManager->CreateGameObject();
+	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
 
-	CServerPlayerNetworkComponent* serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
+	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
+	gameObject->AddComponent(serverPlayerNetworkComponent);
 
 	return serverPlayerNetworkComponent;
 }

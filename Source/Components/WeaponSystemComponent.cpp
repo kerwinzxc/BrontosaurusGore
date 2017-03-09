@@ -165,4 +165,5 @@ void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
 void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
 {
 	myWeapons.Add(aWeapon);
+	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
 }

@@ -41,7 +41,7 @@
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
 
 
-CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false)
+CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
@@ -136,9 +136,9 @@ void CClient::Update()
 		}
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
-		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
+		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime();
 		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
-
+		positionWaitTime += deltaTime;
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
 		switch ((currentMessage->GetHeader().myPackageType))
@@ -185,6 +185,12 @@ void CClient::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
+			CNetworkMessage_PlayerPositionMessage* playerPosition = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+
+			const unsigned ID = playerPosition->GetID();
+
+			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldPosition(playerPosition->GetPosition());
+			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 		}
 		break;
@@ -227,14 +233,15 @@ void CClient::Update()
 			currentTime = 0.f;
 		}
 
-		if (positionWaitTime.GetMilliseconds() > 32)
+		if (positionWaitTime.GetMilliseconds() > 16 && myPlayerPositionUpdated == true)
 		{
-			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__Server");
+			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__All");
 
 			message->SetPosition(myLatestPlayerPosition);
 			message->SetID(myId);
 
 			Send(message);
+			myPlayerPositionUpdated = false;
 		}
 
 
@@ -311,6 +318,7 @@ eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 	if (aMessage.myId == myId)
 	{
 		myLatestPlayerPosition = aMessage.myPosition;
+		myPlayerPositionUpdated = true;
 	}
 	return eMessageReturn::eContinue;
 }
