@@ -91,9 +91,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			SComponentMessageData giveAmmoData;
 			giveAmmoData.myAmmoReplenishData = &ammoReplenishData;
 			GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			myWeapons[i]->SetUser(GetParent());
+			WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons[i]);
 		}
 		myTemporaryAmmoDataList.RemoveAll();
 		myTemporaryAmmoDataList.Destroy();
+
 
 		if(myActiveWeaponIndex >= 0 && myActiveWeaponIndex < myWeapons.Size())
 		{
@@ -162,4 +165,5 @@ void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
 void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
 {
 	myWeapons.Add(aWeapon);
+	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
 }
