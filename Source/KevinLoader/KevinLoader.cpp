@@ -181,7 +181,7 @@ namespace KLoader
 			}
 
 			 currentLink.myIndex = myObjectLoadFunction(componentData);
-
+			 myCurrentObjectIndex = currentLink.myIndex;
 			 const CU::CJsonValue componentsArray = currentObject["components"];
 			 for (int j = 0; j < componentsArray.Size(); ++j)
 			 {

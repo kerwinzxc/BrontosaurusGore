@@ -50,7 +50,7 @@ namespace KLoader
 		std::string GetError();
 
 		void PrintMissingComponents(const std::string& componentName);
-
+		inline int GetCurrentObjectIndex() { return myCurrentObjectIndex; }
 	private:
 		CKevinLoader();
 		~CKevinLoader();
@@ -71,6 +71,9 @@ namespace KLoader
 		
 		static CKevinLoader* ourInstance;
 		
+		int myCurrentObjectIndex;
+
+
 #ifndef _RETAIL_BUILD
 		bool myHasLoadedFile;
 #endif
