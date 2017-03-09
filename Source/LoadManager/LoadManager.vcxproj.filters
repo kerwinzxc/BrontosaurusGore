@@ -63,6 +63,9 @@
     <ClInclude Include="LoadAmmoPickupComponent.h">
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadParticleEmitterComponent.h">
+      <Filter>LoadThings\LoadParticleComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -123,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="LoadAmmoPickupComponent.cpp">
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadParticleEmitterComponent.cpp">
+      <Filter>LoadThings\LoadParticleComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +191,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadAmmoPickupComponent">
       <UniqueIdentifier>{0f41c7fb-04fb-4a2d-ba78-c618f9dea398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadParticleComponent">
+      <UniqueIdentifier>{008e4187-743c-435d-9166-ed5d1e6732d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

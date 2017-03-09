@@ -1,63 +1,4 @@
-Texture2D sprite : register (t1);
-SamplerState Sampler;
-
-
-cbuffer ConstantBuffer : register( b0 ) //to vertex & geometry
-{
-    float4x4 cameraSpaceInversed;
-    float4x4 projectionSpace;
-}
-
-cbuffer ToWorld : register(b1)
-{
-    float4x4 worldSpace;
-}
-
-
-struct InputVertex
-{
-    float4 position : POSITION;
-    float size : SIZE;
-    float4 color : COLOR;
-};
-//missalligned?
-struct InputPixel
-{
-    float4 position : SV_POSITION;
-    float2 uv : TEXCOORD;
-    float4 color : COLOR;
-
-};
-
-struct InputGeometry
-{
-    float4 position : SV_POSITION;
-    float size : SIZE;
-    float4 color : COLOR;
-    float rotation : ROTATION;
-};
-
-
-InputGeometry VS_PosSizeColor(InputVertex input)
-{
-    InputGeometry output = (InputGeometry)0;
-    output.rotation = input.position.w;
-    output.position = float4(input.position.xyz, 1.0f);
-    //output.position = mul(worldSpace, output.position);
-    output.position = mul(cameraSpaceInversed, output.position);
-
-    output.size = input.size;
-    output.color = input.color;
-
-    return output;
-}
-
-float4 PS_PosSizeColor(InputPixel input) : SV_TARGET
-{
-    float4 color = sprite.Sample(Sampler, input.uv);
-    return  input.color;
-}
-
+#include "particleCommon.fx"
 
 [maxvertexcount(4)] //whaah //one input vertex gives max 4 new vertices in this case I think?
 void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPixel> triStream)
@@ -93,12 +34,14 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
         float4 offsetPos = mul(rotationMatrix, offset[i]);
         offsetPos.w = 0.0f;
         vertex.position = input[0].position + offsetPos;
-
+        vertex.worldPosition = vertex.position;
         //vertex.position = mul(rotationMatrix, vertex.position);
         vertex.position = mul(projectionSpace, vertex.position);
-
+        float4 center = input[0].position;
         vertex.uv = uv_coord[i];
         vertex.color = input[0].color;
+        vertex.center = center.xyz;
+        vertex.radius = input[0].size;
 
         triStream.Append(vertex);
     }

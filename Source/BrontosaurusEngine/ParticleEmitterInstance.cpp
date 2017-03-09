@@ -210,6 +210,7 @@ void CParticleEmitterInstance::Render(const CU::Camera& aCamera)
 		msg.particleEmitter = myEmitterID;
 		msg.toWorld = myToWorldSpace;
 		msg.particleList = myParticles;
+		msg.myType = SRenderMessage::eRenderMessageType::eRenderParticles;
 		DistanceSort(msg.particleList, aCamera);
 		RENDERER.AddRenderMessage(new SRenderParticlesMessage(msg));
 	}

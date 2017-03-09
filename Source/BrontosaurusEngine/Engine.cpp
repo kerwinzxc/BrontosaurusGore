@@ -26,6 +26,7 @@
 #include "Console.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+#include "../Components/ParticleEmitterComponentManager.h"
 
 CEngine* CEngine::myInstance = nullptr;
 
@@ -180,6 +181,8 @@ void CEngine::Start()
 	}
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
+
+	CParticleEmitterComponentManager::Create();
 	while (GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();
@@ -217,6 +220,7 @@ void CEngine::Start()
 			Render();
 		}
 	}
+	CParticleEmitterComponentManager::Destroy();
 }
 
 bool CEngine::GetIsRunning()
