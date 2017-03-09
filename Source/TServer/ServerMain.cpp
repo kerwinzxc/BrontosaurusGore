@@ -23,6 +23,9 @@
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/PrintMessage.h"
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
+#include "ThreadedPostmaster/PlayerPositionMessage.h"
+#include "TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "GameObject.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -403,7 +406,14 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-			
+			CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+
+			const unsigned ID = positionMessage->GetID();
+
+			CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
+			gameObject->SetWorldPosition(positionMessage->GetPosition());
+
+			SendTo(positionMessage);
 		}
 		break;
 		case ePackageType::ePosition:
