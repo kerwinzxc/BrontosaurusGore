@@ -93,6 +93,9 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			rotatedDirection.Normalize();*/
 			if(CProjectileFactory::GetInstance() != nullptr)
 			{
+				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+				shootPosition = myWeaponObject->GetWorldPosition();
+				shootPosition = shootDisplacment * myWeaponObject->GetToWorldTransform().GetRotation() + shootPosition;
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
