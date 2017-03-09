@@ -114,9 +114,7 @@ private:
 	} myGUIData;
 
 private:
-	CTexture* myLuts[5];
-	int myLut;
-	float myLutTimer;
+	CTexture* myLut;
 
 	CRenderPackage myColorGradingPackage;
 	CDeferredRenderer myDeferredRenderer;

@@ -58,16 +58,11 @@ CRenderer::CRenderer()
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp0Wrap1;
 
-	myLutTimer = 1.0f;
 	myLut = 0;
-	myLuts[0] = &TEXTUREMGR.LoadTexture("Lut/RGBLUT_NoChange.dds");
-	myLuts[1] = &TEXTUREMGR.LoadTexture("Lut/RGBLUT_Inverted.dds");
-	myLuts[2] = &TEXTUREMGR.LoadTexture("Lut/RGBLUT_Desert.dds");
-	myLuts[3] = &TEXTUREMGR.LoadTexture("Lut/RGBLUT_Redish.dds");
-	myLuts[4] = &TEXTUREMGR.LoadTexture("Lut/RGBLUT_WoW_Jungle.dds");
-
 	CU::Vector2ui windowSize = ENGINE->GetWindow()->GetWindowSize();
 	myColorGradingPackage.Init(windowSize);
+
+
 	SetStates(&changeStateMessage);
 }
 
@@ -108,17 +103,6 @@ void CRenderer::Render()
 {
 	myTimers.UpdateTimers();
 	UpdateBuffer();
-
-	myLutTimer -= myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
-	if (myLutTimer <= 0.0f)
-	{
-		myLutTimer = 1.0f;
-		myLut++;
-		myLut %= 5;
-	}
-
-
-
 
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
@@ -172,12 +156,12 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
 
 	RenderGUI();
-	DoColorGrading();
+	//DoColorGrading();
 
 
 	myBackBufferPackage.Activate();
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, {0,0,1,0.5f}, &myIntermediatePackage);
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy,  &myColorGradingPackage);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy,  &myIntermediatePackage);
 
 }
 
@@ -1142,11 +1126,10 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 }
 
-
 void CRenderer::DoColorGrading()
 {
 	myColorGradingPackage.Clear();
 	myColorGradingPackage.Activate();
-	DEVICE_CONTEXT->PSSetShaderResources(2 , 1 , myLuts[myLut]->GetShaderResourceViewPointer());
+	DEVICE_CONTEXT->PSSetShaderResources(2 , 1 , myLut->GetShaderResourceViewPointer());
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eColorGrading, &myIntermediatePackage);
 }
