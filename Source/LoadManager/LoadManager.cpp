@@ -18,6 +18,9 @@
 #include "LoadMovementComponent.h"
 #include "LoadInputComponent.h"
 
+#include "LoadAmmoPickupComponent.h"
+#include "LoadHealthPackComponent.h"
+
 LoadManager* LoadManager::ourInstance = nullptr;
 
 void LoadManager::CreateInstance(CPlayState& aPlayState, CScene& aScene)
@@ -63,6 +66,8 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("AmmoComponent", LoadAmmoComponent);
 	loader.RegisterComponentLoadFunction("MovementComponent", LoadMovementComponent);
 	loader.RegisterComponentLoadFunction("InputComponent", LoadInputComponent);
+	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
+	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
