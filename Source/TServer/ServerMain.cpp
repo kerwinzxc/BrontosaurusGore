@@ -456,14 +456,13 @@ bool CServerMain::Update()
 			}
 			if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
 			{
-				for (auto client : myClients)
+				for (auto& client : myClients)
 				{
-					myClients.at(client.first).IsReady = false;
-					myClients.at(client.first).myComponent = nullptr;
+					client.second.IsReady = false;
+					client.second.myComponent = nullptr;
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				//myGameServer->Load(loadLevelMessage->myLevelIndex);
 				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
