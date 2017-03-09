@@ -64,6 +64,7 @@ public:
 	inline CAmmoComponentManager* GetAmmoManager();
 	inline CMovementComponentManager* GetMovementComponentManager();
 	inline CColliderComponentManager* GetColliderComponentManager();
+	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline bool IsLoaded() const;
 
 	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
@@ -127,3 +128,8 @@ inline CColliderComponentManager* CPlayState::GetColliderComponentManager()
 {
 	return myColliderComponentManager;
 }
+inline CEnemyComponentManager * CPlayState::GetEnemyComponentManager()
+{
+	return myEnemyComponentManager;
+}
+
