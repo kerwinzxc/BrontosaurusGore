@@ -95,7 +95,9 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			{
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
 				shootPosition = myWeaponObject->GetWorldPosition();
-				shootPosition = shootDisplacment * myWeaponObject->GetToWorldTransform().GetRotation() + shootPosition;
+				CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				shootPosition = localWeaponMatrix.GetPosition();
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
