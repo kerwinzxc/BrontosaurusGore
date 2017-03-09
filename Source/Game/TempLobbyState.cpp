@@ -99,9 +99,9 @@ void CTempLobbyState::Select()
 		{
 			if (myIsPlayer == true)
 			{
-				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 3));
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
 				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
-				netowrkMessageMessage->myLevelIndex = myCurrentLine - 3;
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
 			}
 		}
@@ -352,17 +352,21 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	default: break;
 	}
 
-	/*while (IsSelectable(myCurrentLine) == false)
+	myCurrentLine = CLAMP(myCurrentLine, 0, myTextINstance.GetTextLines().Size() - 1);
+	if (myLobbyState != eLobbyState::eConecting)
 	{
-		if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+		while (IsSelectable(myCurrentLine) == false)
 		{
-			myCurrentLine += 1;
+			if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+			{
+				myCurrentLine += 1;
+			}
+			else
+			{
+				myCurrentLine = 0;
+			}
 		}
-		else
-		{
-			myCurrentLine = 0;
-		}
-	}*/ 
+	}
 
 	return myStateStatus;
 }
