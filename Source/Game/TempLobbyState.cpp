@@ -292,6 +292,9 @@ void CTempLobbyState::LevelSelect()
 		{
 			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
 		}
+
+		const unsigned int freeLine = myTextINstance.GetTextLines().Size();
+		myTextINstance.SetTextLine(freeLine + 1, "# Other players can now join!");
 	}
 	else
 	{

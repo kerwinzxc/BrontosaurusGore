@@ -23,9 +23,9 @@
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/PrintMessage.h"
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
-#include "ThreadedPostmaster/PlayerPositionMessage.h"
-#include "TShared/NetworkMessage_PlayerPositionMessage.h"
-#include "GameObject.h"
+#include "../ThreadedPostmaster/PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "../Components/GameObject.h"
 
 std::thread* locLoadingThread = nullptr;
 
