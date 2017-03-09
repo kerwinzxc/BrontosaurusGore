@@ -60,6 +60,7 @@ enum class eComponentMessageType
 	eTryToShoot,
 	eCheckIfHaveAmmoForShooting,
 	eShoot,
+	eShootWithNetworking,
 	eAddWeapon,
 	eAddNewAmmoType,
 	eWeaponFactoryGiveWeaponToWeaponSystem,

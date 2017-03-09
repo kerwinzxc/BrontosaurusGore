@@ -184,7 +184,7 @@ void CMovementComponent::DeactivateJump()
 }
 
 void CMovementComponent::ActivateDoubleJump()
-{
+{ 
 	myHaveDoubleJumped = true;
 	myJumpVelocity = sqrtf(gravityDeceleration * mySecondJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;

@@ -37,8 +37,10 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/ServerPlayerNetworkComponent.h"
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
+
 
 
 CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false)
@@ -218,6 +220,15 @@ void CClient::Update()
 			CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
 			
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
+		}
+		break;
+		case ePackageType::eWeaponShoot:
+		{
+			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+			SComponentMessageData data;
+			data.myVector3f = shoot->GetDirection();
+			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
 		}
 		break;
 		case ePackageType::eZero:

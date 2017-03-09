@@ -25,6 +25,7 @@
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../ThreadedPostmaster/PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -435,6 +436,13 @@ bool CServerMain::Update()
 			DL_PRINT(positionString.c_str());
 
 			SendTo(currentMessage);
+		}
+		break;
+		case ePackageType::eWeaponShoot:
+		{
+			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+			SendTo(shoot);
 		}
 		break;
 		case ePackageType::eImportantResponse:

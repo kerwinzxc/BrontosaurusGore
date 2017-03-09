@@ -119,6 +119,7 @@
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_WeaponShoot.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -168,5 +169,6 @@
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
   </ItemGroup>
 </Project>
