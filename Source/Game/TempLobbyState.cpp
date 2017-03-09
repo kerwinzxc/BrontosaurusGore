@@ -355,17 +355,17 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	myCurrentLine = CLAMP(myCurrentLine, 0, myTextINstance.GetTextLines().Size() - 1);
 	if (myLobbyState != eLobbyState::eConecting)
 	{
-		while (IsSelectable(myCurrentLine) == false)
-		{
-			if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+		/*	while (IsSelectable(myCurrentLine) == false)
 			{
-				myCurrentLine += 1;
-			}
-			else
-			{
-				myCurrentLine = 0;
-			}
-		}
+				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+				{
+					myCurrentLine += 1;
+				}
+				else
+				{
+					myCurrentLine = 0;
+				}
+			}*/
 	}
 
 	return myStateStatus;
