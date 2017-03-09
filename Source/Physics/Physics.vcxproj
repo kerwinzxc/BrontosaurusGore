@@ -214,7 +214,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;ApexFrameworkDEBUG_x64.lib;Apex_ParticlesDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;PhysX3CharacterKinematicDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;ApexFrameworkDEBUG_x64.lib;Apex_ParticlesDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;$(SolutionDir)..\LibDependencies\apex\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -234,7 +234,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematic_x64.dll;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -306,7 +306,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;ApexFramework_x64.lib;APEX_ClothingGPU_x64.lib;APEX_Destructible_x64.lib;APEX_Legacy_x64.lib;APEX_Particles_x64.lib;APEX_TurbulenceFS_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematicDEBUG_x64.dll;ApexFramework_x64.lib;APEX_ClothingGPU_x64.lib;APEX_Destructible_x64.lib;APEX_Legacy_x64.lib;APEX_Particles_x64.lib;APEX_TurbulenceFS_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\apex\;$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -330,7 +330,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematicDEBUG_x64.dll;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -354,7 +354,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;PhysX3Cooking_x64.lib;PhysX3CharacterKinematicDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -365,6 +365,7 @@
     <ClInclude Include="Apex.h" />
     <ClInclude Include="ApexRenderResourceManager.h" />
     <ClInclude Include="ApexResourceCallback.h" />
+    <ClInclude Include="CharacterControllerManager.h" />
     <ClInclude Include="Foundation.h" />
     <ClInclude Include="Include\apex_1.4\Actor.h" />
     <ClInclude Include="Include\apex_1.4\Apex.h" />
@@ -684,9 +685,14 @@
     <ClInclude Include="Include\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="Include\vehicle\PxVehicleWheels.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsActor.h" />
+    <ClInclude Include="PhysicsActorDynamic.h" />
+    <ClInclude Include="PhysicsActorStatic.h" />
+    <ClInclude Include="PhysicsCharacterController.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="PhysXAllocator.h" />
     <ClInclude Include="PhysXErrorHander.h" />
+    <ClInclude Include="PhysXHelper.h" />
     <ClInclude Include="PhysXManager.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="SharedPhysicsPointer.h" />
@@ -698,11 +704,17 @@
     <ClCompile Include="Apex.cpp" />
     <ClCompile Include="ApexRenderResourceManager.cpp" />
     <ClCompile Include="ApexResourceCallback.cpp" />
+    <ClCompile Include="CharacterControllerManager.cpp" />
     <ClCompile Include="Foundation.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsActor.cpp" />
+    <ClCompile Include="PhysicsActorDynamic.cpp" />
+    <ClCompile Include="PhysicsActorStatic.cpp" />
+    <ClCompile Include="PhysicsCharacterController.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="PhysXAllocator.cpp" />
     <ClCompile Include="PhysXErrorHander.cpp" />
+    <ClCompile Include="PhysXHelper.cpp" />
     <ClCompile Include="PhysXManager.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -722,6 +734,11 @@
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl" />
     <None Include="Include\apex_1.4\nvparameterized\NvParamUtils.inl" />
     <None Include="Include\apex_1.4\nvparameterized\NvSerializer.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonUtilities\CommonUtilities.vcxproj">
+      <Project>{a854f9ca-5390-4ca1-be0c-ec400f972d27}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
