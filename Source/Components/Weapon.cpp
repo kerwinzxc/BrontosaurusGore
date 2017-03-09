@@ -47,7 +47,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 		{
 			CU::Vector3f rotatedDirection = aDirection.GetNormalized();
 			rotatedDirection.Normalize();
-			rotatedDirection.Print();
 			CU::Vector2f rotatedRadians;
 			if(myWeaponData->randomSpreadAngle > 0)
 			{
@@ -94,6 +93,15 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			rotatedDirection.Normalize();*/
 			if(CProjectileFactory::GetInstance() != nullptr)
 			{
+				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+				if(myWeaponObject != nullptr)
+				{
+					shootPosition = myWeaponObject->GetWorldPosition();
+					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+					localWeaponMatrix.Move(shootDisplacment);
+					shootPosition = localWeaponMatrix.GetPosition();
+				
+				}
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
@@ -119,5 +127,15 @@ void CWeapon::RotateXAxees(const float aRotationAmount)
 	if(myWeaponObject != nullptr)
 	{
 		myWeaponObject->GetLocalTransform().Rotate(aRotationAmount, CU::Axees::X);	
+	}
+}
+
+void CWeapon::SetModelVisibility(bool aVisibility)
+{
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityMessage;
+		visibilityMessage.myBool = aVisibility;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityMessage);
 	}
 }

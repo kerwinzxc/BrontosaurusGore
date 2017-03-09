@@ -18,6 +18,7 @@ CTextInstance::CTextInstance()
 }
 
 CTextInstance::CTextInstance(const CTextInstance& aTextInstance)
+	: CTextInstance()
 {
 	*this = aTextInstance;
 }

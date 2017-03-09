@@ -38,7 +38,7 @@ class CNetworkComponentManager;
 class CMovementComponentManager;
 class CColliderComponentManager;
 
-class CPlayState : public State/* , public Postmaster::ISubscriber*/
+class CPlayState : public State , public Postmaster::ISubscriber
 {
 public:
 	CPlayState(StateStack& aStateStack, const int aLevelIndex);
@@ -56,8 +56,8 @@ public:
 	void Pause();
 	void CreateManagersAndFactories();
 
-	eMessageReturn Recieve(const Message& aMessage);
-	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
+
+	void SpawnOtherPlayer(unsigned aPlayerID);
 
 	CGameObjectManager* GetGameObjectManager();
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
@@ -65,6 +65,10 @@ public:
 	inline CMovementComponentManager* GetMovementComponentManager();
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline bool IsLoaded() const;
+
+	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
+
 private:
 
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);

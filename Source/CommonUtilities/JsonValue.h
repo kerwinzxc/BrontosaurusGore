@@ -51,6 +51,7 @@ namespace CU
 		bool IsArray() const;
 		bool IsObject() const;
 		bool HasKey(const std::string& aKey) const;
+		bool HasIndex(const int aIndex) const;
 
 		bool GetBool() const;
 

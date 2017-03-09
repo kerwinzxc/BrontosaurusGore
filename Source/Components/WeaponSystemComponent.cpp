@@ -5,6 +5,12 @@
 #include "PlayerControls.h"
 #include "AmmoReplenishData.h"
 #include "AmmoData.h"
+#include "TextInstance.h"
+#include "WeaponData.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
+#include "../TClient/ClientMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -14,6 +20,11 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myWeapons.Init(5);
 	myIsShooting = false;
 	myTemporaryAmmoDataList.Init(5);
+	myActiveWeaponAmmoLeftText = new CTextInstance();
+	myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
+	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
+	myActiveWeaponAmmoLeftText->SetText("");
+	myActiveWeaponAmmoLeftText->Init();
 }
 
 
@@ -39,6 +50,18 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eShoot:
 	{
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+
+		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
+		
+		shootMessage->SetDirection(aMessageData.myVector3f);
+		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		break;
+	}
+	case eComponentMessageType::eShootWithNetworking:
+	{
+		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 		break;
 	}
 	case eComponentMessageType::eAddWeapon:
@@ -57,6 +80,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eChangeWeapon:
 	{
 		short index = myActiveWeaponIndex + aMessageData.myInt;
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 		if (index < 0)
 		{
 			index = myWeapons.Size() - 1;
@@ -66,6 +90,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			index = 0;
 		}
 		myActiveWeaponIndex = static_cast<unsigned int>(index);
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		break;
 	}
 	case eComponentMessageType::eObjectDone:
@@ -81,17 +106,22 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			SComponentMessageData giveAmmoData;
 			giveAmmoData.myAmmoReplenishData = &ammoReplenishData;
 			GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			myWeapons[i]->SetUser(GetParent());
+			WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons[i]);
 		}
 		myTemporaryAmmoDataList.RemoveAll();
 		myTemporaryAmmoDataList.Destroy();
+
+
+		if(myActiveWeaponIndex >= 0 && myActiveWeaponIndex < myWeapons.Size())
+		{
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+		}
 		break;
 	}
-	case eComponentMessageType::eRotateWeaponX:
+	case eComponentMessageType::eSelectWeapon:
 	{
-		for(unsigned int i = 0; i < myWeapons.Size(); i++)
-		{
-			myWeapons[i]->RotateXAxees(aMessageData.myFloat);
-		}
+		myActiveWeaponIndex = aMessageData.myInt;
 		break;
 	}
 	default:
@@ -114,6 +144,21 @@ void CWeaponSystemComponent::Update(float aDelta)
 	{
 		myWeapons[i]->Update(aDelta);
 	}
+	SComponentQuestionData ammoLeftQuestionData;
+	SAmmoLeftData ammoLeftData;
+	ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+	ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
+	if(GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString , ammoLeftQuestionData) == true)
+	{
+		std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
+		ammoLeftText += ": ";
+		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
+		ammoLeftText += "/";
+		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
+
+		myActiveWeaponAmmoLeftText->SetText(ammoLeftText);
+	}
+	myActiveWeaponAmmoLeftText->Render();
 }
 
 void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)
@@ -140,4 +185,5 @@ void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
 void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData)
 {
 	myWeapons.Add(aWeapon);
+	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
 }

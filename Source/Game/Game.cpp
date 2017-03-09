@@ -38,7 +38,6 @@ void CGame::Init()
 	SSlua::LuaWrapper::GetInstance().RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
 
 	myClient.StartClient();
-	//myClient.Connect("127.0.0.1", "Adam");
 
 	myStateStack.PushState(new CTempLobbyState(myStateStack));
 

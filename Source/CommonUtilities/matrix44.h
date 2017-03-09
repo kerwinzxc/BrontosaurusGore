@@ -566,7 +566,7 @@ namespace CU
 		Matrix44<TYPE>& RotateAroundAxes(const float x, const float y, const float z)
 		{
 			RotateAroundAxis(x, Axees::X);
-			RotateAroundAxis(y, Axees::Y);
+			Rotate(y, Axees::Y);
 			RotateAroundAxis(z, Axees::Z);
 
 			return *this;

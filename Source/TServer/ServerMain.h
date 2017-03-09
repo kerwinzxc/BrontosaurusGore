@@ -10,6 +10,7 @@
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "../TShared/NetworkMessageHolder.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../Components/ServerPlayerNetworkComponent.h"
 
 
 enum class eServerState
@@ -28,6 +29,7 @@ struct SClientData
 	std::string myName;
 	int ResponseTime;
 	bool IsReady;
+	CServerPlayerNetworkComponent* myComponent = nullptr;
 };
 
 struct SImportantWaitData

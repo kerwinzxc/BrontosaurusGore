@@ -11,10 +11,8 @@
 #include "Skybox.h"
 #include "../Audio/AudioInterface.h"
 
-#include "../PostMaster/PostMaster.h"
-#include "../PostMaster/Message.h"
-#include "../PostMaster/Event.h"
-
+#include "LoadState.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 
 //Managers
 
@@ -60,6 +58,7 @@
 
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
+#include "ThreadedPostmaster/OtherPlayerSpawned.h"
 //
 
 
@@ -108,6 +107,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
+	SAFE_DELETE(myEnemyComponentManager);
 
 	CNetworkComponentManager::Destroy();
 
@@ -124,6 +124,9 @@ void CPlayState::Load()
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
+	CU::CJsonValue levelsFile;
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
 
 	//**************************************************************//
 	//							PHYSICS								//
@@ -131,11 +134,20 @@ void CPlayState::Load()
 	Physics::CFoundation::Create();
 	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
 	myPhysicsScene = myPhysics->CreateScene();
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
 	//**************************************************************//
 	//						END OF PHYSICS							//
 	//**************************************************************//
+	if (!levelsArray.HasIndex(myLevelIndex))
+	{
+		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
+		return;
+	}
 
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
 
 	CreateManagersAndFactories();
 	LoadManagerGuard loadManagerGuard(*this, *myScene);
@@ -156,18 +168,6 @@ void CPlayState::Load()
 
 	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
-	CU::CJsonValue levelsFile;
-
-	std::string errorString = levelsFile.Parse("Json/LevelList.json");
-	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
-
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
-
-
-
-	std::string levelPath = "Json/Levels/";
-	levelPath += levelsArray[myLevelIndex].GetString();
-	levelPath += "/LevelData.json";
 
 	const KLoader::eError loadError = loader.LoadFile(levelPath);
 	if (loadError != KLoader::eError::NO_LOADER_ERROR)
@@ -177,7 +177,7 @@ void CPlayState::Load()
 
 	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
 	
-	//myGameObjectManager->SendObjectsDoneMessage();
+	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
@@ -231,11 +231,6 @@ void CPlayState::Pause()
 	myStateStack.PushState(new CPauseMenuState(myStateStack));
 }
 
-eMessageReturn CPlayState::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
 CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
 	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
@@ -253,6 +248,12 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 CGameObjectManager* CPlayState::GetGameObjectManager()
 {
 	return myGameObjectManager;
+}
+
+eMessageReturn CPlayState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.SwapState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	return eMessageReturn::eContinue;
 }
 
 void CPlayState::CreateManagersAndFactories()
@@ -282,6 +283,51 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+}
+
+void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
+{
+	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/chromeBall/chromeBall.fbx");
+	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
+	playerReciver->SetPlayerID(aPlayerID);
+	CComponentManager::GetInstance().RegisterComponent(playerReciver);
+
+	CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+	CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+	otherPlayer->AddComponent(weaponSystenComponent);
+	otherPlayer->AddComponent(ammoComponent);
+	SComponentMessageData addHandGunData;
+	SComponentMessageData giveAmmoData;
+
+	addHandGunData.myString = "Handgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	SAmmoReplenishData tempAmmoReplensihData;
+	tempAmmoReplensihData.ammoType = "Handgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "Shotgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "Shotgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "PlasmaRifle";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "PlasmaRifle";
+	tempAmmoReplensihData.replenishAmount = 1000;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	otherPlayer->AddComponent(model);
+	otherPlayer->AddComponent(playerReciver);
+
+	
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
 void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)

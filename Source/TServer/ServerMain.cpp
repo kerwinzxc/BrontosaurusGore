@@ -13,17 +13,20 @@
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
 #include <array>
-#include "../TShared/NetworkMessage_ClientReady.h"
 
 #include "../KevinLoader/KevinLoader.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
-#include "../TShared/NetworkMessage_ClientReady.h"
 #include "ServerMessageManager.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/PrintMessage.h"
+#include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
+#include "../ThreadedPostmaster/PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
+#include "../Components/GameObject.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -241,7 +244,7 @@ void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
 	default:
 		if (myClients.count(header.myTargetID) > 0)
 		{
-			myNetworkWrapper.Send(aNetworkMessage, myClients.at(header.myTargetID).myIP.c_str(), myClients.at(header.myTargetID).myIP.c_str());
+			myNetworkWrapper.Send(aNetworkMessage, myClients.at(header.myTargetID).myIP.c_str(), myClients.at(header.myTargetID).myPort.c_str());
 		}
 		break;
 	}
@@ -303,7 +306,28 @@ void CServerMain::StartGame()
 
 	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
 
+	message->SetNumberOfPlayers(myClients.size()-1);
+
 	SendTo(message);
+
+	for (auto client : myClients)
+	{
+		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer();
+
+		myClients.at(client.first).myComponent = playerNetworkComponent;
+
+		for (auto secondClient : myClients)
+		{
+			if (secondClient.first != client.first)
+			{
+				CNetworkMessage_SpawnOtherPlayer* message2/*the sequel to message*/ = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnOtherPlayer>(secondClient.first);
+
+				message2->SetPlayerId(client.first);
+
+				SendTo(message2);
+			}
+		}
+	}
 }
 
 bool CServerMain::Update()
@@ -383,7 +407,17 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-			SendTo(currentMessage);
+			if (myServerState == eServerState::eInGame && myGameServer->IsLoaded())
+			{
+				CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+
+				const unsigned ID = positionMessage->GetID();
+
+				CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
+				gameObject->SetWorldPosition(positionMessage->GetPosition());
+
+				SendTo(positionMessage);
+			}
 		}
 		break;
 		case ePackageType::ePosition:
@@ -404,20 +438,36 @@ bool CServerMain::Update()
 			SendTo(currentMessage);
 		}
 		break;
+		case ePackageType::eWeaponShoot:
+		{
+			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+			SendTo(shoot);
+		}
+		break;
 		case ePackageType::eImportantResponse:
 			RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
 			break;
 		case ePackageType::eLoadLevel:
+			if (myServerState == eServerState::eInGame)
+			{
+				myGameServer->ReInit();
+				myServerState = eServerState::eWaitingForClients;
+			}
 			if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
 			{
-				for (auto client : myClients)
+				for (auto& client : myClients)
 				{
-					myClients.at(client.first).IsReady = false;
+					client.second.IsReady = false;
+					client.second.myComponent = nullptr;
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				//myGameServer->Load(loadLevelMessage->myLevelIndex);
 				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
+
+
+				SendTo(loadLevelMessage);
+				
 			}
 			break;
 		case ePackageType::eClientReady:
@@ -425,10 +475,10 @@ bool CServerMain::Update()
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
 
-				//if (CheckIfClientsReady() == true)
-				//{
-				//	StartGame();
-				//}
+				/*if (CheckIfClientsReady() == true)
+				{
+					StartGame();
+				}*/
 			}
 			break;
 		case ePackageType::eZero:

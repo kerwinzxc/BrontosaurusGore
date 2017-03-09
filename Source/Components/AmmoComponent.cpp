@@ -87,3 +87,21 @@ void CAmmoComponent::ChangeSelectedAmmoType(const char* aAmmoType)
 	}
 	DL_PRINT("Couldn't find what to select as ammo. This might cause some bugs.");
 }
+
+bool CAmmoComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eGetAmmoLeftString:
+	{
+		ChangeSelectedAmmoType(aQuestionData.myAmmoLeftData->weaponName);
+		aQuestionData.myAmmoLeftData->ammoLeft = myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount;
+		aQuestionData.myAmmoLeftData->maxAmmo = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
+		return true;
+		break;
+	}
+	default:
+		break;
+	}
+	return false;
+}

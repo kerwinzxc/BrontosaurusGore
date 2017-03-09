@@ -3,11 +3,9 @@
 #include "BrontosaurusEngine\Console.h"
 
 KeyCharPressed::KeyCharPressed(const char aKey)
-	: IMessage(eMessageType::eCharPressed),myKey(aKey)
+	: IMessage(eMessageType::eCharPressed), myKey(aKey)
 {
-
 }
-
 
 KeyCharPressed::~KeyCharPressed()
 {

@@ -5,6 +5,7 @@
 #include "../TShared/TShared_NetworkWrapper.h"
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
+#include "../Components/NetworkPlayerReciverComponent.h"
 
 enum class eClientState
 {
@@ -34,6 +35,8 @@ public:
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
 	eMessageReturn DoEvent(const CSetClientIDMessage& aMessage) override;
+	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
+	eMessageReturn DoEvent(const COtherPlayerSpawned& aMassage)override;
 private:
 
 	//CChat myChat;
@@ -55,4 +58,9 @@ private:
 
 	std::atomic_bool myIsRunning;
 	std::atomic_bool myCanQuit;
+
+	CU::Vector3f myLatestPlayerPosition;
+
+	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
+	bool myPlayerPositionUpdated;
 };

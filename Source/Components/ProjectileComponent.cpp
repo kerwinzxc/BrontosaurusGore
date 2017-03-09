@@ -42,7 +42,7 @@ void CProjectileComponent::Update(float aDeltaTime)
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 		float distance2 = CU::Vector3f(myStartPosition - GetParent()->GetWorldPosition()).Length2();
-		float inActivationRange = 1000;
+		float inActivationRange = myData->maximumTravelRange;
 		if(distance2 > inActivationRange * inActivationRange)
 		{
 			Deactivate();

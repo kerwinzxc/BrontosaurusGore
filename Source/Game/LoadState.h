@@ -20,6 +20,7 @@ public:
 	void OnExit(const bool aLetThroughRender) override;
 
 	eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage) override;
+	eMessageReturn DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage) override;
 private:
 
 	CPlayState* myPlayState;
@@ -27,5 +28,7 @@ private:
 
 	const int myLevelIndex;
 	bool myGotOkFromServer;
+
+	short myNumberOfPlayersToSpawnBeforeStarting;
 };
 

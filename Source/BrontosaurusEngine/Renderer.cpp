@@ -26,6 +26,7 @@
 #include "../GUI/GUIPixelConstantBuffer.h"
 #include "LineDrawer.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/PostOffice.h"
 #include "TextureManager.h"
 #include "Texture.h"
 
@@ -160,8 +161,7 @@ void CRenderer::Render()
 
 
 	myBackBufferPackage.Activate();
-	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, {0,0,1,0.5f}, &myIntermediatePackage);
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy,  &myIntermediatePackage);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
 
 }
 
@@ -796,6 +796,7 @@ void CRenderer::DoRenderQueue()
 	}
 	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DrawCallsCount(drawCalls));
+	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 }
 
 void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from pekare to reference

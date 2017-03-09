@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ServerMain">
+      <UniqueIdentifier>{317fde35-c62c-435a-9d21-df24104f38ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -27,9 +30,6 @@
     <ClInclude Include="GameServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ServerMain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ServerMainInteface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -38,6 +38,9 @@
     </ClInclude>
     <ClInclude Include="ServerMessageManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerMain.h">
+      <Filter>ServerMain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,9 +53,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ServerMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ServerMainInteface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="ServerMessageManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMain.cpp">
+      <Filter>ServerMain</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

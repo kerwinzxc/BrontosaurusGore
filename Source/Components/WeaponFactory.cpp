@@ -52,6 +52,12 @@ void CWeaponFactory::LoadWeapons()
 		newWeaponData->name = weaponName.c_str();
 		std::string weaponModelFilePath = levelsArray[i].at("WeaponModel").GetString();
 		newWeaponData->modelFilePath = weaponModelFilePath.c_str();
+		newWeaponData->modelPositionX = levelsArray[i].at("ModelPositionX").GetFloat();
+		newWeaponData->modelPositionY = levelsArray[i].at("ModelPositionY").GetFloat();
+		newWeaponData->modelPositionZ = levelsArray[i].at("ModelPositionZ").GetFloat();
+		newWeaponData->shootPositionX = levelsArray[i].at("ShootPositionX").GetFloat();
+		newWeaponData->shootPositionY = levelsArray[i].at("ShootPositionY").GetFloat();
+		newWeaponData->shootPositionZ = levelsArray[i].at("ShootPositionZ").GetFloat();
 		newWeaponData->fireRate = levelsArray[i].at("FireRate").GetFloat();
 		newWeaponData->randomSpreadAngle = levelsArray[i].at("RandomSpreadAngle").GetInt();
 		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();
@@ -59,6 +65,7 @@ void CWeaponFactory::LoadWeapons()
 		newProjectileData->projectileModelFilePath = levelsArray[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(levelsArray[i].at("Damage").GetFloat());
 		newProjectileData->movementSpeed = levelsArray[i].at("ProjectileMovementSpeed").GetFloat();
+		newProjectileData->maximumTravelRange = levelsArray[i].at("MaximumTravelRange").GetFloat();
 		newAmmoData->maxAmmo = levelsArray[i].at("MaxAmmoAmount").GetInt();
 		newAmmoData->ammoForWeaponName = newWeaponData->name;
 		myWeaponDataList.Add(newWeaponData);
@@ -116,9 +123,15 @@ void CWeaponFactory::Init(CGameObjectManager* aGameObjectPointer, CModelComponen
 
 void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 {
-	CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
-	CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
-	newWeaponObject->AddComponent(newWeaponModelComponent);
-	aOwner->AddComponent(newWeaponObject);
-	aWeapon->SetWeaponObject(newWeaponObject);
+	SComponentQuestionData cameraObjectQuestionData;
+	if(aOwner->AskComponents(eComponentQuestionType::eGetCameraObject, cameraObjectQuestionData))
+	{
+		CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
+		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
+		newWeaponObject->AddComponent(newWeaponModelComponent);
+		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
+		aWeapon->SetWeaponObject(newWeaponObject);
+		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
+		aWeapon->SetModelVisibility(false);
+	}
 }
