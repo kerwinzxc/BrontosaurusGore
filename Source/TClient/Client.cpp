@@ -190,6 +190,8 @@ void CClient::Update()
 			const unsigned ID = playerPosition->GetID();
 
 			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldPosition(playerPosition->GetPosition());
+			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 		}
 		break;
 		case ePackageType::eSpawnOtherPlayer:
