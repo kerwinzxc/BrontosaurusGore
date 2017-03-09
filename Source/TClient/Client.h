@@ -62,4 +62,5 @@ private:
 	CU::Vector3f myLatestPlayerPosition;
 
 	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
+	bool myPlayerPositionUpdated;
 };

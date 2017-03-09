@@ -46,7 +46,11 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 	currentMatrix.SetPosition({ positionX, positionY, positionZ });
 	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
-	currentMatrix.RotateAroundAxes(rotationX, rotationY, rotationZ);
+
+	const CU::Matrix33f mRotationY = CU::Matrix33f::CreateRotateAroundY(rotationY);
+	const CU::Matrix33f mRotationX = CU::Matrix33f::CreateRotateAroundX(-rotationX) * mRotationY;
+	const CU::Matrix33f mRotationZ = CU::Matrix33f::CreateRotateAroundZ(rotationZ) * mRotationX;
+	currentMatrix.SetRotation(mRotationZ);
 
 	gameObject->SetName(someData.myData.at("name").GetString().c_str());
 

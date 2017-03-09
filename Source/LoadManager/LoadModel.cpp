@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LoadModel.h"
-#include "KevinLoader/KevinLoader.h"
 #include "Component.h"
 #include "ModelComponentManager.h"
 

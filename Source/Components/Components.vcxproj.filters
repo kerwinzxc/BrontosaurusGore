@@ -118,7 +118,6 @@
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="ColliderComponentManager.cpp" />
-    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="NetworkComponent.cpp">
       <Filter>NetworkComponent</Filter>
     </ClCompile>
@@ -129,6 +128,15 @@
       <Filter>PlayerNetwork</Filter>
     </ClCompile>
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
+    <ClCompile Include="HealthPackComponent.cpp">
+      <Filter>Health</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthComponent.cpp">
+      <Filter>Health</Filter>
+    </ClCompile>
+    <ClCompile Include="PickupAmmoComponent.cpp">
+      <Filter>Ammo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -284,7 +292,6 @@
     <ClInclude Include="ComponentAnswer.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="NetworkComponent.h">
       <Filter>NetworkComponent</Filter>
     </ClInclude>
@@ -304,6 +311,15 @@
       <Filter>PlayerNetwork</Filter>
     </ClInclude>
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
+    <ClInclude Include="HealthComponent.h">
+      <Filter>Health</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthPackComponent.h">
+      <Filter>Health</Filter>
+    </ClInclude>
+    <ClInclude Include="PickupAmmoComponent.h">
+      <Filter>Ammo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

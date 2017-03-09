@@ -126,7 +126,10 @@ void CWeapon::RotateXAxees(const float aRotationAmount)
 
 void CWeapon::SetModelVisibility(bool aVisibility)
 {
-	SComponentMessageData visibilityMessage;
-	visibilityMessage.myBool = aVisibility;
-	myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityMessage);
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityMessage;
+		visibilityMessage.myBool = aVisibility;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityMessage);
+	}
 }
