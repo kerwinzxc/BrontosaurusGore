@@ -25,6 +25,7 @@
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../ThreadedPostmaster/PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -437,6 +438,13 @@ bool CServerMain::Update()
 			SendTo(currentMessage);
 		}
 		break;
+		case ePackageType::eWeaponShoot:
+		{
+			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+			SendTo(shoot);
+		}
+		break;
 		case ePackageType::eImportantResponse:
 			RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
 			break;
@@ -448,14 +456,13 @@ bool CServerMain::Update()
 			}
 			if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
 			{
-				for (auto client : myClients)
+				for (auto& client : myClients)
 				{
-					myClients.at(client.first).IsReady = false;
-					myClients.at(client.first).myComponent = nullptr;
+					client.second.IsReady = false;
+					client.second.myComponent = nullptr;
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				//myGameServer->Load(loadLevelMessage->myLevelIndex);
 				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 

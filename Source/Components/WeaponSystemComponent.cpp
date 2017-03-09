@@ -7,6 +7,10 @@
 #include "AmmoData.h"
 #include "TextInstance.h"
 #include "WeaponData.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
+#include "../TClient/ClientMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -44,6 +48,17 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	//	break;
 	//}
 	case eComponentMessageType::eShoot:
+	{
+		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+
+		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
+		
+		shootMessage->SetDirection(aMessageData.myVector3f);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		break;
+	}
+	case eComponentMessageType::eShootWithNetworking:
 	{
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 		break;

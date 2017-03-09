@@ -11,10 +11,8 @@
 #include "Skybox.h"
 #include "../Audio/AudioInterface.h"
 
-#include "../PostMaster/PostMaster.h"
-#include "../PostMaster/Message.h"
-#include "../PostMaster/Event.h"
-
+#include "LoadState.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 
 //Managers
 
@@ -204,11 +202,6 @@ void CPlayState::Pause()
 	myStateStack.PushState(new CPauseMenuState(myStateStack));
 }
 
-eMessageReturn CPlayState::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
 CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
 	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
@@ -226,6 +219,12 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 CGameObjectManager* CPlayState::GetGameObjectManager()
 {
 	return myGameObjectManager;
+}
+
+eMessageReturn CPlayState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.SwapState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	return eMessageReturn::eContinue;
 }
 
 void CPlayState::CreateManagersAndFactories()
@@ -257,6 +256,36 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
+
+	CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+	CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+	otherPlayer->AddComponent(weaponSystenComponent);
+	otherPlayer->AddComponent(ammoComponent);
+	SComponentMessageData addHandGunData;
+	SComponentMessageData giveAmmoData;
+
+	addHandGunData.myString = "Handgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	SAmmoReplenishData tempAmmoReplensihData;
+	tempAmmoReplensihData.ammoType = "Handgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "Shotgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "Shotgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "PlasmaRifle";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "PlasmaRifle";
+	tempAmmoReplensihData.replenishAmount = 1000;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);
 
