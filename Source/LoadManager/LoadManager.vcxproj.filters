@@ -57,6 +57,7 @@
     <ClInclude Include="LoadInputComponent.h">
       <Filter>LoadThings\LoadInputController</Filter>
     </ClInclude>
+    <ClInclude Include="LoadCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -112,6 +113,7 @@
     <ClCompile Include="LoadInputComponent.cpp">
       <Filter>LoadThings\LoadInputController</Filter>
     </ClCompile>
+    <ClCompile Include="LoadCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">

@@ -17,6 +17,7 @@
 #include "LoadAmmoComponent.h"
 #include "LoadMovementComponent.h"
 #include "LoadInputComponent.h"
+#include "LoadCollider.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -63,6 +64,9 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("AmmoComponent", LoadAmmoComponent);
 	loader.RegisterComponentLoadFunction("MovementComponent", LoadMovementComponent);
 	loader.RegisterComponentLoadFunction("InputComponent", LoadInputComponent);
+	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
+	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
+
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
