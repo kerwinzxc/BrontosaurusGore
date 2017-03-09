@@ -96,16 +96,16 @@ void CTempLobbyState::Select()
 		myLobbyState = eLobbyState::eEnterIpAndName;
 		break;
 	case eLobbyState::eSelectLevel:
+	{
+		if (myIsPlayer == true)
 		{
-			if (myIsPlayer == true)
-			{
-				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
-				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
-				netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
-				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
-			}
+			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
+			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
+			netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
 		}
-		break;
+	}
+	break;
 	default: break;
 	}
 }
@@ -119,7 +119,7 @@ void CTempLobbyState::Back()
 			myIP.erase(myIP.end() - 1);
 		}
 	}
-	else if	(myCurrentLine == 6)
+	else if (myCurrentLine == 6)
 	{
 		if (myName.empty() == false)
 		{
@@ -134,7 +134,7 @@ void CTempLobbyState::Conect()
 
 	if (myName.empty())
 	{
-		const CU::GrowingArray<std::string> names({"Ralle", "Adam", "Fröken", "Stefan", "Ralle", "Adam", "Fröken", "Stefan" , "Ralle", "Adam", "Fröken", "Stefan", "Bjarne Stroustrup"});
+		const CU::GrowingArray<std::string> names({ "Ralle", "Adam", "Fröken", "Stefan", "Ralle", "Adam", "Fröken", "Stefan" , "Ralle", "Adam", "Fröken", "Stefan", "Bjarne Stroustrup" });
 		const CU::GrowingArray<std::string>::size_type randIndex = rand() % names.Size();
 
 		myName = names.At(randIndex);
@@ -239,7 +239,7 @@ void CTempLobbyState::LobbyMenu()
 	myTextINstance.SetTextLine(3, "# If you are playing eith other players and wan't to join a host you should enter their IP");
 	myTextINstance.SetTextLine(4, "# And if you don't enter a name one will be provided for you");
 
-	
+
 
 	const int IProw = 5;
 	(string = "IP: ") += myIP.c_str();
@@ -259,7 +259,7 @@ void CTempLobbyState::LobbyMenu()
 
 
 	myTextINstance.SetTextLine(8, "Done");
-	
+
 
 	if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
 	{
@@ -286,7 +286,7 @@ void CTempLobbyState::LevelSelect()
 		myTextINstance.SetTextLine(0, "# Other players can only join when you are on this screen");
 		myTextINstance.SetTextLine(1, "# DO NOT SELECT A LEVEL UNTIL ALL OTHER PLAYERS HAVE JONED");
 		myTextINstance.SetTextLine(2, "# Please Select level");
-		
+
 		CU::CJsonValue levelsFile;
 
 		std::string errorString = levelsFile.Parse("Json/LevelList.json");
@@ -337,35 +337,35 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		LevelSelect();
 		break;
 	case eLobbyState::eConecting:
+	{
+		myTextINstance.SetText("");
+
+		std::string string = "#Conecting";
+		for (int i = 0; i < static_cast<int>(myBlinkeyTimer.GetSeconds()) % 4; ++i)
 		{
-			myTextINstance.SetText("");
-
-			std::string string = "#Conecting";
-			for (int i = 0; i < static_cast<int>(myBlinkeyTimer.GetSeconds()) % 4; ++i)
-			{
-				string += ".";
-			}
-
-			myTextINstance.SetTextLine(0, string.c_str());
+			string += ".";
 		}
-		break;
+
+		myTextINstance.SetTextLine(0, string.c_str());
+	}
+	break;
 	default: break;
 	}
 
 	myCurrentLine = CLAMP(myCurrentLine, 0, myTextINstance.GetTextLines().Size() - 1);
-	if (myLobbyState != eLobbyState::eConecting)
+	if (!(myLobbyState == eLobbyState::eConecting || (myLobbyState == eLobbyState::eSelectLevel && myIsPlayer == false)))
 	{
-		/*	while (IsSelectable(myCurrentLine) == false)
+		while (IsSelectable(myCurrentLine) == false)
+		{
+			if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
 			{
-				if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
-				{
-					myCurrentLine += 1;
-				}
-				else
-				{
-					myCurrentLine = 0;
-				}
-			}*/
+				myCurrentLine += 1;
+			}
+			else
+			{
+				myCurrentLine = 0;
+			}
+		}
 	}
 
 	return myStateStatus;
@@ -425,7 +425,7 @@ eMessageReturn CTempLobbyState::DoEvent(const CConectedMessage& aCharPressed)
 {
 	myLobbyState = eLobbyState::eSelectLevel;
 	myIsPlayer = aCharPressed.myID == ID_FREE;
-	
+
 	myCurrentLine = 2;
 
 	return eMessageReturn::eContinue;
