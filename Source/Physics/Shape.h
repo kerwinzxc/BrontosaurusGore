@@ -5,14 +5,20 @@ namespace physx
 	class PxShape;
 }
 
-class CShape
+namespace Physics
 {
-public:
-	CShape(physx::PxShape* aShape);
-	~CShape();
+	class CShape
+	{
+		friend class CPhysics;
+		friend class CPhysicsActor;
 
-private:
-	physx::PxShape* myShape;
+	public:
+		CShape(physx::PxShape* aShape);
+		CShape(const CShape& aShape);
 
-};
+		~CShape();
+	private:
+		physx::PxShape* myShape;
 
+	};
+}

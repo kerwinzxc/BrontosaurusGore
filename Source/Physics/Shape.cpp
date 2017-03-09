@@ -2,15 +2,22 @@
 #include "Shape.h"
 #include <PxShape.h>
 
-
-CShape::CShape(physx::PxShape* aShape)
+namespace Physics
 {
-	myShape = aShape;
-}
+	CShape::CShape(physx::PxShape* aShape)
+	{
+		myShape = aShape;
+	}
 
-CShape::~CShape()
-{
-	if(myShape != nullptr)
-		myShape->release();
-	myShape = nullptr;
+	CShape::CShape(const CShape& aShape)
+	{
+		myShape = aShape.myShape;
+	}
+
+	CShape::~CShape()
+	{
+		if (myShape != nullptr)
+			//myShape->release();
+		myShape = nullptr;
+	}
 }
