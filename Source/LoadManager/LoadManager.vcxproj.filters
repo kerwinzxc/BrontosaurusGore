@@ -63,6 +63,7 @@
     <ClInclude Include="LoadAmmoPickupComponent.h">
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -124,6 +125,7 @@
     <ClCompile Include="LoadAmmoPickupComponent.cpp">
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
     </ClCompile>
+    <ClCompile Include="LoadCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
