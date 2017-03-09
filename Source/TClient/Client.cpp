@@ -233,7 +233,7 @@ void CClient::Update()
 			currentTime = 0.f;
 		}
 
-		if (positionWaitTime.GetMilliseconds() > 16 && myPlayerPositionUpdated == true)
+		if (positionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)
 		{
 			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__All");
 
@@ -242,6 +242,7 @@ void CClient::Update()
 
 			Send(message);
 			myPlayerPositionUpdated = false;
+			positionWaitTime = 0;
 		}
 
 
@@ -315,7 +316,7 @@ eMessageReturn CClient::DoEvent(const CSetClientIDMessage & aMessage)
 
 eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 {
-	if (aMessage.myId == myId)
+	if (aMessage.myId == myId && myLatestPlayerPosition != aMessage.myPosition)
 	{
 		myLatestPlayerPosition = aMessage.myPosition;
 		myPlayerPositionUpdated = true;
