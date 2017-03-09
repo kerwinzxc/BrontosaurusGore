@@ -12,7 +12,7 @@
 #include "..\CommonUtilities\Sphere.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
-#define SHADOWBUFFER_DIM 3000
+#define SHADOWBUFFER_DIM 2048
 
 CScene::CScene()
 {
@@ -24,7 +24,7 @@ CScene::CScene()
 
 	myCubemap = nullptr;
 
-	myShadowCamera.InitOrthographic(32, 32, 100, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
+	myShadowCamera.InitOrthographic(256, 256, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
 	myShadowCamera.ShadowInit();
 }
 
@@ -62,7 +62,7 @@ void CScene::Render()
 	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
 
 	CU::Vector3f shadowCamDirection = { myDirectionalLight.direction.x, myDirectionalLight.direction.y, myDirectionalLight.direction.z };
-	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 15);
+	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 100);
 	myShadowCamera.GetCamera().SetPosition(shadowCameraPosition);
 	myShadowCamera.GetCamera().LookAt(myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition());
 
