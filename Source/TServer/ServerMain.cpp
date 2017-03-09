@@ -406,7 +406,7 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-			if (myGameServer->IsLoaded())
+			if (myServerState == eServerState::eInGame && myGameServer->IsLoaded())
 			{
 				CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
 
@@ -451,6 +451,7 @@ bool CServerMain::Update()
 				for (auto client : myClients)
 				{
 					myClients.at(client.first).IsReady = false;
+					myClients.at(client.first).myComponent = nullptr;
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
