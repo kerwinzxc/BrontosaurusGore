@@ -99,9 +99,9 @@ void CTempLobbyState::Select()
 		{
 			if (myIsPlayer == true)
 			{
-				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 3));
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
 				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
-				netowrkMessageMessage->myLevelIndex = myCurrentLine - 3;
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
 			}
 		}
