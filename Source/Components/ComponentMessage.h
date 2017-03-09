@@ -70,6 +70,7 @@ enum class eComponentMessageType
 	eHeal,
 	eTookDamage,
 	eDied,
+	eStopJumping,
 	eLength,
 };
 

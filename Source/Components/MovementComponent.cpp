@@ -45,6 +45,9 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 	case eComponentMessageType::eKeyReleased:
 		KeyReleased(aMessageData.myPlayerControl);
 		break;
+	case eComponentMessageType::eStopJumping:
+		DeactivateJump();
+		break;
 	}
 }
 
@@ -174,7 +177,7 @@ void CMovementComponent::ActivateJump()
 	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
 }
-void CMovementComponent::DeavtivateJump()
+void CMovementComponent::DeactivateJump()
 {
 	myIsJumping = false;
 	myHaveDoubleJumped = false;
