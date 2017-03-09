@@ -69,6 +69,9 @@
 #include "../Physics/PhysicsScene.h"
 #include "../Physics/PhysicsActorDynamic.h"
 #include "ColliderComponentManager.h"
+#include "BoxColliderComponent.h"
+#include "Physics/PhysicsCharacterController.h"
+#include "CharcterControllerComponent.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -89,7 +92,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
-	myActor = nullptr;
+	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
 }
 
@@ -109,9 +112,9 @@ CPlayState::~CPlayState()
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
-	SAFE_DELETE(myPhysicsScene);
-	SAFE_DELETE(myActor);
 	SAFE_DELETE(myColliderComponentManager);
+	SAFE_DELETE(myPhysicsScene);
+	SAFE_DELETE(myPhysics); // kanske?
 }
 
 void CPlayState::Load()
@@ -120,6 +123,19 @@ void CPlayState::Load()
 	loadPlaystateTimer.Start();
 
 	srand(static_cast<unsigned int>(time(nullptr)));
+
+
+	//**************************************************************//
+	//							PHYSICS								//
+	//**************************************************************//
+	Physics::CFoundation::Create();
+	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
+	myPhysicsScene = myPhysics->CreateScene();
+
+	//**************************************************************//
+	//						END OF PHYSICS							//
+	//**************************************************************//
+
 
 	CreateManagersAndFactories();
 	LoadManagerGuard loadManagerGuard(*this, *myScene);
@@ -136,20 +152,6 @@ void CPlayState::Load()
 	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
-
-
-	Physics::CFoundation::Create();
-	Physics::CPhysics* physics = Physics::CFoundation::GetInstance().CreatePhysics();
-	myPhysicsScene = physics->CreateScene();
-
-	myColliderComponentManager = new CColliderComponentManager();
-	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
-	myColliderComponentManager->SetPhysics(physics);
-
-	Physics::CShape* shape = physics->CreateBoxShape({ 0.5f, 0.5f, 0.5f });
-	myActor = physics->CreateDynamicActor(shape, false, 10.f, true, true);
-	myPhysicsScene->AddActor(myActor);
-
 
 
 	//real loading:		as opposed to fake loading
@@ -203,7 +205,10 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myAmmoComponentManager->Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
-	myPhysicsScene->Simulate(aDeltaTime.GetSeconds());
+	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	{
+		myColliderComponentManager->Update();
+	}
 
 	return myStatus;
 }
@@ -262,6 +267,13 @@ void CPlayState::CreateManagersAndFactories()
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 	myMovementComponentManager = new CMovementComponentManager();
+
+	myColliderComponentManager = new CColliderComponentManager();
+	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
+	myColliderComponentManager->SetPhysics(myPhysics);
+	myColliderComponentManager->InitControllerManager();
+
+
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
@@ -338,6 +350,25 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		CComponentManager::GetInstance().RegisterComponent(network);
 
 		playerObject->AddComponent(network);
+
+		Physics::SCharacterControllerDesc controllerDesc;
+		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		playerObject->AddComponent(controller);
+
+		/*SBoxColliderData data;
+		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
+		data.IsTrigger = false;
+		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data);
+		playerObject->AddComponent(collider);
+
+		SRigidBodyData rigidbodyData;
+		rigidbodyData.freezedRotationAxiees = {1, 0, 1};
+		rigidbodyData.mass = 10.f;
+		rigidbodyData.isKinematic = false;
+		rigidbodyData.IsTrigger = false;
+		CColliderComponent* rididbody = myColliderComponentManager->CreateComponent(&rigidbodyData);
+		playerObject->AddComponent(rididbody);*/
+
 
 		Component::CEnemy::SetPlayer(playerObject);
 	}

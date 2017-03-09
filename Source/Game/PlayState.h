@@ -14,7 +14,7 @@ namespace CU
 namespace Physics
 {
 	class CPhysicsScene;
-	class CPhysicsActor;
+	class CPhysics;
 }
 
 
@@ -48,6 +48,8 @@ public:
 
 	void Init() override;
 	eStateStatus Update(const CU::Time& aDeltaTime) override;
+
+
 	void Render() override;
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
@@ -61,12 +63,16 @@ public:
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline CAmmoComponentManager* GetAmmoManager();
 	inline CMovementComponentManager* GetMovementComponentManager();
+	inline CColliderComponentManager* GetColliderComponentManager();
 	inline bool IsLoaded() const;
 private:
+
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
 private:
 	Physics::CPhysicsScene* myPhysicsScene;
-	Physics::CPhysicsActor* myActor;
+	Physics::CPhysics* myPhysics;
+
+
 	CColliderComponentManager* myColliderComponentManager;
 
 
@@ -90,7 +96,7 @@ private:
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
-	
+
 };
 
 inline bool CPlayState::IsLoaded() const
@@ -111,4 +117,9 @@ inline CAmmoComponentManager* CPlayState::GetAmmoManager()
 inline CMovementComponentManager * CPlayState::GetMovementComponentManager()
 {
 	return myMovementComponentManager;
+}
+
+inline CColliderComponentManager* CPlayState::GetColliderComponentManager()
+{
+	return myColliderComponentManager;
 }
