@@ -393,7 +393,7 @@ bool CTempLobbyState::GetLetThroughUpdate() const
 eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 {
 	const std::string ipCheck = "1234567890.";
-	if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 0)
+	if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 5)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
@@ -402,7 +402,7 @@ eMessageReturn CTempLobbyState::DoEvent(const KeyCharPressed& aCharPressed)
 			myIP += inputChar;
 		}
 	}
-	else if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 1)
+	else if (myLobbyState == eLobbyState::eEnterIpAndName && myCurrentLine == 6)
 	{
 		const char inputChar = aCharPressed.GetKey();
 
