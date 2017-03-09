@@ -117,9 +117,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		}
 	}
 	myVelocity.y = CalculateJumpVelocity(aDeltaTime);
-	DL_PRINT("%f", myVelocity.y);
-
-
 		
 	SComponentQuestionData groundeddata;
 	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerGrounded, groundeddata) == true)
@@ -127,7 +124,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myIsGrounded = groundeddata.myBool;
 		if (groundeddata.myBool == true)
 		{
-			DeavtivateJump();
+			DeactivateJump();
 		}
 
 	}
