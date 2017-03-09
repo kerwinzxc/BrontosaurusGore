@@ -3,6 +3,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/ConsoleCalledUpon.h"
 #include "../PostMaster/PushState.h"
+#include "../PostMaster/ChangeLevel.h"
 #include "../Game/MainMenuState.h"
 #include "../Game/LevelSelectState.h"
 #include "../Game/PauseMenu.h"
@@ -19,6 +20,7 @@ StateStack::StateStack()
 	//PostMaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eStateStackMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 
 }
 
@@ -83,6 +85,13 @@ eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
 		break;
 	}
 
+	return eMessageReturn::eStop;
+}
+
+eMessageReturn StateStack::DoEvent(const CChangeLevel& aChangeLevelMessage)
+{
+	SwapState(aChangeLevelMessage.CreateLoadState(*this));
+	
 	return eMessageReturn::eStop;
 }
 

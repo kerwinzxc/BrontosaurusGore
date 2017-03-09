@@ -94,6 +94,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileComponentManager);
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
+	SAFE_DELETE(myEnemyComponentManager);
 
 	CNetworkComponentManager::Destroy();
 
@@ -106,6 +107,22 @@ void CPlayState::Load()
 	loadPlaystateTimer.Start();
 
 	srand(static_cast<unsigned int>(time(nullptr)));
+
+	CU::CJsonValue levelsFile;
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+	if (!levelsArray.HasIndex(myLevelIndex))
+	{
+		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
+		return;
+	}
+
+	std::string levelPath = "Json/Levels/";
+	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += "/LevelData.json";
 
 	CreateManagersAndFactories();
 	LoadManagerGuard loadManagerGuard(*this, *myScene);
@@ -128,18 +145,6 @@ void CPlayState::Load()
 
 	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
-	CU::CJsonValue levelsFile;
-
-	std::string errorString = levelsFile.Parse("Json/LevelList.json");
-	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
-
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
-
-
-
-	std::string levelPath = "Json/Levels/";
-	levelPath += levelsArray[myLevelIndex].GetString();
-	levelPath += "/LevelData.json";
 
 	const KLoader::eError loadError = loader.LoadFile(levelPath);
 	if (loadError != KLoader::eError::NO_LOADER_ERROR)

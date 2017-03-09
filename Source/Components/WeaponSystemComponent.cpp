@@ -75,7 +75,6 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		myActiveWeaponIndex = static_cast<unsigned int>(index);
 		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
-		DL_PRINT("can see %u", myActiveWeaponIndex);
 		break;
 	}
 	case eComponentMessageType::eObjectDone:

@@ -406,14 +406,17 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePlayerPosition:
 		{
-			CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+			if (myServerState == eServerState::eInGame && myGameServer->IsLoaded())
+			{
+				CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
 
-			const unsigned ID = positionMessage->GetID();
+				const unsigned ID = positionMessage->GetID();
 
-			CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
-			gameObject->SetWorldPosition(positionMessage->GetPosition());
+				CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
+				gameObject->SetWorldPosition(positionMessage->GetPosition());
 
-			SendTo(positionMessage);
+				SendTo(positionMessage);
+			}
 		}
 		break;
 		case ePackageType::ePosition:
@@ -438,11 +441,17 @@ bool CServerMain::Update()
 			RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
 			break;
 		case ePackageType::eLoadLevel:
+			if (myServerState == eServerState::eInGame)
+			{
+				myGameServer->ReInit();
+				myServerState = eServerState::eWaitingForClients;
+			}
 			if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
 			{
 				for (auto client : myClients)
 				{
 					myClients.at(client.first).IsReady = false;
+					myClients.at(client.first).myComponent = nullptr;
 				}
 				myServerState = eServerState::eLoadingLevel;
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();

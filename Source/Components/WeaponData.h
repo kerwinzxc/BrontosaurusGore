@@ -9,6 +9,9 @@ struct SWeaponData
 	float modelPositionX;
 	float modelPositionY;
 	float modelPositionZ;
+	float shootPositionX;
+	float shootPositionY;
+	float shootPositionZ;
 	unsigned short randomSpreadAngle;
 	unsigned short projectilesFiredPerShot;
 	bool shouldRayCast;

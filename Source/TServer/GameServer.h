@@ -22,8 +22,10 @@ public:
 	inline CMovementComponentManager* GetMovementComponentManager();
 
 	void Load(const int aLevelIndex);
+	void ReInit();
 
 	void CreateManagersAndFactories();
+	void DestroyManagersAndFactories();
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;

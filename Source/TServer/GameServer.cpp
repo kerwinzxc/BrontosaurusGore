@@ -102,6 +102,12 @@ void CGameServer::Load(const int aLevelIndex)
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 }
 
+void CGameServer::ReInit()
+{
+	DestroyManagersAndFactories();
+	myIsLoaded = false;
+}
+
 void CGameServer::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
@@ -113,6 +119,19 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+}
+
+void CGameServer::DestroyManagersAndFactories()
+{
+	CComponentManager::DestroyInstance();
+	CNetworkComponentManager::Destroy();
+
+	SAFE_DELETE(myGameObjectManager);
+	SAFE_DELETE(myMovementComponentManager);
+
+	SAFE_DELETE(myAmmoComponentManager);
+	SAFE_DELETE(myWeaponFactory);
+	SAFE_DELETE(myWeaponSystemManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)

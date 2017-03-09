@@ -211,7 +211,7 @@ void CEngine::Start()
 	
 		myRenderCallbackFunction();
 
-		//myConsole->Render();
+		myConsole->Render();
 		if (myThreadRender == false)
 		{
 			Render();

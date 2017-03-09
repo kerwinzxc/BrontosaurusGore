@@ -1,5 +1,7 @@
 #pragma once
+
 class CScene;
+class CComponent;
 
 namespace Component
 {
@@ -17,18 +19,16 @@ public:
 		float startAttackRange;
 		float stopAttackRange;
 	};
-	static CEnemyComponentManager& GetInstance();
 	explicit CEnemyComponentManager(CScene& aScene);
 
 	void Update(const CU::Time& aDeltaTime);
 
 	Component::CEnemy* CreateComponent(const EnemyBlueprint& anEnemyBlueprint);
+	CComponent* CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint);
 	void DeleteComponent(Component::CEnemy* anEnemy);
 
 	~CEnemyComponentManager();
 protected:
-	static CEnemyComponentManager* ourInstance;
-
 	CU::GrowingArray<Component::CEnemy*> myEnemies;
 	CScene& myScene;
 };

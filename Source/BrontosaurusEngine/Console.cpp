@@ -10,11 +10,17 @@
 #include "../PostMaster/PostMaster.h"
 #include "../PostMaster/ConsoleCalledUpon.h"
 #include "../PostMaster/KeyCharPressed.h"
-#include "../CommonUtilities/EKeyboardKeys.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+
+#include "../CommonUtilities/EKeyboardKeys.h"
 #include "../Game/stdafx.h"
 
+#include "../CommonUtilities/InputMessage.h"
+#include "../CommonUtilities/InputMessenger.h"
+#include "../CommonUtilities/EInputReturn.h"
+
 CConsole::CConsole()
+	: CInputMessenger(eInputMessengerType::eConsole, 100)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eCharPressed);
 	myIsActive = false;
@@ -103,6 +109,20 @@ eMessageReturn CConsole::DoEvent(const KeyCharPressed& aCharPressed)
 	TakeKeyBoardInputPressedChar(aCharPressed.GetKey());
 	return eMessageReturn::eContinue;
 }
+
+CU::eInputReturn CConsole::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	if (myIsActive && aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	{
+		if (TakeKeyBoardInput(aInputMessage.myKey) == eMessageReturn::eStop)
+		{
+			return CU::eInputReturn::eKeepSecret;
+		}
+		//aInputMessage.myKey == CU::eKeys;
+	}
+
+	return CU::eInputReturn::ePassOn;
+};
 
 void CConsole::UpdateCommandSuggestions(const std::string & aStringToCompare)
 {
@@ -285,7 +305,6 @@ eMessageReturn CConsole::TakeKeyBoardInput(const CU::eKeys aKey)
 
 const std::string CConsole::CheckIfTextIsCommand(const std::string& aText)
 {
-	const std::string LuaFunction("-lua ");
 	if (aText == "GodMode")
 	{
 		//doGodMode();
@@ -295,32 +314,30 @@ const std::string CConsole::CheckIfTextIsCommand(const std::string& aText)
 	{
 		PrintCommands();
 	}
-	else if (aText.find(LuaFunction) == 0)
+	else// if (aText.find(LuaFunction) == 0)
 	{
-		std::string pieceOfCode = aText.substr(LuaFunction.size(), aText.size() - LuaFunction.size()).c_str();
-		if (!SSlua::LuaWrapper::GetInstance().DoString(pieceOfCode))
+		if (!SSlua::LuaWrapper::GetInstance().DoString(aText))
 		{
 			std::string luaError;
 			SSlua::LuaWrapper::GetInstance().GetLastError(luaError);
-
-			return aText + " could not be parsed by lua: " + luaError.c_str();
+			luaError.insert(0, aText + " could not be parsed by lua: ");
+			return luaError;
 		}
-		//PostMaster::GetInstance().SendLetter(eMessageType::eKeyboardMessage, KeyCharPressed('§'));
 		return "Success";
 	}
-	else
-	{
-		std::map<std::string, SSlua::LuaCallbackFunction>::iterator it;
-		for (it = myLuaFunctions.begin(); it != myLuaFunctions.end(); it++)
-		{
-			if (it->first == aText.c_str())
-			{
-				SSlua::ArgumentList temp;
-				temp.Init(1);
-				it->second(temp);
-			}
-		}
-	}
+	//else
+	//{
+	//	std::map<std::string, SSlua::LuaCallbackFunction>::iterator it;
+	//	for (it = myLuaFunctions.begin(); it != myLuaFunctions.end(); it++)
+	//	{
+	//		if (it->first == aText.c_str())
+	//		{
+	//			SSlua::ArgumentList temp;
+	//			temp.Init(1);
+	//			it->second(temp);
+	//		}
+	//	}
+	//}
 
 	return aText + " was not found.";
 }

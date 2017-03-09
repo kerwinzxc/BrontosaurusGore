@@ -14,6 +14,8 @@
 
 #include "ComponentMessageTypeToLua.h"
 #include "ParticleEffectManager.h"
+#include "CommonUtilities/JsonValue.h"
+#include "PostMaster/MessageType.h"
 
 #define GLOBAL_LUA_FUNCTION_ERROR DL_MESSAGE_BOX
 #define RETURN_VOID() return SSlua::ArgumentList()
@@ -318,5 +320,50 @@ SSlua::ArgumentList SpawnParticles(const SSlua::ArgumentList& aArgumentList)
 
 	particleEffectManager->SpawnParticle(particleType, spawnPosition);
 
+	RETURN_VOID();
+}
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/ChangeLevel.h"
+SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
+{
+	if (!ScriptHelper::AssertArgumentCount("ChangeLevel", 1, aArgumentList.Size(), true))
+	{
+		RETURN_VOID();
+	}
+
+	CU::CJsonValue levelDocument;
+	std::string jsonError = levelDocument.Parse("Json/LevelList.json");
+	if (!jsonError.empty())
+	{
+		DL_MESSAGE_BOX("Failed to parse LevelList.json: %s", jsonError.c_str());
+		RETURN_VOID();
+	}
+
+	CU::CJsonValue levelArray = levelDocument["levels"];
+
+	int levelIndex = -1;
+	if (ScriptHelper::CheckArgumentList("ChangeLevel", { eSSType::STRING }, aArgumentList, true))
+	{
+		const std::string typedName = aArgumentList.GetFirst().GetString();
+		for (int i = 0; i < levelArray.Size(); ++i)
+		{
+			if (levelArray[i].GetString() == typedName)
+			{
+				levelIndex = i;
+				break;
+			}
+		}
+		DL_MESSAGE_BOX("Could not find level with name %s", typedName.c_str());
+	}
+	else if (ScriptHelper::CheckArgumentList("ChangeLevel", { eSSType::NUMBER }, aArgumentList, true))
+	{
+		levelIndex = aArgumentList.GetFirst().GetInt();
+	}
+	else
+	{
+		DL_MESSAGE_BOX("Wrong argument type in ChangeLevel, expected string or number, got: %s", aArgumentList.GetFirst().GetTypeName());
+	}
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CChangeLevel(eMessageType::eChangeLevel, levelIndex));
 	RETURN_VOID();
 }
