@@ -1,9 +1,10 @@
 #include "particleCommon.fx"
 
-[maxvertexcount(4)] //whaah //one input vertex gives max 4 new vertices in this case I think?
+static const uint NumOfOutVerts = 4;
+[maxvertexcount(NumOfOutVerts)] //whaah //one input vertex gives max 4 new vertices in this case I think?
 void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPixel> triStream)
 {
-    const float4 offset[4] =
+    const float4 offset[NumOfOutVerts] =
     {
         {-input[0].size, input[0].size, 0.0f, 1.0f},
         {input[0].size, input[0].size, 0.0f, 1.0f},
@@ -28,7 +29,7 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
     rotationMatrix._44 = 1.0f;
 
 
-    for(int i = 0 ; i < 4 ; ++i)
+    for(uint i = 0 ; i < NumOfOutVerts ; ++i)
     {
         InputPixel vertex = (InputPixel)0;
         float4 offsetPos = mul(rotationMatrix, offset[i]);
@@ -37,8 +38,8 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
         vertex.worldPosition = vertex.position;
         //vertex.position = mul(rotationMatrix, vertex.position);
         vertex.position = mul(projectionSpace, vertex.position);
-        float4 center = input[0].position;
-        vertex.uv = uv_coord[i];
+        float3 center = input[0].position.xyz;
+        vertex.uv = uv_coord[i % 4];
         vertex.color = input[0].color;
         vertex.center = center.xyz;
         vertex.radius = input[0].size;

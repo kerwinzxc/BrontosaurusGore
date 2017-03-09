@@ -10,6 +10,6 @@ InputGeometry VS_PosSizeColor(InputVertex input)
 
     output.size = input.size;
     output.color = input.color;
-
+    output.center = input.position.xyz;
     return output;
 }

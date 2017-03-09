@@ -12,8 +12,9 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.NumOfParticles = 10000;
 	emitterData.MinParticleLifeTime = 10;
 	emitterData.MaxParticleLifeTime = 20;
-	emitterData.MinEmissionVelocity = CU::Vector3f(-1, -1, -1);
-	emitterData.MaxEmissionVelocity = CU::Vector3f(1, 1, 1);
+	const float vel = 0.1;
+	emitterData.MinEmissionVelocity = CU::Vector3f(-vel, -vel, -vel);
+	emitterData.MaxEmissionVelocity = CU::Vector3f(vel, vel, vel);
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
 	emitterData.StartColor = CU::Vector4f(1, 1, 1, 1);
 	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);

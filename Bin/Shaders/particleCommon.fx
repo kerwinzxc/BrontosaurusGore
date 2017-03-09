@@ -32,7 +32,8 @@ struct InputPixel
 struct InputGeometry
 {
     float4 position : SV_POSITION;
-    float size : SIZE;
     float4 color : COLOR;
+    float3 center : CENTER;
+    float size : SIZE;
     float rotation : ROTATION;
 };
