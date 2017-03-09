@@ -16,6 +16,7 @@
 #include "TShared/NetworkMessage_LoadLevel.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "CommonUtilities.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -311,6 +312,8 @@ void CTempLobbyState::LevelSelect()
 
 eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 {
+	myCurrentLine = CLAMP(myCurrentLine, 0, myTextINstance.GetTextLines().Size() - 1);
+
 	myBlinkeyTimer += aDeltaTime;
 	if (static_cast<int>(myBlinkeyTimer.GetSeconds()) % 2 == 0)
 	{
@@ -349,7 +352,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	default: break;
 	}
 
-	while (IsSelectable(myCurrentLine) == false)
+	/*while (IsSelectable(myCurrentLine) == false)
 	{
 		if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
 		{
@@ -359,7 +362,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		{
 			myCurrentLine = 0;
 		}
-	} 
+	}*/ 
 
 	return myStateStatus;
 }
