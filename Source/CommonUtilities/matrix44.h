@@ -453,6 +453,11 @@ namespace CU
 			m43 = aPosition.z;
 		}
 
+		Vector3<TYPE> GetScale() const
+		{
+			return Vector3<TYPE>(myRightVector.Length(), myUpVector.Length(), myForwardVector.Length());
+		}
+
 		Vector3<TYPE> GetPosition() const
 		{
 			return Vector3<TYPE>(m41, m42, m43);
@@ -575,6 +580,20 @@ namespace CU
 
 			return *this;
 		}
+		Matrix44<TYPE>& SetScale(const Vector3<TYPE>& aScaleVector)
+		{
+			myRightVector.Normalize();
+			myRightVector *= aScaleVector.x;
+
+			myUpVector.Normalize();
+			myUpVector *= aScaleVector.y;
+
+			myForwardVector.Normalize();
+			myForwardVector *= aScaleVector.z;
+
+			return *this;
+		}
+
 
 		void Move(const Vector3<TYPE>& aDisplacement)
 		{
