@@ -257,6 +257,36 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
+
+	CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+	CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+	otherPlayer->AddComponent(weaponSystenComponent);
+	otherPlayer->AddComponent(ammoComponent);
+	SComponentMessageData addHandGunData;
+	SComponentMessageData giveAmmoData;
+
+	addHandGunData.myString = "Handgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	SAmmoReplenishData tempAmmoReplensihData;
+	tempAmmoReplensihData.ammoType = "Handgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "Shotgun";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "Shotgun";
+	tempAmmoReplensihData.replenishAmount = 100;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "PlasmaRifle";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "PlasmaRifle";
+	tempAmmoReplensihData.replenishAmount = 1000;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);
 

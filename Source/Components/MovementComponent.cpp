@@ -121,7 +121,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
 	{
 		parentTransform.GetPosition().y = 0.0f;
-		DeavtivateJump();
+		DeactivateJump();
 	}
 
 	CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -184,7 +184,7 @@ void CMovementComponent::DeactivateJump()
 }
 
 void CMovementComponent::ActivateDoubleJump()
-{
+{ 
 	myHaveDoubleJumped = true;
 	myJumpVelocity = sqrtf(gravityDeceleration * mySecondJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
