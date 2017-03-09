@@ -2,6 +2,7 @@
 #include "PhysicsScene.h"
 #include <PxScene.h>
 #include <PxRigidActor.h>
+#include "PhysicsActor.h"
 
 namespace
 {
@@ -72,29 +73,41 @@ namespace Physics
 	CPhysicsScene::CPhysicsScene(physx::PxScene* aPxScene)
 	{
 		myPxScene = aPxScene;
+		mySimulationTimer = 0.f;
 	}
 
 	CPhysicsScene::~CPhysicsScene()
 	{
+		if (myPxScene)
+			myPxScene->release();
+		myPxScene = nullptr;
 	}
 
-
-	void CPhysicsScene::AddActor(physx::PxRigidActor* aActor)
+	bool CPhysicsScene::Simulate(const CU::Time aDeltaTime)
 	{
-		myPxScene->addActor(*aActor);
+
+		// aDeltaT shuld be 1/60
+		// Fix with timers bby
+
+		mySimulationTimer += aDeltaTime.GetSeconds();
+		if (mySimulationTimer >= ourSimulationFrequensy)
+		{
+			mySimulationTimer -= ourSimulationFrequensy;
+			myPxScene->simulate(ourSimulationFrequensy);
+			myPxScene->fetchResults();
+			return true;
+		}
+		return false;
 	}
 
-	void CPhysicsScene::RemoveActor(physx::PxRigidActor* aActor)
+	void CPhysicsScene::AddActor(CPhysicsActor* aActor)
 	{
-		myPxScene->removeActor(*aActor);
+		myPxScene->addActor(*aActor->GetPxActor());
 	}
 
-	void CPhysicsScene::SetActorPose(physx::PxRigidActor* aActor, const CU::Matrix44f& aTransformation)
+	void CPhysicsScene::RemoveActor(CPhysicsActor* aActor)
 	{
-		physx::PxTransform transformation;
-		transformation.p = { aTransformation.m41, aTransformation.m42 ,aTransformation.m43 };
-		transformation.q = MatrixToQuat(aTransformation);
-
-		aActor->setGlobalPose(transformation);
+		myPxScene->removeActor(*aActor->GetPxActor());
 	}
+
 }
