@@ -49,7 +49,7 @@ void InitEngine()
 	bool Bfullscreen = true;
 
 	engineParams.myInitCallbackFunction = std::bind(&InitPhysics);
-	engineParams.myUpdateCallbackFunction = std::bind(&Update,std::placeholders::_1);
+	//engineParams.myUpdateCallbackFunction = std::bind(&Update,std::placeholders::_1);
 	engineParams.myRenderCallbackFunction = std::bind(&Render);
 	engineParams.myDebugFlags = DebugDrawerFlags();
 	
