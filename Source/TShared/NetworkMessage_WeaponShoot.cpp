@@ -30,10 +30,21 @@ void CNetworkMessage_WeaponShoot::DoSerialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoSerialize(aStream);
 	SERIALIZE(myDirection, aStream);
+	SERIALIZE(myWeaponIndex, aStream);
 }
 
 void CNetworkMessage_WeaponShoot::DoDeserialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	DESERIALIZE(myDirection, aStream);
+	DESERIALIZE(myWeaponIndex, aStream);
+}
+
+void CNetworkMessage_WeaponShoot::SetWeaponIndex(int aWeaponIndex)
+{
+	myWeaponIndex = aWeaponIndex;
+}
+int CNetworkMessage_WeaponShoot::GetWeaponIndex()
+{
+	return myWeaponIndex;
 }

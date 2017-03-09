@@ -54,6 +54,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
 		
 		shootMessage->SetDirection(aMessageData.myVector3f);
+		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
 		break;
@@ -116,6 +117,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		{
 			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		}
+		break;
+	}
+	case eComponentMessageType::eSelectWeapon:
+	{
+		myActiveWeaponIndex = aMessageData.myInt;
 		break;
 	}
 	default:

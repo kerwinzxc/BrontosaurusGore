@@ -227,6 +227,9 @@ void CClient::Update()
 			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
 
 			SComponentMessageData data;
+			SComponentMessageData data2;
+			data2.myInt = shoot->GetWeaponIndex();
+			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
 			data.myVector3f = shoot->GetDirection();
 			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
 		}

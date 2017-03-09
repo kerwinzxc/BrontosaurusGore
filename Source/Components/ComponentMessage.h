@@ -72,6 +72,7 @@ enum class eComponentMessageType
 	eTookDamage,
 	eDied,
 	eStopJumping,
+	eSelectWeapon,
 	eLength,
 };
 
