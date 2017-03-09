@@ -155,7 +155,6 @@ void CRenderer::Render()
 
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
-
 }
 
 void CRenderer::SwapWrite()
