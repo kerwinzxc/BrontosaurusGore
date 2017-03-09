@@ -56,7 +56,7 @@ void CTempLobbyState::Select()
 	case eLobbyState::eEnterIpAndName:
 		switch (myCurrentLine)
 		{
-		case 0:
+		case 5:
 			//myLobbyState = eLobbyState::eEnterIp;
 			do
 			{
@@ -70,7 +70,7 @@ void CTempLobbyState::Select()
 				}
 			} while (IsSelectable(myCurrentLine) == false);
 			break;
-		case 1:
+		case 6:
 			//myLobbyState = eLobbyState::eEnterName;
 			do
 			{
@@ -84,7 +84,7 @@ void CTempLobbyState::Select()
 				}
 			} while (IsSelectable(myCurrentLine) == false);
 			break;
-		case 3:
+		case 8:
 			Conect();
 			break;
 		default: break;
@@ -98,9 +98,9 @@ void CTempLobbyState::Select()
 		{
 			if (myIsPlayer == true)
 			{
-				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 2));
+				myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 3));
 				CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
-				netowrkMessageMessage->myLevelIndex = myCurrentLine - 2;
+				netowrkMessageMessage->myLevelIndex = myCurrentLine - 3;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
 			}
 		}
@@ -232,25 +232,33 @@ void CTempLobbyState::LobbyMenu()
 	std::string string;
 	myTextINstance.SetText("");
 
+	myTextINstance.SetTextLine(0, "#This is the first page of the lobby! Here you will provide the ip adress and a name");
+	myTextINstance.SetTextLine(1, "# You navigate with the arrow keyes and when you are done go down to \"done\" and press enter");
+	myTextINstance.SetTextLine(2, "# If you are playing with other players and wan't to host you don't have to enter an ip adress");
+	myTextINstance.SetTextLine(3, "# If you are playing eith other players and wan't to join a host you should enter their IP");
+	myTextINstance.SetTextLine(4, "# And if you don't enter a name one will be provided for you");
+
+	
+
+	const int IProw = 5;
 	(string = "IP: ") += myIP.c_str();
-	if (myCurrentLine == 0 && myBlinkeyState == true)
+	if (myCurrentLine == IProw && myBlinkeyState == true)
 	{
 		string += "I";
 	}
-	myTextINstance.SetTextLine(0, string);
+	myTextINstance.SetTextLine(IProw, string);
 
+	const int nameLine = 6;
 	(string = "Name: ") += myName.c_str();
-	if (myCurrentLine == 1 && myBlinkeyState == true)
+	if (myCurrentLine == nameLine && myBlinkeyState == true)
 	{
 		string += "I";
 	}
-	myTextINstance.SetTextLine(1, string);
+	myTextINstance.SetTextLine(nameLine, string);
 
 
-	myTextINstance.SetTextLine(3, "Done");
-	myTextINstance.SetTextLine(5, "#if ip and name is left empty it will be filled in for you");
-	myTextINstance.SetTextLine(6, "#use arrow keys to navigate and press enter to select");
-	myTextINstance.SetTextLine(7, "# lines starting with \"#\" is info and not selectable");
+	myTextINstance.SetTextLine(8, "Done");
+	
 
 	if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
 	{
@@ -274,7 +282,9 @@ void CTempLobbyState::LevelSelect()
 
 	if (myIsPlayer == true)
 	{
-		myTextINstance.SetTextLine(1, "# Please Select level");
+		myTextINstance.SetTextLine(0, "# Other players can only join when you are on this screen");
+		myTextINstance.SetTextLine(1, "# DO NOT SELECT A LEVEL UNTIL ALL OTHER PLAYERS HAVE JONED");
+		myTextINstance.SetTextLine(2, "# Please Select level");
 		
 		CU::CJsonValue levelsFile;
 
@@ -285,20 +295,17 @@ void CTempLobbyState::LevelSelect()
 
 		for (int i = 0; i < levelsArray.Size(); ++i)
 		{
-			myTextINstance.SetTextLine(2 + i, levelsArray[i].GetString().c_str());
+			myTextINstance.SetTextLine(4 + i, levelsArray[i].GetString().c_str());
 		}
 
 		if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
 		{
 			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
 		}
-
-		const unsigned int freeLine = myTextINstance.GetTextLines().Size();
-		myTextINstance.SetTextLine(freeLine + 1, "# Other players can now join!");
 	}
 	else
 	{
-		myTextINstance.SetTextLine(1, "# Waiting for other player to select a level");
+		myTextINstance.SetTextLine(1, "# Waiting for the host to select a level");
 	}
 }
 
@@ -330,7 +337,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		{
 			myTextINstance.SetText("");
 
-			std::string string = "Conecting";
+			std::string string = "#Conecting";
 			for (int i = 0; i < static_cast<int>(myBlinkeyTimer.GetSeconds()) % 4; ++i)
 			{
 				string += ".";
@@ -341,6 +348,18 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		break;
 	default: break;
 	}
+
+	while (IsSelectable(myCurrentLine) == false)
+	{
+		if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
+		{
+			myCurrentLine += 1;
+		}
+		else
+		{
+			myCurrentLine = 0;
+		}
+	} 
 
 	return myStateStatus;
 }
