@@ -101,3 +101,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const COtherPlayerSpawned& aOthe
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CChangeLevel& aChangeLevelMessage)
+{
+	return eMessageReturn::eContinue;
+}

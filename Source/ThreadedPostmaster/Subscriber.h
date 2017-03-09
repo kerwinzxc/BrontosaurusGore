@@ -19,6 +19,7 @@ class CSetClientIDMessage;
 class CPlayerPositionMessage;
 class CSpawnOtherPlayerMessage;
 class COtherPlayerSpawned;
+class CChangeLevel;
 
 namespace Postmaster
 {
@@ -50,5 +51,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CPlayerPositionMessage& aPlayerPositionMessage);
 		virtual eMessageReturn DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage);
 		virtual eMessageReturn DoEvent(const COtherPlayerSpawned& aOtherPlayerSpawnedMessage);
+		virtual eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage);
 	};
 }

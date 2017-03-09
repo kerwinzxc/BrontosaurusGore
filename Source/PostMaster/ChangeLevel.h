@@ -1,13 +1,18 @@
 #pragma once
 #include "Event.h"
+#include "../ThreadedPostmaster/Message.h"
 
-class ChangeLevel : public Event
+class CChangeLevel : public Postmaster::Message::IMessage
 {
 public:
-	ChangeLevel(const int aNewLevelIndex);
-	~ChangeLevel();
+	CChangeLevel(const eMessageType aType, const int aNewLevelIndex);
+	~CChangeLevel();
 
-	eMessageReturn DoEvent(StateStack* aStateStack) const override;
+	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
+	IMessage* Copy() override;
+	
+	int GetLevelIndex() const;
+	State* CreateLoadState(StateStack& aStateStack) const;
 
 private:
 	const int myNewLevelIndex;

@@ -17,3 +17,7 @@
 #include "../CommonUtilities/vector3.h"
 #include "../CommonUtilities/vector2.h"
 #include "../CommonUtilities/CUTime.h"
+
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(ptr) delete ptr; ptr = nullptr
+#endif // !SAFE_DELETE

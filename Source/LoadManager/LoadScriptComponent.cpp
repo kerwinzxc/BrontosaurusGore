@@ -7,10 +7,18 @@
 int LoadScriptComponent(KLoader::SLoadedComponentData someData)
 {
 	CScriptComponentManager* scriptComponentManager = CScriptComponentManager::GetInstance();
+	if (!scriptComponentManager)
+	{
+		return NULL_COMPONENT;
+	}
 
 	const std::string& scriptPath = someData.myData["FilePath"].GetString();
 
 	CScriptComponent* component = scriptComponentManager->CreateComponent(scriptPath);
-	
-	return (component) ? component->GetId() : NULL_COMPONENT;
+	if (!component)
+	{
+		return NULL_COMPONENT;
+	}
+
+	return component->GetId();
 }

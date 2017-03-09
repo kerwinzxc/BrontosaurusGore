@@ -2,20 +2,8 @@
 #include "EnemyComponentManager.h"
 #include "Enemy.h"
 
-
-CEnemyComponentManager* CEnemyComponentManager::ourInstance = nullptr;
-
-
-CEnemyComponentManager& CEnemyComponentManager::GetInstance()
-{
-	assert(ourInstance != nullptr && "Model component manager not created (is NULL)");
-	return *ourInstance;
-}
-
 CEnemyComponentManager::CEnemyComponentManager(CScene& aScene) : myScene(aScene)
 {
-	assert(ourInstance == nullptr);
-	ourInstance = this;
 	myEnemies.Init(10);
 }
 
@@ -43,13 +31,16 @@ Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint&
 	return enemy;
 }
 
+CComponent* CEnemyComponentManager::CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint)
+{
+	return CreateComponent(anEnemyBlueprint);
+}
+
 void CEnemyComponentManager::DeleteComponent(Component::CEnemy* anEnemy)
 {
-	myEnemies.Delete(anEnemy);
+	myEnemies.DeleteCyclic(anEnemy);
 }
 
 CEnemyComponentManager::~CEnemyComponentManager()
 {
-	assert(ourInstance == this);
-	ourInstance = nullptr;
 }

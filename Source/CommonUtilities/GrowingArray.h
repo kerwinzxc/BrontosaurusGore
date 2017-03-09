@@ -461,7 +461,11 @@ namespace CU
 	inline void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Delete(const ObjectType& aObject)
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
-		DeleteAtIndex(Find(aObject));
+		SizeType index = Find(aObject);
+		if (index != FoundNone)
+		{
+			DeleteAtIndex(index);
+		}
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>

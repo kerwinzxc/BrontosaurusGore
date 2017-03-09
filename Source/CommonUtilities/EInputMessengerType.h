@@ -11,5 +11,6 @@ enum class eInputMessengerType
 	eSplashScreen,
 	eServer,
 	eTempLobbyState,
+	eConsole,
 	eLength,
 };

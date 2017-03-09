@@ -203,6 +203,22 @@ namespace CU
 		return it != tempObject.end();
 	}
 
+	bool CJsonValue::HasIndex(const int aIndex) const
+	{
+		if (IsNull() == true)
+		{
+			JSON_ERROR("json value is null");
+			return false;
+		}
+		if (IsArray() == false)
+		{
+			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
+			return false;
+		}
+
+		return aIndex >= 0 && aIndex < Size();
+	}
+
 	bool CJsonValue::GetBool() const
 	{
 		if (IsNull() == true)
