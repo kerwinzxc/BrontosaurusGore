@@ -45,6 +45,9 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 	case eComponentMessageType::eKeyReleased:
 		KeyReleased(aMessageData.myPlayerControl);
 		break;
+	case eComponentMessageType::eStopJumping:
+		DeactivateJump();
+		break;
 	}
 }
 
@@ -118,7 +121,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
 	{
 		parentTransform.GetPosition().y = 0.0f;
-		DeavtivateJump();
+		DeactivateJump();
 	}
 
 	CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -174,7 +177,7 @@ void CMovementComponent::ActivateJump()
 	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
 	myElapsedJumpTime = 0.0f;
 }
-void CMovementComponent::DeavtivateJump()
+void CMovementComponent::DeactivateJump()
 {
 	myIsJumping = false;
 	myHaveDoubleJumped = false;

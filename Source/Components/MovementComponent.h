@@ -17,7 +17,7 @@ private:
 	void KeyReleased(const ePlayerControls aPlayerControl);
 	void ActivateJump();
 	void ActivateDoubleJump();
-	void DeavtivateJump();
+	void DeactivateJump();
 private:
 	CU::CBitSet<static_cast<int>(ePlayerControls::eLength)> myKeysDown;
 
