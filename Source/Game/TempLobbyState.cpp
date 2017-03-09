@@ -111,14 +111,14 @@ void CTempLobbyState::Select()
 
 void CTempLobbyState::Back()
 {
-	if (myCurrentLine == 0)
+	if (myCurrentLine == 5)
 	{
 		if (myIP.empty() == false)
 		{
 			myIP.erase(myIP.end() - 1);
 		}
 	}
-	else if	(myCurrentLine == 1)
+	else if	(myCurrentLine == 6)
 	{
 		if (myName.empty() == false)
 		{
