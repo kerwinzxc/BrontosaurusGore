@@ -155,31 +155,31 @@
     <OutDir>$(SolutionDir)..\Lib\</OutDir>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(SolutionDir)Physics/include/physx;$(SolutionDir)Physics/include/pxShared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ModelViewer|x64'">
     <OutDir>$(SolutionDir)..\Lib\</OutDir>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(SolutionDir)Physics/include/physx;$(SolutionDir)Physics/include/pxShared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)..\Lib\</OutDir>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(SolutionDir)Physics/include/physx;$(SolutionDir)Physics/include/pxShared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ModelViewerRelease|x64'">
     <OutDir>$(SolutionDir)..\Lib\</OutDir>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(SolutionDir)Physics/include/physx;$(SolutionDir)Physics/include/pxShared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">
     <OutDir>$(SolutionDir)..\Lib\</OutDir>
     <IntDir>$(SolutionDir)..\Temp\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(SolutionDir)Physics/include/physx;$(SolutionDir)Physics/include/pxShared;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonUtilities\;$(SolutionDir)Game\;$(SolutionDir)BrontosaurusEngine\;$(SolutionDir)CommonUtilities/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -220,8 +220,10 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PhysX3DEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PxFoundationDEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PxPvdSDKDEBUG_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ModelViewer|x64'">
@@ -239,8 +241,10 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -310,8 +314,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ModelViewerRelease|x64'">
@@ -333,8 +339,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">
@@ -356,8 +364,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\LibDependencies\physx\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PxFoundation_x64.lib;PhysX3Extensions.lib;PxPvdSDK_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -371,6 +381,7 @@
     <ClInclude Include="BoxColliderComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="CharcterControllerComponent.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="ColliderComponentManager.h" />
     <ClInclude Include="CollisionComponent.h" />
@@ -388,6 +399,7 @@
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
+    <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
@@ -428,6 +440,7 @@
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="CharcterControllerComponent.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="ColliderComponentManager.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -449,6 +462,7 @@
     <ClCompile Include="ProjectileComponent.cpp" />
     <ClCompile Include="ProjectileComponentManager.cpp" />
     <ClCompile Include="ProjectileFactory.cpp" />
+    <ClCompile Include="RigidBodyComponent.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="ScriptComponentManager.cpp" />
     <ClCompile Include="Component.cpp" />

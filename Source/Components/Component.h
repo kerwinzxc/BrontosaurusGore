@@ -53,6 +53,7 @@ enum class eComponentType : unsigned char
 	ePointLight,
 	eNetwork,
 	eNone,
+	eCharacterController
 };
 
 class CComponent

@@ -115,9 +115,6 @@
     <ClCompile Include="EnemyComponentManager.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BoxColliderComponent.cpp" />
-    <ClCompile Include="ColliderComponent.cpp" />
-    <ClCompile Include="ColliderComponentManager.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="NetworkComponent.cpp">
       <Filter>NetworkComponent</Filter>
@@ -126,6 +123,17 @@
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
+    <ClCompile Include="BoxColliderComponent.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponentManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyComponent.cpp" />
+    <ClCompile Include="CharcterControllerComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -275,9 +283,6 @@
     <ClInclude Include="GeneralAmmoData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
-    <ClInclude Include="BoxColliderComponent.h" />
-    <ClInclude Include="ColliderComponent.h" />
-    <ClInclude Include="ColliderComponentManager.h" />
     <ClInclude Include="ComponentAnswer.h">
       <Filter>Component</Filter>
     </ClInclude>
@@ -298,6 +303,17 @@
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
+    <ClInclude Include="BoxColliderComponent.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponentManager.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h" />
+    <ClInclude Include="CharcterControllerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -356,6 +372,9 @@
     </Filter>
     <Filter Include="NetworkComponent">
       <UniqueIdentifier>{cf66b67e-3cd9-4e22-b239-4d940bdcb3f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{aec47c70-0823-4c96-bb00-21d2d99d16ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
