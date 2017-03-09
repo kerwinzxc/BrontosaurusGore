@@ -11,10 +11,8 @@
 #include "Skybox.h"
 #include "../Audio/AudioInterface.h"
 
-#include "../PostMaster/PostMaster.h"
-#include "../PostMaster/Message.h"
-#include "../PostMaster/Event.h"
-
+#include "LoadState.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 
 //Managers
 
@@ -204,11 +202,6 @@ void CPlayState::Pause()
 	myStateStack.PushState(new CPauseMenuState(myStateStack));
 }
 
-eMessageReturn CPlayState::Recieve(const Message& aMessage)
-{
-	return aMessage.myEvent.DoEvent(this);
-}
-
 CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
 	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
@@ -226,6 +219,12 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 CGameObjectManager* CPlayState::GetGameObjectManager()
 {
 	return myGameObjectManager;
+}
+
+eMessageReturn CPlayState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
+{
+	myStateStack.SwapState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	return eMessageReturn::eContinue;
 }
 
 void CPlayState::CreateManagersAndFactories()
