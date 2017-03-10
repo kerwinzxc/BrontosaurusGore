@@ -23,6 +23,8 @@ public:
 	inline void SetWeaponObject(CGameObject* aWeaponObject);
 	inline SWeaponData* GetData();
 private:
+	CU::Vector3f RandomizedDirection(const CU::Vector3f& aDirection);
+private:
 
 	SWeaponData* myWeaponData;
 	CGameObject* myUser;
