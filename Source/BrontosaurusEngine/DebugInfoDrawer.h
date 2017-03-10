@@ -31,15 +31,12 @@ public:
 
 	void Render(const CU::Vector2ui aTargetWindowSize);
 	void Update();
-
 	
 	void PressedKey(const CU::eKeys& aKey);
 	void ReleasedKey(const CU::eKeys& aKey);
 
 	void SetDrawCalls(const int aDrawCallsCount);
 	void UpdateFPSCounter();
-
-	
 
 	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
 	eMessageReturn DoEvent(const CNetworkDebugInfo& someDebugInfo) override;

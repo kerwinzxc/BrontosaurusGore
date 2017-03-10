@@ -33,7 +33,9 @@ public:
 	__int16 Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort);
 
 	CNetworkMessage* Recieve(char** senderIp = nullptr, char** senderPort = nullptr);
+
 	int GetAndClearDataSent();
+
 
 private:
 	__int16 GetMessageCount();

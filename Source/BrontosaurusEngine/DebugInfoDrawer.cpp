@@ -303,10 +303,10 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 void CDebugInfoDrawer::UpdateNetworkDebug()
 {
 #ifndef _RETAIL_BUILD
-	myOutputTexts[eDebugText_DataAmmountSent]->SetText(std::string("DATA SENT(MB) : ") + std::to_string(myDataSent));
+	myOutputTexts[eDebugText_DataAmmountSent]->SetText(std::string("DATA SENT(kB/s) : ") + std::to_string(static_cast<float>(myDataSent) / 1000));
 	myOutputTexts[eDebugText_DataAmmountSent]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
 
-	myOutputTexts[eDebugText_RoundTripTime]->SetText(std::string("RTT(MS) : ") + std::to_string(myRTT));
+	myOutputTexts[eDebugText_RoundTripTime]->SetText(std::string("RTT(ms) : ") + std::to_string(myRTT));
 	myOutputTexts[eDebugText_RoundTripTime]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
 #endif //!_RETAIL_BUILD
 }
