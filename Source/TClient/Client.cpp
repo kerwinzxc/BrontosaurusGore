@@ -191,7 +191,7 @@ void CClient::Update()
 
 			const unsigned ID = playerPosition->GetID();
 
-			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldPosition(playerPosition->GetPosition());
+			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldTransformation(playerPosition->GetTransformation());
 			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 		}
@@ -251,7 +251,8 @@ void CClient::Update()
 		{
 			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__All");
 
-			message->SetPosition(myLatestPlayerPosition);
+			message->SetTransformation(myLatestPlayerTransform);
+			//message->SetPosition(myLatestPlayerPosition);
 			message->SetID(myId);
 
 			Send(message);
@@ -330,9 +331,9 @@ eMessageReturn CClient::DoEvent(const CSetClientIDMessage & aMessage)
 
 eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 {
-	if (aMessage.myId == myId && myLatestPlayerPosition != aMessage.myPosition)
+	if (aMessage.myId == myId && myLatestPlayerTransform != aMessage.myTransform)
 	{
-		myLatestPlayerPosition = aMessage.myPosition;
+		myLatestPlayerTransform = aMessage.myTransform;
 		myPlayerPositionUpdated = true;
 	}
 	return eMessageReturn::eContinue;

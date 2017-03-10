@@ -52,13 +52,9 @@ namespace Physics
 		}
 	}
 
-	CFoundation& CFoundation::GetInstance()
+	CFoundation* CFoundation::GetInstance()
 	{
-		if (ourInstance == nullptr)
-		{
-			DL_ASSERT("Tried to get CFoundation that was not created.");
-		}
-		return *ourInstance;
+		return ourInstance;
 	}
 
 	CPhysics* CFoundation::CreatePhysics()

@@ -6,6 +6,7 @@
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
 #include "../Components/NetworkPlayerReciverComponent.h"
+#include "../CommonUtilities/matrix44.h"
 
 enum class eClientState
 {
@@ -59,7 +60,7 @@ private:
 	std::atomic_bool myIsRunning;
 	std::atomic_bool myCanQuit;
 
-	CU::Vector3f myLatestPlayerPosition;
+	CU::Matrix44f myLatestPlayerTransform;
 
 	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
 	bool myPlayerPositionUpdated;

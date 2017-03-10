@@ -29,7 +29,14 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 	{
 	case eComponentMessageType::eMoving:
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(GetParent()->GetWorldPosition(), myID));
+		SComponentQuestionData data;
+		CU::Matrix44f transform = GetParent()->GetToWorldTransform();
+		if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraObject, data) == true)
+		{
+			transform = data.myGameObject->GetLocalTransform() * GetParent()->GetToWorldTransform();
+		}
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(transform, myID));
 	}
 	break;
 	default: break;

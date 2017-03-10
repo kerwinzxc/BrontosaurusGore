@@ -27,7 +27,7 @@ namespace Physics
 	public:
 		static void Create();
 		static void Destroy();
-		static CFoundation& GetInstance();
+		static CFoundation* GetInstance();
 
 		CPhysics* CreatePhysics();
 

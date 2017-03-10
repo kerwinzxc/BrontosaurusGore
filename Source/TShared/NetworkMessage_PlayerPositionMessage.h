@@ -1,6 +1,7 @@
 #pragma once
 #include "NetworkMessage.h"
 #include "../CommonUtilities/vector3.h"
+#include "../CommonUtilities/matrix44.h"
 class CNetworkMessage_PlayerPositionMessage : public CNetworkMessage
 {
 public:
@@ -8,8 +9,10 @@ public:
 	~CNetworkMessage_PlayerPositionMessage();
 	ePackageType GetPackageType()const override;
 
-	const CU::Vector3f& GetPosition();
+	const CU::Matrix44f& GetTransformation();
+	//const CU::Vector3f& GetPosition();
 	const unsigned GetID();
+	void SetTransformation(const CU::Matrix44f& aTransform);
 	void SetPosition(const CU::Vector3f& aPosition);
 	void SetID(const unsigned aClientID);
 
@@ -19,7 +22,7 @@ private:
 	virtual void DoDeserialize(StreamType& aStream);
 
 	unsigned myID;
-	CU::Vector3f myPosition;
+	CU::Matrix44f myTransform;
 
 };
 

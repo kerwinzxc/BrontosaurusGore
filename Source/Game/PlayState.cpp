@@ -114,7 +114,8 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
-	SAFE_DELETE(myPhysics); // kanske?
+	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
+	//Physics::CFoundation::Destroy(); desstroy this lator
 }
 
 void CPlayState::Load()
@@ -131,14 +132,14 @@ void CPlayState::Load()
 	//**************************************************************//
 	//							PHYSICS								//
 	//**************************************************************//
-	Physics::CFoundation::Create();
-	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
 	myPhysicsScene = myPhysics->CreateScene();
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
 	//**************************************************************//
 	//						END OF PHYSICS							//
 	//**************************************************************//
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
 	if (!levelsArray.HasIndex(myLevelIndex))
 	{
 		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
@@ -220,10 +221,12 @@ void CPlayState::Render()
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CPlayState::Pause()
@@ -288,7 +291,7 @@ void CPlayState::CreateManagersAndFactories()
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/chromeBall/chromeBall.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Shotgun_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
