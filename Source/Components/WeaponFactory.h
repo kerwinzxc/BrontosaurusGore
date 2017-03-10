@@ -6,13 +6,19 @@ class CGameObject;
 class CWeaponSystemComponent;
 class CGameObjectManager;
 class CModelComponentManager;
+
+namespace Physics
+{
+	class CPhysicsScene;
+}
+
 class CWeaponFactory
 {
 public:
 	CWeaponFactory();
 	~CWeaponFactory();
 
-	void Init(CGameObjectManager* aGameObjectPointer, CModelComponentManager* aModelComponentManager);
+	void Init(CGameObjectManager* aGameObjectPointer, CModelComponentManager* aModelComponentManager, Physics::CPhysicsScene* aPhysicsScene);
 	void LoadWeapons();
 	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
@@ -23,5 +29,6 @@ private:
 	CU::GrowingArray<CWeapon*> myWeaponList;
 	CGameObjectManager* myGameObjectManagerPointer;
 	CModelComponentManager* myModelComponentManagerPointer;
+	Physics::CPhysicsScene* myPhysicsScene;
 };
 

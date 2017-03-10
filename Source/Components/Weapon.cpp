@@ -4,12 +4,13 @@
 #include "WeaponData.h"
 #include "AmmoCheckData.h"
 
-CWeapon::CWeapon(SWeaponData* aWeaponData)
+CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene)
 {
 	myElapsedFireTimer = 0.0f;
 	myWeaponData = aWeaponData;
 	myUser = nullptr;
 	myWeaponObject = nullptr;
+	myPhysicsScene = aPhysicsScene;
 }
 
 
