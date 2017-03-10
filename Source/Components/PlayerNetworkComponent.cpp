@@ -29,7 +29,7 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 	{
 	case eComponentMessageType::eMoving:
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(GetParent()->GetWorldPosition(), myID));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(GetParent()->GetToWorldTransform(), myID));
 	}
 	break;
 	default: break;
