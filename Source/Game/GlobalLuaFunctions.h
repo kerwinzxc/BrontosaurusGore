@@ -19,4 +19,4 @@ SSlua::ArgumentList GetMessageData(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList GetMessageType(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList SpawnParticles(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList);
-
+SSlua::ArgumentList LuaAssert(const SSlua::ArgumentList& aArgumentList);

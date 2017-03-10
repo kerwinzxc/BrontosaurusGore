@@ -14,8 +14,11 @@
 
 #include "ComponentMessageTypeToLua.h"
 #include "ParticleEffectManager.h"
-#include "CommonUtilities/JsonValue.h"
-#include "PostMaster/MessageType.h"
+
+#include "../CommonUtilities/JsonValue.h"
+#include "../PostMaster/MessageType.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../PostMaster/ChangeLevel.h"
 
 #define GLOBAL_LUA_FUNCTION_ERROR DL_MESSAGE_BOX
 #define RETURN_VOID() return SSlua::ArgumentList()
@@ -322,8 +325,7 @@ SSlua::ArgumentList SpawnParticles(const SSlua::ArgumentList& aArgumentList)
 
 	RETURN_VOID();
 }
-#include "../ThreadedPostmaster/Postmaster.h"
-#include "../PostMaster/ChangeLevel.h"
+
 SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
 {
 	if (!ScriptHelper::AssertArgumentCount("ChangeLevel", 1, aArgumentList.Size(), true))
@@ -363,7 +365,40 @@ SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
 	{
 		DL_MESSAGE_BOX("Wrong argument type in ChangeLevel, expected string or number, got: %s", aArgumentList.GetFirst().GetTypeName());
 	}
+	if (levelIndex < 0 || levelIndex >= levelArray.Size())
+	{
+		DL_MESSAGE_BOX("Trying to change to level index out of range");
+		RETURN_VOID();
+	}
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CChangeLevel(eMessageType::eChangeLevel, levelIndex));
+	RETURN_VOID();
+}
+
+SSlua::ArgumentList LuaAssert(const SSlua::ArgumentList& aArgumentList)
+{
+	std::string errorMessage;
+	bool assersionSucceeded = false;
+	
+	for (const SSArgument& argument : aArgumentList)
+	{
+		switch (argument.GetType())
+		{
+		case eSSType::BOOL:
+			assersionSucceeded = argument.GetBool();
+			break;
+		case eSSType::STRING:
+			errorMessage += argument.GetString();
+			break;
+		default:
+			errorMessage += argument.AsString();
+		}
+	}
+
+	if (!assersionSucceeded)
+	{
+		DL_MESSAGE_BOX("Lua assersion failed: %s", errorMessage.c_str());
+	}
+
 	RETURN_VOID();
 }

@@ -22,6 +22,9 @@ void ScriptLoader::RegisterLuaFunctions(SSlua::LuaWrapper& aLuaWrapper)
 	aLuaWrapper.RegisterFunction(SpawnParticles, "SpawnParticles", "First argument: effect type (string), second argument: position to spawn at (three numbers xyz). Example: SpawnParticles(\"blood\", GetPosition(GetParent()))", true);
 	aLuaWrapper.RegisterFunction(ComponentGetParentPosition, "GetParentPosition", "Get the position of the component's gameobject. First argument: component id(number)", false);
 	aLuaWrapper.RegisterFunction(ChangeLevel, "ChangeLevel", "Changes to level specified with either level name or level index in LevelList.json", true);
+	aLuaWrapper.RegisterFunction(LuaAssert, "Assert", "Arguments: bool, string (order doesn't matter). If bool is false, crashes the game and shows error message.\nDoes not crash in retail. If only string is provided, it crashes", false);
+
+	aLuaWrapper.DoString("data = {}; data[0] = {}");
 
 #ifndef _RETAIL_BUILD
 
