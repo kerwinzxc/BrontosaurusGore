@@ -19,11 +19,15 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/DrawCallsCount.h"
 #include "../ThreadedPostmaster/NetworkDebugInfo.h"
+#include "..\CommonUtilities\InputMessage.h"
+#include "..\CommonUtilities\InputMessenger.h"
+#include "..\CommonUtilities\EInputReturn.h"
 
 template class CU::CBitSet<3>;
 
 CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
-	: myOutputTexts(nullptr)
+	: CInputMessenger(eInputMessengerType::eDebugInfoDrawer, 20)
+	, myOutputTexts(nullptr)
 	, myCountDown(nullptr)
 	, myLogicThreadTimers(nullptr)
 	, myLogicFPSTimer(0)
@@ -142,28 +146,40 @@ void CDebugInfoDrawer::PressedKey(const CU::eKeys& aKey)
 	case CU::eKeys::LCONTROL:
 		myLeftControlIsDown = true;
 		break;
-	case CU::eKeys::SIX:
+	case CU::eKeys::FOUR:
 		if (myLeftControlIsDown == true)
 		{
 			myDebugFlags.Flip(eDebugText_FPS);
 		}
 		break;
-	case CU::eKeys::SEVEN:
+	case CU::eKeys::FIVE:
 		if (myLeftControlIsDown == true)
 		{
 			myDebugFlags.Flip(eDebugText_LogicFPS);
 		}
 		break;
-	case CU::eKeys::EIGHT:
+	case CU::eKeys::SIX:
 		if (myLeftControlIsDown == true)
 		{
 			myDebugFlags.Flip(eDebugText_DrawCalls);
 		}
 		break;
-	case CU::eKeys::NINE:
+	case CU::eKeys::SEVEN:
 		if (myLeftControlIsDown == true)
 		{
 			myDebugFlags.Flip(eDebugText_MemoryUsage);
+		}
+		break;
+	case CU::eKeys::EIGHT:
+		if (myLeftControlIsDown == true)
+		{
+			myDebugFlags.Flip(eDebugText_RoundTripTime);
+		}
+		break;
+	case CU::eKeys::NINE:
+		if (myLeftControlIsDown == true)
+		{
+			myDebugFlags.Flip(eDebugText_DataAmmountSent);
 		}
 		break;
 	default:
@@ -226,6 +242,20 @@ eMessageReturn CDebugInfoDrawer::DoEvent(const DrawCallsCount& aConsoleCalledupo
 {
 	SetDrawCalls(aConsoleCalledupon.GetDrawCalls());
 	return eMessageReturn::eContinue;
+}
+
+CU::eInputReturn CDebugInfoDrawer::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	{
+		PressedKey(aInputMessage.myKey);
+	}
+	else if (aInputMessage.myType == CU::eInputType::eKeyboardReleased)
+	{
+		ReleasedKey(aInputMessage.myKey);
+	}
+
+	return CU::eInputReturn::ePassOn;
 }
 
 void CDebugInfoDrawer::SetNetoworkDebugData(const int aDataSent, const int aRoundTripTime)
