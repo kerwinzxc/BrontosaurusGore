@@ -23,11 +23,12 @@ namespace Physics
 
 	void CPhysicsCharacterController::Move(const CU::Vector3f& aDisplacement, const CU::Time aDeltaTime)
 	{
-		float dt = aDeltaTime.GetSeconds();
+		float dt = aDeltaTime.GetMilliseconds();
+		
 		physx::PxControllerFilters controllerFilters;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
-
-		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y/* * 9.82f * dt*/, aDisplacement.z }; //TODO: om knas kanske här
+		
+		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y , aDisplacement.z }; //TODO: om knas kanske här
 		myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
 		SetGrounded();
 	}

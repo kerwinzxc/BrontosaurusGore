@@ -60,7 +60,7 @@ void LoadManager::RegisterFunctions()
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy);
-	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
+	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
 	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemComponent);
