@@ -103,7 +103,7 @@ void CEngine::Render()
 	myDXFramework->ClearDepthStencil();
 	myDXFramework->ClearScreen();
 
-	//myDebugInfoDrawer->UpdateFPSCounter();
+	myDebugInfoDrawer->UpdateFPSCounter();
 
 
 	myRenderer->Render();

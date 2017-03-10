@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../CommonUtilities/StaticArray.h"
-#include "../PostMaster/Subscriber.h"
 
 #include <atomic>
 #include "../CommonUtilities/BitSet.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../CommonUtilities/InputMessenger.h"
 
 namespace CU
 {
@@ -23,7 +23,7 @@ namespace CU
 
 class CTextInstance;
 
-class CDebugInfoDrawer : public Postmaster::ISubscriber
+class CDebugInfoDrawer : public Postmaster::ISubscriber, public CU::CInputMessenger
 {
 public:
 	CDebugInfoDrawer(unsigned int aDebugFlags = 0);
@@ -40,6 +40,7 @@ public:
 
 	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
 	eMessageReturn DoEvent(const CNetworkDebugInfo& someDebugInfo) override;
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 private:
 	void UpdateLogicFPSCounter();
