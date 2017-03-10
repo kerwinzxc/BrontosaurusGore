@@ -45,8 +45,6 @@ private:
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
-	float myCurrentPing;
-
 	TShared_NetworkWrapper myNetworkWrapper;
 	std::atomic<eClientState> myState;
 	CU::Timer myTimer;
@@ -54,7 +52,7 @@ private:
 
 	std::string myName;
 	std::string myServerIp;
-	CU::TimeUnit myServerPingTime;
+	CU::Time myServerPingTime;
 	bool myServerIsPinged;
 
 	std::atomic_bool myIsRunning;
@@ -64,4 +62,6 @@ private:
 
 	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
 	bool myPlayerPositionUpdated;
+
+	int myRoundTripTime;
 };

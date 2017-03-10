@@ -9,7 +9,7 @@
 #include "NetworkMessage_PingResponse.h"
 #include "MessageManager.h"
 
-TShared_NetworkWrapper::TShared_NetworkWrapper() : myBuffer(nullptr), myCurrentBufferSize(0), mySocket(INVALID_SOCKET), myMessageCount(1)
+TShared_NetworkWrapper::TShared_NetworkWrapper() : myBuffer(nullptr), myCurrentBufferSize(0), mySocket(INVALID_SOCKET), myShallClose(false), myMessageCount(1), myDataSent(0)
 {
 }
 
@@ -133,6 +133,9 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 
 	const int bytesSent = sendto(mySocket, myBuffer, currentPacketSize, 0, reinterpret_cast<sockaddr*>(&adress), sizeof(adress));
 
+	myDataSent += bytesSent;
+
+
 	if (bytesSent != currentPacketSize)
 	{
 		std::cout << "Failed to send packet";
@@ -241,3 +244,9 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 	return  newMessage;
 }
 
+int TShared_NetworkWrapper::GetAndClearDataSent()
+{
+	const int tempDataCount = myDataSent;
+	myDataSent = 0;
+	return tempDataCount;
+}

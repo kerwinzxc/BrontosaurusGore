@@ -197,8 +197,8 @@ void CEngine::Start()
 			}
 		}
 
-		//myDebugInfoDrawer->Update();
-		//myDebugInfoDrawer->Render(myWindowSize);
+		myDebugInfoDrawer->Update();
+		myDebugInfoDrawer->Render(myWindowSize);
 
 
 		Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();

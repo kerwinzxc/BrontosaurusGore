@@ -30,6 +30,9 @@ namespace CU
 
 		bool IsFloat(std::string aString);
 		bool IsInt(std::string aString);
+
+		std::string ToStringWithPrecision(const float aFloat, const char aPrecision = 3);
+		std::string ToStringWithPrecision(const double aDouble, const char aPrecision = 3);
 	}
 }
 

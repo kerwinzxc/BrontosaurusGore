@@ -31,7 +31,6 @@ public:
 
 	void Render(const CU::Vector2ui aTargetWindowSize);
 	void Update();
-
 	
 	void PressedKey(const CU::eKeys& aKey);
 	void ReleasedKey(const CU::eKeys& aKey);
@@ -40,12 +39,16 @@ public:
 	void UpdateFPSCounter();
 
 	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
+	eMessageReturn DoEvent(const CNetworkDebugInfo& someDebugInfo) override;
 
 private:
 	void UpdateLogicFPSCounter();
 	void UpdateDrawCallsCounter();
 	void UpdateMemoryUsage();
+	void UpdateNetworkDebug();
 
+
+	void SetNetoworkDebugData(const int aDataSent, const int aRoundTripTime);
 
 	enum eDebugText : unsigned int
 	{
@@ -53,6 +56,8 @@ private:
 		eDebugText_LogicFPS,
 		eDebugText_DrawCalls,
 		eDebugText_MemoryUsage,
+		eDebugText_RoundTripTime,
+		eDebugText_DataAmmountSent,
 		eDebugText_Length,
 	};
 
@@ -68,6 +73,9 @@ private:
 	CU::TimerHandle myFPSTimer;
 
 	int myDrawCallsCount;
+	int myRTT;
+	int myDataSent;
+
 	CU::CBitSet<eDebugText_Length> myDebugFlags;
 
 	std::atomic_bool myLeftControlIsDown;

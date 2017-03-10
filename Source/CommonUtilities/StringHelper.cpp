@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "StringHelper.h"
+#include <sstream>
+#include <iomanip>
 
 //#include <stdlib.h> // mbstowcs_s
 //#include <string.h> // strlen
@@ -81,6 +83,20 @@ namespace CU
 		}
 
 		return true;
+	}
+
+	std::string StringHelper::ToStringWithPrecision(const float aFloat, const char aPrecision)
+	{
+		std::stringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aFloat;
+		return ss.str();
+	}
+
+	std::string StringHelper::ToStringWithPrecision(const double aDouble, const char aPrecision)
+	{
+		std::stringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aDouble;
+		return ss.str();
 	}
 }
 

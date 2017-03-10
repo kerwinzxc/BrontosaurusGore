@@ -40,10 +40,10 @@
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/ServerPlayerNetworkComponent.h"
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
+#include "../ThreadedPostmaster/NetworkDebugInfo.h"
 
 
-
-CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false)
+CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
@@ -85,7 +85,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 	{
 		myServerPingTime += aTime.GetSeconds();
 
-		if (myServerPingTime >= 10)
+		if (myServerPingTime.GetSeconds() >= 10)
 		{
 			std::cout << "Server is not responding" << std::endl;
 			Disconect();
@@ -97,12 +97,6 @@ void CClient::Ping()
 {
 	if (myServerIsPinged == false)
 	{
-		SNetworkPackageHeader header;
-		header.mySenderID = myId;
-		header.myTargetID = ID_SERVER;
-		header.myPackageType = (ePackageType::ePing);
-		header.myTimeStamp = 100;
-
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
 		myNetworkWrapper.Send(tempMessagePing, myServerIp.c_str(), SERVER_PORT);
@@ -118,18 +112,11 @@ void CClient::Update()
 	float currentTime = 0.f;
 	CU::Time positionWaitTime(0);
 
-	std::string pingString;
-	pingString = "Ping: ";
-	pingString += std::to_string(static_cast<int>(myCurrentPing * 1000 + 0.5f)).c_str();
-
-	DL_PRINT(pingString.c_str());
 	CU::SetThreadName("ClientUpdate");
 	myIsRunning = true;
 
 	while (myIsRunning)
 	{
-
-		myServerPingTime = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
 		if (myTimerManager.Size() == 0)
@@ -141,6 +128,7 @@ void CClient::Update()
 		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime();
 		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
 		positionWaitTime += deltaTime;
+		myServerPingTime += deltaTime;
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
 		switch ((currentMessage->GetHeader().myPackageType))
@@ -168,7 +156,7 @@ void CClient::Update()
 		case ePackageType::ePingResponse:
 		{
 			//DL_PRINT("CLIENT:PingRespons");
-			myCurrentPing = myServerPingTime;
+			myRoundTripTime = myServerPingTime.GetMilliseconds();
 			myServerPingTime = 0;
 			myServerIsPinged = false;
 		}
@@ -245,6 +233,8 @@ void CClient::Update()
 		{
 			Ping();
 			currentTime = 0.f;
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CNetworkDebugInfo(myNetworkWrapper.GetAndClearDataSent(), myRoundTripTime));
 		}
 
 		if (positionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)
@@ -259,23 +249,6 @@ void CClient::Update()
 			myPlayerPositionUpdated = false;
 			positionWaitTime = 0;
 		}
-
-
-		//const std::string chatMessage = myChat.GetChatMessage();
-
-		//if (chatMessage != "")
-		//{
-		//	SNetworkPackageHeader header;
-		//	header.myPackageType = static_cast<char>(ePackageType::eChat);
-		//	header.mySenderID = myId;
-		//	header.myTargetID = ID_ALL_BUT_ME;
-		//	header.myTimeStamp = KYLE;
-
-		//	CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
-
-		//	chatNMessage->myChatMessage = myName + ":" + chatMessage;
-		//	myNetworkWrapper.Send(chatNMessage, myServerIp, SERVER_PORT);
-		//}
 	}
 
 	myCanQuit = true;
