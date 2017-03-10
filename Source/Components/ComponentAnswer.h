@@ -1,5 +1,7 @@
 #pragma once
 
+class CColliderComponent;
+
 
 enum class eComponentQuestionType
 {
@@ -8,6 +10,9 @@ enum class eComponentQuestionType
 	eGetCameraPosition,
 	eGetAmmoLeftString,
 	eGetCameraObject,
+	eGetCollisionShape,
+	eMovePhysicsController,
+	ePhysicsControllerGrounded,
 	eLength,
 };
 
@@ -23,7 +28,10 @@ struct SComponentQuestionData
 
 	union
 	{
+		CColliderComponent* myCollider;
+		CU::Vector4f myVector4f;
 		CU::Vector3f myVector3f;
+
 		bool myBool;
 		const char* myString;
 		SAmmoLeftData* myAmmoLeftData;

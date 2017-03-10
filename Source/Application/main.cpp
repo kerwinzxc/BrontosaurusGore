@@ -107,7 +107,7 @@ void Init(int argc, char* argv[])
 
 		
 		CEngine::GetInstance()->Init(engineParams);
-		Physics::CPhysXManager::Create();
+		//Physics::CPhysXManager::Create();
 		CEngine::GetInstance()->Start();
 	}
 

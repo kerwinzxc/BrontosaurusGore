@@ -44,6 +44,18 @@ void CGameObject::SetWorldPosition(CU::Vector3f aPosition)
 	}
 }
 
+void CGameObject::SetWorldTransformation(const CU::Matrix44f & aTransformation)
+{
+	if (GetParent() != nullptr)
+	{
+		GetParent()->SetWorldTransformation(GetLocalTransform() * aTransformation);
+	}
+	else
+	{
+		GetLocalTransform() = aTransformation;
+	}
+}
+
 void CGameObject::AddComponent(CComponent* aComponent)
 {
 	if (aComponent == nullptr)

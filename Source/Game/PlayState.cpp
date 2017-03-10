@@ -61,6 +61,18 @@
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
 //
 
+
+//PHYSICS
+#include "../Physics/Foundation.h"
+#include "../Physics/Physics.h"
+#include "../Physics/PhysicsScene.h"
+#include "../Physics/PhysicsActorDynamic.h"
+#include "ColliderComponentManager.h"
+#include "BoxColliderComponent.h"
+#include "Physics/PhysicsCharacterController.h"
+#include "CharcterControllerComponent.h"
+
+
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
 	, myLevelIndex(aLevelIndex)
@@ -78,6 +90,9 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myMovementComponentManager(nullptr)
 	, myIsLoaded(false)
 {
+	myPhysicsScene = nullptr;
+	myPhysics = nullptr;
+	myColliderComponentManager = nullptr;
 }
 
 CPlayState::~CPlayState()
@@ -97,6 +112,10 @@ CPlayState::~CPlayState()
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
+	SAFE_DELETE(myColliderComponentManager);
+	SAFE_DELETE(myPhysicsScene);
+	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
+	//Physics::CFoundation::Destroy(); desstroy this lator
 }
 
 void CPlayState::Load()
@@ -110,8 +129,17 @@ void CPlayState::Load()
 	std::string errorString = levelsFile.Parse("Json/LevelList.json");
 	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
 
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
+	//**************************************************************//
+	//							PHYSICS								//
+	//**************************************************************//
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+	myPhysicsScene = myPhysics->CreateScene();
 
+	//**************************************************************//
+	//						END OF PHYSICS							//
+	//**************************************************************//
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
 	if (!levelsArray.HasIndex(myLevelIndex))
 	{
 		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
@@ -137,8 +165,6 @@ void CPlayState::Load()
 	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
-
-
 
 
 	//real loading:		as opposed to fake loading
@@ -180,6 +206,10 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myAmmoComponentManager->Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
+	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	{
+		myColliderComponentManager->Update();
+	}
 
 	return myStatus;
 }
@@ -191,10 +221,13 @@ void CPlayState::Render()
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CPlayState::Pause()
@@ -240,9 +273,16 @@ void CPlayState::CreateManagersAndFactories()
 	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
 	myMovementComponentManager = new CMovementComponentManager();
 
+	myColliderComponentManager = new CColliderComponentManager();
+	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
+	myColliderComponentManager->SetPhysics(myPhysics);
+	myColliderComponentManager->InitControllerManager();
+
+
+
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
-	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager);
+	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager, myPhysicsScene);
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
@@ -252,7 +292,7 @@ void CPlayState::CreateManagersAndFactories()
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/chromeBall/chromeBall.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Shotgun_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -360,6 +400,25 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		CComponentManager::GetInstance().RegisterComponent(network);
 
 		playerObject->AddComponent(network);
+
+		Physics::SCharacterControllerDesc controllerDesc;
+		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		playerObject->AddComponent(controller);
+
+		/*SBoxColliderData data;
+		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
+		data.IsTrigger = false;
+		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data);
+		playerObject->AddComponent(collider);
+
+		SRigidBodyData rigidbodyData;
+		rigidbodyData.freezedRotationAxiees = {1, 0, 1};
+		rigidbodyData.mass = 10.f;
+		rigidbodyData.isKinematic = false;
+		rigidbodyData.IsTrigger = false;
+		CColliderComponent* rididbody = myColliderComponentManager->CreateComponent(&rigidbodyData);
+		playerObject->AddComponent(rididbody);*/
+
 
 		Component::CEnemy::SetPlayer(playerObject);
 	}

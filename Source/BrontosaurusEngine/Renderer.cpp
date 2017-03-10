@@ -27,6 +27,8 @@
 #include "LineDrawer.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+#include "TextureManager.h"
+#include "Texture.h"
 
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
@@ -56,6 +58,11 @@ CRenderer::CRenderer()
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp0Wrap1;
+
+	myLut = 0;
+	CU::Vector2ui windowSize = ENGINE->GetWindow()->GetWindowSize();
+	myColorGradingPackage.Init(windowSize);
+
 
 	SetStates(&changeStateMessage);
 }
@@ -149,12 +156,13 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
 
-
 	RenderGUI();
+	//DoColorGrading();
 
 
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
+
 }
 
 void CRenderer::SwapWrite()
@@ -777,7 +785,7 @@ void CRenderer::DoRenderQueue()
 {
 	mySynchronizer.SwapRead();
 	int drawCalls = 0;
-	for (CSynchronizer<SRenderMessage*>::size_type i = 0; i < mySynchronizer; ++i)
+	for (CSynchronizer<SRenderMessage*>::size_type i = 0; i < !mySynchronizer; ++i)
 	{
 		SRenderMessage* renderMessage = mySynchronizer[i];
 		if (renderMessage == nullptr)
@@ -785,9 +793,7 @@ void CRenderer::DoRenderQueue()
 			break;
 		}
 		HandleRenderMessage(renderMessage, drawCalls);
-
 	}
-
 	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DrawCallsCount(drawCalls));
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
@@ -1121,4 +1127,10 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 }
 
-
+void CRenderer::DoColorGrading()
+{
+	myColorGradingPackage.Clear();
+	myColorGradingPackage.Activate();
+	DEVICE_CONTEXT->PSSetShaderResources(2 , 1 , myLut->GetShaderResourceViewPointer());
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eColorGrading, &myIntermediatePackage);
+}

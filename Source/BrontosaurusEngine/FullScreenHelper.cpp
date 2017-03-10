@@ -28,6 +28,7 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* tneShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/tonemap.fx", ShaderType);
 	ID3D11PixelShader* mBlShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/motionBlur.fx", ShaderType);
 	ID3D11PixelShader* CLDShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/cubicLensDistortion.fx", ShaderType);
+	ID3D11PixelShader* colorGrading = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/colorGrading.fx", ShaderType);
 
 	//Jag är en kommentar också Deferred;
 
@@ -35,6 +36,7 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* deferredDirectional = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_directional.fx", ShaderType);
 	//ID3D11PixelShader* deferredPointLight = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_pointlight.fx", ShaderType);
 	ID3D11PixelShader* deferredSpotLight = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_spotlight.fx", ShaderType);
+	
 
 	// LightShafts
 	//
@@ -54,13 +56,13 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eToneMap)]					= new CEffect(vertexShader, tneShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMotionBlur)]				= new CEffect(vertexShader, mBlShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCubicLensDistortion)]		= new CEffect(vertexShader, CLDShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eColorGrading)]				= new CEffect(vertexShader, colorGrading, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//deferred,
 	myEffects[static_cast<int>(eEffectType::eDeferredAmbient)]			= new CEffect(vertexShader, deferredAmbient, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eDeferredDirectional)]		= new CEffect(vertexShader, deferredDirectional, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//myEffects[static_cast<int>(eEffectType::eDeferredPointLight)]		= new CEffect(vertexShader, deferredPointLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eDeferredSpotLight)]		= new CEffect(vertexShader, deferredSpotLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
 
 
 

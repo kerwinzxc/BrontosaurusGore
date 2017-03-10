@@ -6,7 +6,7 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 #define vodi void
-static const float gravityDeceleration = 29.82f;
+static const float gravityAcceleration = 9.82f * 2.0f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
@@ -21,14 +21,14 @@ CMovementComponent::CMovementComponent()
 		return;
 	}
 
+	myIsGrounded = true;
+	myCanDoubleJump = true;
+
 	myAcceleration = playerControls["Acceleration"].GetFloat();
 	myDeceleration = playerControls["Deceleration"].GetFloat();
 	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
-	myIsJumping = false;
-	myHaveDoubleJumped = false;
-	myJumpDistance = playerControls["JumpHeight"].GetFloat();
-	mySecondJumpDistance = playerControls["SecondJumpHeight"].GetFloat();
-	myJumpTimeUntilTop = 2.0f;
+	myJumpHeight = playerControls["JumpHeight"].GetFloat();
+	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
 }
 
 CMovementComponent::~CMovementComponent()
@@ -46,7 +46,6 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 		KeyReleased(aMessageData.myPlayerControl);
 		break;
 	case eComponentMessageType::eStopJumping:
-		DeactivateJump();
 		break;
 	}
 }
@@ -108,46 +107,63 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myVelocity /= sqrtf(speed);
 		myVelocity *= myMaxSpeed;
 	}
-	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true)
-	{
-		if(myIsJumping == false)
-		{
-			ActivateJump();
-		}
-	}
-	myVelocity.y = CalculateJumpVelocity(aDeltaTime);
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	
-	if(parentTransform.GetPosition().y < 0.0f) // cahnge this to physix latah;
-	{
-		parentTransform.GetPosition().y = 0.0f;
-		DeactivateJump();
-	}
 
+	if (myIsGrounded == false)
+	{
+		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
+	}
+	myVelocity.y += myJumpForce;
+
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
-	CU::Vector3f position = parentTransform.GetPosition();
-	parentTransform.SetPosition(myVelocity * rotation * aDeltaTime.GetSeconds() + position);
-	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	SComponentQuestionData data;
+	data.myVector4f = myVelocity * rotation * aDeltaTime.GetSeconds();
+	data.myVector4f.w = aDeltaTime.GetSeconds();
+	float yVelocity = myVelocity.y;
 
+
+
+
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		CU::Vector3f position = parentTransform.GetPosition();
+		parentTransform.SetPosition(data.myVector3f);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
+
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerGrounded, groundeddata) == true)
+	{
+		myIsGrounded = groundeddata.myBool;
+		if (myIsGrounded == true)
+		{
+			myCanDoubleJump = true;
+			myJumpForce = 0.0f;
+		}
+	}
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 {
 	myKeysDown[static_cast<int>(aPlayerControl)] = true;
-	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true) // We probably want to relocate this bit of code somewhere later.
+
+	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
 	{
-		if (myIsJumping == true)
+		if (myIsGrounded == true)
 		{
-			if (myHaveDoubleJumped == false)
+			ApplyJumpForce(myJumpHeight);
+		}
+		else
+		{
+			if (myCanDoubleJump == true)
 			{
-				if(myElapsedJumpTime > 0.1f)
-				{
-					ActivateDoubleJump();
-				}
+				ApplyJumpForce(myDoubleJumpHeight);
+				myCanDoubleJump = false;
 			}
 		}
+	
 	}
 }
 
@@ -156,36 +172,7 @@ void CMovementComponent::KeyReleased(const ePlayerControls aPlayerControl)
 	myKeysDown[static_cast<int>(aPlayerControl)] = false;
 }
 
-float CMovementComponent::CalculateJumpVelocity(const CU::Time aDeltaTime)
+void CMovementComponent::ApplyJumpForce(float aJumpHeight)
 {
-	if(myIsJumping == true)
-	{
-		
-		myElapsedJumpTime += aDeltaTime.GetSeconds();
-		myJumpVelocity -= gravityDeceleration * aDeltaTime.GetSeconds();
-		return myJumpVelocity;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-void CMovementComponent::ActivateJump()
-{
-	myIsJumping = true;
-	myJumpVelocity = sqrtf(gravityDeceleration * myJumpDistance * 2);
-	myElapsedJumpTime = 0.0f;
-}
-void CMovementComponent::DeactivateJump()
-{
-	myIsJumping = false;
-	myHaveDoubleJumped = false;
-}
-
-void CMovementComponent::ActivateDoubleJump()
-{ 
-	myHaveDoubleJumped = true;
-	myJumpVelocity = sqrtf(gravityDeceleration * mySecondJumpDistance * 2);
-	myElapsedJumpTime = 0.0f;
+	myJumpForce = sqrtf(gravityAcceleration * aJumpHeight * 2);
 }

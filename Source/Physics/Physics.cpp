@@ -1,44 +1,46 @@
 #include "stdafx.h"
+#include "Physics.h"
+
+
+#include <foundation\PxTransform.h>
 #include <PxPhysics.h>
 #include <PxScene.h>
 #include <PxSceneDesc.h>
 #include <PxPhysicsAPI.h>
+#include <PxRigidDynamic.h>
+#include <PxRigidStatic.h>
 
-#include "Physics.h"
+
 #include "Foundation.h"
 #include "PhysicsScene.h"
 #include "Shape.h"
-
+#include "PhysicsActorDynamic.h"
+#include "PhysicsActorStatic.h"
 
 namespace Physics
 {
-	const physx::PxReal defMatStaticFriction = 0.5f;
-	const physx::PxReal defMatDynamicFriction = 0.5f;
-	const physx::PxReal defMatRestitution = 0.5f;
-
 	using namespace physx;
 
-	CPhysics::CPhysics(physx::PxPhysics* aPxPhysics)
+
+
+
+	CPhysics::CPhysics(PxPhysics* aPxPhysics)
 	{
-		myScenes.Init(2);
 		myPxPhysics = aPxPhysics;
 		myDefaultMaterial = myPxPhysics->createMaterial(defMatStaticFriction, defMatDynamicFriction, defMatRestitution);
-
-		CreateNewScene();
 	}
 
 	CPhysics::~CPhysics()
 	{
-		myScenes.DeleteAll();
 		SAFE_RELEASE(myPxPhysics);
-		SAFE_RELEASE(myDefaultMaterial);
+		//SAFE_RELEASE(myDefaultMaterial);
 	}
 
-	CPhysicsScene* CPhysics::CreateNewScene()
+	CPhysicsScene* CPhysics::CreateScene(const CU::Vector3f aGravity)
 	{
 		PxScene* pxScene = nullptr;
 		PxSceneDesc sceneDesc(myPxPhysics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.82f, 0.0f);
+		sceneDesc.gravity = PxVec3(aGravity.x, aGravity.y, aGravity.z);
 
 		myDispatcher = PxDefaultCpuDispatcherCreate(0);
 		sceneDesc.cpuDispatcher = myDispatcher;
@@ -55,19 +57,45 @@ namespace Physics
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::Enum::eTRANSMIT_CONSTRAINTS, true);
 		}
 #endif
+		return new CPhysicsScene(pxScene);
 
-		myScenes.Add(new CPhysicsScene(pxScene));
-		return myScenes.GetLast();
 	}
-	CShape* CPhysics::CreateBoxShape(const CU::Vector3f& aSize, const SMaterialData & aMaterialData)
+
+	CPhysicsActor* CPhysics::CreateStaticActor(CShape* aShape, const bool aIsTrigger)
 	{
-		physx::PxVec3 size = { aSize.x, aSize.y, aSize.z };
+		PxTransform transform(0, 0, 0);
+		PxRigidStatic* body = myPxPhysics->createRigidStatic(transform);
+		if(aShape != nullptr)
+			body->attachShape(*aShape->myShape);
+		CPhysicsActorStatic* actor = new CPhysicsActorStatic(body, aShape);
+		actor->SetIsTrigger(aIsTrigger);
+		return actor;
+	}
+
+
+	CPhysicsActor* CPhysics::CreateDynamicActor(CShape* aShape, const bool aIsTrigger, const float aMass, const bool aIsKinematic, const bool aUseGravity)
+	{
+		PxTransform transform(0, 0, 0);
+		PxRigidDynamic* body = myPxPhysics->createRigidDynamic(transform);
+		if (aShape != nullptr)
+			body->attachShape(*aShape->myShape);
+		CPhysicsActorDynamic* actor = new CPhysicsActorDynamic(body, aShape);
+		actor->SetIsTrigger(aIsTrigger);
+		actor->SetIsKinematic(aIsKinematic);
+		PxRigidBodyExt::updateMassAndInertia(*body, aMass);
+		return actor;
+	}
+
+	CShape* CPhysics::CreateBoxShape(const CU::Vector3f& aHalfExtent, const SMaterialData & aMaterialData)
+	{
+		PxVec3 size = { aHalfExtent.x, aHalfExtent.y, aHalfExtent.z };
 		PxBoxGeometry* geometry = new PxBoxGeometry(size);
 		return CreateShape(*geometry, aMaterialData);
 	}
 	CShape* CPhysics::CreateSphereShape(const float aRadius, const SMaterialData & aMaterialData)
 	{
-		PxSphereGeometry* geometry = new PxSphereGeometry(); geometry->radius = aRadius;
+		PxSphereGeometry* geometry = new PxSphereGeometry(); 
+		geometry->radius = aRadius;
 		return CreateShape(*geometry, aMaterialData);
 	}
 	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData)
@@ -76,7 +104,7 @@ namespace Physics
 		return nullptr;
 	}
 
-	CShape* CPhysics::CreateShape(physx::PxGeometry& aGeometry, const SMaterialData & aMaterialData)
+	CShape* CPhysics::CreateShape(PxGeometry& aGeometry, const SMaterialData & aMaterialData)
 	{
 		PxMaterial* material = CreateMaterial(aMaterialData);
 		PxShape* shape = myPxPhysics->createShape(aGeometry, *material);
@@ -85,7 +113,7 @@ namespace Physics
 	}
 
 
-	physx::PxMaterial* CPhysics::CreateMaterial(const SMaterialData & aMaterialData)
+	PxMaterial* CPhysics::CreateMaterial(const SMaterialData & aMaterialData)
 	{
 		if (aMaterialData.aDynamicFriction == defMatDynamicFriction &&
 			aMaterialData.aStaticFriction == defMatStaticFriction &&

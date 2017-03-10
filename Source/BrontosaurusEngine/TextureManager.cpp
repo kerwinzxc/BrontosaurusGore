@@ -101,8 +101,12 @@ void CTextureManager::CreateTexture(const wchar_t* aTexturePath, CTexture& aNewT
 	if (FAILED(result))
 	{
 		RESOURCES_LOG("Could not get texture interface: %ls", aTexturePath);
-	}
+		RESOURCES_LOG("Loaded DDS could be 3D texture: %ls", aTexturePath);
 
+		
+		return;
+	
+	}
 	D3D11_TEXTURE2D_DESC desc;
 	pTextureInterface->GetDesc(&desc);
 

@@ -1076,6 +1076,16 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="PhysicsActor.h" />
+    <ClInclude Include="PhysXHelper.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsActorDynamic.h" />
+    <ClInclude Include="PhysicsActorStatic.h" />
+    <ClInclude Include="PhysicsCharacterController.h" />
+    <ClInclude Include="CharacterControllerManager.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1103,6 +1113,12 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="PhysicsActor.cpp" />
+    <ClCompile Include="PhysicsActorStatic.cpp" />
+    <ClCompile Include="PhysicsActorDynamic.cpp" />
+    <ClCompile Include="PhysXHelper.cpp" />
+    <ClCompile Include="PhysicsCharacterController.cpp" />
+    <ClCompile Include="CharacterControllerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">

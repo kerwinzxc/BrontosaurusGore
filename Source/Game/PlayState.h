@@ -11,6 +11,13 @@ namespace CU
 	class Camera;
 }
 
+namespace Physics
+{
+	class CPhysicsScene;
+	class CPhysics;
+}
+
+
 class CGameObjectManager;
 class CScene;
 class CModelComponentManager;
@@ -29,6 +36,7 @@ class CProjectileFactory;
 class CInputComponentManager;
 class CNetworkComponentManager;
 class CMovementComponentManager;
+class CColliderComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -40,6 +48,8 @@ public:
 
 	void Init() override;
 	eStateStatus Update(const CU::Time& aDeltaTime) override;
+
+
 	void Render() override;
 	void OnEnter(const bool aLetThroughRender) override;
 	void OnExit(const bool aLetThroughRender) override;
@@ -53,6 +63,7 @@ public:
 	inline CWeaponSystemManager* GetCWeaponSystemManager();
 	inline CAmmoComponentManager* GetAmmoManager();
 	inline CMovementComponentManager* GetMovementComponentManager();
+	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline bool IsLoaded() const;
 
@@ -60,8 +71,16 @@ public:
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 private:
+
 	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
 private:
+	Physics::CPhysicsScene* myPhysicsScene;
+	Physics::CPhysics* myPhysics;
+
+
+	CColliderComponentManager* myColliderComponentManager;
+
+
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
 
@@ -82,7 +101,7 @@ private:
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
-	
+
 };
 
 inline bool CPlayState::IsLoaded() const
@@ -105,8 +124,12 @@ inline CMovementComponentManager * CPlayState::GetMovementComponentManager()
 	return myMovementComponentManager;
 }
 
-inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
+inline CColliderComponentManager* CPlayState::GetColliderComponentManager()
 {
-	assert(myEnemyComponentManager);
+	return myColliderComponentManager;
+}
+inline CEnemyComponentManager * CPlayState::GetEnemyComponentManager()
+{
 	return myEnemyComponentManager;
 }
+

@@ -17,7 +17,7 @@ struct ID3D11DepthStencilState;
 struct ID3D11BlendState;
 struct ID3D11Buffer;
 struct ID3D11SamplerState;
-
+class CTexture;
 
 struct SRendererSettings
 {
@@ -74,6 +74,8 @@ private:
 	void DoRenderQueue();
 
 	void SetStates(const SChangeStatesMessage* aState);
+
+	void DoColorGrading();
 private:
 	struct SHDRData
 	{
@@ -112,6 +114,9 @@ private:
 	} myGUIData;
 
 private:
+	CTexture* myLut;
+
+	CRenderPackage myColorGradingPackage;
 	CDeferredRenderer myDeferredRenderer;
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;

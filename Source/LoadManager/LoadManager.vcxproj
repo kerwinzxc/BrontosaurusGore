@@ -344,6 +344,7 @@
     <ClInclude Include="LoadAmmoComponent.h" />
     <ClInclude Include="LoadAmmoPickupComponent.h" />
     <ClInclude Include="LoadCamera.h" />
+    <ClInclude Include="LoadCollider.h" />
     <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadHealthComponent.h" />
@@ -368,6 +369,7 @@
     <ClCompile Include="LoadAmmoComponent.cpp" />
     <ClCompile Include="LoadAmmoPickupComponent.cpp" />
     <ClCompile Include="LoadCamera.cpp" />
+    <ClCompile Include="LoadCollider.cpp" />
     <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadHealthComponent.cpp" />

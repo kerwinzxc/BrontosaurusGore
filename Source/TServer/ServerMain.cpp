@@ -414,7 +414,7 @@ bool CServerMain::Update()
 				const unsigned ID = positionMessage->GetID();
 
 				CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
-				gameObject->SetWorldPosition(positionMessage->GetPosition());
+				gameObject->SetWorldTransformation(positionMessage->GetTransformation());
 
 				SendTo(positionMessage);
 			}
