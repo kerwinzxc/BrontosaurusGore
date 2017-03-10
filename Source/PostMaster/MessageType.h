@@ -14,6 +14,7 @@ enum class eMessageType
 	eGameEventMessage,
 	eNetworkMessage,
 	ePrint,
+	eDebugInfo,
 	eLength,
 };
 

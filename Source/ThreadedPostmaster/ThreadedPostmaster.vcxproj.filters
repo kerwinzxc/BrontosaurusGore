@@ -53,6 +53,9 @@
     <Filter Include="Message\OtherPlayerSpawned">
       <UniqueIdentifier>{bfaffe28-fac7-4363-b634-2aea3e426493}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\NetworkDebugInfo">
+      <UniqueIdentifier>{aa667845-5d9b-4273-bf67-8bc1eb5e03c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -86,6 +89,9 @@
     <ClCompile Include="SpawnOtherPlayerMessage.cpp" />
     <ClCompile Include="OtherPlayerSpawned.cpp">
       <Filter>Message\OtherPlayerSpawned</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkDebugInfo.cpp">
+      <Filter>Message\NetworkDebugInfo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +135,9 @@
     <ClInclude Include="SpawnOtherPlayerMessage.h" />
     <ClInclude Include="OtherPlayerSpawned.h">
       <Filter>Message\OtherPlayerSpawned</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkDebugInfo.h">
+      <Filter>Message\NetworkDebugInfo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@
 #include "../CommonUtilities/BitSet.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/DrawCallsCount.h"
+#include "../ThreadedPostmaster/NetworkDebugInfo.h"
 
 template class CU::CBitSet<3>;
 
@@ -32,6 +33,8 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	, myDrawCallsCount(0)
 	, myDebugFlags(aDebugFlags)
 	, myLeftControlIsDown(false)
+	, myRTT(0)
+	, myDataSent(0)
 {
 #ifndef _RETAIL_BUILD
 
@@ -51,6 +54,14 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	myOutputTexts[eDebugText_MemoryUsage]->Init();
 	myOutputTexts[eDebugText_MemoryUsage]->SetText("MEMORY (MB): ");
 
+	myOutputTexts[eDebugText_RoundTripTime] = new CTextInstance();
+	myOutputTexts[eDebugText_RoundTripTime]->Init();
+	myOutputTexts[eDebugText_RoundTripTime]->SetText("RTT  (MS): ");
+
+	myOutputTexts[eDebugText_DataAmmountSent] = new CTextInstance();
+	myOutputTexts[eDebugText_DataAmmountSent]->Init();
+	myOutputTexts[eDebugText_DataAmmountSent]->SetText("DATA SENT (MB): ");
+
 	myCountDown = new CU::CountDown();
 
 	myLogicThreadTimers = new CU::TimerManager();
@@ -61,8 +72,8 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	myUpdateTextTimer_RenderThread = myRenderThreadTimers->CreateTimer();
 	myFPSTimer = myRenderThreadTimers->CreateTimer();
 
-	//PostMaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eDrawCallsThisFrame);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eDebugInfo);
 #endif // !_RETAIL_BUILD
 }
 
@@ -111,6 +122,7 @@ void CDebugInfoDrawer::Update()
 	UpdateLogicFPSCounter();
 	UpdateDrawCallsCounter();
 	UpdateMemoryUsage();
+	UpdateNetworkDebug();
 
 	myCountDown->Update();
 
@@ -216,6 +228,18 @@ eMessageReturn CDebugInfoDrawer::DoEvent(const DrawCallsCount& aConsoleCalledupo
 	return eMessageReturn::eContinue;
 }
 
+void CDebugInfoDrawer::SetNetoworkDebugData(const int aDataSent, const int aRoundTripTime)
+{
+	myDataSent = aDataSent;
+	myRTT = aRoundTripTime;
+}
+
+eMessageReturn CDebugInfoDrawer::DoEvent(const CNetworkDebugInfo& someDebugInfo)
+{
+	SetNetoworkDebugData(someDebugInfo.myDataSent, someDebugInfo.myRoundTripTime);
+	return eMessageReturn::eContinue;
+}
+
 void CDebugInfoDrawer::UpdateLogicFPSCounter()
 {
 #ifndef _RETAIL_BUILD
@@ -274,6 +298,17 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 			myOutputTexts[eDebugText_MemoryUsage]->SetColor(CU::Vector4f(CTextInstance::White.x * 0.5f, CTextInstance::White.y * 0.5f, CTextInstance::White.z * 0.5f, 1.f));
 		}
 	}
+}
+
+void CDebugInfoDrawer::UpdateNetworkDebug()
+{
+#ifndef _RETAIL_BUILD
+	myOutputTexts[eDebugText_DataAmmountSent]->SetText(std::string("DATA SENT(MB) : ") + std::to_string(myDataSent));
+	myOutputTexts[eDebugText_DataAmmountSent]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
+
+	myOutputTexts[eDebugText_RoundTripTime]->SetText(std::string("RTT(MS) : ") + std::to_string(myRTT));
+	myOutputTexts[eDebugText_RoundTripTime]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
+#endif //!_RETAIL_BUILD
 }
 
 void CDebugInfoDrawer::UpdateDrawCallsCounter()

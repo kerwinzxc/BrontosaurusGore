@@ -39,13 +39,19 @@ public:
 	void SetDrawCalls(const int aDrawCallsCount);
 	void UpdateFPSCounter();
 
+	
+
 	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
+	eMessageReturn DoEvent(const CNetworkDebugInfo& someDebugInfo) override;
 
 private:
 	void UpdateLogicFPSCounter();
 	void UpdateDrawCallsCounter();
 	void UpdateMemoryUsage();
+	void UpdateNetworkDebug();
 
+
+	void SetNetoworkDebugData(const int aDataSent, const int aRoundTripTime);
 
 	enum eDebugText : unsigned int
 	{
@@ -53,6 +59,8 @@ private:
 		eDebugText_LogicFPS,
 		eDebugText_DrawCalls,
 		eDebugText_MemoryUsage,
+		eDebugText_RoundTripTime,
+		eDebugText_DataAmmountSent,
 		eDebugText_Length,
 	};
 
@@ -68,6 +76,9 @@ private:
 	CU::TimerHandle myFPSTimer;
 
 	int myDrawCallsCount;
+	int myRTT;
+	int myDataSent;
+
 	CU::CBitSet<eDebugText_Length> myDebugFlags;
 
 	std::atomic_bool myLeftControlIsDown;

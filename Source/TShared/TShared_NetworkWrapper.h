@@ -10,7 +10,7 @@
 
 
 //dynamic id defines
-enum ePreDefId: short
+enum ePreDefId : short
 {
 	ID_ALL = 0,
 	ID_ALL_BUT_ME,
@@ -33,11 +33,11 @@ public:
 	__int16 Send(CNetworkMessage* aNetworkMessage, const char* aRecieverAdress, const char* aRecieverPort);
 
 	CNetworkMessage* Recieve(char** senderIp = nullptr, char** senderPort = nullptr);
-
+	int GetAndClearDataSent();
 
 private:
 	__int16 GetMessageCount();
-	
+
 	bool Send(SNetworkPackageHeader aPackageHeader, const char* aData, unsigned aDataSize, const char* aRecieverAdress, const char* aRecieverPort);
 	char* myBuffer;
 	unsigned int myCurrentBufferSize;
@@ -48,6 +48,8 @@ private:
 	SOCKET mySocket;
 	bool myShallClose;
 	__int16 myMessageCount;
-	 CMessageManager* myMessageManager;
+	CMessageManager* myMessageManager;
+
+	int myDataSent;
 };
 

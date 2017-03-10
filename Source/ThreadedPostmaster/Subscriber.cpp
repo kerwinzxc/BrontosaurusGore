@@ -106,3 +106,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CChangeLevel& aChangeLevel
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CNetworkDebugInfo& aDebugInfo)
+{
+	return eMessageReturn::eContinue;
+}
