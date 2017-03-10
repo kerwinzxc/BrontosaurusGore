@@ -114,7 +114,8 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
-	SAFE_DELETE(myPhysics); // kanske?
+	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
+	Physics::CFoundation::Destroy();
 }
 
 void CPlayState::Load()
@@ -134,11 +135,11 @@ void CPlayState::Load()
 	Physics::CFoundation::Create();
 	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
 	myPhysicsScene = myPhysics->CreateScene();
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
 	//**************************************************************//
 	//						END OF PHYSICS							//
 	//**************************************************************//
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
 	if (!levelsArray.HasIndex(myLevelIndex))
 	{
 		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
