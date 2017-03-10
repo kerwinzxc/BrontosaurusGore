@@ -1,29 +1,22 @@
 #include "stdafx.h"
 #include "DebugInfoDrawer.h"
 
-#include "TextInstance.h"
-#include "..\CommonUtilities\CountDown.h"
-#include "..\CommonUtilities\TimerManager.h"
-#include "..\PostMaster\PostMaster.h"
-#include "..\PostMaster\Message.h"
-#include "..\PostMaster\Event.h"
-#include "..\CommonUtilities\EKeyboardKeys.h"
-#include "Engine.h"
-
-#include <Psapi.h>
 #include "EDebugInfoDrawerFlags.h"
+#include "TextInstance.h"
+#include <Psapi.h>
 
-//TEMP INCLUDES
-#include "..\PostMaster\ChangeLevel.h"
 #include "../CommonUtilities/BitSet.h"
-#include "../ThreadedPostmaster/Postmaster.h"
-#include "../PostMaster/DrawCallsCount.h"
-#include "../ThreadedPostmaster/NetworkDebugInfo.h"
-#include "..\CommonUtilities\InputMessage.h"
-#include "..\CommonUtilities\InputMessenger.h"
-#include "..\CommonUtilities\EInputReturn.h"
+#include "../CommonUtilities/TimerManager.h"
+#include "../CommonUtilities/CountDown.h"
+#include "../CommonUtilities/EKeyboardKeys.h"
+#include "../CommonUtilities/InputMessage.h"
+#include "../CommonUtilities/InputMessenger.h"
+#include "../CommonUtilities/EInputReturn.h"
 
-template class CU::CBitSet<3>;
+#include "../PostMaster/Message.h"
+#include "../PostMaster/DrawCallsCount.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/NetworkDebugInfo.h"
 
 CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 	: CInputMessenger(eInputMessengerType::eDebugInfoDrawer, 20)
