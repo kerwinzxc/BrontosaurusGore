@@ -115,7 +115,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
-	Physics::CFoundation::Destroy();
+	//Physics::CFoundation::Destroy(); desstroy this lator
 }
 
 void CPlayState::Load()
@@ -132,8 +132,8 @@ void CPlayState::Load()
 	//**************************************************************//
 	//							PHYSICS								//
 	//**************************************************************//
-	Physics::CFoundation::Create();
-	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
 	myPhysicsScene = myPhysics->CreateScene();
 
 	//**************************************************************//
