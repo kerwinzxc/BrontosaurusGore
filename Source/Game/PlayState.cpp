@@ -222,6 +222,7 @@ void CPlayState::Render()
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
@@ -281,7 +282,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
-	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager);
+	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager, myPhysicsScene);
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
