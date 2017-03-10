@@ -46,6 +46,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
+			if (myWeaponData->shouldRayCast == true)
+			{
+				//DO RayCastStuff plz
+			}
+
 			CU::Vector3f rotatedDirection = aDirection.GetNormalized();
 			rotatedDirection.Normalize();
 			CU::Vector2f rotatedRadians;
@@ -107,11 +112,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				myElapsedFireTimer = 0.0f;
 			
 			}
-		}
-
-		if(myWeaponData->shouldRayCast == true)
-		{
-			//DO RayCastStuff plz
 		}
 	}
 }

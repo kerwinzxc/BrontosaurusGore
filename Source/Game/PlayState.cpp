@@ -402,6 +402,7 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		playerObject->AddComponent(network);
 
 		Physics::SCharacterControllerDesc controllerDesc;
+		controllerDesc.minMoveDistance = 0.00001f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 
