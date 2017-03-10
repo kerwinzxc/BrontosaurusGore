@@ -222,6 +222,7 @@ void CPlayState::Render()
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
