@@ -24,36 +24,16 @@ void CommandLineManager::DestroyInstance()
 bool CommandLineManager::HasParameter(const char* aParameter)
 {
 	return myArgs.find(aParameter) != myArgs.end();
-	//for (unsigned int i = 0; i < myArgs.Size(); ++i)
-	//{
-	//	if (myArgs[i] == aParameter)
-	//	{
-	//		return true;
-	//	}
-	//}
-	//return false;
 }
 
 const std::string& CommandLineManager::GetArgument(const char* aParameter)
 {
 	if (HasParameter(aParameter) == true)
 	{
-		return myArgs[aParameter][0]; //fix this where it's used
+		return myArgs[aParameter][0]; //fix this where it's used (may have more than one argument)
 	}
 
 	return ourEmptyString;
-
-	//for (unsigned int i = 0; i < myArgs.Size(); ++i)
-	//{
-	//	if (myArgs[i] == aParameter)
-	//	{
-	//		for (unsigned int j = i + 1; j < myArgs.Size(); ++j)
-	//		{
-	//			return myArgs[j];
-	//		}
-	//	}
-	//}
-	//return false;
 }
 
 bool CommandLineManager::HasArgument(const char* aParameter, const char* aArgument)
@@ -67,25 +47,6 @@ bool CommandLineManager::HasArgument(const char* aParameter, const char* aArgume
 	}
 
 	return false;
-
-	//for (unsigned int i = 0; i < myArgs.Size(); ++i)
-	//{
-	//	if (myArgs[i] == aParameter)
-	//	{
-	//		for (unsigned int j = i + 1; j < myArgs.Size(); ++j)
-	//		{
-	//			if (myArgs[j] == aArgument)
-	//			{
-	//				return true;
-	//			}
-	//			else if (myArgs[j][0] == '-')
-	//			{
-	//				return false;
-	//			}
-	//		}
-	//	}
-	//}
-	//return false;
 }
 
 CommandLineManager::CommandLineManager(int aArgc, char* aArgv[])
@@ -109,7 +70,7 @@ CommandLineManager::CommandLineManager(int aArgc, char* aArgv[])
 
 	for (auto it = myArgs.begin(); it != myArgs.end(); ++it)
 	{
-		it->second.ShrinkToFit();
+		it->second.Optimize();
 	}
 }
 

@@ -388,6 +388,13 @@
       <Filter>Input\Recieving</Filter>
     </ClInclude>
     <ClInclude Include="ConsolePrinter.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="CopyArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">

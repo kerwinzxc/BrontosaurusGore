@@ -6,18 +6,15 @@
 #include "QuickSort.h"
 #include "StaticTypeTraits.h"
 #include "ReverseGrowingArray.h"
+#include "CopyArray.h"
+#include "MoveArray.h"
 
 #define self (*this)
 
+#pragma warning(disable : 4348) //redefinition of template argument(s)
+
 namespace CU
 {
-	template<bool IsPod, typename ObjectType, typename SizeType>
-	struct CopyArray;
-
-	template<bool IsPod, bool MoveUp, typename ObjectType, typename SizeType>
-	struct MoveArray;
-
-#pragma warning(disable : 4348)
 	template<typename ObjectType, typename SizeType = unsigned int, bool USE_SAFE_MODE = true>
 	class GrowingArray
 	{
@@ -93,9 +90,9 @@ namespace CU
 
 		inline void RemoveAll();
 		inline void DeleteAll();
+		inline void DestroyAll();
 
 		inline void Optimize();
-		inline void ShrinkToFit();
 
 		inline void QuickSort(std::function<bool(ObjectType, ObjectType)> aCompareFunction);
 
@@ -389,7 +386,7 @@ namespace CU
 		if (mySize + numberOfAdds >= myCapacity)
 		{
 #define TEMP_MAX(a,b) (((a) > (b)) ? (a) : (b))
-			
+
 			Reallocate(TEMP_MAX(myCapacity * 2, mySize + numberOfAdds));
 
 #undef TEMP_MAX
@@ -461,11 +458,7 @@ namespace CU
 	inline void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Delete(const ObjectType& aObject)
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
-		SizeType index = Find(aObject);
-		if (index != FoundNone)
-		{
-			DeleteAtIndex(index);
-		}
+		DeleteAtIndex(Find(aObject));
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
@@ -651,16 +644,28 @@ namespace CU
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
+	inline void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::DestroyAll()
+	{
+		if (IsPointer<ObjectType>::Result)
+		{
+			DeleteAll();
+		}
+		else if (!IsPod<ObjectType>::Result)
+		{
+			for (SizeType i = 0; i < mySize; ++i)
+			{
+				myArray[i] = ObjectType();
+			}
+		}
+
+		RemoveAll();
+	}
+
+	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
 	void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Optimize()
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 		Reallocate(mySize);
-	}
-
-	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
-	inline void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::ShrinkToFit()
-	{
-		Optimize();
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
@@ -753,73 +758,8 @@ namespace CU
 		myCapacity = 0;
 		mySize = 0;
 	}
-
-	template<typename ObjectType, typename SizeType>
-	struct CopyArray<true, ObjectType, SizeType>
-	{
-		static void DoCopy(ObjectType aCopyToArray[], const ObjectType aCopyFromArray[], const SizeType aElementsToCopy)
-		{
-			if (aElementsToCopy > 0)
-			{
-				memcpy(aCopyToArray, aCopyFromArray, static_cast<size_t>(aElementsToCopy * sizeof(ObjectType)));
-			}
-		}
-	};
-
-	template<typename ObjectType, typename SizeType>
-	struct CopyArray<false, ObjectType, SizeType>
-	{
-		static void DoCopy(ObjectType aCopyToArray[], const ObjectType aCopyFromArray[], const SizeType aElementsToCopy)
-		{
-			for (SizeType i = 0; i < aElementsToCopy; ++i)
-			{
-				aCopyToArray[i] = aCopyFromArray[i];
-			}
-		}
-	};
-
-	template<typename ObjectType, typename SizeType>
-	struct MoveArray<true, true, ObjectType, SizeType>
-	{
-		static void DoMove(ObjectType aArray[], const SizeType aElementsToMove, const SizeType aStartIndex, const SizeType aArraySize)
-		{
-			memmove(aArray + aStartIndex + aElementsToMove, aArray + aStartIndex, sizeof(ObjectType) * (aArraySize - aStartIndex));
-		}
-	};
-
-	template<typename ObjectType, typename SizeType>
-	struct MoveArray<true, false, ObjectType, SizeType>
-	{
-		static void DoMove(ObjectType aArray[], const SizeType aElementsToMove, const SizeType aStartIndex, const SizeType aArraySize)
-		{
-			memmove(aArray + aStartIndex, aArray + aStartIndex + aElementsToMove, sizeof(ObjectType) * (aArraySize - aStartIndex));
-		}
-	};
-
-	template<typename ObjectType, typename SizeType>
-	struct MoveArray<false, false, ObjectType, SizeType>
-	{
-		static void DoMove(ObjectType aArray[], const SizeType aElementsToMove, const SizeType aStartIndex, const SizeType aArraySize)
-		{
-			for (SizeType i = aStartIndex; i < aArraySize - aElementsToMove; ++i)
-			{
-				aArray[i] = aArray[i + aElementsToMove];
-			}
-		}
-	};
-
-	template<typename ObjectType, typename SizeType>
-	struct MoveArray<false, true, ObjectType, SizeType>
-	{
-		static void DoMove(ObjectType aArray[], const SizeType aElementsToMove, const SizeType aStartIndex, const SizeType aArraySize)
-		{
-			for (SizeType i = aStartIndex; i < aArraySize - aElementsToMove; ++i)
-			{
-				aArray[i] = aArray[i + aElementsToMove];
-			}
-		}
-	};
 }
 
 #pragma warning(default : 4348)
+
 #undef self
