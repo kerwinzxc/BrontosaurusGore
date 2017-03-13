@@ -4,15 +4,16 @@
 #include <characterkinematic/PxController.h>
 #include <PxScene.h>
 #include "PxQueryReport.h"
-
+#include "CollisionLayers.h"
+#include "PxRigidDynamic.h"
 
 namespace Physics
 {
-
 	CPhysicsCharacterController::CPhysicsCharacterController(physx::PxController * aPxController, const SCharacterControllerDesc & aData)
 	{
 		myData = aData;
 		myController = aPxController;
+		myController->getActor()->userData = nullptr;
 	}
 
 	CPhysicsCharacterController::~CPhysicsCharacterController()
@@ -26,11 +27,17 @@ namespace Physics
 		float dt = aDeltaTime.GetMilliseconds();
 		
 		physx::PxControllerFilters controllerFilters;
+		physx::PxFilterData filterData;
+		physx::PxU32 colGroups = 0xffffffff; //everything (-1)
+		colGroups &= ~(colGroups); //Turn off bits 1>0
+		filterData.word0 = 1; //I am now everything but aFilterMask
+		filterData.word1 = colGroups; //I don't Collide with anything
+							  //controllerFilters.mFilterCallback = myCollisionHandler;
+		controllerFilters.mFilterData = &filterData;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
-		
+
 		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y , aDisplacement.z }; //TODO: om knas kanske här
-		myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
-		SetGrounded();
+		myIsGrounded = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters) & physx::PxControllerCollisionFlag::eCOLLISION_DOWN;
 	}
 
 	void CPhysicsCharacterController::Resize(const float aHeight)
@@ -61,24 +68,15 @@ namespace Physics
 		return CU::Vector3f(position.x, position.y, position.z);
 	}
 
-	void CPhysicsCharacterController::SetGrounded()
+	Physics::IPhysicsCallback* CPhysicsCharacterController::GetCallbackData()
 	{
-		physx::PxRaycastBuffer hit;
-		physx::PxExtendedVec3 footPosition = myController->getFootPosition();
-		physx::PxVec3 origin = physx::toVec3(footPosition);
-
-		physx::PxVec3 dir = -myController->getUpDirection();
-		physx::PxReal dist = 0.01f;
-		bool result = myController->getScene()->raycast(origin, dir, dist, hit);
-		if (result == true)
-		{	
-			if (hit.block.distance <= myController->getContactOffset() + 0.05f) // small ypsilon for funz
-			{
-				myIsGrounded = true;
-				return;
-			}
-			
-		}
-		myIsGrounded = false;
+		return myCallback;
 	}
+
+	void CPhysicsCharacterController::SetCallbackData(IPhysicsCallback* aCallbacker)
+	{
+		myCallback = aCallbacker;
+		myController->getActor()->userData = aCallbacker;
+	}
+
 }
