@@ -11,6 +11,7 @@
 #include "..\Physics\CharacterControllerManager.h"
 #include "..\Physics\PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
+#include "..\Physics\CollisionLayers.h"
 
 
 CColliderComponentManager::CColliderComponentManager()
@@ -85,9 +86,27 @@ CCharcterControllerComponent* CColliderComponentManager::CreateCharacterControll
 
 CColliderComponent* CColliderComponentManager::CreateBoxCollider(SBoxColliderData* aBoxColliderData)
 {
+	if (!aBoxColliderData)
+	{
+		DL_ASSERT("OH NO");
+		return nullptr;
+	}
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateBoxShape(aBoxColliderData->myHalfExtent, material);
+	if (!shape)
+	{
+		DL_ASSERT("OH NO");
+		return nullptr;
+	}
+
+	shape->SetCollisionLayers(Physics::ECollisionLayer::eDefault);
+
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aBoxColliderData->IsTrigger);
+	if (!actor)
+	{
+		DL_ASSERT("OH NO");
+		return nullptr;
+	}
 	myScene->AddActor(actor);
 	CBoxColliderComponent* component = new CBoxColliderComponent(aBoxColliderData, shape, actor);
 	return component;
