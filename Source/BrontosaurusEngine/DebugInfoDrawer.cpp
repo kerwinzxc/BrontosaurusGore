@@ -81,7 +81,7 @@ CDebugInfoDrawer::~CDebugInfoDrawer()
 	SAFE_DELETE(myRenderThreadTimers);
 	SAFE_DELETE(myCountDown);
 
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eDrawCallsThisFrame);
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 
 	myOutputTexts.DeleteAll();
 #endif // !_RETAIL_BUILD
