@@ -21,7 +21,7 @@ CMovementComponent::CMovementComponent()
 		return;
 	}
 
-	myControllerConstraints = Physics::EControllerCollisionFlag::eCOLLISION_DOWN;
+	myControllerConstraints = Physics::EControllerConstraintsFlag::eCOLLISION_DOWN;
 	myCanDoubleJump = true;
 
 	myAcceleration = playerControls["Acceleration"].GetFloat();
@@ -108,9 +108,9 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myVelocity *= myMaxSpeed;
 	}
 
-	if ((myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN) == 0)
+	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == 0)
 	{
-		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_UP)
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_UP)
 		{
 			myJumpForce = 0.0f;
 		}
@@ -149,7 +149,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
 	{
 		myControllerConstraints = groundeddata.myChar;
-		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN)
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
 			myCanDoubleJump = true;
 			myJumpForce = 0.0f;
@@ -163,7 +163,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 
 	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
 	{
-		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN)
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
 			ApplyJumpForce(myJumpHeight);
 		}
