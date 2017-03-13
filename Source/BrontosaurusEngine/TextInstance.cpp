@@ -50,7 +50,7 @@ void CTextInstance::Render() const
 	}
 }
 
-bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const std::string& aString)
+bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const std::wstring& aString)
 {
 	if (aLineNumber < myStrings.Size() && aLineNumber >= 0)
 	{
@@ -67,7 +67,7 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, const std::strin
 	return false;
 }
 
-bool CTextInstance::SetTextLine(const unsigned int aLineNumber, std::string&& aString)
+bool CTextInstance::SetTextLine(const unsigned int aLineNumber, std::wstring&& aString)
 {
 	if (aLineNumber < myStrings.Size() && aLineNumber >= 0)
 	{
@@ -78,7 +78,7 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, std::string&& aS
 	{
 		for (int i = 0; i < aLineNumber - myStrings.Size() +1; ++i)
 		{
-			myStrings.Add("");
+			myStrings.Add(L"");
 		}
 	}
 
@@ -91,17 +91,17 @@ bool CTextInstance::SetTextLine(const unsigned int aLineNumber, std::string&& aS
 	return false;
 }
 
-void CTextInstance::SetTextLines(const CU::GrowingArray<std::string>& someLines)
+void CTextInstance::SetTextLines(const CU::GrowingArray<std::wstring>& someLines)
 {
 	myStrings = someLines;
 }
 
-void CTextInstance::SetTextLines(CU::GrowingArray<std::string>&& someLines)
+void CTextInstance::SetTextLines(CU::GrowingArray<std::wstring>&& someLines)
 {
 	myStrings = std::move(someLines);
 }
 
-const CU::GrowingArray<std::string>& CTextInstance::GetTextLines()
+const CU::GrowingArray<std::wstring>& CTextInstance::GetTextLines()
 {
 	return myStrings;
 }
@@ -114,7 +114,7 @@ float CTextInstance::GetlineHeight() const
 CU::Vector2f CTextInstance::GetQuadSizeNormalized() const
 {
 	CU::Vector2f rectPixelSize;
-	for (const std::string& str : myStrings)
+	for (const std::wstring& str : myStrings)
 	{
 		CU::Vector2f stringSize(myText->CalculateRectPixelSize(str.c_str()));
 		rectPixelSize.x = max(stringSize.x, rectPixelSize.x);

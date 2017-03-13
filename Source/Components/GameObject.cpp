@@ -12,11 +12,14 @@ CU::Matrix44f CGameObject::GetToWorldTransform()
 {
 	if (GetParent() != nullptr)
 	{
-		return GetLocalTransform() * GetParent()->GetToWorldTransform();
+		const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
+		const CU::Matrix44f localTransform = GetLocalTransform();
+		return localTransform * parentTransform;
 	}
 	else
 	{
-		return GetLocalTransform();
+		const CU::Matrix44f localTransform = GetLocalTransform();
+		return localTransform;
 	}
 }
 
@@ -48,7 +51,7 @@ void CGameObject::SetWorldTransformation(const CU::Matrix44f & aTransformation)
 {
 	if (GetParent() != nullptr)
 	{
-		GetParent()->SetWorldTransformation(GetLocalTransform() * aTransformation);
+		GetLocalTransform() = aTransformation * GetParent()->GetToWorldTransform().GetInverted();
 	}
 	else
 	{

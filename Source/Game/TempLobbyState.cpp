@@ -38,7 +38,7 @@ CTempLobbyState::~CTempLobbyState()
 
 bool CTempLobbyState::IsSelectable(const unsigned char aCurrentLine)
 {
-	if (myTextINstance.GetTextLines()[aCurrentLine] == "")
+	if (myTextINstance.GetTextLines()[aCurrentLine] == L"")
 	{
 		return false;
 	}
@@ -134,18 +134,18 @@ void CTempLobbyState::Conect()
 
 	if (myName.empty())
 	{
-		const CU::GrowingArray<std::string> names({ "Ralle", "Adam", "Fröken", "Stefan", "Ralle", "Adam", "Fröken", "Stefan" , "Ralle", "Adam", "Fröken", "Stefan", "Bjarne Stroustrup" });
-		const CU::GrowingArray<std::string>::size_type randIndex = rand() % names.Size();
+		const CU::GrowingArray<std::wstring> names({ L"Ralle", L"Adam", L"Fröken", L"Stefan", L"Ralle", L"Adam", L"Fröken", L"Stefan" , L"Ralle", L"Adam", L"Fröken", L"Stefan", L"Bjarne Stroustrup" });
+		const CU::GrowingArray<std::wstring>::size_type randIndex = rand() % names.Size();
 
 		myName = names.At(randIndex);
 	}
 
 	if (myIP.empty())
 	{
-		myIP = "127.0.0.1";
+		myIP = L"127.0.0.1";
 	}
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, myIP));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(CU::StringHelper::WStringToString(myName), CU::StringHelper::WStringToString(myIP)));
 }
 
 void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
@@ -230,52 +230,52 @@ void CTempLobbyState::Init()
 
 void CTempLobbyState::LobbyMenu()
 {
-	std::string string;
-	myTextINstance.SetText("");
+	std::wstring string;
+	myTextINstance.SetText(L"");
 
-	myTextINstance.SetTextLine(0, "#This is the first page of the lobby! Here you will provide the ip adress and a name");
-	myTextINstance.SetTextLine(1, "# You navigate with the arrow keyes and when you are done go down to \"done\" and press enter");
-	myTextINstance.SetTextLine(2, "# If you are playing with other players and wan't to host you don't have to enter an ip adress");
-	myTextINstance.SetTextLine(3, "# If you are playing eith other players and wan't to join a host you should enter their IP");
-	myTextINstance.SetTextLine(4, "# And if you don't enter a name one will be provided for you");
+	myTextINstance.SetTextLine(0, L"#This is the first page of the lobby! Here you will provide the ip adress and a name");
+	myTextINstance.SetTextLine(1, L"# You navigate with the arrow keyes and when you are done go down to \"done\" and press enter");
+	myTextINstance.SetTextLine(2, L"# If you are playing with other players and wan't to host you don't have to enter an ip adress");
+	myTextINstance.SetTextLine(3, L"# If you are playing eith other players and wan't to join a host you should enter their IP");
+	myTextINstance.SetTextLine(4, L"# And if you don't enter a name one will be provided for you");
 
 
 
 	const int IProw = 5;
-	(string = "IP: ") += myIP.c_str();
+	(string = L"IP: ") += myIP.c_str();
 	if (myCurrentLine == IProw && myBlinkeyState == true)
 	{
-		string += "I";
+		string += L"I";
 	}
 	myTextINstance.SetTextLine(IProw, string);
 
 	const int nameLine = 6;
-	(string = "Name: ") += myName.c_str();
+	(string = L"Name: ") += myName.c_str();
 	if (myCurrentLine == nameLine && myBlinkeyState == true)
 	{
-		string += "I";
+		string += L"I";
 	}
 	myTextINstance.SetTextLine(nameLine, string);
 
 
-	myTextINstance.SetTextLine(8, "Done");
+	myTextINstance.SetTextLine(8, L"Done");
 
 
 	if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
 	{
-		myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
+		myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + L" <-");
 	}
 }
 
 void CTempLobbyState::LevelSelect()
 {
 
-	myTextINstance.SetText("");
+	myTextINstance.SetText(L"");
 
-	std::string string;
-	string = "# Welcome player: ";
+	std::wstring string;
+	string = L"# Welcome player: ";
 	string += myName;
-	string += " you are conected to the IP: ";
+	string += L" you are conected to the IP: ";
 	string += myIP;
 
 	myTextINstance.SetTextLine(0, string.c_str());
@@ -283,9 +283,9 @@ void CTempLobbyState::LevelSelect()
 
 	if (myIsPlayer == true)
 	{
-		myTextINstance.SetTextLine(0, "# Other players can only join when you are on this screen");
-		myTextINstance.SetTextLine(1, "# DO NOT SELECT A LEVEL UNTIL ALL OTHER PLAYERS HAVE JONED");
-		myTextINstance.SetTextLine(2, "# Please Select level");
+		myTextINstance.SetTextLine(0, L"# Other players can only join when you are on this screen");
+		myTextINstance.SetTextLine(1, L"# DO NOT SELECT A LEVEL UNTIL ALL OTHER PLAYERS HAVE JONED");
+		myTextINstance.SetTextLine(2, L"# Please Select level");
 
 		CU::CJsonValue levelsFile;
 
@@ -296,17 +296,17 @@ void CTempLobbyState::LevelSelect()
 
 		for (int i = 0; i < levelsArray.Size(); ++i)
 		{
-			myTextINstance.SetTextLine(4 + i, levelsArray[i].GetString().c_str());
+			myTextINstance.SetTextLine(4 + i, CU::StringToWString(levelsArray[i].GetString()));
 		}
 
 		if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
 		{
-			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + " <-");
+			myTextINstance.SetTextLine(myCurrentLine, myTextINstance.GetTextLines()[myCurrentLine] + L" <-");
 		}
 	}
 	else
 	{
-		myTextINstance.SetTextLine(1, "# Waiting for the host to select a level");
+		myTextINstance.SetTextLine(1, L"# Waiting for the host to select a level");
 	}
 }
 
@@ -338,12 +338,12 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		break;
 	case eLobbyState::eConecting:
 	{
-		myTextINstance.SetText("");
+		myTextINstance.SetText(L"");
 
-		std::string string = "#Conecting";
+		std::wstring string = L"#Conecting";
 		for (int i = 0; i < static_cast<int>(myBlinkeyTimer.GetSeconds()) % 4; ++i)
 		{
-			string += ".";
+			string += L".";
 		}
 
 		myTextINstance.SetTextLine(0, string.c_str());

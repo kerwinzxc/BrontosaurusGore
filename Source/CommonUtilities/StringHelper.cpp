@@ -92,11 +92,23 @@ namespace CU
 		return ss.str();
 	}
 
+	std::wstring StringHelper::ToWStringWithPrecision(const float aFloat, const char aPrecision)
+	{
+		std::wstringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aFloat;
+		return ss.str();
+	}
+
 	std::string StringHelper::ToStringWithPrecision(const double aDouble, const char aPrecision)
 	{
 		std::stringstream ss;
 		ss << std::fixed << std::setprecision(aPrecision) << aDouble;
 		return ss.str();
+	}
+
+	std::string StringHelper::WStringToString(const std::wstring aWString)
+	{
+		return std::string(aWString.begin(), aWString.end());
 	}
 }
 

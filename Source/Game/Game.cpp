@@ -36,7 +36,7 @@ void CGame::Init()
 	CBackgroundLoadingManager::CreateInstance();
 	KLoader::CKevinLoader::CreateInstance();
 	SSlua::LuaWrapper::GetInstance().RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
-
+	myGameEventMessenger.Init({ 0.5f, 0.1f });
 	myClient.StartClient();
 
 	myStateStack.PushState(new CTempLobbyState(myStateStack));
@@ -50,7 +50,7 @@ void CGame::Init()
 bool CGame::Update(const CU::Time& aDeltaTime)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-
+	myGameEventMessenger.Update(aDeltaTime.GetSeconds());
 	if (myStateStack.Update(aDeltaTime) == false)
 	{
 		return false;
@@ -62,4 +62,5 @@ bool CGame::Update(const CU::Time& aDeltaTime)
 void CGame::Render()
 {
 	myStateStack.Render();
+	myGameEventMessenger.Render();
 }
