@@ -11,12 +11,12 @@ public:
 
 	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
 
-	inline CGameObject* GetObjectToReset();
+	inline CGameObject* GetObjectToReset() const;
 private:
 	CGameObject* myObjectToReset;
 };
 
-inline CGameObject* CAddToCheckPointResetList::GetObjectToReset()
+inline CGameObject* CAddToCheckPointResetList::GetObjectToReset() const
 {
 	return myObjectToReset;
 }

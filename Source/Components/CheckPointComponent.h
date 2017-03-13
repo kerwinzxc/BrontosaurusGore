@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include "../ThreadedPostmaster/Subscriber.h"
 class CCheckPointComponent : public CComponent
 {
 public:

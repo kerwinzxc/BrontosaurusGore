@@ -154,6 +154,7 @@
     <ClCompile Include="CheckPointComponent.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -354,6 +355,7 @@
     <ClInclude Include="CheckPointComponent.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="CheckPointSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
