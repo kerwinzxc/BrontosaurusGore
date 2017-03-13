@@ -6,6 +6,7 @@
 #include "PxQueryReport.h"
 #include "CollisionLayers.h"
 #include "PxRigidDynamic.h"
+#include <xatomic.h>
 
 namespace Physics
 {
@@ -37,7 +38,8 @@ namespace Physics
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
 
 		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y , aDisplacement.z }; //TODO: om knas kanske här
-		myIsGrounded = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters) & physx::PxControllerCollisionFlag::eCOLLISION_DOWN;
+		physx::PxControllerCollisionFlags flags = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
+		SetCollisionFlags((uint8_t)flags);
 	}
 
 	void CPhysicsCharacterController::Resize(const float aHeight)
@@ -51,9 +53,9 @@ namespace Physics
 		return CU::Vector3f(position.x, position.y, position.z);
 	}
 
-	bool CPhysicsCharacterController::GetIsGrounded()
+	const Physics::EControllerConstraintsFlags CPhysicsCharacterController::GetConstraints()
 	{
-		return myIsGrounded;
+		return myCollisionFlags;
 	}
 
 	void CPhysicsCharacterController::SetPosition(const CU::Vector3f& aPosition)
@@ -78,5 +80,20 @@ namespace Physics
 		myCallback = aCallbacker;
 		myController->getActor()->userData = aCallbacker;
 	}
-
+	void CPhysicsCharacterController::SetCollisionFlags(const char& flags)
+	{
+		myCollisionFlags = 0;
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_SIDES)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_SIDES;
+		}
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_DOWN;
+		}
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_UP)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_UP;
+		}
+	}
 }

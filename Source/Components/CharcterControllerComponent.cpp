@@ -26,9 +26,9 @@ bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestion
 		return true;
 		break;
 	}
-	case eComponentQuestionType::ePhysicsControllerGrounded:
+	case eComponentQuestionType::ePhysicsControllerConstraints:
 	{
-		aQuestionData.myBool = myController->GetIsGrounded();
+		aQuestionData.myChar = myController->GetConstraints();
 		return true;
 		break;
 	}

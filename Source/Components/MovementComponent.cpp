@@ -21,7 +21,7 @@ CMovementComponent::CMovementComponent()
 		return;
 	}
 
-	myIsGrounded = true;
+	myControllerConstraints = Physics::EControllerCollisionFlag::eCOLLISION_DOWN;
 	myCanDoubleJump = true;
 
 	myAcceleration = playerControls["Acceleration"].GetFloat();
@@ -108,8 +108,12 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myVelocity *= myMaxSpeed;
 	}
 
-	if (myIsGrounded == false)
+	if ((myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN) == 0)
 	{
+		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_UP)
+		{
+			myJumpForce = 0.0f;
+		}
 		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
 	}
 	myVelocity.y += myJumpForce;
@@ -142,10 +146,10 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	}
 
 	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerGrounded, groundeddata) == true)
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
 	{
-		myIsGrounded = groundeddata.myBool;
-		if (myIsGrounded == true)
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN)
 		{
 			myCanDoubleJump = true;
 			myJumpForce = 0.0f;
@@ -159,7 +163,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 
 	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
 	{
-		if (myIsGrounded == true)
+		if (myControllerConstraints & Physics::EControllerCollisionFlag::eCOLLISION_DOWN)
 		{
 			ApplyJumpForce(myJumpHeight);
 		}
