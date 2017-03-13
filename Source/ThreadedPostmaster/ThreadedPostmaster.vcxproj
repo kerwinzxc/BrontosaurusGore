@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddToCheckPointResetList.h" />
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
     <ClInclude Include="LoadLevelMessage.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddToCheckPointResetList.cpp" />
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />

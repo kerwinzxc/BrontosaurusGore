@@ -15,6 +15,7 @@ enum class eMessageType
 	eNetworkMessage,
 	ePrint,
 	eDebugInfo,
+	eAddToCheckPointRespawn,
 	eLength,
 };
 

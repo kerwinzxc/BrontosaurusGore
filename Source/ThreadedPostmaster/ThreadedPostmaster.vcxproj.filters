@@ -56,6 +56,9 @@
     <Filter Include="Message\NetworkDebugInfo">
       <UniqueIdentifier>{aa667845-5d9b-4273-bf67-8bc1eb5e03c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\AddToCheckPointResetList">
+      <UniqueIdentifier>{2958e61a-0d7c-46f2-8e88-c695585ef664}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="NetworkDebugInfo.cpp">
       <Filter>Message\NetworkDebugInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="AddToCheckPointResetList.cpp">
+      <Filter>Message\AddToCheckPointResetList</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="NetworkDebugInfo.h">
       <Filter>Message\NetworkDebugInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="AddToCheckPointResetList.h">
+      <Filter>Message\AddToCheckPointResetList</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
