@@ -37,27 +37,27 @@ CDebugInfoDrawer::CDebugInfoDrawer(unsigned int aDebugFlags)
 
 	myOutputTexts[eDebugText_FPS] = new CTextInstance();
 	myOutputTexts[eDebugText_FPS]->Init();
-	myOutputTexts[eDebugText_FPS]->SetText("FPS: ");
+	myOutputTexts[eDebugText_FPS]->SetText(L"FPS: ");
 
 	myOutputTexts[eDebugText_LogicFPS] = new CTextInstance();
 	myOutputTexts[eDebugText_LogicFPS]->Init();
-	myOutputTexts[eDebugText_LogicFPS]->SetText("LOGIC FPS: ");
+	myOutputTexts[eDebugText_LogicFPS]->SetText(L"LOGIC FPS: ");
 
 	myOutputTexts[eDebugText_DrawCalls] = new CTextInstance();
 	myOutputTexts[eDebugText_DrawCalls]->Init();
-	myOutputTexts[eDebugText_DrawCalls]->SetText("DRAWCALLS: ");
+	myOutputTexts[eDebugText_DrawCalls]->SetText(L"DRAWCALLS: ");
 
 	myOutputTexts[eDebugText_MemoryUsage] = new CTextInstance();
 	myOutputTexts[eDebugText_MemoryUsage]->Init();
-	myOutputTexts[eDebugText_MemoryUsage]->SetText("MEMORY (MB): ");
+	myOutputTexts[eDebugText_MemoryUsage]->SetText(L"MEMORY (MB): ");
 
 	myOutputTexts[eDebugText_RoundTripTime] = new CTextInstance();
 	myOutputTexts[eDebugText_RoundTripTime]->Init();
-	myOutputTexts[eDebugText_RoundTripTime]->SetText("RTT  (MS): ");
+	myOutputTexts[eDebugText_RoundTripTime]->SetText(L"RTT  (MS): ");
 
 	myOutputTexts[eDebugText_DataAmmountSent] = new CTextInstance();
 	myOutputTexts[eDebugText_DataAmmountSent]->Init();
-	myOutputTexts[eDebugText_DataAmmountSent]->SetText("DATA SENT (MB): ");
+	myOutputTexts[eDebugText_DataAmmountSent]->SetText(L"DATA SENT (MB): ");
 
 	myCountDown = new CU::CountDown();
 
@@ -212,7 +212,7 @@ void CDebugInfoDrawer::UpdateFPSCounter()
 		myRenderThreadTimers->ResetTimer(myUpdateTextTimer_RenderThread);
 
 		const int currentFPS = static_cast<int>(myRenderThreadTimers->GetTimer(myFPSTimer).GetFPS());
-		myOutputTexts[eDebugText_FPS]->SetText(std::string("FPS: ") + std::to_string(currentFPS));
+		myOutputTexts[eDebugText_FPS]->SetText(std::wstring(L"FPS: ") + std::to_wstring(currentFPS));
 
 		if (currentFPS < 30)
 		{
@@ -273,7 +273,7 @@ void CDebugInfoDrawer::UpdateLogicFPSCounter()
 		myLogicThreadTimers->ResetTimer(myUpdateTextTimer);
 
 		const int currentFPS = static_cast<int>(myLogicThreadTimers->GetTimer(myLogicFPSTimer).GetFPS());
-		myOutputTexts[eDebugText_LogicFPS]->SetText(std::string("LOGIC FPS: ") + std::to_string(currentFPS));
+		myOutputTexts[eDebugText_LogicFPS]->SetText(std::wstring(L"LOGIC FPS: ") + std::to_wstring(currentFPS));
 
 		if (currentFPS < 30)
 		{
@@ -301,11 +301,11 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 		int memUsedMB = static_cast<int>(memCounter.WorkingSetSize / 1024 / 1024);
 		if (memUsedkB < 1000)
 		{
-			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::string("MEMORY (kB): ") + std::to_string(memUsedkB));
+			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::wstring(L"MEMORY (kB): ") + std::to_wstring(memUsedkB));
 		}
 		else
 		{
-			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::string("MEMORY (MB): ") + std::to_string(memUsedMB));
+			myOutputTexts[eDebugText_MemoryUsage]->SetText(std::wstring(L"MEMORY (MB): ") + std::to_wstring(memUsedMB));
 		}
 
 		if (memUsedMB > 1500)
@@ -326,17 +326,17 @@ void CDebugInfoDrawer::UpdateMemoryUsage()
 void CDebugInfoDrawer::UpdateNetworkDebug()
 {
 #ifndef _RETAIL_BUILD
-	myOutputTexts[eDebugText_DataAmmountSent]->SetText(std::string("DATA SENT(kB/s) : ") + CU::StringHelper::ToStringWithPrecision(static_cast<float>(myDataSent) / 1000, 3));
+	myOutputTexts[eDebugText_DataAmmountSent]->SetText(std::wstring(L"DATA SENT(kB/s) : ") + CU::StringHelper::ToWStringWithPrecision(static_cast<float>(myDataSent) / 1000, 3));
 	myOutputTexts[eDebugText_DataAmmountSent]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
 
-	myOutputTexts[eDebugText_RoundTripTime]->SetText(std::string("RTT(ms) : ") + std::to_string(myRTT));
+	myOutputTexts[eDebugText_RoundTripTime]->SetText(std::wstring(L"RTT(ms) : ") + std::to_wstring(myRTT));
 	myOutputTexts[eDebugText_RoundTripTime]->SetColor(CU::Vector4f(0.5, 0.5, 0.5, 1));
 #endif //!_RETAIL_BUILD
 }
 
 void CDebugInfoDrawer::UpdateDrawCallsCounter()
 {
-	myOutputTexts[eDebugText_DrawCalls]->SetText(std::string("DRAWCALLS: ") + std::to_string(myDrawCallsCount));
+	myOutputTexts[eDebugText_DrawCalls]->SetText(std::wstring(L"DRAWCALLS: ") + std::to_wstring(myDrawCallsCount));
 	if (myDrawCallsCount > 2000)
 	{
 		myOutputTexts[eDebugText_DrawCalls]->SetColor(CU::Vector4f(CTextInstance::Red.x * 0.5f, CTextInstance::Red.y * 0.5f, CTextInstance::Red.z * 0.5f, 1.f));

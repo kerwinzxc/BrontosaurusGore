@@ -32,7 +32,12 @@ namespace CU
 		bool IsInt(std::string aString);
 
 		std::string ToStringWithPrecision(const float aFloat, const char aPrecision = 3);
+		std::wstring ToWStringWithPrecision(const float aFloat, const char aPrecision = 3);
+
 		std::string ToStringWithPrecision(const double aDouble, const char aPrecision = 3);
+
+		std::string WStringToString(const std::wstring aWString);
+
 	}
 }
 

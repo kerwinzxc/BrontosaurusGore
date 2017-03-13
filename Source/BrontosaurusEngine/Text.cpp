@@ -87,7 +87,7 @@ CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWSt
 	return CU::Vector2f(stringWidth, 0);
 }
 
-void CText::Render(const CU::GrowingArray<std::string>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement)
+void CText::Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement)
 {
 	CU::Vector2f penPosition = aPosition;
 
@@ -96,30 +96,29 @@ void CText::Render(const CU::GrowingArray<std::string>& someStrings, const CU::V
 	for (unsigned int j = 0; j < someStrings.Size(); ++j)
 	{
 
-		const std::string tempString = someStrings[j].c_str();
-		std::wstring wideString(tempString.begin(), tempString.end());
+		const std::wstring tempString = someStrings[j].c_str();
 
-		penPosition.x = aPosition.x + CalculateAdjustment(anAlignement, wideString).x;
+		penPosition.x = aPosition.x + CalculateAdjustment(anAlignement, tempString).x;
 		if (j > 0)
 		{
 			penPosition.y += GetlineHeight();
 		}
 
-		for (size_t i = 0; i < wideString.size(); ++i)
+		for (size_t i = 0; i < tempString.size(); ++i)
 		{
 
 			if (i > 0)
 			{
-				const CU::Vector2i pixelAdvance = myFont.GetAdvance(wideString[i], wideString[i - 1], true);
+				const CU::Vector2i pixelAdvance = myFont.GetAdvance(tempString[i], tempString[i - 1], true);
 				const CU::Vector2f screenAdvance(static_cast<float>(pixelAdvance.x) / WINDOW_SIZE_F.x, static_cast<float>(pixelAdvance.y) / WINDOW_SIZE_F.y);
 				penPosition += screenAdvance;
 			}
 			
 
-			const CU::Vector2i bearing = myFont.GetBearing(wideString[i]);
+			const CU::Vector2i bearing = myFont.GetBearing(tempString[i]);
 			const CU::Vector2f screenBearing(static_cast<float>(bearing.x) / WINDOW_SIZE_F.x, static_cast<float>(-bearing.y) / WINDOW_SIZE_F.y);
 
-			RenderCharacter(wideString[i], penPosition + screenBearing, aColor);
+			RenderCharacter(tempString[i], penPosition + screenBearing, aColor);
 		}
 	}
 }
@@ -129,14 +128,14 @@ float CText::GetlineHeight() const
 	return myFont.GetlineHeight() / WINDOW_SIZE_F.y;
 }
 
-CU::Vector2i CText::CalculateRectPixelSize(const std::string& aText)
+CU::Vector2i CText::CalculateRectPixelSize(const std::wstring& aText)
 {
 	CU::Vector2i rectSize;
-	std::wstring wText(aText.begin(), aText.end());
-	for (size_t i = 0; i < wText.size(); ++i)
+	
+	for (size_t i = 0; i < aText.size(); ++i)
 	{
 		CU::Vector2i charSize;
-		if (!myFont.RequestCharSize(charSize, wText[i]))
+		if (!myFont.RequestCharSize(charSize, aText[i]))
 		{
 			DL_PRINT("failed to get char size for %c", aText[i]);
 			continue;
