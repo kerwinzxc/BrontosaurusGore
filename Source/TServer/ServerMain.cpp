@@ -378,6 +378,12 @@ bool CServerMain::Update()
 
 			CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
 			ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
+
+			SNetworkPackageHeader header = connectMessage->GetHeader();
+			header.myTargetID = ID_ALL_BUT_ME;
+			connectMessage->SetHeader(header);
+
+			SendTo(connectMessage);
 		}
 		break;
 		case ePackageType::ePing:

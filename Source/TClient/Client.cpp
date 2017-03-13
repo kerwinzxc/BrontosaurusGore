@@ -42,6 +42,8 @@
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "../ThreadedPostmaster/NetworkDebugInfo.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
+#include "../Game/GameEventMessenger.h"
+#include "../CommonUtilities/StringHelper.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -225,8 +227,17 @@ void CClient::Update()
 			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
 		}
 		break;
-		case ePackageType::eZero:
 		case ePackageType::eConnect:
+			{
+				CConectMessage* conectMessage = currentMessage->CastTo<CConectMessage>();
+				std::wstring string;
+				string += L"Player ";
+				string += CU::StringToWString(conectMessage->myName);
+				string += L" has conected!";
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+			}
+			break;
+		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;
 		}
