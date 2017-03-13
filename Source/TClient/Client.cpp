@@ -41,6 +41,7 @@
 #include "../Components/ServerPlayerNetworkComponent.h"
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "../ThreadedPostmaster/NetworkDebugInfo.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -76,6 +77,7 @@ void CClient::Disconect()
 	myState = eClientState::DISCONECTED;
 	std::cout << "Disconected from server";
 	myServerIsPinged = false;
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Disconected From Server"));
 	//myChat.StopChat();
 }
 
@@ -88,6 +90,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 		if (myServerPingTime.GetSeconds() >= 10)
 		{
 			std::cout << "Server is not responding" << std::endl;
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Server Not Responding"));
 			Disconect();
 		}
 	}
