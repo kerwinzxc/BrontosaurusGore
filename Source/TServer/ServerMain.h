@@ -59,7 +59,7 @@ public:
 	void UpdateImportantMessages(const CU::Time aDeltaTime);
 	void RecieveImportantResponse(CImportantNetworkMessage* aNetworkMessage);
 
-	void ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort);
+	ClientID ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort);
 	void RecievePingResponse(SNetworkPackageHeader aHeader);
 	void RecievePing(SNetworkPackageHeader aHeader, const char* data, unsigned aDataSize, const char* anIp, const char* aPort);
 
