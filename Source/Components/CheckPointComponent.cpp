@@ -4,13 +4,11 @@
 
 CCheckPointComponent::CCheckPointComponent()
 {
-	//Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this);
 }
 
 
 CCheckPointComponent::~CCheckPointComponent()
 {
-	//Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CCheckPointComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -29,10 +27,4 @@ void CCheckPointComponent::Destroy()
 void CCheckPointComponent::Update(float aDeltaTime)
 {
 	aDeltaTime;
-}
-
-eMessageReturn CCheckPointComponent::DoEvent(const DrawCallsCount& aConsoleCalledupon)
-{
-	
-	return eMessageReturn::eContinue;
 }
