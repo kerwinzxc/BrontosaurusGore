@@ -162,7 +162,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -403,22 +403,11 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
+		controllerDesc.height = 2.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 
-		/*SBoxColliderData data;
-		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
-		data.IsTrigger = false;
-		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data);
-		playerObject->AddComponent(collider);
-
-		SRigidBodyData rigidbodyData;
-		rigidbodyData.freezedRotationAxiees = {1, 0, 1};
-		rigidbodyData.mass = 10.f;
-		rigidbodyData.isKinematic = false;
-		rigidbodyData.IsTrigger = false;
-		CColliderComponent* rididbody = myColliderComponentManager->CreateComponent(&rigidbodyData);
-		playerObject->AddComponent(rididbody);*/
+	
 
 
 		Component::CEnemy::SetPlayer(playerObject);
