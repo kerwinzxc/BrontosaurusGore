@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionLayers.h"
 
 namespace physx
 {
@@ -7,6 +8,9 @@ namespace physx
 
 namespace Physics
 {
+
+	//enum ECollisionLayer;
+
 	class CShape
 	{
 		friend class CPhysics;
@@ -15,8 +19,10 @@ namespace Physics
 	public:
 		CShape(physx::PxShape* aShape);
 		CShape(const CShape& aShape);
-
 		~CShape();
+
+		void SetCollisionLayers(const ECollisionLayer& aLayer);
+		void SetCollisionLayers(const ECollisionLayer& aLayer, const ECollisionLayer& aLayerToCollideWith);
 	private:
 		physx::PxShape* myShape;
 
