@@ -1,12 +1,22 @@
 #pragma once
 #include "../ThreadedPostmaster/Message.h"
-class CAddToCheckPointResetList 
+class CGameObject;
+class CAddToCheckPointResetList : public Postmaster::Message::IMessage
 {
 public:
-	CAddToCheckPointResetList();
+	CAddToCheckPointResetList(CGameObject* aGameObject);
 	~CAddToCheckPointResetList();
 
-private:
+	IMessage* Copy() override;
 
+	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
+
+	inline CGameObject* GetObjectToReset() const;
+private:
+	CGameObject* myObjectToReset;
 };
 
+inline CGameObject* CAddToCheckPointResetList::GetObjectToReset() const
+{
+	return myObjectToReset;
+}

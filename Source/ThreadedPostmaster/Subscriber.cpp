@@ -116,3 +116,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CGameEventMessage& aGameEv
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CAddToCheckPointResetList & aAddToCheckPointResetListMessage)
+{
+	return eMessageReturn::eContinue;
+}
