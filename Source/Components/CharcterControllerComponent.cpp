@@ -7,6 +7,8 @@ CCharcterControllerComponent::CCharcterControllerComponent(Physics::CPhysicsChar
 {
 	myController = aController;
 	myType = eComponentType::eCharacterController;
+	myController->SetCallbackData(this);
+	SetUserData(this);
 }
 
 CCharcterControllerComponent::~CCharcterControllerComponent()
@@ -35,3 +37,24 @@ bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestion
 	}
 	return false;
 }
+
+void CCharcterControllerComponent::OnTriggerEnter(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER ENTERED ME: %d", (int)aOther);
+}
+
+void CCharcterControllerComponent::OnTriggerExit(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER EXITED ME: %d", (int)aOther);
+}
+
+void CCharcterControllerComponent::OnCollisionEnter(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER COLLIDES WITH ME: %d", (int)aOther);
+}
+
+void CCharcterControllerComponent::OnCollisionExit(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER UN-COLLIDES WITH ME: %d", (int)aOther);
+}
+
