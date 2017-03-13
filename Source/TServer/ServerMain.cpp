@@ -90,7 +90,7 @@ void CServerMain::RecieveImportantResponse(CImportantNetworkMessage* aNetworkMes
 
 }
 
-void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
+ClientID CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
 {
 	DL_PRINT("Client trying to connect");
 
@@ -116,6 +116,7 @@ void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName
 	std::string temp;
 	temp += "Client: " + aName + " connected";
 	DL_PRINT(temp.c_str());
+	return newClientId;
 }
 
 void CServerMain::RecievePingResponse(SNetworkPackageHeader aHeader)
@@ -344,12 +345,8 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
-		if (deltaTime.GetSeconds() >= 10)
-		{
-			int karkat = 10;
-		}
+		
 
-		UpdatePing(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime());
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
 		char* currentSenderIp = nullptr;
@@ -382,10 +379,11 @@ bool CServerMain::Update()
 			DL_PRINT(temp.c_str());
 
 			CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
-			ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
+			ClientID clientId = ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
 
 			SNetworkPackageHeader header = connectMessage->GetHeader();
 			header.myTargetID = ID_ALL_BUT_ME;
+			header.mySenderID = clientId;
 			connectMessage->SetHeader(header);
 
 			SendTo(connectMessage);

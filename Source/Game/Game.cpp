@@ -12,13 +12,6 @@
 #include "BackgroundLoadingManager.h"
 #include "ThreadedPostmaster/Postmaster.h"
 
-//TEMP INCLUDES??
-//#include "ThreadedPostmaster/PostOffice.h"
-//#include "PostMaster/SendNetworkMessage.h"
-//#include "TShared/NetworkMessage_LoadLevel.h"
-//#include "TClient/ClientMessageManager.h"
-//#include "PostMaster/Message.h"
-//#include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 CGame::CGame()
 {
