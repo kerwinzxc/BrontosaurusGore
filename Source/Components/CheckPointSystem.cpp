@@ -14,4 +14,5 @@ CCheckPointSystem::~CCheckPointSystem()
 eMessageReturn CCheckPointSystem::DoEvent(const CAddToCheckPointResetList& aAddToCheckPointResetList)
 {
 	myObjectsToReset.Add(aAddToCheckPointResetList.GetObjectToReset());
+	return eMessageReturn::eContinue;
 }
