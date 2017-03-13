@@ -121,15 +121,23 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	SComponentQuestionData data;
 	data.myVector4f = myVelocity * rotation * aDeltaTime.GetSeconds();
 	data.myVector4f.w = aDeltaTime.GetSeconds();
-	float yVelocity = myVelocity.y;
-
-
-
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
 		CU::Vector3f position = parentTransform.GetPosition();
 		parentTransform.SetPosition(data.myVector3f);
+		if (parentTransform.GetPosition().y < -100.0f)
+		{
+			CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+			//parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+			SComponentQuestionData data;
+			data.myVector4f = (teleportPosition - parentTransform.GetPosition()) ;
+			data.myVector4f.w = aDeltaTime.GetSeconds();
+			if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+			{
+				parentTransform.SetPosition(data.myVector3f);
+			}
+		}
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
