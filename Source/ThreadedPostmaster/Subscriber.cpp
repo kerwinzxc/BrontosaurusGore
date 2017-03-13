@@ -111,3 +111,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CNetworkDebugInfo& aDebugI
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CGameEventMessage& aGameEventMessageMessage)
+{
+	return eMessageReturn::eContinue;
+}

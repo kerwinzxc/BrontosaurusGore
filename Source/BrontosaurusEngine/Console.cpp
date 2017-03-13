@@ -33,7 +33,7 @@ CConsole::CConsole()
 	myCurrentText->SetPosition(CU::Vector2f(0.2f,0.3f));
 	mySuggestedCommand->SetColor(CTextInstance::Red);
 	mySuggestedCommand->SetPosition(myCurrentText->GetPosition() + CU::Vector2f(0.0f, 0.05f));
-	myCurrentText->SetText("");
+	myCurrentText->SetText(L"");
 	myCurrentText->Init();
 	mySuggestedCommand->Init();
 }
@@ -82,7 +82,7 @@ bool CConsole::Update(float aDeltaTime)
 			}
 			else
 			{
-				myCurrentText->SetText(myCurrentText->GetText() + '|');
+				myCurrentText->SetText(myCurrentText->GetText() + L'|');
 			}
 			myHaveIAfterCurrentText = !myHaveIAfterCurrentText;
 		}
@@ -136,7 +136,8 @@ void CConsole::UpdateCommandSuggestions(const std::string & aStringToCompare)
 		if (result < finalResultDifferance)
 		{
 			finalResultDifferance = result;
-			mySuggestedCommand->SetText(it->first.c_str());
+			std::string temp(it->first.c_str());
+			mySuggestedCommand->SetText(CU::StringToWString(temp));
 		}
 	}
 }
@@ -216,28 +217,30 @@ eMessageReturn CConsole::TakeKeyBoardInputPressedChar(const char aKey)
 			{
 				myTextLog[i]->SetPosition(myTextLog[i]->GetPosition() + CU::Vector2f(0.0f, -0.05f));
 			}
-			std::string error = CheckIfTextIsCommand(myCurrentText->GetText());
+			std::string error = CheckIfTextIsCommand(CU::StringHelper::WStringToString(myCurrentText->GetText()));
 			DL_PRINT(error.c_str());
-			myCurrentText->SetText("");
-			mySuggestedCommand->SetText("");
+			myCurrentText->SetText(L"");
+			mySuggestedCommand->SetText(L"");
 		}
 		else if (aKey == '\b')
 		{
 			myCurrentText->SetText(myCurrentText->GetText().substr(0, myCurrentText->GetText().size() - 1));
-			if (myCurrentText->GetText() == "")
+			if (myCurrentText->GetText() == L"")
 			{
-				mySuggestedCommand->SetText("");
+				mySuggestedCommand->SetText(L"");
 			}
 		}
 		else if (aKey == '\t')
 		{
 			myCurrentText->SetText(mySuggestedCommand->GetText());
-			mySuggestedCommand->SetText("");
+			mySuggestedCommand->SetText(L"");
 		}
 		else
 		{
-			myCurrentText->SetText(myCurrentText->GetText() + aKey);
-			UpdateCommandSuggestions(myCurrentText->GetText().c_str());
+			std::string temp;
+			temp += aKey;
+			myCurrentText->SetText(myCurrentText->GetText() + CU::StringToWString(temp));
+			UpdateCommandSuggestions(CU::StringHelper::WStringToString(myCurrentText->GetText()).c_str());
 		}
 
 		return eMessageReturn::eStop;
@@ -253,7 +256,7 @@ eMessageReturn CConsole::TakeKeyBoardInput(const CU::eKeys aKey)
 		{
 		case CU::eKeys::UP:
 		{
-			if (myCurrentText->GetText().empty() || myCurrentText->GetText() == "|")
+			if (myCurrentText->GetText().empty() || myCurrentText->GetText() == L"|")
 			{
 				if (!myTextLog.Empty())
 				{
@@ -431,9 +434,9 @@ std::string CConsole::ParseAndRunFunction(const std::string& aString)
 
 void CConsole::Print(const std::string & aText)
 {
-	myCurrentText->SetText(aText);
+	myCurrentText->SetText(CU::StringToWString(aText));
 	myTextLog.Add(new CTextInstance(*myCurrentText));
-	std::string error = CheckIfTextIsCommand(myCurrentText->GetText());
+	std::string error = CheckIfTextIsCommand(CU::StringHelper::WStringToString(myCurrentText->GetText()));
 	DL_PRINT(error.c_str());
 	for (unsigned short i = 0; i < myTextLog.Size(); i++)
 	{

@@ -30,7 +30,12 @@ CColliderComponent::~CColliderComponent()
 
 void CColliderComponent::UpdatePosition()
 {
-	GetParent()->SetWorldTransformation(myActor->GetTransformation());
+	CU::Matrix44f transform = myActor->GetTransformation();
+	const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
+	const CU::Vector3f scale = parentTransform.GetScale();
+	transform.SetScale(scale);
+
+	GetParent()->SetWorldTransformation(transform);
 	SComponentMessageData data;
 	data.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);

@@ -1,9 +1,8 @@
 #pragma once
 #include "../BrontosaurusEngine/TextInstance.h"
-#include "../PostMaster/Subscriber.h"
-#include "Tween.h"
-#include "Queue.h"
-#include "ThreadedPostmaster/Subscriber.h"
+#include "../CommonUtilities/Tween.h"
+#include "../CommonUtilities/Queue.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 class CGameEventMessenger :public Postmaster::ISubscriber
 {
@@ -16,9 +15,11 @@ public:
 	void Update(const float aDeltaTime);
 	void Render();
 
-	void AddMessage(CU::GrowingArray<std::string>someText);
+	void AddMessage(CU::GrowingArray<std::wstring>someText);
+
+	eMessageReturn DoEvent(const CGameEventMessage & aGameEventMessageMessage) override;
 private:
-	void SetMessage(CU::GrowingArray<std::string>someStrings);
+	void SetMessage(CU::GrowingArray<std::wstring>someStrings);
 
 	CU::Tween* myInTweener;
 	CU::Tween* myOutTweener;
@@ -28,6 +29,6 @@ private:
 
 	CTextInstance myText;
 
-	CU::Queue<CU::GrowingArray<std::string>> myTextQueue;
+	CU::Queue<CU::GrowingArray<std::wstring>> myTextQueue;
 };
 

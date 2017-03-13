@@ -20,7 +20,7 @@ namespace GUI
 		myTextInstance->SetPosition(aDecoratedWidget->GetWorldPosition());
 		if (aTooltipText != nullptr)
 		{
-			myTextInstance->SetText(aTooltipText->c_str());
+			myTextInstance->SetText(CU::StringToWString(*aTooltipText).c_str());
 		}
 		myUpdateTextfunctionTimer.Init();
 		myBackGround = new CSpriteInstance("Sprites/tooltipBackground.dds", myTextInstance->GetQuadSizeNormalized(), aDecoratedWidget->GetWorldPosition());
@@ -41,7 +41,7 @@ namespace GUI
 			std::string updatedTooltipText("");
 			if (myGetTextFunction(updatedTooltipText))
 			{
-				myTextInstance->SetText(updatedTooltipText.c_str());
+				myTextInstance->SetText(CU::StringToWString(updatedTooltipText));
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace GUI
 				std::string updatedTooltipText("");
 				if (myGetTextFunction(updatedTooltipText))
 				{
-					myTextInstance->SetText(updatedTooltipText.c_str());
+					myTextInstance->SetText(CU::StringToWString(updatedTooltipText));
 				}
 			}
 		}

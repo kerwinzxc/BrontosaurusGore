@@ -1,5 +1,7 @@
+#pragma once
 #include "../StateStack/StateStack.h"
 #include "../TClient/Client.h"
+#include "GameEventMessenger.h"
 
 namespace CU
 {
@@ -19,4 +21,5 @@ public:
 private:
 	StateStack myStateStack;
 	CClient myClient;
+	CGameEventMessenger myGameEventMessenger;
 };

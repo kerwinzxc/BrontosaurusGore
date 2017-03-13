@@ -37,6 +37,7 @@ class CRenderer : public Postmaster::ISubscriber
 public:
 	CRenderer();
 	~CRenderer();
+
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void Render();
@@ -45,10 +46,10 @@ public:
 	inline bool GetIsRunning();
 	inline SRendererSettings& GetSettings();
 
-	inline const CU::Camera& GetCamera();
+	//inline const CU::Camera& GetCamera();
 
 private:
-	void HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount);
+	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	
 	void Bloom();
 	void HDR();
@@ -109,8 +110,6 @@ private:
 	struct SGUIData
 	{
 		CRenderPackage myInputPackage;
-		CU::StaticArray<CRenderPackage, 3> myDownScalePackages;
-		bool myShouldDownScale;
 	} myGUIData;
 
 private:
@@ -123,10 +122,10 @@ private:
 
 	CRenderPackage* renderTo;
 
-	CU::StaticArray< ID3D11RasterizerState*, static_cast<int>(eRasterizerState::eSize)> myRasterizerStates;
-	CU::StaticArray< ID3D11DepthStencilState*, static_cast<int>(eDepthStencilState::eSize)> myDepthStencilStates;
-	CU::StaticArray< ID3D11BlendState*, static_cast<int>(eBlendState::eSize)> myBlendStates;
-	CU::StaticArray< ID3D11SamplerState*, static_cast<int>(eSamplerState::eSize)> mySamplerStates;
+	CU::StaticArray<ID3D11RasterizerState*, static_cast<int>(eRasterizerState::eSize)> myRasterizerStates;
+	CU::StaticArray<ID3D11DepthStencilState*, static_cast<int>(eDepthStencilState::eSize)> myDepthStencilStates;
+	CU::StaticArray<ID3D11BlendState*, static_cast<int>(eBlendState::eSize)> myBlendStates;
+	CU::StaticArray<ID3D11SamplerState*, static_cast<int>(eSamplerState::eSize)> mySamplerStates;
 	
 	CU::TimerManager myTimers;
 
@@ -143,8 +142,6 @@ private:
 	CU::TimerHandle myOncePerFrameBufferTimer;
 	CU::TimerHandle myFireTimer;
 	bool myIsRunning;
-
-	// Inherited via Subscriber
 };
 
 inline SRendererSettings& CRenderer::GetSettings()
@@ -157,8 +154,8 @@ inline bool CRenderer::GetIsRunning()
 	return myIsRunning;
 }
 
-inline const CU::Camera & CRenderer::GetCamera()
-{
-	return myCamera;
-}
+//inline const CU::Camera & CRenderer::GetCamera()
+//{
+//	return myCamera;
+//}
 

@@ -24,7 +24,6 @@ public:
 	CTextInstance();
 	CTextInstance(const CTextInstance& aTextInstance);
 	~CTextInstance();
-
 	void Init(const std::string& aFontPath = "Default");
 	void Render() const;
 
@@ -36,14 +35,14 @@ public:
 	inline void SetColor(const CU::Vector4f& aColor);
 	inline const CU::Vector4f& GetColor() const;
 
-	bool SetTextLine(const unsigned int aLineNumber, const std::string& aString);
-	bool SetTextLine(const unsigned int aLineNumber, std::string&& aString);
-	void SetTextLines(const CU::GrowingArray<std::string>& someLines);
-	void SetTextLines(CU::GrowingArray<std::string>&& someLines);
-	const CU::GrowingArray<std::string> &GetTextLines();
+	bool SetTextLine(const unsigned int aLineNumber, const std::wstring& aString);
+	bool SetTextLine(const unsigned int aLineNumber, std::wstring&& aString);
+	void SetTextLines(const CU::GrowingArray<std::wstring>& someLines);
+	void SetTextLines(CU::GrowingArray<std::wstring>&& someLines);
+	const CU::GrowingArray<std::wstring> &GetTextLines();
 
-	inline void SetText(const std::string& aString);
-	inline std::string GetText() const;
+	inline void SetText(const std::wstring& aString);
+	inline std::wstring GetText() const;
 	float GetlineHeight() const;
 
 	CU::Vector2f GetQuadSizeNormalized() const;
@@ -52,8 +51,8 @@ public:
 
 	CTextInstance& operator=(const CTextInstance& aTextInstance);
 private:
-	//std::string myString;
-	CU::GrowingArray<std::string> myStrings;
+	//std::wstring myString;
+	CU::GrowingArray<std::wstring> myStrings;
 	CU::Vector4f myColor;
 	CU::Vector2f myPosition;
 	CText* myText;
@@ -82,7 +81,7 @@ inline const CU::Vector4f& CTextInstance::GetColor() const
 	return myColor;
 }
 
-inline void CTextInstance::SetText(const std::string& aString)
+inline void CTextInstance::SetText(const std::wstring& aString)
 {
 
 	myStrings.RemoveAll();
@@ -92,7 +91,7 @@ inline void CTextInstance::SetText(const std::string& aString)
 		if (aString.at(i) == '\n')
 		{
 			DL_PRINT_WARNING("Warning slow! consider using different set text method");
-			const std::string explainingString(aString.substr(lastPosition, i - lastPosition));
+			const std::wstring explainingString(aString.substr(lastPosition, i - lastPosition));
 			myStrings.Add(explainingString);
 			lastPosition = i + 1;
 		}
@@ -104,15 +103,15 @@ inline void CTextInstance::SetText(const std::string& aString)
 	}
 	else
 	{
-		const  std::string lastExplaingString(aString.substr(lastPosition, aString.size() - lastPosition));
+		const  std::wstring lastExplaingString(aString.substr(lastPosition, aString.size() - lastPosition));
 		myStrings.Add(lastExplaingString);
 	}
 }
 
-inline std::string CTextInstance::GetText() const
+inline std::wstring CTextInstance::GetText() const
 {
 
-	std::string string;
+	std::wstring string;
 	for (unsigned int i = 0; i < myStrings.Size(); ++i)
 	{
 		if (i != 0)

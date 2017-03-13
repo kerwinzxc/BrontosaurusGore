@@ -21,6 +21,7 @@ class CSpawnOtherPlayerMessage;
 class COtherPlayerSpawned;
 class CChangeLevel;
 class CNetworkDebugInfo;
+class CGameEventMessage;
 
 namespace Postmaster
 {
@@ -54,5 +55,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const COtherPlayerSpawned& aOtherPlayerSpawnedMessage);
 		virtual eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage);
 		virtual eMessageReturn DoEvent(const CNetworkDebugInfo& aDebugInfo);
+		virtual eMessageReturn DoEvent(const CGameEventMessage & aGameEventMessageMessage);
 	};
 }

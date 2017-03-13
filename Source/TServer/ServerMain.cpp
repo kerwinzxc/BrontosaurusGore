@@ -90,7 +90,7 @@ void CServerMain::RecieveImportantResponse(CImportantNetworkMessage* aNetworkMes
 
 }
 
-void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
+ClientID CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort)
 {
 	DL_PRINT("Client trying to connect");
 
@@ -116,6 +116,7 @@ void CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string aName
 	std::string temp;
 	temp += "Client: " + aName + " connected";
 	DL_PRINT(temp.c_str());
+	return newClientId;
 }
 
 void CServerMain::RecievePingResponse(SNetworkPackageHeader aHeader)
@@ -344,7 +345,8 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
-		UpdatePing(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime());
+		
+
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
 		char* currentSenderIp = nullptr;
@@ -377,21 +379,20 @@ bool CServerMain::Update()
 			DL_PRINT(temp.c_str());
 
 			CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
-			ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
+			ClientID clientId = ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
+
+			SNetworkPackageHeader header = connectMessage->GetHeader();
+			header.myTargetID = ID_ALL_BUT_ME;
+			header.mySenderID = clientId;
+			connectMessage->SetHeader(header);
+
+			SendTo(connectMessage);
 		}
 		break;
 		case ePackageType::ePing:
 		{
-			//std::cout << "Ping message recievd from client " << std::endl;
-			//DL_PRINT("SERVER:Ping");
-			SNetworkPackageHeader newHeader;
-			newHeader.myPackageType = (ePackageType::ePingResponse);
-			newHeader.mySenderID = ID_SERVER;
-			newHeader.myTargetID = currentMessage->GetHeader().mySenderID;
-			newHeader.myTimeStamp = 100;
-
-			CNetworkMessage_PingResponse* newMessage = myMessageManager->CreateMessage<CNetworkMessage_PingResponse>(newHeader);
-			myNetworkWrapper.Send(newMessage, currentSenderIp, currentSenderPort);
+			CNetworkMessage_PingResponse* pingResponse = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>(currentMessage->GetHeader().mySenderID);
+			SendTo(pingResponse);
 		}
 		break;
 		case ePackageType::ePingResponse:

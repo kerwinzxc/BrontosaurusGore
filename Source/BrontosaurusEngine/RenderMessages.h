@@ -305,7 +305,7 @@ struct SRenderTextMessage : SRenderMessage
 {
 	SRenderTextMessage();
 	CU::Vector4f myColor;
-	CU::GrowingArray<std::string> myStrings;
+	CU::GrowingArray<std::wstring> myStrings;
 	CU::Vector2f myPosition;
 	CText *myText;
 	CU::Vector2f myLineHeight;
