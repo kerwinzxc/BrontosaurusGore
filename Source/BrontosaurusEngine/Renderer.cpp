@@ -108,6 +108,7 @@ void CRenderer::Render()
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
 	myGUIData.myInputPackage.Clear();
+	myAntialiasingPackage.Clear();
 
 	renderTo = (mySettings.HDR == true) ? &myHDRData.myInputPackage : &myIntermediatePackage;
 	renderTo->Clear();
@@ -155,10 +156,12 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
-
+	myAntialiasingPackage.Activate();
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAA, &myIntermediatePackage);
+	myIntermediatePackage.Activate();
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myAntialiasingPackage);
 	RenderGUI();
 	//DoColorGrading();
-
 
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
@@ -291,6 +294,7 @@ void CRenderer::InitPackages()
 		myIntermediatePackage.Init(windowSize);
 	}
 
+	myAntialiasingPackage.Init(windowSize);
 
 	{
 		myDownsampleData.downsamplePackages.Init(16);
