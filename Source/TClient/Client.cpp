@@ -89,7 +89,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 	{
 		myServerPingTime += aTime.GetSeconds();
 
-		if (myServerPingTime.GetSeconds() >= 10)
+		if (myServerPingTime.GetSeconds() >= 20)
 		{
 			std::cout << "Server is not responding" << std::endl;
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Server Not Responding"));
@@ -100,7 +100,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 
 void CClient::Ping()
 {
-	if (myServerIsPinged == false)
+	if (myState == eClientState::CONECTED && myServerIsPinged == false)
 	{
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
@@ -229,10 +229,10 @@ void CClient::Update()
 		break;
 		case ePackageType::eConnect:
 			{
-				CConectMessage* conectMessage = currentMessage->CastTo<CConectMessage>();
+				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
 				std::wstring string;
 				string += L"Player ";
-				string += CU::StringToWString(conectMessage->myName);
+				string += CU::StringToWString(conectMessage->myClientName);
 				string += L" has conected!";
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
 			}

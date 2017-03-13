@@ -1,7 +1,7 @@
 #pragma once
 #include "../BrontosaurusEngine/TextInstance.h"
-#include "Tween.h"
-#include "Queue.h"
+#include "../CommonUtilities/Tween.h"
+#include "../CommonUtilities/Queue.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 
 class CGameEventMessenger :public Postmaster::ISubscriber

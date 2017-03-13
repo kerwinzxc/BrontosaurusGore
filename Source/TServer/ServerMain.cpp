@@ -344,6 +344,11 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
+		if (deltaTime.GetSeconds() >= 10)
+		{
+			int karkat = 10;
+		}
+
 		UpdatePing(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime());
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
@@ -388,16 +393,8 @@ bool CServerMain::Update()
 		break;
 		case ePackageType::ePing:
 		{
-			//std::cout << "Ping message recievd from client " << std::endl;
-			//DL_PRINT("SERVER:Ping");
-			SNetworkPackageHeader newHeader;
-			newHeader.myPackageType = (ePackageType::ePingResponse);
-			newHeader.mySenderID = ID_SERVER;
-			newHeader.myTargetID = currentMessage->GetHeader().mySenderID;
-			newHeader.myTimeStamp = 100;
-
-			CNetworkMessage_PingResponse* newMessage = myMessageManager->CreateMessage<CNetworkMessage_PingResponse>(newHeader);
-			myNetworkWrapper.Send(newMessage, currentSenderIp, currentSenderPort);
+			CNetworkMessage_PingResponse* pingResponse = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>(currentMessage->GetHeader().mySenderID);
+			SendTo(pingResponse);
 		}
 		break;
 		case ePackageType::ePingResponse:
