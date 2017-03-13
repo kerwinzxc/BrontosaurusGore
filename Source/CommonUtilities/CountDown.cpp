@@ -31,7 +31,7 @@ namespace CU
 		myOutputText = new CTextInstance();
 		myOutputText->Init();
 		myOutputText->SetPosition(CU::Vector2f(0.1f, 0.9f));
-		myOutputText->SetText("Time left until deadline:");
+		myOutputText->SetText(L"Time left until deadline:");
 	}
 
 	CountDown::~CountDown()
@@ -65,27 +65,27 @@ namespace CU
 				myOutputText->SetColor(CTextInstance::Yellow);
 			}
 
-			std::string timeString = "";
+			std::wstring timeString = L"";
 			if (years > 0)
 			{
 				timeString += years;
-				timeString += " years, ";
+				timeString += L" years, ";
 			}
 			timeString += days;
 			if (days > 1)
 			{
-				timeString += " days, ";
+				timeString += L" days, ";
 			}
 			else
 			{
-				timeString += " day, ";
+				timeString += L" day, ";
 			}
 			timeString += hours;
-			timeString += " hours, ";
+			timeString += L" hours, ";
 			timeString += minutes;
-			timeString += " minutes, and ";
+			timeString += L" minutes, and ";
 			timeString += seconds;
-			timeString += " seconds.";
+			timeString += L" seconds.";
 
 			myOutputText->SetTextLine(1, std::move(timeString));
 		}

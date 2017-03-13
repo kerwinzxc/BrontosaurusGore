@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
+    <ClInclude Include="GameEventMessage.h" />
     <ClInclude Include="LoadLevelMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="NarrowcastStruct.h" />
@@ -141,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
+    <ClCompile Include="GameEventMessage.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />
     <ClCompile Include="NetworkDebugInfo.cpp" />
     <ClCompile Include="OtherPlayerSpawned.cpp" />

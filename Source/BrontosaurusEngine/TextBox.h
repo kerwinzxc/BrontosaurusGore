@@ -10,7 +10,7 @@ public:
 	CTextBox();
 	~CTextBox();
 
-	void AddText(std::string myString);
+	void AddText(std::wstring myString);
 	void NewLine();
 	void RemoveLine();
 	void Clear();
