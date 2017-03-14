@@ -7,7 +7,7 @@ namespace CU
 	class Time
 	{
 	public:
-		Time(const TimeUnit someTime);
+		Time(const TimeUnit someTime = 0);
 		~Time();
 
 		Time operator+(const Time& aRight) const;
