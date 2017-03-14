@@ -10,12 +10,7 @@ struct SRigidBodyData : public SColliderData
 	float useGravity;
 	float isKinematic;
 
-	CU::Vector3i freezedRotationAxiees;
-
-	//union
-	//{
-	//	SBoxColliderData boxData;
-	//};
+	CU::Vector3<bool> freezedRotationAxiees;
 };
 
 

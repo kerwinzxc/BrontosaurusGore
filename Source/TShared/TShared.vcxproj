@@ -148,6 +148,7 @@
     <ClInclude Include="NetworkMessage_ChatMessage.h" />
     <ClInclude Include="NetworkMessage_ClientReady.h" />
     <ClInclude Include="NetworkMessage_ConectResponse.h" />
+    <ClInclude Include="NetworkMessage_Disconected.h" />
     <ClInclude Include="NetworkMessage_LoadLevel.h" />
     <ClInclude Include="NetworkMessage_Ping.h" />
     <ClInclude Include="NetworkMessage_PingResponse.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="NetworkMessage_ChatMessage.cpp" />
     <ClCompile Include="NetworkMessage_ClientReady.cpp" />
     <ClCompile Include="NetworkMessage_ConectResponse.cpp" />
+    <ClCompile Include="NetworkMessage_Disconected.cpp" />
     <ClCompile Include="NetworkMessage_LoadLevel.cpp" />
     <ClCompile Include="NetworkMessage_Ping.cpp" />
     <ClCompile Include="NetworkMessage_PingResponse.cpp" />

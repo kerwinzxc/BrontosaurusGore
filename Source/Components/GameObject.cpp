@@ -163,17 +163,6 @@ void CGameObject::ComponentReceive(const eComponentMessageType aMessageType, con
 			myComponents[i]->Receive(aMessageType, aMessageData);
 		}
 	}
-
-	//CComponent* test = nullptr;
-	//for (unsigned int i = 0; i < myComponents.Size(); ++i)
-	//{
-	//	if(dynamic_cast<CGameObject*>(myComponents[i]) != nullptr)
-	//	{
-	//		return;
-	//	}
-	//	test = myComponents[i];
-	//	test->Receive(aMessageType, aMessageData);
-	//}
 }
 
 bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)

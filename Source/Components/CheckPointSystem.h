@@ -8,6 +8,7 @@ public:
 	~CCheckPointSystem();
 
 	eMessageReturn DoEvent(const CAddToCheckPointResetList& aAddToCheckPointResetList) override;
+	eMessageReturn DoEvent(const CSetAsNewCheckPointMessage& aSetAsNewCheckPointMessage) override;
 private:
 	CU::GrowingArray<CGameObject*> myObjectsToReset;
 	CU::Vector3f myRespawnPlayerPosition;

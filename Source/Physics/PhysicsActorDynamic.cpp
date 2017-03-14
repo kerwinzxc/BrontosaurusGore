@@ -20,17 +20,21 @@ namespace Physics
 		myDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::Enum::eKINEMATIC, aIsKinematic);
 	}
 
-	void CPhysicsActorDynamic::SetRotationLock(const CU::Vector3i& aRotationLocks)
+	void CPhysicsActorDynamic::AddForce(const CU::Vector3f& aForce)
 	{
-		bool x, y, z = y = x = false;
-		x = (bool)aRotationLocks.x;
-		y = (bool)aRotationLocks.y;
-		z = (bool)aRotationLocks.z;
+		myDynamicActor->addForce({ aForce.x, aForce.y, aForce.z });
+	}
 
+	void CPhysicsActorDynamic::AddTorque(const CU::Vector3f& aTorque)
+	{
+		myDynamicActor->addTorque({ aTorque.x, aTorque.y, aTorque.z });
+	}
 
-		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, x);
-		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, y);
-		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, z);
+	void CPhysicsActorDynamic::SetRotationLock(const CU::Vector3<bool>& aRotationLocks)
+	{
+		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, aRotationLocks.x);
+		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, aRotationLocks.y);
+		myDynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, aRotationLocks.z);
 	}
 
 	void CPhysicsActorDynamic::SetShape(CShape* aShape)

@@ -5,6 +5,7 @@
 namespace Physics
 {
 	class CPhysicsCharacterController;
+	class CPhysicsCallbackActor;
 }
 
 class CCharcterControllerComponent : public CComponent, public Physics::IPhysicsCallback
@@ -15,10 +16,10 @@ public:
 
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 
-	void OnTriggerEnter(const IPhysicsCallback* aOther) override;
-	void OnTriggerExit(const IPhysicsCallback* aOther) override;
-	void OnCollisionEnter(const IPhysicsCallback* aOther) override;
-	void OnCollisionExit(const IPhysicsCallback* aOther) override;
+	void OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnTriggerExit(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnCollisionExit(Physics::CPhysicsCallbackActor* aOther) override;
 
 private:
 	Physics::CPhysicsCharacterController* myController;

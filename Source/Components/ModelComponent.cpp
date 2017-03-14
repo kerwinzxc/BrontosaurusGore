@@ -60,7 +60,7 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	{
 	
 	case eComponentMessageType::eAddComponent:
-		if (aData.myComponentTypeAdded != eComponentType::eModel) break; //else: fall through
+		
 	case eComponentMessageType::eMoving:
 		myModel->SetTransformation(GetToWorldTransform());
 		break;

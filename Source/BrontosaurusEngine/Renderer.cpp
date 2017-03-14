@@ -40,6 +40,7 @@ CRenderer::CRenderer()
 	mySettings.Bloom = false;
 	mySettings.Motionblur = false;
 	mySettings.CromaticAberration = false;
+	mySettings.FXAA = true;
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
@@ -156,10 +157,8 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
-	myAntialiasingPackage.Activate();
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAA, &myIntermediatePackage);
-	myIntermediatePackage.Activate();
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myAntialiasingPackage);
+	
+	AntiAliasing();
 	RenderGUI();
 	//DoColorGrading();
 
@@ -223,6 +222,18 @@ void CRenderer::MotionBlur()
 		myIntermediatePackage.Activate();
 		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eMotionBlur, &myMotionBlurData.inputPackage, &myMotionBlurData.velocityPackage);
 	}
+}
+
+void CRenderer::AntiAliasing()
+{
+	if(mySettings.FXAA == true)
+	{
+		myAntialiasingPackage.Activate();
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAA, &myIntermediatePackage);
+		myIntermediatePackage.Activate();
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myAntialiasingPackage);
+	}
+	
 }
 
 void CRenderer::RenderGUI()

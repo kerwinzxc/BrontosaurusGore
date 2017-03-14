@@ -27,6 +27,7 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
+#include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -34,7 +35,7 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 {
 	KLoader::CKevinLoader::CreateInstance();
 	CServerMessageManager::CreateInstance(*this);
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this,eMessageType::eNetworkMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 
 	myIsRunning = false;
 	myCanQuit = false;
@@ -121,19 +122,10 @@ ClientID CServerMain::ConnectClient(SNetworkPackageHeader aHeader, std::string a
 
 void CServerMain::RecievePingResponse(SNetworkPackageHeader aHeader)
 {
-	//std::cout << "Recieved ping response from ";
-
-	/*if (myClients.count(aHeader.mySenderID) > 0)
-	{
-		std::cout << myClients.at(aHeader.mySenderID).myName << std::endl;
-	}
-	else
-	{
-		std::cout << "unknown" << std::endl;
-	}*/
 
 	if (myPendingPings.count(aHeader.mySenderID) > 0)
 	{
+		myClients.at(aHeader.mySenderID).ResponseTime = myPendingPings.at(aHeader.mySenderID);
 		myPendingPings.erase(aHeader.mySenderID);
 	}
 }
@@ -141,16 +133,12 @@ void CServerMain::RecievePingResponse(SNetworkPackageHeader aHeader)
 
 void CServerMain::Ping(ClientID aClientID)
 {
-	SNetworkPackageHeader header;
-	header.myPackageType = (ePackageType::ePing);
-	header.mySenderID = ID_SERVER;
-	header.myTargetID = aClientID;
+	//Ping was my best best friend growing up
+	//though Ping stole my gir....
+	CNetworkMessage_Ping* pingMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>(aClientID);
 
-	SClientData client = myClients[aClientID];
+	SendTo(pingMessage);
 
-	CNetworkMessage_Ping* messagePing = myMessageManager->CreateMessage<CNetworkMessage_Ping>(header);
-
-	myNetworkWrapper.Send(messagePing, client.myIP.c_str(), client.myPort.c_str());
 	myPendingPings[aClientID] = 0;
 }
 
@@ -185,7 +173,7 @@ void CServerMain::DisconectClient(ClientID aClient)
 	header.myTimeStamp = GetCurrentTime();
 
 	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>(header);
-	leaveMessage->myChatMessage = ("Server: " + leftClientsName + " has lef the server");
+	leaveMessage->myChatMessage = ("Server: " + leftClientsName + " has left the server");
 
 
 	for (auto client : myClients)
@@ -197,11 +185,14 @@ void CServerMain::DisconectClient(ClientID aClient)
 
 void CServerMain::UpdatePing(CU::Time aDeltaTime)
 {
-	/*for (auto pendingPing : myPendingPings)
+	for (auto pendingPing : myPendingPings)
 	{
-		myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
+		if (myPendingPings[pendingPing.first].GetSeconds() >= 0)
+		{
+			myPendingPings[pendingPing.first] += aDeltaTime.GetSeconds();
+		}
 
-		if (myPendingPings[pendingPing.first] >= 100)
+		if (myPendingPings[pendingPing.first].GetSeconds() >= 10)
 		{
 			std::string temp;
 			temp += "Client: " + myClients[pendingPing.first].myName + " not responding";
@@ -209,7 +200,7 @@ void CServerMain::UpdatePing(CU::Time aDeltaTime)
 			DisconectClient(pendingPing.first);
 			break;
 		}
-	}*/
+	}
 }
 
 void CServerMain::SendTo(CNetworkMessage* aNetworkMessage, bool aIsResend)
@@ -307,7 +298,7 @@ void CServerMain::StartGame()
 
 	CNetworkMessage_ServerReady* message = myMessageManager->CreateMessage<CNetworkMessage_ServerReady>(header);
 
-	message->SetNumberOfPlayers(myClients.size()-1);
+	message->SetNumberOfPlayers(myClients.size() - 1);
 
 	SendTo(message);
 
@@ -345,7 +336,7 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
-		
+
 
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
@@ -468,7 +459,7 @@ bool CServerMain::Update()
 
 
 				SendTo(loadLevelMessage);
-				
+
 			}
 			break;
 		case ePackageType::eClientReady:
@@ -482,6 +473,10 @@ bool CServerMain::Update()
 				}*/
 			}
 			break;
+		case ePackageType::eDisconected:
+		{
+			DisconectClient(currentMessage->GetHeader().mySenderID);
+		}
 		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;
@@ -494,6 +489,7 @@ bool CServerMain::Update()
 		{
 			Ping();
 			currentTime = 0.f;
+			PrintDebugInfo();
 		}
 
 		if (myServerState == eServerState::eLoadingLevel)
@@ -539,4 +535,21 @@ eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetow
 	}*/
 
 	return eMessageReturn::eContinue;
+}
+
+void CServerMain::PrintDebugInfo()
+{
+	std::wstring dataInfo;
+	dataInfo = L"Data sent(kB/s): ";
+	dataInfo += CU::StringHelper::ToWStringWithPrecision(myNetworkWrapper.GetAndClearDataSent(), 3);
+	DL_PRINT(dataInfo.c_str());
+
+	for (auto client : myClients)
+	{
+		std::wstring clientData = L"Client ";
+		clientData += CU::StringToWString(client.second.myName);
+		clientData += L" Ping(ms): ";
+		clientData += CU::StringHelper::ToWStringWithPrecision(client.second.ResponseTime.GetMilliseconds(), 1);
+		DL_PRINT(clientData.c_str());
+	}
 }

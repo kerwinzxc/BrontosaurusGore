@@ -16,5 +16,6 @@ enum class ePackageType: __int8
 	eServerReady,
 	eSpawnOtherPlayer,
 	eWeaponShoot,
+	eDisconected,
 	eSize,
 };

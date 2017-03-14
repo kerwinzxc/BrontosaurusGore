@@ -15,12 +15,14 @@ namespace Physics
 		~CPhysicsActorDynamic();
 
 		void SetIsKinematic(const bool aIsKinematic);
-		inline const EActorType GetType() const override { return EActorType::eDynamic; }
+		void AddForce(const CU::Vector3f& aForce);
+		void AddTorque(const CU::Vector3f& aTorque);
 
-		void SetRotationLock(const CU::Vector3i& aRotationLocks);
-
+		void SetRotationLock(const CU::Vector3<bool>& aRotationLocks);
 		void SetShape(CShape* aShape) override;
 		void SetMass(const float aMass);
+
+		inline const EActorType GetType() const override { return EActorType::eDynamic; };
 	private:
 		physx::PxRigidDynamic* myDynamicActor;
 		float myMass;
