@@ -131,6 +131,7 @@ private:
 
 	CRenderPackage myIntermediatePackage;
 	CRenderPackage myBackBufferPackage;
+	CRenderPackage myAntialiasingPackage;
 
 	CFullScreenHelper myFullScreenHelper;
 	SRendererSettings mySettings;

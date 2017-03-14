@@ -16,23 +16,57 @@
 #include "Shape.h"
 #include "PhysicsActorDynamic.h"
 #include "PhysicsActorStatic.h"
+#include "SimulationEventCallback.h"
+#include "CollisionLayers.h"
 
 namespace Physics
 {
 	using namespace physx;
 
+	namespace
+	{
+		physx::PxFilterFlags CollisionFilterShader(
+			physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+			physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
+			physx::PxPairFlags& pairFlags, const void* /*constantBlock*/, PxU32 /*constantBlockSize*/)
+		{
+			// let triggers through
+			if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
+			{
+				pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
+				return physx::PxFilterFlag::eDEFAULT;
+			}
+			// generate contacts for all that were not filtered above
+			pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
+			// trigger the contact callback for pairs (A,B) where 
+			// the filtermask of A contains the ID of B and vice versa.
+			if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+			{
+				pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eNOTIFY_TOUCH_LOST | physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+				return physx::PxFilterFlag::eDEFAULT;//Remove this if collision filter is messing up
+			}
+
+			return physx::PxFilterFlag::eSUPPRESS;//Change back to Default if collision filter is messing up
+		}
+	}
 
 
 	CPhysics::CPhysics(PxPhysics* aPxPhysics)
 	{
 		myPxPhysics = aPxPhysics;
 		myDefaultMaterial = myPxPhysics->createMaterial(defMatStaticFriction, defMatDynamicFriction, defMatRestitution);
+		myEventCallback = new CSimulationEventCallback();
+		myDispatcher = PxDefaultCpuDispatcherCreate(0);
+
 	}
 
 	CPhysics::~CPhysics()
 	{
 		SAFE_RELEASE(myPxPhysics);
+		SAFE_RELEASE(myDispatcher);
+
+		SAFE_DELETE(myEventCallback);
 		//SAFE_RELEASE(myDefaultMaterial);
 	}
 
@@ -42,10 +76,15 @@ namespace Physics
 		PxSceneDesc sceneDesc(myPxPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(aGravity.x, aGravity.y, aGravity.z);
 
-		myDispatcher = PxDefaultCpuDispatcherCreate(0);
+	
+
+		sceneDesc.simulationEventCallback = myEventCallback;
 		sceneDesc.cpuDispatcher = myDispatcher;
-		//maybe GPU Dispatcher
-		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+		//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader = CollisionFilterShader;
+
+
 		pxScene = myPxPhysics->createScene(sceneDesc);
 
 #ifndef _RETAIL_BUILD
@@ -69,9 +108,9 @@ namespace Physics
 			body->attachShape(*aShape->myShape);
 		CPhysicsActorStatic* actor = new CPhysicsActorStatic(body, aShape);
 		actor->SetIsTrigger(aIsTrigger);
+
 		return actor;
 	}
-
 
 	CPhysicsActor* CPhysics::CreateDynamicActor(CShape* aShape, const bool aIsTrigger, const float aMass, const bool aIsKinematic, const bool aUseGravity)
 	{
@@ -123,4 +162,7 @@ namespace Physics
 		}
 		return myPxPhysics->createMaterial(aMaterialData.aStaticFriction, aMaterialData.aDynamicFriction, aMaterialData.aRestitution);
 	}
+
+
+
 }

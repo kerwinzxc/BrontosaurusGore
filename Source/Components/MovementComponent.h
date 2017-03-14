@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "PlayerControls.h"
 #include "../CommonUtilities/BitSet.h"
+#include "../Physics/PhysicsCharacterController.h"
 
 class CMovementComponent : public CComponent
 {
@@ -28,6 +29,6 @@ private:
 	float myDoubleJumpHeight;
 	float myJumpForce;
 
-	bool myIsGrounded;
+	char myControllerConstraints;
 	bool myCanDoubleJump;
 };

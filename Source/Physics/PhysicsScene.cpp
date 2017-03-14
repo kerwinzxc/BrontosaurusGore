@@ -24,6 +24,7 @@ namespace Physics
 	{
 		// aDeltaT shuld be 1/60
 		// Fix with timers bby
+		//TODO: if main FPS is below 60? 
 
 		mySimulationTimer += aDeltaTime.GetSeconds();
 		if (mySimulationTimer >= ourSimulationFrequensy)
@@ -36,7 +37,7 @@ namespace Physics
 		return false;
 	}
 
-	Physics::SRaycastHitData CPhysicsScene::RayCast(const CU::Vector3f& aOrigin, const CU::Vector3f& aDirection, float aRayLength)
+	Physics::SRaycastHitData CPhysicsScene::Raycast(const CU::Vector3f& aOrigin, const CU::Vector3f& aDirection, float aRayLength)
 	{
 		SRaycastHitData outData;
 		physx::PxRaycastBuffer hit;
@@ -53,6 +54,7 @@ namespace Physics
 				outData.position = { hit.block.position.x, hit.block.position.y, hit.block.position.z };
 				outData.normal = { hit.block.normal.x, hit.block.normal.y, hit.block.normal.z };
 				outData.faceIndex = hit.block.faceIndex;
+				outData.actor = static_cast<IPhysicsCallback*>(hit.block.actor->userData);
 				return outData;
 			}
 		}

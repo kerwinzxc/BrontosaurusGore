@@ -10,10 +10,13 @@ namespace physx
 
 namespace Physics
 {
+	enum ECollisionLayer;
+
 	class CPhysicsScene;
 	class CPhysicsActor;
 	class CPhysicsCharacterController;
 	class CShape;
+	class CSimulationEventCallback;
 	struct SCharacterControllerInitParams;
 
 	const float defMatStaticFriction = 0.5f;
@@ -53,5 +56,8 @@ namespace Physics
 		physx::PxPhysics* myPxPhysics;
 		physx::PxDefaultCpuDispatcher* myDispatcher;
 		physx::PxMaterial* myDefaultMaterial;
+
+		CSimulationEventCallback* myEventCallback;
+
 	};
 }

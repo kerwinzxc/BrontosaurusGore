@@ -38,10 +38,7 @@ namespace Physics
 		desc.radius = aDesc.radius;
 		desc.height = aDesc.height;
 		desc.material = myPhysics->CreateMaterial(SMaterialData());
-
-
 		PxController* controller = myControllerManager->createController(desc);
 		return new CPhysicsCharacterController(controller, aDesc);
 	}
-
 }
