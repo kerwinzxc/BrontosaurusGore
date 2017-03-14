@@ -52,13 +52,14 @@
 #include "StateStack/StateStack.h"
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
-
+#include "../Components/CheckPointSystem.h"
 
 #include "../Components/PlayerNetworkComponent.h"
 
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
+#include "HealthComponent.h"
 //
 
 
@@ -93,6 +94,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
+	myCheckPointSystem = nullptr;
+
 }
 
 CPlayState::~CPlayState()
@@ -177,7 +180,7 @@ void CPlayState::Load()
 	}
 
 	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
-	
+
 	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
@@ -194,6 +197,7 @@ void CPlayState::Load()
 
 void CPlayState::Init()
 {
+	myCheckPointSystem = new CCheckPointSystem();
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -405,7 +409,11 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		controllerDesc.minMoveDistance = 0.00001f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-
+		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		playerHealthComponent->SetMaxHealth(10);
+		playerHealthComponent->SetHealth(10);
+		playerObject->AddComponent(playerHealthComponent);
+		
 		/*SBoxColliderData data;
 		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
 		data.IsTrigger = false;

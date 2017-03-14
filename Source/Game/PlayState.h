@@ -37,6 +37,7 @@ class CInputComponentManager;
 class CNetworkComponentManager;
 class CMovementComponentManager;
 class CColliderComponentManager;
+class CCheckPointSystem;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -96,6 +97,7 @@ private:
 	CMovementComponentManager* myMovementComponentManager;
 
 	CMovementComponent* myMovementComponent;
+	CCheckPointSystem* myCheckPointSystem;
 	class CCameraComponent* myCameraComponent;
 	friend struct SEncapsulationBreaker;
 

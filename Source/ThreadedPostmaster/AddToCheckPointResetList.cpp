@@ -3,7 +3,8 @@
 #include "../ThreadedPostmaster/Subscriber.h"
 
 
-CAddToCheckPointResetList::CAddToCheckPointResetList(CGameObject* aGameObject) : IMessage(eMessageType::eAddToCheckPointRespawn), myObjectToReset(aGameObject)
+CAddToCheckPointResetList::CAddToCheckPointResetList(CGameObject* aGameObject)
+	: IMessage(eMessageType::eAddToCheckPointRespawn), myObjectToReset(aGameObject)
 {
 }
 
