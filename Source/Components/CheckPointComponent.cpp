@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "CheckPointComponent.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
 
 CCheckPointComponent::CCheckPointComponent()
 {
+	myHaveBeenActivated = false;
 }
 
 
@@ -27,4 +29,10 @@ void CCheckPointComponent::Destroy()
 void CCheckPointComponent::Update(float aDeltaTime)
 {
 	aDeltaTime;
+}
+
+void CCheckPointComponent::SetAsNewCheckPoint()
+{
+	myHaveBeenActivated = true;
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(myRespawnPosition));
 }
