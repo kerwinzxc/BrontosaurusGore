@@ -8,15 +8,15 @@
 
 std::string CScriptComponent::ourLastErrorMessage("");
 
-CScriptComponent::CScriptComponent()
-{
-}
+//CScriptComponent::CScriptComponent()
+//{
+//}
 
-CScriptComponent::~CScriptComponent()
-{
-}
+//CScriptComponent::~CScriptComponent()
+//{
+//}
 
-CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScriptPath, const std::string& aInitFunction)
+CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScriptPath, const std::string& aInitFunction, const std::map<std::string, std::string>& aDataMap)
 {
 	ComponentId id = GetId();
 	if (id == NULL_COMPONENT)
@@ -32,12 +32,33 @@ CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScript
 		return eInitSuccess::eInvalidPath;
 	}
 
+	scriptFile.close();
+
 	SSlua::LuaWrapper& luaWrapper = SSlua::LuaWrapper::GetInstance();
 	if (!luaWrapper.DoFile(aScriptPath))
 	{
 		luaWrapper.GetLastError(ourLastErrorMessage);
-		scriptFile.close();
 		return eInitSuccess::eBadLuaCode;
+	}
+
+	std::string loadDataCode = "data[" + std::to_string(id) + "] = {\n";
+
+	for (auto it = aDataMap.begin(); it != aDataMap.end(); ++it)
+	{
+		loadDataCode += "\t";
+		loadDataCode += it->first;
+		loadDataCode += " = ";
+		loadDataCode += it->second;
+		loadDataCode += ", ";
+	}
+	loadDataCode -= ", ";
+	loadDataCode += "\n}";
+	DL_PRINT(loadDataCode.c_str());
+	if (!luaWrapper.DoString(loadDataCode))
+	{
+		std::string errorMessage;
+		luaWrapper.GetLastError(errorMessage);
+		DL_MESSAGE_BOX("failed to initialize data table for component with id %u\n%s", id, errorMessage.c_str());
 	}
 
 	luaWrapper.GetGlobal(aInitFunction);
@@ -45,11 +66,9 @@ CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScript
 	if (!luaWrapper.DoCall(1, 0))
 	{
 		luaWrapper.GetLastError(ourLastErrorMessage);
-		scriptFile.close();
 		return eInitSuccess::eBadLuaCode;
 	}
 
-	scriptFile.close();
 	return eInitSuccess::eOK;
 }
 
@@ -134,15 +153,11 @@ void CScriptComponent::AddSubscription(const SComponentMessageCallback& aCallbac
 			return;
 		}
 
-		DL_MESSAGE_BOX("Component with id %d already subscribes on message index %d", GetId(), aCallbackInfo.myMaybeEnum);
+		DL_MESSAGE_BOX("Component with id %d already subscribes on message index %u", GetId(), aCallbackInfo.myMaybeEnum);
 		return;
 	}
 
-	DL_MESSAGE_BOX("Component with id %d tried to subscribe on message index %d, but highest index is", aCallbackInfo.myMaybeEnum, length);
-}
-
-void CScriptComponent::Destroy()
-{
+	DL_MESSAGE_BOX("Component with id %u tried to subscribe on message index %d, but highest index is %d", GetId(), aCallbackInfo.myMaybeEnum, length);
 }
 
 #undef lie

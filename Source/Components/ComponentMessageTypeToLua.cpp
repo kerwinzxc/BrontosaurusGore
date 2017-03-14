@@ -48,6 +48,8 @@ void InitComponentTypes()
 	locComponentTypeNames[TO_STRING(eMoving)] = eComponentMessageType::eMoving;
 	locComponentTypeNames[TO_STRING(eOnCollisionEnter)] = eComponentMessageType::eOnCollisionEnter;
 	locComponentTypeNames[TO_STRING(eOnCollisionExit)] = eComponentMessageType::eOnCollisionExit;
+	locComponentTypeNames[TO_STRING(eOnTriggerEnter)] = eComponentMessageType::eOnTriggerEnter;
+	locComponentTypeNames[TO_STRING(eOnTriggerExit)] = eComponentMessageType::eOnTriggerExit;
 }
 
 void InternalPrintComponentInfo()

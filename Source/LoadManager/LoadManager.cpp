@@ -71,11 +71,11 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
 	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
+	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
 
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
-	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
 	//loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
 	//loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
 }
