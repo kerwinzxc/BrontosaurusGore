@@ -38,23 +38,41 @@ bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestion
 	return false;
 }
 
-void CCharcterControllerComponent::OnTriggerEnter(const IPhysicsCallback* aOther)
+void CCharcterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER ENTERED ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerEnter, data);
+	DL_PRINT("TriggerEnter");
+
 }
 
-void CCharcterControllerComponent::OnTriggerExit(const IPhysicsCallback* aOther)
+void CCharcterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER EXITED ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerExit, data);
+	DL_PRINT("TriggerExit");
 }
 
-void CCharcterControllerComponent::OnCollisionEnter(const IPhysicsCallback* aOther)
+void CCharcterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER COLLIDES WITH ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionEnter, data);
+	DL_PRINT("ColEnter");
 }
 
-void CCharcterControllerComponent::OnCollisionExit(const IPhysicsCallback* aOther)
+void CCharcterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER UN-COLLIDES WITH ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionExit, data);
+	DL_PRINT("ColExit");
+
 }
 

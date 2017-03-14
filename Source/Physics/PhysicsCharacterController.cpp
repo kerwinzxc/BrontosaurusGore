@@ -14,7 +14,7 @@ namespace Physics
 	{
 		myData = aData;
 		myController = aPxController;
-		myController->getActor()->userData = nullptr;
+		myController->getActor()->userData = this;
 	}
 
 	CPhysicsCharacterController::~CPhysicsCharacterController()
@@ -78,8 +78,8 @@ namespace Physics
 	void CPhysicsCharacterController::SetCallbackData(IPhysicsCallback* aCallbacker)
 	{
 		myCallback = aCallbacker;
-		myController->getActor()->userData = aCallbacker;
 	}
+
 	void CPhysicsCharacterController::SetCollisionFlags(const char& flags)
 	{
 		myCollisionFlags = 0;

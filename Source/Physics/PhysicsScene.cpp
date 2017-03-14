@@ -54,7 +54,7 @@ namespace Physics
 				outData.position = { hit.block.position.x, hit.block.position.y, hit.block.position.z };
 				outData.normal = { hit.block.normal.x, hit.block.normal.y, hit.block.normal.z };
 				outData.faceIndex = hit.block.faceIndex;
-				outData.actor = static_cast<IPhysicsCallback*>(hit.block.actor->userData);
+				outData.actor = static_cast<CPhysicsCallbackActor*>(hit.block.actor->userData);
 				return outData;
 			}
 		}

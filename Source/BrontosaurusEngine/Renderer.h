@@ -28,6 +28,7 @@ struct SRendererSettings
 	bool AA;
 	char AALevel;
 	bool MSAA;
+	bool FXAA;
 };
 
 
@@ -40,6 +41,7 @@ public:
 
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
+	
 	void Render();
 	void SwapWrite();
 	void ClearRenderQueue();
@@ -54,6 +56,7 @@ private:
 	void Bloom();
 	void HDR();
 	void MotionBlur();
+	void AntiAliasing();
 	void Downsample(CRenderPackage& aRenderPackage);
 	void RenderGUI();
 	void LensDistortion(CRenderPackage& AddRenderMessage);

@@ -29,6 +29,7 @@
 #include "../Components/GameObject.h"
 #include "CommonUtilities/StringHelper.h"
 #include "TShared/NetworkMessage_Disconected.h"
+#include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 

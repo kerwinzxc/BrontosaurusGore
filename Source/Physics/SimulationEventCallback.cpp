@@ -9,64 +9,57 @@ namespace Physics
 	CSimulationEventCallback::CSimulationEventCallback()
 	{
 	}
-
 	CSimulationEventCallback::~CSimulationEventCallback()
 	{
 	}
-
 	void CSimulationEventCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count)
 	{
-
 	}
-
 	void CSimulationEventCallback::onWake(physx::PxActor** actors, physx::PxU32 count)
 	{
-
 	}
-
 	void CSimulationEventCallback::onSleep(physx::PxActor** actors, physx::PxU32 count)
 	{
-
 	}
-
 	void CSimulationEventCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
 	{
 		for (physx::PxU32 i = 0; i < 1; i++)// change back to nbpairs if needed
 		{
 			const physx::PxContactPair& cp = pairs[i];
 
-			IPhysicsCallback* actor = static_cast<IPhysicsCallback*>(pairHeader.actors[0]->userData);
-			IPhysicsCallback* otherActor = static_cast<IPhysicsCallback*>(pairHeader.actors[1]->userData);
+			CPhysicsCallbackActor* actor = static_cast<CPhysicsCallbackActor*>(pairHeader.actors[0]->userData);
+			IPhysicsCallback* actorCallback = static_cast<IPhysicsCallback*>(actor->GetCallbackData());
+
+			CPhysicsCallbackActor* otherActor = static_cast<CPhysicsCallbackActor*>(pairHeader.actors[1]->userData);
+			IPhysicsCallback* otherActorCallback = static_cast<IPhysicsCallback*>(otherActor->GetCallbackData());
 
 			if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{
-				if (actor != nullptr)
+				if (actorCallback != nullptr)
 				{
-					actor->OnCollisionEnter(otherActor);
+					actorCallback->OnCollisionEnter(otherActor);
 				}
-				if (otherActor != nullptr)
+				if (otherActorCallback != nullptr)
 				{
-					otherActor->OnCollisionEnter(actor);
+					otherActorCallback->OnCollisionEnter(actor);
 				}
 			}
 
 			if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
 			{
-				if (actor != nullptr)
+				if (actorCallback != nullptr)
 				{
-					actor->OnCollisionExit(otherActor);
+					actorCallback->OnCollisionExit(otherActor);
 				}
-				if (otherActor != nullptr)
+				if (otherActorCallback != nullptr)
 				{
-					otherActor->OnCollisionExit(actor);
+					otherActorCallback->OnCollisionExit(actor);
 				}
 			}
 		}
-
 		//	//Edvin är smet, Kevin är en best!
 		//	//Edvin är semst, Kevin är best!
 	}
-
 
 	void CSimulationEventCallback::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
 	{
@@ -77,55 +70,50 @@ namespace Physics
 				physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
 				continue;
 
-			IPhysicsCallback* triggerActor = static_cast<IPhysicsCallback*>(pairs[i].triggerActor->userData);
-			IPhysicsCallback* otherActor = static_cast<IPhysicsCallback*>(pairs[i].otherActor->userData);
+			CPhysicsCallbackActor* triggerActor = static_cast<CPhysicsCallbackActor*>(pairs[i].triggerActor->userData);
+			IPhysicsCallback* triggerActorCallback = static_cast<IPhysicsCallback*>(triggerActor->GetCallbackData());
+
+			CPhysicsCallbackActor* otherActor = static_cast<CPhysicsCallbackActor*>(pairs[i].otherActor->userData);
+			IPhysicsCallback* otherActorCallback = static_cast<IPhysicsCallback*>(otherActor->GetCallbackData());
 
 			if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{
-				if (triggerActor != nullptr)
+				if (triggerActorCallback != nullptr)
 				{
-					triggerActor->OnTriggerEnter(otherActor);
+					triggerActorCallback->OnTriggerEnter(otherActor);
 				}
-				if (otherActor != nullptr)
+				if (otherActorCallback != nullptr)
 				{
-					otherActor->OnTriggerEnter(triggerActor);
+					otherActorCallback->OnTriggerEnter(triggerActor);
 				}
 			}
 			if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
 			{
-				if (triggerActor != nullptr)
+				if (triggerActorCallback != nullptr)
 				{
-					triggerActor->OnTriggerExit(otherActor);
+					triggerActorCallback->OnTriggerExit(otherActor);
 				}
-				if (otherActor != nullptr)
+				if (otherActorCallback != nullptr)
 				{
-					otherActor->OnTriggerExit(triggerActor);
+					otherActorCallback->OnTriggerExit(triggerActor);
 				}
 			}
 			if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
 			{
-				if (triggerActor != nullptr)
+				if (triggerActorCallback != nullptr)
 				{
-					triggerActor->OnTriggerExit(otherActor);
+					triggerActorCallback->OnTriggerExit(otherActor);
 				}
-				if (otherActor != nullptr)
+				if (otherActorCallback != nullptr)
 				{
-					otherActor->OnTriggerExit(triggerActor);
+					otherActorCallback->OnTriggerExit(triggerActor);
 				}
 			}
 		}
-
-
-
-
-
-
-
 	}
 
 	void CSimulationEventCallback::onAdvance(const physx::PxRigidBody*const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count)
 	{
 
 	}
-
 }

@@ -78,7 +78,6 @@ void LinkObject(const int target, const int anOtherComponent)
 	const CGameObject*const  parent = gameObject->GetParent();
 
 	gameObject->AddComponent(otherComponent);
-	//gameObject->Move(CU::Vector3f::Zero);
 }
 
 int LoadServerObject(KLoader::SLoadedComponentData someData)
