@@ -56,7 +56,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition() + myWeaponObject->GetParent()->GetToWorldTransform().myForwardVector, aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
@@ -64,7 +64,8 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 				if(hitData.hit == true)
 				{
-					if (hitData.actor->GetType() == Physics::EActorType::eDynamic)
+					const Physics::EActorType actorType = hitData.actor->GetType();
+					if (actorType == Physics::EActorType::eDynamic)
 					{
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
