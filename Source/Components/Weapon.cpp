@@ -3,10 +3,12 @@
 #include "ProjectileFactory.h"
 #include "WeaponData.h"
 #include "AmmoCheckData.h"
-#include "../Physics/PhysicsScene.h"
 #include "ProjectileData.h"
 
+#include "../Physics/PhysicsScene.h"
 #include "../Physics/PhysicsActor.h"
+#include "../Physics/PhysicsActorDynamic.h"
+
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene)
 {
 	myElapsedFireTimer = 0.0f;
@@ -62,6 +64,13 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 				if(hitData.hit == true)
 				{
+					if (hitData.actor->GetType() == Physics::EActorType::eDynamic)
+					{
+						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
+						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
+
+					};
+
 					//Do massive Domage!!
 				}
 			}
