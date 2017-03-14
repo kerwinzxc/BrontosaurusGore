@@ -17,6 +17,7 @@ enum class eMessageType
 	eDebugInfo,
 	eAddToCheckPointRespawn,
 	eSetNewCheckPoint,
+	eResetToCheckPointMessage,
 	eLength,
 };
 
