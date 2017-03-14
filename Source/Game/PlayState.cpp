@@ -13,6 +13,7 @@
 
 #include "LoadState.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "PollingStation.h"
 
 //Managers
 
@@ -26,6 +27,7 @@
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
+#include "Components/ScriptComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -89,6 +91,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
+	, myScriptComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -96,6 +99,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myColliderComponentManager = nullptr;
 	myCheckPointSystem = nullptr;
 
+	new CPollingStation();
 }
 
 CPlayState::~CPlayState()
@@ -111,7 +115,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
-
+	SAFE_DELETE(myScriptComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
@@ -119,6 +123,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
+
+	delete CPollingStation::GetInstance();
 }
 
 void CPlayState::Load()
@@ -179,7 +185,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
+	CreatePlayer(playerCamera); // Hard codes Player!;
 
 	myGameObjectManager->SendObjectsDoneMessage();
 
@@ -291,6 +297,8 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myScriptComponentManager = new CScriptComponentManager();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -338,7 +346,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
-void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
+void CPlayState::CreatePlayer(CU::Camera& aCamera)
 {
 	//create hard coded player:
 	{
@@ -360,9 +368,13 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
 			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+			playerObject->AddComponent(cameraComponent->GetParent());
 		}
 
-		playerObject->AddComponent(cameraComponent->GetParent());
+		if (CPollingStation::GetInstance())
+		{
+			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+		}
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);

@@ -27,8 +27,8 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
-#include "CommonUtilities/StringHelper.h"
-#include "TShared/NetworkMessage_Disconected.h"
+#include "../CommonUtilities/StringHelper.h"
+#include "../TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -42,7 +42,6 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 	myIsRunning = false;
 	myCanQuit = false;
 }
-
 
 CServerMain::~CServerMain()
 {

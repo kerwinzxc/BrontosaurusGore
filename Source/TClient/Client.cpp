@@ -183,7 +183,6 @@ void CClient::Update()
 
 			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldTransformation(playerPosition->GetTransformation());
 			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-
 		}
 		break;
 		case ePackageType::eSpawnOtherPlayer:
