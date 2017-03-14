@@ -8,6 +8,7 @@ namespace Physics
 	CPhysicsActorDynamic::CPhysicsActorDynamic(physx::PxRigidDynamic* aActor, CShape* aShape) : CPhysicsActor(aActor, aShape)
 	{
 		myDynamicActor = aActor;
+		myIsKinematic = false;
 	}
 
 	CPhysicsActorDynamic::~CPhysicsActorDynamic()
@@ -17,17 +18,20 @@ namespace Physics
 
 	void CPhysicsActorDynamic::SetIsKinematic(const bool aIsKinematic)
 	{
+		myIsKinematic = aIsKinematic;
 		myDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::Enum::eKINEMATIC, aIsKinematic);
 	}
 
 	void CPhysicsActorDynamic::AddForce(const CU::Vector3f& aForce)
 	{
-		myDynamicActor->addForce({ aForce.x, aForce.y, aForce.z });
+		if(!myIsKinematic)
+			myDynamicActor->addForce({ aForce.x, aForce.y, aForce.z });
 	}
 
 	void CPhysicsActorDynamic::AddTorque(const CU::Vector3f& aTorque)
 	{
-		myDynamicActor->addTorque({ aTorque.x, aTorque.y, aTorque.z });
+		if (!myIsKinematic)
+			myDynamicActor->addTorque({ aTorque.x, aTorque.y, aTorque.z });
 	}
 
 	void CPhysicsActorDynamic::SetRotationLock(const CU::Vector3<bool>& aRotationLocks)
