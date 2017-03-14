@@ -7,9 +7,12 @@ CColliderComponent::CColliderComponent(SColliderData* aColliderData, Physics::CS
 	myData = *aColliderData;
 
 	myActor = aActor;
+	myActor->SetCallbackData(this);
+
 	myShape = aShape;
 	myType = eComponentType::eCollision;
 	myManager = nullptr;
+	SetUserData(this);
 }
 
 CColliderComponent::~CColliderComponent()
@@ -86,4 +89,24 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 		}
 	}
 	return false;
+}
+
+void CColliderComponent::OnTriggerEnter(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER ENTERED ME: %d",(int)aOther);
+}
+
+void CColliderComponent::OnTriggerExit(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER EXITED ME:  %d", (int)aOther);
+}
+
+void CColliderComponent::OnCollisionEnter(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER COLLIDES WITH ME: %d", (int)aOther);
+}
+
+void CColliderComponent::OnCollisionExit(const IPhysicsCallback* aOther)
+{
+	DL_PRINT("OTHER UN-COLLIDES WITH ME: %d", (int)aOther);
 }

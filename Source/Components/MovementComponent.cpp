@@ -21,7 +21,7 @@ CMovementComponent::CMovementComponent()
 		return;
 	}
 
-	myIsGrounded = true;
+	myControllerConstraints = Physics::EControllerConstraintsFlag::eCOLLISION_DOWN;
 	myCanDoubleJump = true;
 
 	myAcceleration = playerControls["Acceleration"].GetFloat();
@@ -108,8 +108,12 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myVelocity *= myMaxSpeed;
 	}
 
-	if (myIsGrounded == false)
+	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == 0)
 	{
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_UP)
+		{
+			myJumpForce = 0.0f;
+		}
 		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
 	}
 	myVelocity.y += myJumpForce;
@@ -121,23 +125,36 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	SComponentQuestionData data;
 	data.myVector4f = myVelocity * rotation * aDeltaTime.GetSeconds();
 	data.myVector4f.w = aDeltaTime.GetSeconds();
-	float yVelocity = myVelocity.y;
-
-
-
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
 		CU::Vector3f position = parentTransform.GetPosition();
 		parentTransform.SetPosition(data.myVector3f);
+		if (parentTransform.GetPosition().y < -100.0f)
+		{
+			SComponentMessageData takeDamageData;
+			takeDamageData.myInt = 10000;
+			GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);
+
+			//Teleport stuff back code
+			//CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+			////parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+			//SComponentQuestionData data;
+			//data.myVector4f = (teleportPosition - parentTransform.GetPosition()) ;
+			//data.myVector4f.w = aDeltaTime.GetSeconds();
+			//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+			//{
+			//	parentTransform.SetPosition(data.myVector3f);
+			//}
+		}
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
 	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerGrounded, groundeddata) == true)
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
 	{
-		myIsGrounded = groundeddata.myBool;
-		if (myIsGrounded == true)
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
 			myCanDoubleJump = true;
 			myJumpForce = 0.0f;
@@ -151,7 +168,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 
 	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
 	{
-		if (myIsGrounded == true)
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
 			ApplyJumpForce(myJumpHeight);
 		}

@@ -1,4 +1,5 @@
 #pragma once
+#include "PhysicsCallbackActor.h"
 
 namespace physx
 {
@@ -18,7 +19,15 @@ namespace Physics
 		float height = 1.0f;
 	};
 
-	class CPhysicsCharacterController
+	using EControllerConstraintsFlags = char;
+	enum EControllerConstraintsFlag : EControllerConstraintsFlags
+	{
+		eCOLLISION_SIDES	= (1 << 0),	// Character is colliding to the sides.
+		eCOLLISION_UP		= (1 << 1),	// Character has collision above.
+		eCOLLISION_DOWN		= (1 << 2)	// Character has collision below.
+	};
+
+	class CPhysicsCharacterController : public CPhysicsCallbackActor
 	{
 	public:
 		CPhysicsCharacterController(physx::PxController* aPxController, const SCharacterControllerDesc& aData);
@@ -29,18 +38,23 @@ namespace Physics
 		void Resize(const float aHeight);		
 		CU::Vector3f GetFootPosition();
 
-		bool GetIsGrounded();
+		const EControllerConstraintsFlags GetConstraints();
 
 		//This one "teleports" the player, no colliding yo
 		void SetPosition(const CU::Vector3f& aPosition);
 		CU::Vector3f GetPosition();
-	private:
-		void SetGrounded();
+
+		IPhysicsCallback* GetCallbackData() override;
+		void SetCallbackData(IPhysicsCallback* aCallbacker) override;
 
 	private:
+		void SetCollisionFlags(const char& flags);
+
+	private:
+
 		SCharacterControllerDesc myData;
 		physx::PxController* myController;
-
+		EControllerConstraintsFlags myCollisionFlags;
 		bool myIsGrounded;
 	};
 }

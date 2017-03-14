@@ -52,13 +52,14 @@
 #include "StateStack/StateStack.h"
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
-
+#include "../Components/CheckPointSystem.h"
 
 #include "../Components/PlayerNetworkComponent.h"
 
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
+#include "HealthComponent.h"
 //
 
 
@@ -93,6 +94,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
+	myCheckPointSystem = nullptr;
+
 }
 
 CPlayState::~CPlayState()
@@ -162,7 +165,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -177,7 +180,7 @@ void CPlayState::Load()
 	}
 
 	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
-	
+
 	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
@@ -194,6 +197,7 @@ void CPlayState::Load()
 
 void CPlayState::Init()
 {
+	myCheckPointSystem = new CCheckPointSystem();
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -403,22 +407,13 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
+		controllerDesc.height = 2.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-
-		/*SBoxColliderData data;
-		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
-		data.IsTrigger = false;
-		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data);
-		playerObject->AddComponent(collider);
-
-		SRigidBodyData rigidbodyData;
-		rigidbodyData.freezedRotationAxiees = {1, 0, 1};
-		rigidbodyData.mass = 10.f;
-		rigidbodyData.isKinematic = false;
-		rigidbodyData.IsTrigger = false;
-		CColliderComponent* rididbody = myColliderComponentManager->CreateComponent(&rigidbodyData);
-		playerObject->AddComponent(rididbody);*/
+		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		playerHealthComponent->SetMaxHealth(10);
+		playerHealthComponent->SetHealth(10);
+		playerObject->AddComponent(playerHealthComponent);
 
 
 		Component::CEnemy::SetPlayer(playerObject);

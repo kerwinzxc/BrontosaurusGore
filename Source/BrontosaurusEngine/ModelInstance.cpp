@@ -69,7 +69,7 @@ CModelInstance::~CModelInstance()
 	//TODO: memoryleek mebe // still exists in ModelManager <-- looks like model manager owns this but a refcount would maybe be something
 }
 
-void CModelInstance::Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList)
+void CModelInstance::RenderForward(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList)
 {
 	if (ShouldRender() == true)
 	{
@@ -110,7 +110,7 @@ void CModelInstance::Render(Lights::SDirectionalLight* aLight, CU::VectorOnStack
 	}
 }
 
-void CModelInstance::Render(Lights::SDirectionalLight * aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList, CRenderCamera & aRenderToCamera)
+void CModelInstance::RenderForward(Lights::SDirectionalLight * aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList, CRenderCamera & aRenderToCamera)
 {
 	if (ShouldRender() == true)
 	{
@@ -166,7 +166,7 @@ void CModelInstance::Render(Lights::SDirectionalLight * aLight, CU::VectorOnStac
 	}
 }
 
-void CModelInstance::Render()
+void CModelInstance::RenderDeferred()
 {
 	SRenderModelDeferredMessage msg;
 	msg.myModelID = myModel;
@@ -183,7 +183,7 @@ void CModelInstance::Render()
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
 }
 
-void CModelInstance::Render(CRenderCamera & aRenderToCamera)
+void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 {
 	SRenderMessage* message = nullptr;
 	if (aRenderToCamera.GetIsShadowCamera())

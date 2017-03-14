@@ -59,6 +59,12 @@
     <Filter Include="Message\GameEventMessage">
       <UniqueIdentifier>{c263562d-6a4e-4286-9460-75a81e6906f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\AddToCheckPointResetList">
+      <UniqueIdentifier>{2958e61a-0d7c-46f2-8e88-c695585ef664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\SetNewCheckPoint">
+      <UniqueIdentifier>{30575e0a-d1e2-4686-967f-9712139c3019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -99,6 +105,10 @@
     <ClCompile Include="GameEventMessage.cpp">
       <Filter>Message\GameEventMessage</Filter>
     </ClCompile>
+    <ClCompile Include="AddToCheckPointResetList.cpp">
+      <Filter>Message\AddToCheckPointResetList</Filter>
+    </ClCompile>
+    <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -148,5 +158,9 @@
     <ClInclude Include="GameEventMessage.h">
       <Filter>Message\GameEventMessage</Filter>
     </ClInclude>
+    <ClInclude Include="AddToCheckPointResetList.h">
+      <Filter>Message\AddToCheckPointResetList</Filter>
+    </ClInclude>
+    <ClInclude Include="SetAsNewCheckPointMessage.h" />
   </ItemGroup>
 </Project>

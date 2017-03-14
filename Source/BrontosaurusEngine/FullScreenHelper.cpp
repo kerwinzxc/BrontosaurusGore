@@ -43,6 +43,8 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11VertexShader* lShvertexShader = SHADERMGR->LoadVertexShader(L"Shaders/Fullscreen/lightShafts.fx", ShaderType);
 	ID3D11PixelShader* lShShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/lightShafts.fx", ShaderType);
 
+	ID3D11PixelShader* aaShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/antiAliasing.fx", ShaderType);
+
 	myEffects[static_cast<int>(eEffectType::eCopy)]						= new CEffect(vertexShader, cpyShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyDepth)]				= new CEffect(vertexShader, copyDepthShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -63,7 +65,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eDeferredDirectional)]		= new CEffect(vertexShader, deferredDirectional, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//myEffects[static_cast<int>(eEffectType::eDeferredPointLight)]		= new CEffect(vertexShader, deferredPointLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eDeferredSpotLight)]		= new CEffect(vertexShader, deferredSpotLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	myEffects[static_cast<int>(eEffectType::eAA)] = new CEffect(vertexShader, aaShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

@@ -53,11 +53,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->RayCast(myWeaponObject->GetParent()->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->RayCast(myUser->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(myUser->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{

@@ -9,6 +9,7 @@ namespace physx
 namespace Physics
 {
 	class CPhysicsActor;
+	class IPhysicsCallback;
 
 	struct SRaycastHitData
 	{
@@ -17,6 +18,7 @@ namespace Physics
 		CU::Vector3f position;
 		CU::Vector3f normal;
 		unsigned int faceIndex;
+		IPhysicsCallback* actor;
 	};
 
 	class CPhysicsScene
@@ -28,7 +30,7 @@ namespace Physics
 		// dt in seconds
 		bool Simulate(const CU::Time aDeltaTime);
 
-		SRaycastHitData RayCast(const CU::Vector3f& aOrigin, const CU::Vector3f& aDirection, float aRayLength);
+		SRaycastHitData Raycast(const CU::Vector3f& aOrigin, const CU::Vector3f& aDirection, float aRayLength);
 
 		void AddActor(CPhysicsActor* aActor);
 		void RemoveActor(CPhysicsActor* aActor);

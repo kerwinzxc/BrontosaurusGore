@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "..\Physics\PhysicsActor.h"
+#include "..\Physics\IPhysicsCallback.h"
 
 namespace Physics
 {
@@ -25,7 +26,7 @@ struct SColliderData
 };
 class CColliderComponentManager;
 
-class CColliderComponent : public CComponent 
+class CColliderComponent : public CComponent , public Physics::IPhysicsCallback
 {
 public:
 	CColliderComponent(SColliderData* aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
@@ -42,6 +43,11 @@ public:
 	
 	inline void SetManager(CColliderComponentManager* aManager) { myManager = aManager; }
 	inline CColliderComponentManager* GetManager() { return myManager; }
+
+	void OnTriggerEnter(const IPhysicsCallback* aOther) override;
+	void OnTriggerExit(const IPhysicsCallback* aOther) override;
+	void OnCollisionEnter(const IPhysicsCallback* aOther) override;
+	void OnCollisionExit(const IPhysicsCallback* aOther) override;
 
 protected:
 

@@ -22,6 +22,8 @@ class COtherPlayerSpawned;
 class CChangeLevel;
 class CNetworkDebugInfo;
 class CGameEventMessage;
+class CAddToCheckPointResetList;
+class CSetAsNewCheckPointMessage;
 
 namespace Postmaster
 {
@@ -56,5 +58,7 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage);
 		virtual eMessageReturn DoEvent(const CNetworkDebugInfo& aDebugInfo);
 		virtual eMessageReturn DoEvent(const CGameEventMessage & aGameEventMessageMessage);
+		virtual eMessageReturn DoEvent(const CAddToCheckPointResetList & aAddToCheckPointResetListMessage);
+		virtual eMessageReturn DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage);
 	};
 }
