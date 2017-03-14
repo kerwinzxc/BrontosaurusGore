@@ -6,6 +6,7 @@
 #include "../Physics/PhysicsScene.h"
 #include "ProjectileData.h"
 
+#include "../Physics/PhysicsActor.h"
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene)
 {
 	myElapsedFireTimer = 0.0f;
