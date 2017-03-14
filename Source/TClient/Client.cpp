@@ -13,8 +13,6 @@
 #include "ClientMessageManager.h"
 #include "../PostMaster/EMessageReturn.h"
 #include "../PostMaster/Message.h"
-//#include "../PostMaster/Event.h"
-//#include "../PostMaster/PostMaster.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../BrontosaurusEngine/Engine.h"
 #include "../CommonUtilities/ThreadPool.h"
@@ -38,12 +36,12 @@
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
-#include "../Components/ServerPlayerNetworkComponent.h"
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "../ThreadedPostmaster/NetworkDebugInfo.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
 #include "../Game/GameEventMessenger.h"
 #include "../CommonUtilities/StringHelper.h"
+#include "../TShared/NetworkMessage_Disconected.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -106,7 +104,6 @@ void CClient::Ping()
 
 		myNetworkWrapper.Send(tempMessagePing, myServerIp.c_str(), SERVER_PORT);
 
-		//myNetworkWrapper.Send(header, nullptr, 0, myServerIp, SERVER_PORT);
 		myServerIsPinged = true;
 		myServerPingTime = 0;
 	}
@@ -234,6 +231,16 @@ void CClient::Update()
 				string += L"Player ";
 				string += CU::StringToWString(conectMessage->myClientName);
 				string += L" has conected!";
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+			}
+			break;
+		case ePackageType::eDisconected:
+			{
+				CNetworkMessage_Disconected* disconectedMessage = currentMessage->CastTo<CNetworkMessage_Disconected>();
+				std::wstring string;
+				string += L"Player ";
+				string += CU::StringToWString(disconectedMessage->GetClientName());
+				string += L" has disconected!";
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
 			}
 			break;

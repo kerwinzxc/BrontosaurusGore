@@ -16,6 +16,16 @@ ePackageType CNetworkMessage_Disconected::GetPackageType() const
 	return ePackageType::eDisconected;
 }
 
+std::string CNetworkMessage_Disconected::GetClientName() const
+{
+	return myClientName;
+}
+
+void CNetworkMessage_Disconected::SetClientName(const std::string& aClientsName)
+{
+	myClientName = aClientsName;
+}
+
 void CNetworkMessage_Disconected::DoSerialize(StreamType& aStream)
 {
 	SERIALIZE(myClientName, aStream);
