@@ -20,6 +20,16 @@ namespace Physics
 		myDynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::Enum::eKINEMATIC, aIsKinematic);
 	}
 
+	void CPhysicsActorDynamic::AddForce(const CU::Vector3f& aForce)
+	{
+		myDynamicActor->addForce({ aForce.x, aForce.y, aForce.z });
+	}
+
+	void CPhysicsActorDynamic::AddTorque(const CU::Vector3f& aTorque)
+	{
+		myDynamicActor->addTorque({ aTorque.x, aTorque.y, aTorque.z });
+	}
+
 	void CPhysicsActorDynamic::SetRotationLock(const CU::Vector3i& aRotationLocks)
 	{
 		bool x, y, z = y = x = false;
