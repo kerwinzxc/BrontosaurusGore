@@ -9,7 +9,7 @@ namespace physx
 namespace Physics
 {
 	class CPhysicsActor;
-	class IPhysicsCallback;
+	class CPhysicsCallbackActor;
 
 	struct SRaycastHitData
 	{
@@ -18,7 +18,7 @@ namespace Physics
 		CU::Vector3f position;
 		CU::Vector3f normal;
 		unsigned int faceIndex;
-		IPhysicsCallback* actor;
+		CPhysicsCallbackActor* actor;
 	};
 
 	class CPhysicsScene
