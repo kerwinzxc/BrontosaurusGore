@@ -27,7 +27,7 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
-#include "CommonUtilities/StringHelper.h"
+#include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 
