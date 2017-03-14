@@ -2,17 +2,19 @@
 
 namespace Physics
 {
+	class CPhysicsCallbackActor;
+
 	class IPhysicsCallback
 	{
 	public:
 		IPhysicsCallback();
 		~IPhysicsCallback();
 
-		virtual void OnTriggerEnter(const IPhysicsCallback* aOther) = 0;
-		virtual void OnTriggerExit(const IPhysicsCallback* aOther) = 0;
+		virtual void OnTriggerEnter(CPhysicsCallbackActor* aOther) = 0;
+		virtual void OnTriggerExit(CPhysicsCallbackActor* aOther) = 0;
 
-		virtual void OnCollisionEnter(const IPhysicsCallback* aOther) = 0;
-		virtual void OnCollisionExit(const IPhysicsCallback* aOther) = 0;
+		virtual void OnCollisionEnter(CPhysicsCallbackActor* aOther) = 0;
+		virtual void OnCollisionExit(CPhysicsCallbackActor* aOther) = 0;
 
 		inline void SetUserData(void* aDataPointer);
 		inline void* GetUserData();

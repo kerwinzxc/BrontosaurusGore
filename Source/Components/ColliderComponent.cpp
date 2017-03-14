@@ -91,22 +91,39 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 	return false;
 }
 
-void CColliderComponent::OnTriggerEnter(const IPhysicsCallback* aOther)
+void CColliderComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER ENTERED ME: %d",(int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerEnter, data);
+	DL_PRINT("TriggerEnter");
 }
 
-void CColliderComponent::OnTriggerExit(const IPhysicsCallback* aOther)
+void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER EXITED ME:  %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerExit, data);
+	DL_PRINT("TriggerExit");
 }
 
-void CColliderComponent::OnCollisionEnter(const IPhysicsCallback* aOther)
+void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER COLLIDES WITH ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionEnter, data);
+	DL_PRINT("ColEnter");
+
 }
 
-void CColliderComponent::OnCollisionExit(const IPhysicsCallback* aOther)
+void CColliderComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	DL_PRINT("OTHER UN-COLLIDES WITH ME: %d", (int)aOther);
+	void* compPtr = aOther->GetCallbackData()->GetUserData();
+	SComponentMessageData data;
+	data.myComponent = static_cast<CComponent*>(compPtr);
+	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionExit, data);
+	DL_PRINT("ColExit");
 }

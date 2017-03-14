@@ -47,6 +47,8 @@ namespace Physics
 		IPhysicsCallback* GetCallbackData() override;
 		void SetCallbackData(IPhysicsCallback* aCallbacker) override;
 
+		inline const EActorType GetType() const override { return EActorType::eController; };
+
 	private:
 		void SetCollisionFlags(const char& flags);
 

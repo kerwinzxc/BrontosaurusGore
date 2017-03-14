@@ -14,7 +14,7 @@ namespace Physics
 	{
 		myPxActor = aActor;
 		myShape = aShape;
-		myPxActor->userData = nullptr;
+		myPxActor->userData = this;
 	}
 
 	CPhysicsActor::~CPhysicsActor()
@@ -73,6 +73,6 @@ namespace Physics
 	void CPhysicsActor::SetCallbackData(IPhysicsCallback* aCallbacker)
 	{
 		myCallback = aCallbacker;
-		myPxActor->userData = aCallbacker;
+		//myPxActor->userData = aCallbacker;
 	}
 }
