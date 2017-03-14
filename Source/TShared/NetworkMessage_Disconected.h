@@ -8,8 +8,8 @@ public:
 	~CNetworkMessage_Disconected();
 
 	ePackageType GetPackageType()const override;
-
-
+	std::string GetClientName() const;
+	void SetClientName(const std::string& aClientsName);
 private:
 
 	std::string myClientName;

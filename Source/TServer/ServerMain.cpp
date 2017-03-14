@@ -27,6 +27,8 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
+#include "CommonUtilities/StringHelper.h"
+#include "TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -167,20 +169,10 @@ void CServerMain::DisconectClient(ClientID aClient)
 		myPendingPings.erase(aClient);
 	}
 
-	SNetworkPackageHeader header;
-	header.mySenderID = ID_SERVER;
-	header.myPackageType = (ePackageType::eChat);
-	header.myTimeStamp = GetCurrentTime();
+	CNetworkMessage_Disconected* disconectedMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Disconected>(ID_ALL);
 
-	CNetworkMessage_ChatMessage* leaveMessage = myMessageManager->CreateMessage<CNetworkMessage_ChatMessage>(header);
-	leaveMessage->myChatMessage = ("Server: " + leftClientsName + " has left the server");
-
-
-	for (auto client : myClients)
-	{
-		header.myTargetID = client.first;
-		myNetworkWrapper.Send(leaveMessage, client.second.myIP.c_str(), client.second.myPort.c_str());
-	}
+	disconectedMessage->SetClientName(leftClientsName);
+	SendTo(disconectedMessage);
 }
 
 void CServerMain::UpdatePing(CU::Time aDeltaTime)
@@ -466,11 +458,6 @@ bool CServerMain::Update()
 			if (myServerState == eServerState::eLoadingLevel)
 			{
 				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
-
-				/*if (CheckIfClientsReady() == true)
-				{
-					StartGame();
-				}*/
 			}
 			break;
 		case ePackageType::eDisconected:

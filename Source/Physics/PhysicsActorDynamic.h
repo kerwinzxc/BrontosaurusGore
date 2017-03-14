@@ -26,5 +26,6 @@ namespace Physics
 	private:
 		physx::PxRigidDynamic* myDynamicActor;
 		float myMass;
+		bool myIsKinematic;
 	};
 }
