@@ -12,5 +12,6 @@ enum class eInputMessengerType
 	eServer,
 	eTempLobbyState,
 	eConsole,
+	eDebugInfoDrawer,
 	eLength,
 };

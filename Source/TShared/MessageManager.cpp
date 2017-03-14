@@ -11,6 +11,7 @@
 #include "NetworkMessage_ClientReady.h"
 #include "NetworkMessage_ServerReady.h"
 #include "NetworkMessage_PlayerPositionMessage.h"
+#include "NetworkMessage_WeaponShoot.h"
 
 CMessageManager::CMessageManager()
 {
@@ -58,6 +59,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_ServerReady>(aHeader);
 	case ePackageType::ePlayerPosition:
 		return CreateMessage<CNetworkMessage_PlayerPositionMessage>(aHeader);
+	case ePackageType::eWeaponShoot:
+		return CreateMessage<CNetworkMessage_WeaponShoot>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

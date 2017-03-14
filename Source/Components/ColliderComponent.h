@@ -1,18 +1,12 @@
 #pragma once
 #include "Component.h"
+#include "..\Physics\PhysicsActor.h"
+#include "..\Physics\IPhysicsCallback.h"
 
 namespace Physics
 {
-	class CPhysXManager;
+	class CPhysicsActor;
 }
-
-namespace physx
-{
-	class PxGeometry;
-	class PxMaterial;
-	class PxRigidActor;
-}
-
 
 struct SColliderData 
 {
@@ -22,22 +16,45 @@ struct SColliderData
 		eBox,
 		eSphere,
 		eCapsule,
+		eRigidbody,
 		eMesh
 	} myType = eColliderType::eNone;
+	CU::Vector3f material;
+	CU::Vector3f center;
+
 	bool IsTrigger = false;
 };
+class CColliderComponentManager;
 
-class CColliderComponent : public CComponent 
+class CColliderComponent : public CComponent , public Physics::IPhysicsCallback
 {
 public:
-	CColliderComponent(SColliderData* aColliderData);
+	CColliderComponent(SColliderData* aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
 	virtual ~CColliderComponent();
+	void UpdatePosition();
 
-	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	virtual void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	virtual inline SColliderData::eColliderType GetType() = 0;
+	virtual const SColliderData* GetData() { return nullptr; }
+	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
+
+	inline Physics::CShape* GetShape() { return myShape; }
+	inline Physics::CPhysicsActor* GetActor() { return myActor; }
+	
+	inline void SetManager(CColliderComponentManager* aManager) { myManager = aManager; }
+	inline CColliderComponentManager* GetManager() { return myManager; }
+
+	void OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnTriggerExit(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther) override;
+	void OnCollisionExit(Physics::CPhysicsCallbackActor* aOther) override;
 
 protected:
-	physx::PxGeometry* myGeometry;
-	physx::PxMaterial* myMaterial;
-	physx::PxRigidActor* myActor;
+
+	Physics::CShape* myShape;
+	Physics::CPhysicsActor* myActor;
+private:
+	SColliderData myData;
+	CColliderComponentManager* myManager;
 };
 

@@ -13,8 +13,6 @@
 #include "ClientMessageManager.h"
 #include "../PostMaster/EMessageReturn.h"
 #include "../PostMaster/Message.h"
-//#include "../PostMaster/Event.h"
-//#include "../PostMaster/PostMaster.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../BrontosaurusEngine/Engine.h"
 #include "../CommonUtilities/ThreadPool.h"
@@ -37,11 +35,16 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_SpawnOtherPlayer.h"
 #include "../TShared/NetworkMessage_ServerReady.h"
-#include "../Components/ServerPlayerNetworkComponent.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../ThreadedPostmaster/OtherPlayerSpawned.h"
+#include "../ThreadedPostmaster/NetworkDebugInfo.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
+#include "../Game/GameEventMessenger.h"
+#include "../CommonUtilities/StringHelper.h"
+#include "../TShared/NetworkMessage_Disconected.h"
 
 
-CClient::CClient() : myMainTimer(0), myCurrentPing(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false)
+CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	CClientMessageManager::CreateInstance(*this);
@@ -74,6 +77,7 @@ void CClient::Disconect()
 	myState = eClientState::DISCONECTED;
 	std::cout << "Disconected from server";
 	myServerIsPinged = false;
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Disconected From Server"));
 	//myChat.StopChat();
 }
 
@@ -83,9 +87,10 @@ void CClient::UpdatePing(const CU::Time& aTime)
 	{
 		myServerPingTime += aTime.GetSeconds();
 
-		if (myServerPingTime >= 10)
+		if (myServerPingTime.GetSeconds() >= 20)
 		{
 			std::cout << "Server is not responding" << std::endl;
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Server Not Responding"));
 			Disconect();
 		}
 	}
@@ -93,19 +98,12 @@ void CClient::UpdatePing(const CU::Time& aTime)
 
 void CClient::Ping()
 {
-	if (myServerIsPinged == false)
+	if (myState == eClientState::CONECTED && myServerIsPinged == false)
 	{
-		SNetworkPackageHeader header;
-		header.mySenderID = myId;
-		header.myTargetID = ID_SERVER;
-		header.myPackageType = (ePackageType::ePing);
-		header.myTimeStamp = 100;
-
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
 		myNetworkWrapper.Send(tempMessagePing, myServerIp.c_str(), SERVER_PORT);
 
-		//myNetworkWrapper.Send(header, nullptr, 0, myServerIp, SERVER_PORT);
 		myServerIsPinged = true;
 		myServerPingTime = 0;
 	}
@@ -116,18 +114,11 @@ void CClient::Update()
 	float currentTime = 0.f;
 	CU::Time positionWaitTime(0);
 
-	std::string pingString;
-	pingString = "Ping: ";
-	pingString += std::to_string(static_cast<int>(myCurrentPing * 1000 + 0.5f)).c_str();
-
-	DL_PRINT(pingString.c_str());
 	CU::SetThreadName("ClientUpdate");
 	myIsRunning = true;
 
 	while (myIsRunning)
 	{
-
-		myServerPingTime = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
 		if (myTimerManager.Size() == 0)
@@ -139,6 +130,7 @@ void CClient::Update()
 		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime();
 		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
 		positionWaitTime += deltaTime;
+		myServerPingTime += deltaTime;
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
 		switch ((currentMessage->GetHeader().myPackageType))
@@ -166,7 +158,7 @@ void CClient::Update()
 		case ePackageType::ePingResponse:
 		{
 			//DL_PRINT("CLIENT:PingRespons");
-			myCurrentPing = myServerPingTime;
+			myRoundTripTime = myServerPingTime.GetMilliseconds();
 			myServerPingTime = 0;
 			myServerIsPinged = false;
 		}
@@ -189,9 +181,8 @@ void CClient::Update()
 
 			const unsigned ID = playerPosition->GetID();
 
-			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldPosition(playerPosition->GetPosition());
+			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldTransformation(playerPosition->GetTransformation());
 			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-
 		}
 		break;
 		case ePackageType::eSpawnOtherPlayer:
@@ -220,8 +211,39 @@ void CClient::Update()
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
 		}
 		break;
-		case ePackageType::eZero:
+		case ePackageType::eWeaponShoot:
+		{
+			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+			SComponentMessageData data;
+			SComponentMessageData data2;
+			data2.myInt = shoot->GetWeaponIndex();
+			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+			data.myVector3f = shoot->GetDirection();
+			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+		}
+		break;
 		case ePackageType::eConnect:
+			{
+				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
+				std::wstring string;
+				string += L"Player ";
+				string += CU::StringToWString(conectMessage->myClientName);
+				string += L" has conected!";
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+			}
+			break;
+		case ePackageType::eDisconected:
+			{
+				CNetworkMessage_Disconected* disconectedMessage = currentMessage->CastTo<CNetworkMessage_Disconected>();
+				std::wstring string;
+				string += L"Player ";
+				string += CU::StringToWString(disconectedMessage->GetClientName());
+				string += L" has disconected!";
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+			}
+			break;
+		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;
 		}
@@ -231,36 +253,22 @@ void CClient::Update()
 		{
 			Ping();
 			currentTime = 0.f;
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CNetworkDebugInfo(myNetworkWrapper.GetAndClearDataSent(), myRoundTripTime));
 		}
 
 		if (positionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)
 		{
 			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__All");
 
-			message->SetPosition(myLatestPlayerPosition);
+			message->SetTransformation(myLatestPlayerTransform);
+			//message->SetPosition(myLatestPlayerPosition);
 			message->SetID(myId);
 
 			Send(message);
 			myPlayerPositionUpdated = false;
 			positionWaitTime = 0;
 		}
-
-
-		//const std::string chatMessage = myChat.GetChatMessage();
-
-		//if (chatMessage != "")
-		//{
-		//	SNetworkPackageHeader header;
-		//	header.myPackageType = static_cast<char>(ePackageType::eChat);
-		//	header.mySenderID = myId;
-		//	header.myTargetID = ID_ALL_BUT_ME;
-		//	header.myTimeStamp = KYLE;
-
-		//	CNetworkMessage_ChatMessage* chatNMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ChatMessage>("__All_But_Me");
-
-		//	chatNMessage->myChatMessage = myName + ":" + chatMessage;
-		//	myNetworkWrapper.Send(chatNMessage, myServerIp, SERVER_PORT);
-		//}
 	}
 
 	myCanQuit = true;
@@ -316,9 +324,9 @@ eMessageReturn CClient::DoEvent(const CSetClientIDMessage & aMessage)
 
 eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 {
-	if (aMessage.myId == myId && myLatestPlayerPosition != aMessage.myPosition)
+	if (aMessage.myId == myId && myLatestPlayerTransform != aMessage.myTransform)
 	{
-		myLatestPlayerPosition = aMessage.myPosition;
+		myLatestPlayerTransform = aMessage.myTransform;
 		myPlayerPositionUpdated = true;
 	}
 	return eMessageReturn::eContinue;

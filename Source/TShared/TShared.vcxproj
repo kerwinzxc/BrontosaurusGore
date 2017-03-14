@@ -148,6 +148,7 @@
     <ClInclude Include="NetworkMessage_ChatMessage.h" />
     <ClInclude Include="NetworkMessage_ClientReady.h" />
     <ClInclude Include="NetworkMessage_ConectResponse.h" />
+    <ClInclude Include="NetworkMessage_Disconected.h" />
     <ClInclude Include="NetworkMessage_LoadLevel.h" />
     <ClInclude Include="NetworkMessage_Ping.h" />
     <ClInclude Include="NetworkMessage_PingResponse.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
+    <ClInclude Include="NetworkMessage_WeaponShoot.h" />
     <ClInclude Include="NetworkMesssage_Connect.h" />
     <ClInclude Include="PackageType.h" />
     <ClInclude Include="SerializeHelper.h" />
@@ -172,6 +174,7 @@
     <ClCompile Include="NetworkMessage_ChatMessage.cpp" />
     <ClCompile Include="NetworkMessage_ClientReady.cpp" />
     <ClCompile Include="NetworkMessage_ConectResponse.cpp" />
+    <ClCompile Include="NetworkMessage_Disconected.cpp" />
     <ClCompile Include="NetworkMessage_LoadLevel.cpp" />
     <ClCompile Include="NetworkMessage_Ping.cpp" />
     <ClCompile Include="NetworkMessage_PingResponse.cpp" />
@@ -179,6 +182,7 @@
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
+    <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
     <ClCompile Include="NetworkMesssage_Connect.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

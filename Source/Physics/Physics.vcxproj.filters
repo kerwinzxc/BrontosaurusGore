@@ -1076,6 +1076,18 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="PhysicsActor.h" />
+    <ClInclude Include="PhysicsActorDynamic.h" />
+    <ClInclude Include="PhysicsActorStatic.h" />
+    <ClInclude Include="PhysicsCharacterController.h" />
+    <ClInclude Include="IPhysicsCallback.h" />
+    <ClInclude Include="CharacterControllerManager.h" />
+    <ClInclude Include="PhysXHelper.h" />
+    <ClInclude Include="SimulationEventCallback.h" />
+    <ClInclude Include="CollisionLayers.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsCallbackActor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1103,6 +1115,14 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="PhysicsActor.cpp" />
+    <ClCompile Include="PhysicsActorStatic.cpp" />
+    <ClCompile Include="PhysicsActorDynamic.cpp" />
+    <ClCompile Include="PhysXHelper.cpp" />
+    <ClCompile Include="PhysicsCharacterController.cpp" />
+    <ClCompile Include="CharacterControllerManager.cpp" />
+    <ClCompile Include="IPhysicsCallback.cpp" />
+    <ClCompile Include="SimulationEventCallback.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">

@@ -66,6 +66,7 @@
     <ClInclude Include="LoadParticleEmitterComponent.h">
       <Filter>LoadThings\LoadParticleComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -130,6 +131,7 @@
     <ClCompile Include="LoadParticleEmitterComponent.cpp">
       <Filter>LoadThings\LoadParticleComponent</Filter>
     </ClCompile>
+    <ClCompile Include="LoadCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">

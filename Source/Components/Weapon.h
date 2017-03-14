@@ -2,10 +2,16 @@
 #pragma once
 struct SWeaponData;
 class CGameObject;
+
+namespace Physics
+{
+	class CPhysicsScene;
+}
+
 class CWeapon
 {
 public:
-	CWeapon(SWeaponData* aWeaponData);
+	CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene);
 	~CWeapon();
 
 	void TryToShoot(const CU::Vector3f& aDirection);
@@ -17,10 +23,13 @@ public:
 	inline void SetWeaponObject(CGameObject* aWeaponObject);
 	inline SWeaponData* GetData();
 private:
+	CU::Vector3f RandomizedDirection(const CU::Vector3f& aDirection);
+private:
 
 	SWeaponData* myWeaponData;
 	CGameObject* myUser;
 	CGameObject* myWeaponObject;
+	Physics::CPhysicsScene* myPhysicsScene;
 	float myElapsedFireTimer;
 
 };

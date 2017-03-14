@@ -121,11 +121,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddToCheckPointResetList.h" />
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
+    <ClInclude Include="GameEventMessage.h" />
     <ClInclude Include="LoadLevelMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="NarrowcastStruct.h" />
+    <ClInclude Include="NetworkDebugInfo.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="OtherPlayerSpawned.h" />
     <ClInclude Include="PlayerPositionMessage.h" />
@@ -133,20 +136,25 @@
     <ClInclude Include="PostOffice.h" />
     <ClInclude Include="PrintMessage.h" />
     <ClInclude Include="SendNetowrkMessageMessage.h" />
+    <ClInclude Include="SetAsNewCheckPointMessage.h" />
     <ClInclude Include="SetClientIDMessage.h" />
     <ClInclude Include="SpawnOtherPlayerMessage.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddToCheckPointResetList.cpp" />
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
+    <ClCompile Include="GameEventMessage.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />
+    <ClCompile Include="NetworkDebugInfo.cpp" />
     <ClCompile Include="OtherPlayerSpawned.cpp" />
     <ClCompile Include="PlayerPositionMessage.cpp" />
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
     <ClCompile Include="PrintMessage.cpp" />
     <ClCompile Include="SendNetowrkMessageMessage.cpp" />
+    <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
     <ClCompile Include="SetClientIDMessage.cpp" />
     <ClCompile Include="SpawnOtherPlayerMessage.cpp" />
     <ClCompile Include="Subscriber.cpp" />

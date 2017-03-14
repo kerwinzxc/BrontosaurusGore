@@ -53,6 +53,18 @@
     <Filter Include="Message\OtherPlayerSpawned">
       <UniqueIdentifier>{bfaffe28-fac7-4363-b634-2aea3e426493}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\NetworkDebugInfo">
+      <UniqueIdentifier>{aa667845-5d9b-4273-bf67-8bc1eb5e03c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\GameEventMessage">
+      <UniqueIdentifier>{c263562d-6a4e-4286-9460-75a81e6906f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\AddToCheckPointResetList">
+      <UniqueIdentifier>{2958e61a-0d7c-46f2-8e88-c695585ef664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\SetNewCheckPoint">
+      <UniqueIdentifier>{30575e0a-d1e2-4686-967f-9712139c3019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -87,6 +99,16 @@
     <ClCompile Include="OtherPlayerSpawned.cpp">
       <Filter>Message\OtherPlayerSpawned</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkDebugInfo.cpp">
+      <Filter>Message\NetworkDebugInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEventMessage.cpp">
+      <Filter>Message\GameEventMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="AddToCheckPointResetList.cpp">
+      <Filter>Message\AddToCheckPointResetList</Filter>
+    </ClCompile>
+    <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -130,5 +152,15 @@
     <ClInclude Include="OtherPlayerSpawned.h">
       <Filter>Message\OtherPlayerSpawned</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkDebugInfo.h">
+      <Filter>Message\NetworkDebugInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEventMessage.h">
+      <Filter>Message\GameEventMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="AddToCheckPointResetList.h">
+      <Filter>Message\AddToCheckPointResetList</Filter>
+    </ClInclude>
+    <ClInclude Include="SetAsNewCheckPointMessage.h" />
   </ItemGroup>
 </Project>

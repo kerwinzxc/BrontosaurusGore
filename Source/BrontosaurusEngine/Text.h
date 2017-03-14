@@ -38,9 +38,9 @@ public:
 	~CText();
 
 
-	void Render(const CU::GrowingArray<std::string>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement);
+	void Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement);
 	float GetlineHeight() const;
-	CU::Vector2i CalculateRectPixelSize(const std::string& aText);
+	CU::Vector2i CalculateRectPixelSize(const std::wstring& aText);
 private:
 	bool InitBuffers();
 
@@ -60,6 +60,4 @@ private:
 	CTextBitmap myBitmap;
 
 	CFT_FontFacade myFont;
-
-
 };

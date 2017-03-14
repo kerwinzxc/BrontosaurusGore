@@ -12,11 +12,14 @@ CU::Matrix44f CGameObject::GetToWorldTransform()
 {
 	if (GetParent() != nullptr)
 	{
-		return GetLocalTransform() * GetParent()->GetToWorldTransform();
+		const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
+		const CU::Matrix44f localTransform = GetLocalTransform();
+		return localTransform * parentTransform;
 	}
 	else
 	{
-		return GetLocalTransform();
+		const CU::Matrix44f localTransform = GetLocalTransform();
+		return localTransform;
 	}
 }
 
@@ -41,6 +44,18 @@ void CGameObject::SetWorldPosition(CU::Vector3f aPosition)
 	else
 	{
 		GetLocalTransform().SetPosition(aPosition);
+	}
+}
+
+void CGameObject::SetWorldTransformation(const CU::Matrix44f & aTransformation)
+{
+	if (GetParent() != nullptr)
+	{
+		GetLocalTransform() = aTransformation * GetParent()->GetToWorldTransform().GetInverted();
+	}
+	else
+	{
+		GetLocalTransform() = aTransformation;
 	}
 }
 
@@ -148,17 +163,6 @@ void CGameObject::ComponentReceive(const eComponentMessageType aMessageType, con
 			myComponents[i]->Receive(aMessageType, aMessageData);
 		}
 	}
-
-	//CComponent* test = nullptr;
-	//for (unsigned int i = 0; i < myComponents.Size(); ++i)
-	//{
-	//	if(dynamic_cast<CGameObject*>(myComponents[i]) != nullptr)
-	//	{
-	//		return;
-	//	}
-	//	test = myComponents[i];
-	//	test->Receive(aMessageType, aMessageData);
-	//}
 }
 
 bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)

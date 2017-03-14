@@ -45,10 +45,8 @@ namespace Physics
 		physx::PxMaterial* CreateMaterial(const float aStaticFriction, const float aDynamicFriction, const float aRestitution);
 
 		void SetGlobalPose(physx::PxRigidActor* aActor, const CU::Matrix44f& aTransformation);
-
 		void AddActor(physx::PxRigidActor& aActor);
 		void RemoveActor(physx::PxRigidActor& aActor);
-
 		void SetPvdCameraTransform(const CU::Matrix44f& aTransformation);
 
 

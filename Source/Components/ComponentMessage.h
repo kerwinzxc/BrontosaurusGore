@@ -42,8 +42,6 @@ enum class eComponentMessageType
 	ePlaySound,
 	eMoving,
 	eSetVisibility,
-	eOnCollisionEnter,
-	eOnCollisionExit,
 	eSetIsColliderActive,
 	eObjectDone,
 	eAddMessageSubscription,
@@ -60,6 +58,7 @@ enum class eComponentMessageType
 	eTryToShoot,
 	eCheckIfHaveAmmoForShooting,
 	eShoot,
+	eShootWithNetworking,
 	eAddWeapon,
 	eAddNewAmmoType,
 	eWeaponFactoryGiveWeaponToWeaponSystem,
@@ -71,6 +70,13 @@ enum class eComponentMessageType
 	eTookDamage,
 	eDied,
 	eStopJumping,
+	eSelectWeapon,
+
+	eOnTriggerEnter,
+	eOnTriggerExit,
+	eOnCollisionEnter,
+	eOnCollisionExit,
+
 	eLength,
 };
 
@@ -96,6 +102,7 @@ struct SComponentMessageData
 
 		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
+
 		SAmmoData* myAmmoData;
 		SAmmoCheckData* myAmmoCheckData;
 		SAmmoReplenishData* myAmmoReplenishData;

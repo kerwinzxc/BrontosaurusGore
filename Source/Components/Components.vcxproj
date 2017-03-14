@@ -371,6 +371,9 @@
     <ClInclude Include="BoxColliderComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="CharcterControllerComponent.h" />
+    <ClInclude Include="CheckPointComponent.h" />
+    <ClInclude Include="CheckPointSystem.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="ColliderComponentManager.h" />
     <ClInclude Include="CollisionComponent.h" />
@@ -390,6 +393,7 @@
     <ClInclude Include="PickupAmmoComponent.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
+    <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
@@ -431,6 +435,9 @@
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="CharcterControllerComponent.cpp" />
+    <ClCompile Include="CheckPointComponent.cpp" />
+    <ClCompile Include="CheckPointSystem.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
     <ClCompile Include="ColliderComponentManager.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -454,6 +461,7 @@
     <ClCompile Include="ProjectileComponent.cpp" />
     <ClCompile Include="ProjectileComponentManager.cpp" />
     <ClCompile Include="ProjectileFactory.cpp" />
+    <ClCompile Include="RigidBodyComponent.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="ScriptComponentManager.cpp" />
     <ClCompile Include="Component.cpp" />

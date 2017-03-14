@@ -2,99 +2,73 @@
 #include "PhysicsScene.h"
 #include <PxScene.h>
 #include <PxRigidActor.h>
+#include "PhysicsActor.h"
 
-namespace
-{
-	physx::PxQuat MatrixToQuat(const CU::Matrix44f& aTransformation)
-	{
-		// Output quaternion
-		float w, x, y, z;
-		// Determine which of w,x,y, or z has the largest absolute value
-		float fourWSquaredMinus1 = aTransformation.m11 + aTransformation.m22 + aTransformation.m33;
-		float fourXSquaredMinus1 = aTransformation.m11 - aTransformation.m22 - aTransformation.m33;
-		float fourYSquaredMinus1 = aTransformation.m22 - aTransformation.m11 - aTransformation.m33;
-		float fourZSquaredMinus1 = aTransformation.m33 - aTransformation.m11 - aTransformation.m22;
-
-		int biggestIndex = 0;
-		float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
-
-		if (fourXSquaredMinus1 > fourBiggestSquaredMinus1) {
-			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
-			biggestIndex = 1;
-		}
-		if (fourYSquaredMinus1 > fourBiggestSquaredMinus1) {
-			fourBiggestSquaredMinus1 = fourYSquaredMinus1;
-			biggestIndex = 2;
-		}
-		if (fourZSquaredMinus1 > fourBiggestSquaredMinus1) {
-			fourBiggestSquaredMinus1 = fourZSquaredMinus1;
-			biggestIndex = 3;
-		}
-		// Per form square root and division
-		float biggestVal = sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
-		float mult = 0.25f / biggestVal;
-
-		// Apply table to compute quaternion values
-		switch (biggestIndex)
-		{
-		case 0:
-			w = biggestVal;
-			x = (aTransformation.m23 - aTransformation.m32) * mult;
-			y = (aTransformation.m31 - aTransformation.m13) * mult;
-			z = (aTransformation.m12 - aTransformation.m21) * mult;
-			break;
-		case 1:
-			x = biggestVal;
-			w = (aTransformation.m23 - aTransformation.m32) * mult;
-			y = (aTransformation.m12 + aTransformation.m21) * mult;
-			z = (aTransformation.m31 + aTransformation.m13) * mult;
-			break;
-		case 2:
-			y = biggestVal;
-			w = (aTransformation.m31 - aTransformation.m13) * mult;
-			x = (aTransformation.m12 + aTransformation.m21) * mult;
-			z = (aTransformation.m23 + aTransformation.m32) * mult;
-			break;
-		case 3:
-			z = biggestVal;
-			w = (aTransformation.m12 - aTransformation.m21) * mult;
-			x = (aTransformation.m31 + aTransformation.m13) * mult;
-			y = (aTransformation.m23 + aTransformation.m32) * mult;
-			break;
-		}
-
-		return physx::PxQuat(x, y, z, w);
-	}
-}
 
 namespace Physics
 {
 	CPhysicsScene::CPhysicsScene(physx::PxScene* aPxScene)
 	{
 		myPxScene = aPxScene;
+		mySimulationTimer = 0.f;
 	}
 
 	CPhysicsScene::~CPhysicsScene()
 	{
+		if (myPxScene)
+			myPxScene->release();
+		myPxScene = nullptr;
 	}
 
-
-	void CPhysicsScene::AddActor(physx::PxRigidActor* aActor)
+	bool CPhysicsScene::Simulate(const CU::Time aDeltaTime)
 	{
-		myPxScene->addActor(*aActor);
+		// aDeltaT shuld be 1/60
+		// Fix with timers bby
+		//TODO: if main FPS is below 60? 
+
+		mySimulationTimer += aDeltaTime.GetSeconds();
+		if (mySimulationTimer >= ourSimulationFrequensy)
+		{
+			mySimulationTimer -= ourSimulationFrequensy;
+			myPxScene->simulate(ourSimulationFrequensy);
+			myPxScene->fetchResults();
+			return true;
+		}
+		return false;
 	}
 
-	void CPhysicsScene::RemoveActor(physx::PxRigidActor* aActor)
+	Physics::SRaycastHitData CPhysicsScene::Raycast(const CU::Vector3f& aOrigin, const CU::Vector3f& aDirection, float aRayLength)
 	{
-		myPxScene->removeActor(*aActor);
+		SRaycastHitData outData;
+		physx::PxRaycastBuffer hit;
+		physx::PxVec3 origin = { aOrigin.x, aOrigin.y, aOrigin.z };
+		physx::PxVec3 dir = { aDirection.x, aDirection.y, aDirection.z };
+		physx::PxReal dist = aRayLength;
+
+		if (myPxScene->raycast(origin, dir, dist, hit))
+		{
+			outData.hit = hit.hasBlock;
+			if(hit.hasBlock)
+			{
+				outData.distance = hit.block.distance;
+				outData.position = { hit.block.position.x, hit.block.position.y, hit.block.position.z };
+				outData.normal = { hit.block.normal.x, hit.block.normal.y, hit.block.normal.z };
+				outData.faceIndex = hit.block.faceIndex;
+				outData.actor = static_cast<CPhysicsCallbackActor*>(hit.block.actor->userData);
+				return outData;
+			}
+		}
+		return outData;
 	}
 
-	void CPhysicsScene::SetActorPose(physx::PxRigidActor* aActor, const CU::Matrix44f& aTransformation)
+	void CPhysicsScene::AddActor(CPhysicsActor* aActor)
 	{
-		physx::PxTransform transformation;
-		transformation.p = { aTransformation.m41, aTransformation.m42 ,aTransformation.m43 };
-		transformation.q = MatrixToQuat(aTransformation);
-
-		aActor->setGlobalPose(transformation);
+		myPxScene->addActor(*aActor->GetPxActor());
 	}
+
+	void CPhysicsScene::RemoveActor(CPhysicsActor* aActor)
+	{
+		myPxScene->removeActor(*aActor->GetPxActor());
+	}
+
 }

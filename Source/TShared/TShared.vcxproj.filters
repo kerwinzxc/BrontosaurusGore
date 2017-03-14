@@ -48,6 +48,9 @@
     <Filter Include="NetworkMessage\SpawnOtherPlayer">
       <UniqueIdentifier>{2c84c887-1fe6-4434-943b-1f76ed546ee4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\Disconected">
+      <UniqueIdentifier>{7f0f6689-a469-4cc2-a5cb-ebc72d811692}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -119,6 +122,10 @@
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_WeaponShoot.h" />
+    <ClInclude Include="NetworkMessage_Disconected.h">
+      <Filter>NetworkMessage\Disconected</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -167,6 +174,10 @@
     <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
+    <ClCompile Include="NetworkMessage_Disconected.cpp">
+      <Filter>NetworkMessage\Disconected</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

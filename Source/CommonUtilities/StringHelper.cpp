@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "StringHelper.h"
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
 
 //#include <stdlib.h> // mbstowcs_s
 //#include <string.h> // strlen
@@ -36,18 +39,42 @@ namespace CU
 		return aStringToClean;
 	}
 
-	bool StringHelper::IsBool(std::string aString)
+	std::string& ToLowerCase(std::string& aString)
+	{
+		std::transform(aString.begin(), aString.end(), aString.begin(), ::tolower);
+		return aString;
+	}
+
+	std::string& ToUpperCase(std::string& aString)
+	{
+		std::transform(aString.begin(), aString.end(), aString.begin(), ::toupper);
+		return aString;
+	}
+
+	std::wstring& ToLowerCase(std::wstring& aString)
+	{
+		std::transform(aString.begin(), aString.end(), aString.begin(), ::towlower);
+		return aString;
+	}
+
+	std::wstring& ToUpperCase(std::wstring& aString)
+	{
+		std::transform(aString.begin(), aString.end(), aString.begin(), ::towupper);
+		return aString;
+	}
+
+	bool StringHelper::IsBool(const std::string& aString)
 	{
 		return aString == "true" || aString == "false" || aString == "True" || aString == "False" || aString == "TRUE" || aString == "FALSE";
 	}
 
-	bool StringHelper::ToBool(std::string astring)
+	bool StringHelper::ToBool(const std::string& aString)
 	{
-		if (astring == "true" || astring == "True" || astring == "TRUE")
+		if (aString == "true" || aString == "True" || aString == "TRUE")
 		{
 			return true;
 		}
-		if(astring == "false" || astring == "False" || astring == "FALSE")
+		if(aString == "false" || aString == "False" || aString == "FALSE")
 		{
 			return false;
 		}
@@ -55,7 +82,7 @@ namespace CU
 		return false;
 	}
 
-	bool StringHelper::IsFloat(std::string aString)
+	bool StringHelper::IsFloat(const std::string& aString)
 	{
 		const std::string number = "1234567890.";
 		for (int i = 0; i < aString.size(); ++i)
@@ -69,9 +96,9 @@ namespace CU
 		return true;
 	}
 
-	bool StringHelper::IsInt(std::string aString)
+	bool StringHelper::IsInt(const std::string& aString)
 	{
-		const std::string number = "1234567890";
+		const std::string number = "-1234567890";
 		for (int i = 0; i < aString.size(); ++i)
 		{
 			if (number.find(aString[i]) == std::string::npos)
@@ -81,6 +108,32 @@ namespace CU
 		}
 
 		return true;
+	}
+
+	std::string StringHelper::ToStringWithPrecision(const float aFloat, const char aPrecision)
+	{
+		std::stringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aFloat;
+		return ss.str();
+	}
+
+	std::wstring StringHelper::ToWStringWithPrecision(const float aFloat, const char aPrecision)
+	{
+		std::wstringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aFloat;
+		return ss.str();
+	}
+
+	std::string StringHelper::ToStringWithPrecision(const double aDouble, const char aPrecision)
+	{
+		std::stringstream ss;
+		ss << std::fixed << std::setprecision(aPrecision) << aDouble;
+		return ss.str();
+	}
+
+	std::string StringHelper::WStringToString(const std::wstring aWString)
+	{
+		return std::string(aWString.begin(), aWString.end());
 	}
 }
 

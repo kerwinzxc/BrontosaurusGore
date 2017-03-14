@@ -20,6 +20,7 @@ public:
 	CU::GrowingArray<CComponent*>& GetComponents();
 
 	void SetWorldPosition(CU::Vector3f);
+	void SetWorldTransformation(const CU::Matrix44f& aTransformation);
 
 	void AddComponent(CComponent* aComponent);
 	void RemoveComponent(CComponent* aComponent);

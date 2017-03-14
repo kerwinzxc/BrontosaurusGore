@@ -391,6 +391,7 @@ void CModel::Render(SShadowRenderModelParams& aParamObj)
 
 void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 {
+	assert(false && "Carl was here :)");
 	// WorldSpace thingy
 	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
 	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -425,7 +426,7 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 		Lights::SLightsBuffer updatedLights;
-		updatedLights.myCameraPos = RENDERER.GetCamera().GetPosition();
+		//updatedLights.myCameraPos = RENDERER.GetCamera().GetPosition();
 		updatedLights.myDirectionalLight = aParamObj.myDirectionalLight;
 
 		for (unsigned int i = 0; i < aParamObj.myPointLightList.Size(); ++i)

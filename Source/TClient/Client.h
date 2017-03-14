@@ -6,6 +6,7 @@
 #include "../CommonUtilities/Timer.h"
 #include "../CommonUtilities/TimerManager.h"
 #include "../Components/NetworkPlayerReciverComponent.h"
+#include "../CommonUtilities/matrix44.h"
 
 enum class eClientState
 {
@@ -44,8 +45,6 @@ private:
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
-	float myCurrentPing;
-
 	TShared_NetworkWrapper myNetworkWrapper;
 	std::atomic<eClientState> myState;
 	CU::Timer myTimer;
@@ -53,14 +52,16 @@ private:
 
 	std::string myName;
 	std::string myServerIp;
-	CU::TimeUnit myServerPingTime;
+	CU::Time myServerPingTime;
 	bool myServerIsPinged;
 
 	std::atomic_bool myIsRunning;
 	std::atomic_bool myCanQuit;
 
-	CU::Vector3f myLatestPlayerPosition;
+	CU::Matrix44f myLatestPlayerTransform;
 
 	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
 	bool myPlayerPositionUpdated;
+
+	int myRoundTripTime;
 };

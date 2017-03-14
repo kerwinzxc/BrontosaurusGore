@@ -17,7 +17,7 @@ struct ID3D11DepthStencilState;
 struct ID3D11BlendState;
 struct ID3D11Buffer;
 struct ID3D11SamplerState;
-
+class CTexture;
 
 struct SRendererSettings
 {
@@ -28,6 +28,7 @@ struct SRendererSettings
 	bool AA;
 	char AALevel;
 	bool MSAA;
+	bool FXAA;
 };
 
 
@@ -37,22 +38,25 @@ class CRenderer : public Postmaster::ISubscriber
 public:
 	CRenderer();
 	~CRenderer();
+
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
+	
 	void Render();
 	void SwapWrite();
 	void ClearRenderQueue();
 	inline bool GetIsRunning();
 	inline SRendererSettings& GetSettings();
 
-	inline const CU::Camera& GetCamera();
+	//inline const CU::Camera& GetCamera();
 
 private:
-	void HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount);
+	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	
 	void Bloom();
 	void HDR();
 	void MotionBlur();
+	void AntiAliasing();
 	void Downsample(CRenderPackage& aRenderPackage);
 	void RenderGUI();
 	void LensDistortion(CRenderPackage& AddRenderMessage);
@@ -74,6 +78,8 @@ private:
 	void DoRenderQueue();
 
 	void SetStates(const SChangeStatesMessage* aState);
+
+	void DoColorGrading();
 private:
 	struct SHDRData
 	{
@@ -107,26 +113,28 @@ private:
 	struct SGUIData
 	{
 		CRenderPackage myInputPackage;
-		CU::StaticArray<CRenderPackage, 3> myDownScalePackages;
-		bool myShouldDownScale;
 	} myGUIData;
 
 private:
+	CTexture* myLut;
+
+	CRenderPackage myColorGradingPackage;
 	CDeferredRenderer myDeferredRenderer;
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;
 
 	CRenderPackage* renderTo;
 
-	CU::StaticArray< ID3D11RasterizerState*, static_cast<int>(eRasterizerState::eSize)> myRasterizerStates;
-	CU::StaticArray< ID3D11DepthStencilState*, static_cast<int>(eDepthStencilState::eSize)> myDepthStencilStates;
-	CU::StaticArray< ID3D11BlendState*, static_cast<int>(eBlendState::eSize)> myBlendStates;
-	CU::StaticArray< ID3D11SamplerState*, static_cast<int>(eSamplerState::eSize)> mySamplerStates;
+	CU::StaticArray<ID3D11RasterizerState*, static_cast<int>(eRasterizerState::eSize)> myRasterizerStates;
+	CU::StaticArray<ID3D11DepthStencilState*, static_cast<int>(eDepthStencilState::eSize)> myDepthStencilStates;
+	CU::StaticArray<ID3D11BlendState*, static_cast<int>(eBlendState::eSize)> myBlendStates;
+	CU::StaticArray<ID3D11SamplerState*, static_cast<int>(eSamplerState::eSize)> mySamplerStates;
 	
 	CU::TimerManager myTimers;
 
 	CRenderPackage myIntermediatePackage;
 	CRenderPackage myBackBufferPackage;
+	CRenderPackage myAntialiasingPackage;
 
 	CFullScreenHelper myFullScreenHelper;
 	SRendererSettings mySettings;
@@ -138,8 +146,6 @@ private:
 	CU::TimerHandle myOncePerFrameBufferTimer;
 	CU::TimerHandle myFireTimer;
 	bool myIsRunning;
-
-	// Inherited via Subscriber
 };
 
 inline SRendererSettings& CRenderer::GetSettings()
@@ -152,8 +158,8 @@ inline bool CRenderer::GetIsRunning()
 	return myIsRunning;
 }
 
-inline const CU::Camera & CRenderer::GetCamera()
-{
-	return myCamera;
-}
+//inline const CU::Camera & CRenderer::GetCamera()
+//{
+//	return myCamera;
+//}
 

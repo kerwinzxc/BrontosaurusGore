@@ -24,10 +24,12 @@ class CGameServer;
 
 struct SClientData
 {
+	SClientData(): ResponseTime(0) {}
+
 	std::string myIP;
 	std::string myPort;
 	std::string myName;
-	int ResponseTime;
+	CU::Time ResponseTime;
 	bool IsReady;
 	CServerPlayerNetworkComponent* myComponent = nullptr;
 };
@@ -59,9 +61,8 @@ public:
 	void UpdateImportantMessages(const CU::Time aDeltaTime);
 	void RecieveImportantResponse(CImportantNetworkMessage* aNetworkMessage);
 
-	void ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort);
+	ClientID ConnectClient(SNetworkPackageHeader aHeader, std::string aName, const char* anIp, const char* aPort);
 	void RecievePingResponse(SNetworkPackageHeader aHeader);
-	void RecievePing(SNetworkPackageHeader aHeader, const char* data, unsigned aDataSize, const char* anIp, const char* aPort);
 
 	void Ping(ClientID aClientID);
 	void Ping();
@@ -77,6 +78,7 @@ public:
 
 	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
 
+	void PrintDebugInfo();
 private:
 
 	CU::TimerManager myTimerManager;
@@ -93,7 +95,7 @@ private:
 
 	ClientID currentFreeId;
 
-	std::map<ClientID, float> myPendingPings;
+	std::map<ClientID, CU::Time> myPendingPings;
 	CMessageManager* myMessageManager;
 
 	eServerState myServerState;

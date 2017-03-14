@@ -7,6 +7,10 @@
 #include "AmmoData.h"
 #include "TextInstance.h"
 #include "WeaponData.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_WeaponShoot.h"
+#include "../TClient/ClientMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -19,7 +23,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myActiveWeaponAmmoLeftText = new CTextInstance();
 	myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
 	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
-	myActiveWeaponAmmoLeftText->SetText("");
+	myActiveWeaponAmmoLeftText->SetText(L"");
 	myActiveWeaponAmmoLeftText->Init();
 }
 
@@ -44,6 +48,18 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	//	break;
 	//}
 	case eComponentMessageType::eShoot:
+	{
+		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+
+		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
+		
+		shootMessage->SetDirection(aMessageData.myVector3f);
+		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		break;
+	}
+	case eComponentMessageType::eShootWithNetworking:
 	{
 		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 		break;
@@ -103,6 +119,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		break;
 	}
+	case eComponentMessageType::eSelectWeapon:
+	{
+		myActiveWeaponIndex = aMessageData.myInt;
+		break;
+	}
 	default:
 		break;
 	}
@@ -135,7 +156,7 @@ void CWeaponSystemComponent::Update(float aDelta)
 		ammoLeftText += "/";
 		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
 
-		myActiveWeaponAmmoLeftText->SetText(ammoLeftText);
+		myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
 	}
 	myActiveWeaponAmmoLeftText->Render();
 }

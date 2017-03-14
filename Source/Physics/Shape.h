@@ -1,18 +1,30 @@
 #pragma once
+#include "CollisionLayers.h"
 
 namespace physx
 {
 	class PxShape;
 }
 
-class CShape
+namespace Physics
 {
-public:
-	CShape(physx::PxShape* aShape);
-	~CShape();
 
-private:
-	physx::PxShape* myShape;
+	//enum ECollisionLayer;
 
-};
+	class CShape
+	{
+		friend class CPhysics;
+		friend class CPhysicsActor;
 
+	public:
+		CShape(physx::PxShape* aShape);
+		CShape(const CShape& aShape);
+		~CShape();
+
+		void SetCollisionLayers(const ECollisionLayer& aLayer);
+		void SetCollisionLayers(const ECollisionLayer& aLayer, const ECollisionLayer& aLayerToCollideWith);
+	private:
+		physx::PxShape* myShape;
+
+	};
+}

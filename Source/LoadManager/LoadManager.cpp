@@ -17,6 +17,7 @@
 #include "LoadAmmoComponent.h"
 #include "LoadMovementComponent.h"
 #include "LoadInputComponent.h"
+#include "LoadCollider.h"
 
 #include "LoadAmmoPickupComponent.h"
 #include "LoadHealthPackComponent.h"
@@ -70,10 +71,13 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
 	loader.RegisterComponentLoadFunction("ParticleSystem", LoadParticleEmitterComponent);
+	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
+	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
+	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
+
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
-	//loader.RegisterComponentLoadFunction("LuaScriptComponent", LoadScriptComponent);
 	//loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
 	//loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
 }

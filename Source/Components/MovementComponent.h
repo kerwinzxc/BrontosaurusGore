@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "PlayerControls.h"
 #include "../CommonUtilities/BitSet.h"
+#include "../Physics/PhysicsCharacterController.h"
 
 class CMovementComponent : public CComponent
 {
@@ -11,13 +12,11 @@ public:
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Update(const CU::Time aDeltaTime);
-	float CalculateJumpVelocity(const CU::Time aDeltaTime);
 private:
 	void KeyPressed(const ePlayerControls aPlayerControl);
 	void KeyReleased(const ePlayerControls aPlayerControl);
-	void ActivateJump();
-	void ActivateDoubleJump();
-	void DeactivateJump();
+
+	void ApplyJumpForce(float aJumpHeight);
 private:
 	CU::CBitSet<static_cast<int>(ePlayerControls::eLength)> myKeysDown;
 
@@ -26,11 +25,10 @@ private:
 	float myDeceleration;
 	float myMaxSpeed;
 
-	float myElapsedJumpTime;
-	float myJumpVelocity;
-	float myJumpDistance;
-	float mySecondJumpDistance;
-	float myJumpTimeUntilTop;
-	bool myIsJumping;
-	bool myHaveDoubleJumped;
+	float myJumpHeight;
+	float myDoubleJumpHeight;
+	float myJumpForce;
+
+	char myControllerConstraints;
+	bool myCanDoubleJump;
 };

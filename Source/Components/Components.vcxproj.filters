@@ -115,14 +115,10 @@
     <ClCompile Include="EnemyComponentManager.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BoxColliderComponent.cpp" />
-    <ClCompile Include="ColliderComponent.cpp" />
-    <ClCompile Include="ColliderComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp">
       <Filter>NetworkComponent</Filter>
     </ClCompile>
     <ClCompile Include="NetworkComponentManager.cpp" />
-    <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp">
       <Filter>PlayerNetwork</Filter>
@@ -137,6 +133,28 @@
     <ClCompile Include="PickupAmmoComponent.cpp">
       <Filter>Ammo</Filter>
     </ClCompile>
+    <ClCompile Include="BoxColliderComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponentManager.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponentManager.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CharcterControllerComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBodyComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPointComponent.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -286,9 +304,6 @@
     <ClInclude Include="GeneralAmmoData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
-    <ClInclude Include="BoxColliderComponent.h" />
-    <ClInclude Include="ColliderComponent.h" />
-    <ClInclude Include="ColliderComponentManager.h" />
     <ClInclude Include="ComponentAnswer.h">
       <Filter>Component</Filter>
     </ClInclude>
@@ -305,7 +320,6 @@
     <ClInclude Include="AmmoReplenishData.h">
       <Filter>Ammo</Filter>
     </ClInclude>
-    <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="PlayerNetworkComponent.h">
       <Filter>PlayerNetwork</Filter>
@@ -320,6 +334,28 @@
     <ClInclude Include="PickupAmmoComponent.h">
       <Filter>Ammo</Filter>
     </ClInclude>
+    <ClInclude Include="BoxColliderComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderComponentManager.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponentManager.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CharcterControllerComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBodyComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPointComponent.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPointSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -384,6 +420,12 @@
     </Filter>
     <Filter Include="ServerPlayerNetwork">
       <UniqueIdentifier>{6d33be8b-ef92-4cd0-bb9c-57ff330ee525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider/Physics">
+      <UniqueIdentifier>{11a8cc8f-ccea-46ed-83f8-fe63342460bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CheckPoint">
+      <UniqueIdentifier>{0b4ceec9-a814-4474-8934-9b869ee791a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

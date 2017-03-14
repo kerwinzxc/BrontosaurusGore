@@ -67,6 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fullscreen", "Fullscreen", 
 		..\Bin\Shaders\Fullscreen\bayer4x4dither.fx = ..\Bin\Shaders\Fullscreen\bayer4x4dither.fx
 		..\Bin\Shaders\Fullscreen\bloominance.fx = ..\Bin\Shaders\Fullscreen\bloominance.fx
 		..\Bin\Shaders\Fullscreen\blur.fx = ..\Bin\Shaders\Fullscreen\blur.fx
+		..\Bin\Shaders\Fullscreen\colorGrading.fx = ..\Bin\Shaders\Fullscreen\colorGrading.fx
 		..\Bin\Shaders\Fullscreen\copy.fx = ..\Bin\Shaders\Fullscreen\copy.fx
 		..\Bin\Shaders\Fullscreen\copyDepth.fx = ..\Bin\Shaders\Fullscreen\copyDepth.fx
 		..\Bin\Shaders\Fullscreen\cubicLensDistortion.fx = ..\Bin\Shaders\Fullscreen\cubicLensDistortion.fx

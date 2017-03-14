@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../CommonUtilities/StaticArray.h"
-#include "../PostMaster/Subscriber.h"
 
 #include <atomic>
 #include "../CommonUtilities/BitSet.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../CommonUtilities/InputMessenger.h"
 
 namespace CU
 {
@@ -23,7 +23,7 @@ namespace CU
 
 class CTextInstance;
 
-class CDebugInfoDrawer : public Postmaster::ISubscriber
+class CDebugInfoDrawer : public Postmaster::ISubscriber, public CU::CInputMessenger
 {
 public:
 	CDebugInfoDrawer(unsigned int aDebugFlags = 0);
@@ -31,7 +31,6 @@ public:
 
 	void Render(const CU::Vector2ui aTargetWindowSize);
 	void Update();
-
 	
 	void PressedKey(const CU::eKeys& aKey);
 	void ReleasedKey(const CU::eKeys& aKey);
@@ -40,12 +39,17 @@ public:
 	void UpdateFPSCounter();
 
 	eMessageReturn DoEvent(const DrawCallsCount& aConsoleCalledupon) override;
+	eMessageReturn DoEvent(const CNetworkDebugInfo& someDebugInfo) override;
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 private:
 	void UpdateLogicFPSCounter();
 	void UpdateDrawCallsCounter();
 	void UpdateMemoryUsage();
+	void UpdateNetworkDebug();
 
+
+	void SetNetoworkDebugData(const int aDataSent, const int aRoundTripTime);
 
 	enum eDebugText : unsigned int
 	{
@@ -53,6 +57,8 @@ private:
 		eDebugText_LogicFPS,
 		eDebugText_DrawCalls,
 		eDebugText_MemoryUsage,
+		eDebugText_RoundTripTime,
+		eDebugText_DataAmmountSent,
 		eDebugText_Length,
 	};
 
@@ -68,6 +74,9 @@ private:
 	CU::TimerHandle myFPSTimer;
 
 	int myDrawCallsCount;
+	int myRTT;
+	int myDataSent;
+
 	CU::CBitSet<eDebugText_Length> myDebugFlags;
 
 	std::atomic_bool myLeftControlIsDown;

@@ -104,7 +104,7 @@ void CEngine::Render()
 	myDXFramework->ClearDepthStencil();
 	myDXFramework->ClearScreen();
 
-	//myDebugInfoDrawer->UpdateFPSCounter();
+	myDebugInfoDrawer->UpdateFPSCounter();
 
 
 	myRenderer->Render();
@@ -200,8 +200,8 @@ void CEngine::Start()
 			}
 		}
 
-		//myDebugInfoDrawer->Update();
-		//myDebugInfoDrawer->Render(myWindowSize);
+		myDebugInfoDrawer->Update();
+		myDebugInfoDrawer->Render(myWindowSize);
 
 
 		Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();

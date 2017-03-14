@@ -106,3 +106,23 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CChangeLevel& aChangeLevel
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CNetworkDebugInfo& aDebugInfo)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CGameEventMessage& aGameEventMessageMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CAddToCheckPointResetList & aAddToCheckPointResetListMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage)
+{
+	return eMessageReturn::eContinue;
+}

@@ -249,6 +249,7 @@
     <ClCompile Include="ParticleEffectManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PlayState.cpp" />
+    <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="ScriptHelperFunctions.cpp" />
     <ClCompile Include="ScriptLoader.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="ParticleEffectManager.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PlayState.h" />
+    <ClInclude Include="PollingStation.h" />
     <ClInclude Include="ScriptHelperFunctions.h" />
     <ClInclude Include="ScriptLoader.h" />
     <ClInclude Include="SplashScreen.h" />
