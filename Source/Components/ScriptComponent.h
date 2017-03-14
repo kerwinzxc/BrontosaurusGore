@@ -18,7 +18,7 @@ public:
 	CScriptComponent() = default;
 	~CScriptComponent() = default;
 
-	eInitSuccess Init(const std::string& aScriptPath, const std::string& aInitFunction);
+	eInitSuccess Init(const std::string& aScriptPath, const std::string& aInitFunction, const std::map<std::string, std::string>& aDataMap);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	bool Call(const std::string& aFunctionName, void* aOptionalUserData = nullptr);
 

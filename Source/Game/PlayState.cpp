@@ -13,6 +13,7 @@
 
 #include "LoadState.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "PollingStation.h"
 
 //Managers
 
@@ -26,6 +27,7 @@
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
+#include "Components/ScriptComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -72,7 +74,6 @@
 #include "BoxColliderComponent.h"
 #include "Physics/PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
-#include "ScriptComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -98,6 +99,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myColliderComponentManager = nullptr;
 	myCheckPointSystem = nullptr;
 
+	new CPollingStation();
 }
 
 CPlayState::~CPlayState()
@@ -121,6 +123,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
+
+	delete CPollingStation::GetInstance();
 }
 
 void CPlayState::Load()
@@ -181,7 +185,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
+	CreatePlayer(playerCamera); // Hard codes Player!;
 
 	myGameObjectManager->SendObjectsDoneMessage();
 
@@ -342,7 +346,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
-void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
+void CPlayState::CreatePlayer(CU::Camera& aCamera)
 {
 	//create hard coded player:
 	{
@@ -365,6 +369,11 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 			playerObject = myGameObjectManager->CreateGameObject();
 			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
 			playerObject->AddComponent(cameraComponent->GetParent());
+		}
+
+		if (CPollingStation::GetInstance())
+		{
+			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
 		}
 
 		CInputComponent* inputComponent = new CInputComponent();

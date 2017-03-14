@@ -22,14 +22,18 @@ namespace CU
 	wchar_t* CharToWChar(wchar_t aBuffer[], const char* aText);
 	std::wstring StringToWString(const std::string& aString);
 	std::string& FindAndErase(std::string& aStringToClean, const std::string& aSubStringToErase);
+	std::string& ToLowerCase(std::string& aString);
+	std::string& ToUpperCase(std::string& aString);
+	std::wstring& ToLowerCase(std::wstring& aString);
+	std::wstring& ToUpperCase(std::wstring& aString);
 
 	namespace StringHelper
 	{
-		bool IsBool(std::string aString);
-		bool ToBool(std::string astring);
+		bool IsBool(const std::string& aString);
+		bool ToBool(const std::string& aString);
 
-		bool IsFloat(std::string aString);
-		bool IsInt(std::string aString);
+		bool IsFloat(const std::string& aString);
+		bool IsInt(const std::string& aString);
 
 		std::string ToStringWithPrecision(const float aFloat, const char aPrecision = 3);
 		std::wstring ToWStringWithPrecision(const float aFloat, const char aPrecision = 3);

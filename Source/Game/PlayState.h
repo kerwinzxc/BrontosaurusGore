@@ -76,7 +76,7 @@ public:
 
 private:
 
-	void TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera);
+	void CreatePlayer(CU::Camera& aCamera);
 private:
 	Physics::CPhysicsScene* myPhysicsScene;
 	Physics::CPhysics* myPhysics;

@@ -11,12 +11,12 @@ std::string CScriptComponent::ourLastErrorMessage("");
 //CScriptComponent::CScriptComponent()
 //{
 //}
-//
+
 //CScriptComponent::~CScriptComponent()
 //{
 //}
 
-CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScriptPath, const std::string& aInitFunction)
+CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScriptPath, const std::string& aInitFunction, const std::map<std::string, std::string>& aDataMap)
 {
 	ComponentId id = GetId();
 	if (id == NULL_COMPONENT)
@@ -39,6 +39,26 @@ CScriptComponent::eInitSuccess CScriptComponent::Init(const std::string& aScript
 	{
 		luaWrapper.GetLastError(ourLastErrorMessage);
 		return eInitSuccess::eBadLuaCode;
+	}
+
+	std::string loadDataCode = "data[" + std::to_string(id) + "] = {\n";
+
+	for (auto it = aDataMap.begin(); it != aDataMap.end(); ++it)
+	{
+		loadDataCode += "\t";
+		loadDataCode += it->first;
+		loadDataCode += " = ";
+		loadDataCode += it->second;
+		loadDataCode += ", ";
+	}
+	loadDataCode -= ", ";
+	loadDataCode += "\n}";
+	DL_PRINT(loadDataCode.c_str());
+	if (!luaWrapper.DoString(loadDataCode))
+	{
+		std::string errorMessage;
+		luaWrapper.GetLastError(errorMessage);
+		DL_MESSAGE_BOX("failed to initialize data table for component with id %u\n%s", id, errorMessage.c_str());
 	}
 
 	luaWrapper.GetGlobal(aInitFunction);

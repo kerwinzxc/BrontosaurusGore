@@ -2,8 +2,8 @@
 #include "Component.h"
 
 CComponent::CComponent()
-	: myParent(nullptr)
-	, myType(eComponentType::eNone)
+	: myType(eComponentType::eNone)
+	, myParent(nullptr)
 	, myId(NULL_COMPONENT)
 {
 }

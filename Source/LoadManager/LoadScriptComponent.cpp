@@ -14,8 +14,15 @@ int LoadScriptComponent(KLoader::SLoadedComponentData someData)
 	}
 
 	const std::string& scriptPath = someData.myData["FilePath"].GetString();
+	CU::CJsonValue dataArray = someData.myData["Data"];
+	std::map<std::string, std::string> dataMap;
+	for (int i = 0; i < dataArray.Size(); ++i)
+	{
+		CU::CJsonValue elementObject = dataArray[i];
+		dataMap[elementObject["key"].GetString()] = elementObject["value"].GetString();
+	}
 
-	CComponent* component = scriptComponentManager->CreateAbstractComponent(scriptPath);
+	CComponent* component = scriptComponentManager->CreateAbstractComponent(scriptPath, dataMap);
 	if (!component)
 	{
 		return NULL_COMPONENT;

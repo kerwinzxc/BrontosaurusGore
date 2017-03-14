@@ -50,6 +50,7 @@
     <ClCompile Include="TempLobbyState.cpp">
       <Filter>States</Filter>
     </ClCompile>
+    <ClCompile Include="PollingStation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="TempLobbyState.h">
       <Filter>States</Filter>
     </ClInclude>
+    <ClInclude Include="PollingStation.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="States">
