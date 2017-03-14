@@ -71,6 +71,7 @@
 #include "BoxColliderComponent.h"
 #include "Physics/PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
+#include "ScriptComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -88,6 +89,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
+	, myScriptComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -108,7 +110,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
-
+	SAFE_DELETE(myScriptComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
@@ -287,6 +289,8 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myScriptComponentManager = new CScriptComponentManager();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -356,9 +360,8 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
 			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+			playerObject->AddComponent(cameraComponent->GetParent());
 		}
-
-		playerObject->AddComponent(cameraComponent->GetParent());
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);

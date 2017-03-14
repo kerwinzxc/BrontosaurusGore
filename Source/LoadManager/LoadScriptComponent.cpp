@@ -2,11 +2,12 @@
 #include "LoadScriptComponent.h"
 
 #include "ScriptComponentManager.h"
-#include "ScriptComponent.h"
 
 int LoadScriptComponent(KLoader::SLoadedComponentData someData)
 {
-	CScriptComponentManager* scriptComponentManager = CScriptComponentManager::GetInstance();
+	GET_LOADMANAGER(loadManager);
+	
+	CScriptComponentManager* scriptComponentManager = loadManager.GetCurrentPLaystate().GetScriptComponentManager();
 	if (!scriptComponentManager)
 	{
 		return NULL_COMPONENT;
@@ -14,7 +15,7 @@ int LoadScriptComponent(KLoader::SLoadedComponentData someData)
 
 	const std::string& scriptPath = someData.myData["FilePath"].GetString();
 
-	CScriptComponent* component = scriptComponentManager->CreateComponent(scriptPath);
+	CComponent* component = scriptComponentManager->CreateAbstractComponent(scriptPath);
 	if (!component)
 	{
 		return NULL_COMPONENT;

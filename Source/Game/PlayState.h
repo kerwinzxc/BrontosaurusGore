@@ -37,6 +37,7 @@ class CInputComponentManager;
 class CNetworkComponentManager;
 class CMovementComponentManager;
 class CColliderComponentManager;
+class CScriptComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -65,6 +66,8 @@ public:
 	inline CMovementComponentManager* GetMovementComponentManager();
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CEnemyComponentManager* GetEnemyComponentManager();
+	inline CScriptComponentManager* GetScriptComponentManager();
+
 	inline bool IsLoaded() const;
 
 	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
@@ -94,6 +97,7 @@ private:
 	CEnemyComponentManager* myEnemyComponentManager;
 	CInputComponentManager* myInputComponentManager;
 	CMovementComponentManager* myMovementComponentManager;
+	CScriptComponentManager* myScriptComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	class CCameraComponent* myCameraComponent;
@@ -119,7 +123,7 @@ inline CAmmoComponentManager* CPlayState::GetAmmoManager()
 	return myAmmoComponentManager;
 }
 
-inline CMovementComponentManager * CPlayState::GetMovementComponentManager()
+inline CMovementComponentManager* CPlayState::GetMovementComponentManager()
 {
 	return myMovementComponentManager;
 }
@@ -128,8 +132,13 @@ inline CColliderComponentManager* CPlayState::GetColliderComponentManager()
 {
 	return myColliderComponentManager;
 }
-inline CEnemyComponentManager * CPlayState::GetEnemyComponentManager()
+
+inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
 {
 	return myEnemyComponentManager;
 }
 
+inline CScriptComponentManager* CPlayState::GetScriptComponentManager()
+{
+	return myScriptComponentManager;
+}

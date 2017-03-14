@@ -12,12 +12,11 @@ public:
 		eNotRegisteredComponent,
 		eInvalidPath,
 		eFailedToReadFile,
-		eBadLuaCode,
-		eNoFunctionTable
+		eBadLuaCode
 	};
 
-	CScriptComponent();
-	~CScriptComponent();
+	CScriptComponent() = default;
+	~CScriptComponent() = default;
 
 	eInitSuccess Init(const std::string& aScriptPath, const std::string& aInitFunction);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
@@ -27,7 +26,6 @@ public:
 
 private:
 	void AddSubscription(const SComponentMessageCallback& aCallbackInfo);
-	void Destroy() override;
 
 	std::map<eComponentMessageType, std::string> mySubscribedComponentMessages;
 

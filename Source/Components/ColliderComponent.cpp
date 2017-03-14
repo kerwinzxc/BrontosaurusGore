@@ -94,6 +94,10 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 void CColliderComponent::OnTriggerEnter(const IPhysicsCallback* aOther)
 {
 	DL_PRINT("OTHER ENTERED ME: %d",(int)aOther);
+	
+	SComponentMessageData justTakeMyParent;
+	justTakeMyParent.myGameObject = GetParent();
+	NotifyParent(eComponentMessageType::eOnCollisionEnter, justTakeMyParent);
 }
 
 void CColliderComponent::OnTriggerExit(const IPhysicsCallback* aOther)
@@ -104,6 +108,10 @@ void CColliderComponent::OnTriggerExit(const IPhysicsCallback* aOther)
 void CColliderComponent::OnCollisionEnter(const IPhysicsCallback* aOther)
 {
 	DL_PRINT("OTHER COLLIDES WITH ME: %d", (int)aOther);
+
+	SComponentMessageData justTakeMyParent;
+	justTakeMyParent.myGameObject = GetParent();
+	NotifyParent(eComponentMessageType::eOnCollisionEnter, justTakeMyParent);
 }
 
 void CColliderComponent::OnCollisionExit(const IPhysicsCallback* aOther)
