@@ -21,6 +21,6 @@ public:
 private:
 	void ChangeAnimation(const char* aAnimationKey);
 
-	CModelInstance& myModel; // mebe reference?
+	CModelInstance& myModel;
 };
 
