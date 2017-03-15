@@ -8,6 +8,8 @@
 
 #include "..\BrontosaurusEngine\Engine.h"
 
+#include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 #ifdef INTIFY
 #error "You are breaking windows API"
 #endif // INTIFY
@@ -40,8 +42,16 @@ CInputComponent::~CInputComponent()
 {
 }
 
-void CInputComponent::Receive(const eComponentMessageType /*aMessageType*/, const SComponentMessageData& /*aMessageData*/)
+void CInputComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eObjectDone:
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition()));
+		break;
+	default:
+		break;
+	}
 }
 
 CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessage)
