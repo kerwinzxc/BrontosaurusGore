@@ -3,7 +3,7 @@
 
 struct SCapsuleColliderData : public SColliderData
 {
-	SCapsuleColliderData() { myType = eColliderType::eBox; }
+	SCapsuleColliderData() { myType = eColliderType::eCapsule; }
 	float myHeight;
 	float myRadius;
 };
