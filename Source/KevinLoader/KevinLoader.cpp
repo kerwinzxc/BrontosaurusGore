@@ -144,7 +144,7 @@ namespace KLoader
 			return eError::MISSING_OBJECTS;
 		}
 
-		const CU::CJsonValue& objectsArray = aRoot["objects"];
+		const CU::CJsonValue objectsArray = aRoot["objects"];
 
 		for (int i = 0; i < objectsArray.Size(); ++i)
 		{
@@ -153,10 +153,6 @@ namespace KLoader
 
 			componentData.myTypeName = currentObject["name"].GetString();
 			componentData.myData = currentObject;
-			//componentData.myData["name"] = currentObject["name"];
-			//componentData.myData["position"] = currentObject["position"];
-			//componentData.myData["rotation"] = currentObject["rotation"];
-			//componentData.myData["scale"] = currentObject["scale"];
 
 			const KId currentID = currentObject["id"].GetInt() * -1;
 

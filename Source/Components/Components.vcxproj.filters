@@ -155,6 +155,7 @@
       <Filter>CheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="CheckPointSystem.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +358,7 @@
       <Filter>CheckPoint</Filter>
     </ClInclude>
     <ClInclude Include="CheckPointSystem.h" />
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
   </ItemGroup>
   <ItemGroup>
