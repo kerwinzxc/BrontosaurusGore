@@ -126,6 +126,7 @@
     <ClInclude Include="NetworkMessage_Disconected.h">
       <Filter>NetworkMessage\Disconected</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_PickupHealth.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -179,5 +180,6 @@
     <ClCompile Include="NetworkMessage_Disconected.cpp">
       <Filter>NetworkMessage\Disconected</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
   </ItemGroup>
 </Project>

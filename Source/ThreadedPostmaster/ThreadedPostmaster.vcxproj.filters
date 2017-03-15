@@ -68,6 +68,12 @@
     <Filter Include="Message\ResetToCheckPoint">
       <UniqueIdentifier>{54dc4ca4-81ba-45d9-ac81-5f132c307317}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\Pickup">
+      <UniqueIdentifier>{ebab0ff5-170d-4453-9b5e-1c25b041edfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\Pickup\Health">
+      <UniqueIdentifier>{e7ae65ce-24d9-4f06-a615-72a2a7592060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -117,6 +123,7 @@
     <ClCompile Include="ResetToCheckPointMessage.cpp">
       <Filter>Message\ResetToCheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="HealthPickupGrabbed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -175,5 +182,6 @@
     <ClInclude Include="ResetToCheckPointMessage.h">
       <Filter>Message\ResetToCheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="HealthPickupGrabbed.h" />
   </ItemGroup>
 </Project>

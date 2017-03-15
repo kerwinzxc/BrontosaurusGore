@@ -28,6 +28,7 @@
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
 #include "Components/ScriptComponentManager.h"
+#include "Components/PickupComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -120,6 +121,7 @@ CPlayState::~CPlayState()
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
+	CPickupComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -300,6 +302,7 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 
 	myScriptComponentManager = new CScriptComponentManager();
+	CPickupComponentManager::Create();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)

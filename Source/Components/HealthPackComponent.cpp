@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "PollingStation.h"
 #include "HealthPackComponent.h"
-
+#include "../ThreadedPostmaster\Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared\NetworkMessage_PickupHealth.h"
+#include "..\TClient\ClientMessageManager.h"
 CHealthPackComponent::CHealthPackComponent()
 {
 	myRestoreAmount = 0;
@@ -26,6 +29,9 @@ void CHealthPackComponent::Receive(const eComponentMessageType aMessageType, con
 		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{
 			DoMyEffect();
+			CNetworkMessage_PickupHealth* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupHealth>(ID_ALL_BUT_ME);
+			message->SetID(myNetworkId);
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 		}
 	default:
 		break;

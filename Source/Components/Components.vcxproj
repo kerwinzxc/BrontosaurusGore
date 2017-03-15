@@ -395,6 +395,7 @@
     <ClInclude Include="NetworkComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="PickupAmmoComponent.h" />
+    <ClInclude Include="PickupComponentManager.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
     <ClInclude Include="RigidBodyComponent.h" />
@@ -464,6 +465,7 @@
     <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
     <ClCompile Include="PickupAmmoComponent.cpp" />
+    <ClCompile Include="PickupComponentManager.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
