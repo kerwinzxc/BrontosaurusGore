@@ -53,15 +53,15 @@ PixelOut PS_PosSizeColor(const InputPixel input)
 
     PixelOut output = (PixelOut)0;
     
-    output.diffuse.rgba = float4(input.color.rgb,1);
+    output.diffuse.rgba = float4(input.color.rgb,1.0);
     
-    output.normal = float4(GetNormal(input),1);
-    output.ao  = float4(1,1,1,1);
+    output.normal.rgba = float4(GetNormal(input),1);
+    output.ao.rgba  = float4(1,0,1,1);
     if(interpol >= 1)
     {
-        output.diffuse.a = 0;
-        output.normal.a = 0;
-        output.ao.a  = 0; 
+        output.diffuse.rgba = float4(0,0,0,0);
+        output.normal.rgba = float4(0,0,0,0);
+        output.ao.rgba  = float4(0,0,0,0); 
     }
 
 

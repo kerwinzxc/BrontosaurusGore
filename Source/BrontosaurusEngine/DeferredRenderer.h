@@ -39,13 +39,8 @@ public:
 
 	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
-	
-	void DoParticleQueue();
+	ID3D11DepthStencilView* GetDepthStencil();
 private:
-	void MergeParticles(CFullScreenHelper& aFullscreenHelper);
-	void ClearParticleTargets();
-	void SetParticleTargets();
-
 	void SetRenderTargets();
 	void ClearRenderTargets();
 
@@ -77,12 +72,7 @@ private:
 	ID3D11Buffer* mySpotLightBuffer;
 
 	SGBuffer myGbuffer;
-	struct
-	{
-		CRenderPackage diffuse;
-		CRenderPackage normal;
-		CRenderPackage ao;
-	}myParticleGBuffer;
+	
 	CRenderPackage myIntermediatePackage;
 	
 	CDXFramework* myFramework;

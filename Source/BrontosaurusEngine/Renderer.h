@@ -11,6 +11,7 @@
 //temp includes
 #include "../PostMaster/Subscriber.h" //mvh carl
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "ParticleRenderer.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -120,6 +121,7 @@ private:
 
 	CRenderPackage myColorGradingPackage;
 	CDeferredRenderer myDeferredRenderer;
+	CParticleRenderer myParticleRenderer;
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;
 

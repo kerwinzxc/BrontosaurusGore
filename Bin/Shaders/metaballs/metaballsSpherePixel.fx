@@ -1,12 +1,13 @@
-#include "particleCommon.fx"
+#include "metaballsCommon.fx"
 
 Texture2D sprite : register (t1);
 SamplerState Sampler;
 
 struct PixelOut
 {
-    float4 amplitude: SV_TARGET0;
+    float4 diffuse: SV_TARGET0;
     float4 normal: SV_TARGET1;
+    float4 ao: SV_TARGET2;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -54,11 +55,12 @@ PixelOut PS_PosSizeColor(InputPixel input)
     const float f2 = f * f;
     
     PixelOut output = (PixelOut)0;
-    output.amplitude.rgba = float4(input.color.rgb, f2);
+    output.diffuse.rgba = float4(input.color.rgb, f2);
     const float3 normalTexturized = GetNormal(input);
 
     output.normal.rgba = float4(normalTexturized.xyz, f2);
 
+    output.ao.rgba  = float4(1,0,1,f2);
     
 
     return output;

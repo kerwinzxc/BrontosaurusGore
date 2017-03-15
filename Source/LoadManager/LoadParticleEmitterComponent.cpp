@@ -7,8 +7,8 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	SEmitterData emitterData;
 	emitterData.UseGravity = false;
 	emitterData.EmissionRate = 10;
-	emitterData.StartSize = 0.1;
-	emitterData.EndSize = 0.1;
+	emitterData.StartSize = 0.25;
+	emitterData.EndSize = 0.25;
 	emitterData.NumOfParticles = 10000;
 	emitterData.MinParticleLifeTime = 10;
 	emitterData.MaxParticleLifeTime = 20;

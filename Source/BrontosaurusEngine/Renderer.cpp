@@ -142,7 +142,7 @@ void CRenderer::Render()
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
-	myDeferredRenderer.DoParticleQueue();
+	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil());
 
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
@@ -661,7 +661,7 @@ void CRenderer::CreateBlendStates()
 		CHECK_RESULT(result, "Failed to create No-Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eAddBlend)] = blendState;
 	}
-
+	
 }
 
 void CRenderer::CreateDepthStencilStates()
@@ -1033,7 +1033,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
-		myDeferredRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
+		myParticleRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
 		
 		++aDrawCallCount;
 		break;

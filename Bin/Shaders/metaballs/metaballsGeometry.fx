@@ -1,4 +1,4 @@
-#include "particleCommon.fx"
+#include "metaballsCommon.fx"
 
 static const uint NumOfOutVerts = 4;
 [maxvertexcount(NumOfOutVerts)] //whaah //one input vertex gives max 4 new vertices in this case I think?

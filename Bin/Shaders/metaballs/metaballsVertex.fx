@@ -1,4 +1,4 @@
-#include "particleCommon.fx"
+#include "metaballsCommon.fx"
 
 InputGeometry VS_PosSizeColor(InputVertex input)
 {
