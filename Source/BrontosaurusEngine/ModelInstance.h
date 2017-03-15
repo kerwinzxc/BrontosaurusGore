@@ -31,7 +31,6 @@ public:
 	friend class CModelComponent;
 
 public:
-	//CModelInstance();
 	~CModelInstance();
 
 	CModelInstance(const char* aModelPath);
@@ -60,9 +59,11 @@ public:
 	void SetPosition(CU::Vector3f aPosition);
 	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
-	void ChangeAnimation(const char* aAnimationKey);
+	void ChangeAnimation(const std::string& aAnimationKey);
 	void SetAnimationLooping(const bool aValue);
 	void ResetAnimation();
+	const std::string& GetAnimationState() const;
+	float GetAnimationCounter() const;
 
 	void SetHighlightIntencity(const float aHighlightIntencity);
 	
@@ -70,16 +71,13 @@ public:
 
 	CU::AABB GetModelBoundingBox();
 
-	inline const char* GetAnimationState() { return myCurrentAnimation; }
-	inline float GetAnimationCounter() { return myAnimationCounter; }
-
 private:
 	CU::Matrix44f myTransformation;
 	CU::Matrix44f myLastFrame;
 
 	ModelId myModel;
 
-	const char* myCurrentAnimation;
+	std::string myCurrentAnimation;
 
 	float myAnimationCounter;
 	float myHighlightIntencity;
@@ -93,7 +91,7 @@ inline const CU::Matrix44f& CModelInstance::GetTransformation() const
 	return myTransformation;
 }
 
-inline const CU::Matrix44f & CModelInstance::GetLastFrameTransformation() const
+inline const CU::Matrix44f& CModelInstance::GetLastFrameTransformation() const
 {
 	return myLastFrame;
 }
@@ -102,7 +100,6 @@ inline void CModelInstance::SetVisibility(const bool aFlag)
 {
 	myIsVisible = aFlag;
 }
-
 
 inline int CModelInstance::GetModelID()
 {

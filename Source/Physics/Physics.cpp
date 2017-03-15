@@ -137,8 +137,18 @@ namespace Physics
 		geometry->radius = aRadius;
 		return CreateShape(*geometry, aMaterialData);
 	}
+
+	Physics::CShape* CPhysics::CreateCapsuleShape(const float aRadius, const float aHalfHeight, const SMaterialData& aMaterialData)
+	{
+		PxCapsuleGeometry* geometry = new PxCapsuleGeometry();
+		geometry->radius = aRadius;
+		geometry->halfHeight = aHalfHeight;
+		return CreateShape(*geometry, aMaterialData);
+	}
+
 	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData)
 	{
+		DL_ASSERT("Mesh colliders not implemented yet.");
 		PxTriangleMeshDesc desc;
 		return nullptr;
 	}

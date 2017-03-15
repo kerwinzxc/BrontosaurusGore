@@ -35,7 +35,9 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 {
 	for(unsigned int i = 0; i < myObjectsToReset.Size(); i++)
 	{
-		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
+		SComponentMessageData respawnData;
+		respawnData.myVector3f = myRespawnPlayerPosition;
+		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
 	}
 	myObjectsToReset.RemoveAll();
 	return eMessageReturn::eContinue;

@@ -64,6 +64,9 @@
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadCollider.h" />
+    <ClInclude Include="LoadCheckPointComponent.h">
+      <Filter>LoadThings\LoadCheckPointComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -126,6 +129,9 @@
       <Filter>LoadThings\LoadAmmoPickupComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadCollider.cpp" />
+    <ClCompile Include="LoadCheckPointComponent.cpp">
+      <Filter>LoadThings\LoadCheckPointComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -187,6 +193,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadAmmoPickupComponent">
       <UniqueIdentifier>{0f41c7fb-04fb-4a2d-ba78-c618f9dea398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadCheckPointComponent">
+      <UniqueIdentifier>{c2fd6e44-7dea-4c49-807e-765ef63e75b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

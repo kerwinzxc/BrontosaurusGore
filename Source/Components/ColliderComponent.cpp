@@ -2,17 +2,17 @@
 #include "ColliderComponent.h"
 #include "ColliderComponentManager.h"
 
-CColliderComponent::CColliderComponent(SColliderData* aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
+CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
 {
-	myData = *aColliderData;
+	myData = aColliderData;
 
 	myActor = aActor;
 	myActor->SetCallbackData(this);
+	SetUserData(this);
 
 	myShape = aShape;
 	myType = eComponentType::eCollision;
 	myManager = nullptr;
-	SetUserData(this);
 }
 
 CColliderComponent::~CColliderComponent()
@@ -55,7 +55,6 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 	{
 		if (aMessageData.myBool == false)
 		{
-
 			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
 			transformation.SetScale({ 1.0f, 1.0f, 1.0f });
 			CU::Vector3f worldPos = myData.center;
