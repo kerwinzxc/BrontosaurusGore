@@ -71,12 +71,11 @@ enum class eComponentMessageType
 	eDied,
 	eStopJumping,
 	eSelectWeapon,
-
 	eOnTriggerEnter,
 	eOnTriggerExit,
 	eOnCollisionEnter,
 	eOnCollisionExit,
-
+	eCheckPointReset,
 	eLength,
 };
 

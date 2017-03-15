@@ -24,6 +24,7 @@ class CNetworkDebugInfo;
 class CGameEventMessage;
 class CAddToCheckPointResetList;
 class CSetAsNewCheckPointMessage;
+class CResetToCheckPointMessage;
 
 namespace Postmaster
 {
@@ -60,5 +61,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CGameEventMessage & aGameEventMessageMessage);
 		virtual eMessageReturn DoEvent(const CAddToCheckPointResetList & aAddToCheckPointResetListMessage);
 		virtual eMessageReturn DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage);
+		virtual eMessageReturn DoEvent(const CResetToCheckPointMessage & aResetToCheckPointMessage);
 	};
 }
