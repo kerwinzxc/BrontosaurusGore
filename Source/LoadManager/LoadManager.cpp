@@ -21,6 +21,7 @@
 
 #include "LoadAmmoPickupComponent.h"
 #include "LoadHealthPackComponent.h"
+#include "LoadCheckPointComponent.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -69,10 +70,10 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("InputComponent", LoadInputComponent);
 	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
+	loader.RegisterComponentLoadFunction("CheckPointComponent", LoadCheckPointComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
 	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
 	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
-
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
