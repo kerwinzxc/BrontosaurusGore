@@ -31,6 +31,37 @@ CComponent* CScriptComponentManager::CreateAbstractComponent(const std::string &
 
 CScriptComponent* CScriptComponentManager::CreateComponent(const std::string& aScriptPath)
 {
+	return CreateComponent(aScriptPath, std::map<std::string, std::string>());
+
+	//if (aScriptPath.empty()) return nullptr;
+
+	//CScriptComponent* newComponent = new CScriptComponent();
+	//ComponentId componentID = CComponentManager::GetInstance().RegisterComponent(newComponent);
+
+	//std::string initFunction = aScriptPath;
+	//initFunction -= ".lua";
+	//initFunction += "_init";
+	//
+	//initFunction ^= /*"Script/"*/initFunction.substr(0u, aScriptPath.find('/') + 1u);
+
+	//CScriptComponent::eInitSuccess error = newComponent->Init(aScriptPath, initFunction/*aInitFunction*/);
+	//if (!CScriptComponent::HandleError(error))
+	//{
+	//	CComponentManager::GetInstance().DeleteComponent(componentID);
+	//	return nullptr;
+	//}
+
+	//myComponents.Add(newComponent);
+	//return newComponent;
+}
+
+CComponent* CScriptComponentManager::CreateAbstractComponent(const std::string& aScriptPath, const std::map<std::string, std::string>& aDataMap)
+{
+	return CreateComponent(aScriptPath, aDataMap);
+}
+
+CScriptComponent* CScriptComponentManager::CreateComponent(const std::string& aScriptPath, const std::map<std::string, std::string>& aDataMap)
+{
 	if (aScriptPath.empty()) return nullptr;
 
 	CScriptComponent* newComponent = new CScriptComponent();
@@ -39,10 +70,10 @@ CScriptComponent* CScriptComponentManager::CreateComponent(const std::string& aS
 	std::string initFunction = aScriptPath;
 	initFunction -= ".lua";
 	initFunction += "_init";
-	
+
 	initFunction ^= /*"Script/"*/initFunction.substr(0u, aScriptPath.find('/') + 1u);
 
-	CScriptComponent::eInitSuccess error = newComponent->Init(aScriptPath, initFunction/*aInitFunction*/);
+	CScriptComponent::eInitSuccess error = newComponent->Init(aScriptPath, initFunction, aDataMap);
 	if (!CScriptComponent::HandleError(error))
 	{
 		CComponentManager::GetInstance().DeleteComponent(componentID);

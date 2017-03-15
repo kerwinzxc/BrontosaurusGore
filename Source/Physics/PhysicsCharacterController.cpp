@@ -4,15 +4,17 @@
 #include <characterkinematic/PxController.h>
 #include <PxScene.h>
 #include "PxQueryReport.h"
-
+#include "CollisionLayers.h"
+#include "PxRigidDynamic.h"
+#include <xatomic.h>
 
 namespace Physics
 {
-
 	CPhysicsCharacterController::CPhysicsCharacterController(physx::PxController * aPxController, const SCharacterControllerDesc & aData)
 	{
 		myData = aData;
 		myController = aPxController;
+		myController->getActor()->userData = this;
 	}
 
 	CPhysicsCharacterController::~CPhysicsCharacterController()
@@ -23,13 +25,21 @@ namespace Physics
 
 	void CPhysicsCharacterController::Move(const CU::Vector3f& aDisplacement, const CU::Time aDeltaTime)
 	{
-		float dt = aDeltaTime.GetSeconds();
+		float dt = aDeltaTime.GetMilliseconds();
+		
 		physx::PxControllerFilters controllerFilters;
+		physx::PxFilterData filterData;
+		physx::PxU32 colGroups = 0xffffffff; //everything (-1)
+		colGroups &= ~(colGroups); //Turn off bits 1>0
+		filterData.word0 = 1; //I am now everything but aFilterMask
+		filterData.word1 = colGroups; //I don't Collide with anything
+							  //controllerFilters.mFilterCallback = myCollisionHandler;
+		controllerFilters.mFilterData = &filterData;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
 
-		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y/* * 9.82f * dt*/, aDisplacement.z }; //TODO: om knas kanske här
-		myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
-		SetGrounded();
+		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y , aDisplacement.z }; //TODO: om knas kanske här
+		physx::PxControllerCollisionFlags flags = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
+		SetCollisionFlags((uint8_t)flags);
 	}
 
 	void CPhysicsCharacterController::Resize(const float aHeight)
@@ -43,9 +53,9 @@ namespace Physics
 		return CU::Vector3f(position.x, position.y, position.z);
 	}
 
-	bool CPhysicsCharacterController::GetIsGrounded()
+	const Physics::EControllerConstraintsFlags CPhysicsCharacterController::GetConstraints()
 	{
-		return myIsGrounded;
+		return myCollisionFlags;
 	}
 
 	void CPhysicsCharacterController::SetPosition(const CU::Vector3f& aPosition)
@@ -60,24 +70,30 @@ namespace Physics
 		return CU::Vector3f(position.x, position.y, position.z);
 	}
 
-	void CPhysicsCharacterController::SetGrounded()
+	Physics::IPhysicsCallback* CPhysicsCharacterController::GetCallbackData()
 	{
-		physx::PxRaycastBuffer hit;
-		physx::PxExtendedVec3 footPosition = myController->getFootPosition();
-		physx::PxVec3 origin = physx::toVec3(footPosition);
+		return myCallback;
+	}
 
-		physx::PxVec3 dir = -myController->getUpDirection();
-		physx::PxReal dist = 0.01f;
-		bool result = myController->getScene()->raycast(origin, dir, dist, hit);
-		if (result == true)
-		{	
-			if (hit.block.distance <= myController->getContactOffset() + 0.05f) // small ypsilon for funz
-			{
-				myIsGrounded = true;
-				return;
-			}
-			
+	void CPhysicsCharacterController::SetCallbackData(IPhysicsCallback* aCallbacker)
+	{
+		myCallback = aCallbacker;
+	}
+
+	void CPhysicsCharacterController::SetCollisionFlags(const char& flags)
+	{
+		myCollisionFlags = 0;
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_SIDES)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_SIDES;
 		}
-		myIsGrounded = false;
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_DOWN;
+		}
+		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_UP)
+		{
+			myCollisionFlags |= EControllerConstraintsFlag::eCOLLISION_UP;
+		}
 	}
 }

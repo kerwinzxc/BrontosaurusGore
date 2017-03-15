@@ -151,7 +151,10 @@
     <ClCompile Include="RigidBodyComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
-    <ClCompile Include="ArmorPickup.cpp" />
+    <ClCompile Include="CheckPointComponent.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -349,7 +352,10 @@
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
-    <ClInclude Include="ArmorPickup.h" />
+    <ClInclude Include="CheckPointComponent.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPointSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -418,8 +424,8 @@
     <Filter Include="Collider/Physics">
       <UniqueIdentifier>{11a8cc8f-ccea-46ed-83f8-fe63342460bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Armor">
-      <UniqueIdentifier>{a0fabe93-0971-4dcb-8531-019ebf177e0c}</UniqueIdentifier>
+    <Filter Include="CheckPoint">
+      <UniqueIdentifier>{0b4ceec9-a814-4474-8934-9b869ee791a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -45,12 +45,14 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 	const float scaleZ = ScalingObject.at("z").GetFloat();
 
 	currentMatrix.SetPosition({ positionX, positionY, positionZ });
-	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
+	
 
 	const CU::Matrix33f mRotationY = CU::Matrix33f::CreateRotateAroundY(rotationY);
 	const CU::Matrix33f mRotationX = CU::Matrix33f::CreateRotateAroundX(-rotationX) * mRotationY;
 	const CU::Matrix33f mRotationZ = CU::Matrix33f::CreateRotateAroundZ(rotationZ) * mRotationX;
 	currentMatrix.SetRotation(mRotationZ);
+
+	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
 
 	gameObject->SetName(someData.myData.at("name").GetString().c_str());
 
@@ -70,8 +72,12 @@ void LinkObject(const int target, const int anOtherComponent)
 
 	CComponent* const otherComponent = CComponentManager::GetInstance().GetComponent(anOtherComponent);
 
+	const CU::Matrix44f transform = gameObject->GetToWorldTransform();
+
+	const CU::Matrix44f& localTransform = gameObject->GetLocalTransform();
+	const CGameObject*const  parent = gameObject->GetParent();
+
 	gameObject->AddComponent(otherComponent);
-	gameObject->Move(CU::Vector3f::Zero);
 }
 
 int LoadServerObject(KLoader::SLoadedComponentData someData)

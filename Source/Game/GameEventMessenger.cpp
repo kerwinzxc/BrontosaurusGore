@@ -4,6 +4,7 @@
 #include "PostMaster/Event.h"
 #include "PostMaster/PostMaster.h"
 #include "ThreadedPostmaster/Postmaster.h"
+#include "ThreadedPostmaster/GameEventMessage.h"
 
 
 CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(nullptr), myCurrentTime(0), myWaitTime(2.f)
@@ -13,7 +14,6 @@ CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(
 CGameEventMessenger::~CGameEventMessenger()
 {
 	delete myInTweener, myOutTweener;
-	//PostMaster::GetInstance().UnSubscribe(this, eMessageType::eGameEventMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
@@ -22,7 +22,6 @@ void CGameEventMessenger::Init(const CU::Vector2f& aPosition)
 	myText.Init();
 	myText.SetPosition(aPosition);
 	myText.SetAlignment(eAlignment::CENTER);
-	//PostMaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
 }
 
@@ -67,12 +66,18 @@ void CGameEventMessenger::Render()
 	}
 }
 
-void CGameEventMessenger::AddMessage(CU::GrowingArray<std::string> someText)
+void CGameEventMessenger::AddMessage(CU::GrowingArray<std::wstring> someText)
 {
 	myTextQueue.Push(someText);
 }
 
-void CGameEventMessenger::SetMessage(CU::GrowingArray<std::string> someStrings)
+eMessageReturn CGameEventMessenger::DoEvent(const CGameEventMessage& aGameEventMessageMessage)
+{
+	AddMessage({ aGameEventMessageMessage.myMessage });
+	return eMessageReturn::eStop;
+}
+
+void CGameEventMessenger::SetMessage(CU::GrowingArray<std::wstring> someStrings)
 {
 	if (myInTweener != nullptr)
 	{

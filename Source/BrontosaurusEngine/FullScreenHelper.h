@@ -39,6 +39,7 @@ public:
 		eDeferredSpotLight,
 		eCopyDepth,
 		eColorGrading,
+		eAA,
 		eSize,
 	};
 

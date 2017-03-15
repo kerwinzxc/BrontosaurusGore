@@ -13,6 +13,6 @@ CGameEventMessageEvent::~CGameEventMessageEvent()
 
 eMessageReturn CGameEventMessageEvent::DoEvent(CGameEventMessenger* aGameEventMessenger) const
 {
-	aGameEventMessenger->AddMessage(myMessage);
+	//aGameEventMessenger->AddMessage(myMessage);
 	return eMessageReturn::eContinue;
 }

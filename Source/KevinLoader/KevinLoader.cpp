@@ -70,6 +70,10 @@ namespace KLoader
 	{
 		CU::CJsonValue wrapper;
 		std::string mybeKeepThishshould = wrapper.Parse(aFilePath);
+		if (!mybeKeepThishshould.empty())
+		{
+			DL_MESSAGE_BOX("Error loading level %s\n%s", aFilePath.c_str(), mybeKeepThishshould.c_str());
+		}
 
 		const eError loadObjectError = LoadObjects(wrapper);
 		if (loadObjectError != eError::NO_LOADER_ERROR)

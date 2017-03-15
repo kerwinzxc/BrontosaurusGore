@@ -19,6 +19,7 @@
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/ChangeLevel.h"
+#include "PollingStation.h"
 
 #define GLOBAL_LUA_FUNCTION_ERROR DL_MESSAGE_BOX
 #define RETURN_VOID() return SSlua::ArgumentList()
@@ -34,14 +35,31 @@ SSlua::ArgumentList ComponentGetParent(const SSlua::ArgumentList& aArgumentList)
 		RETURN_ZERO();
 	}
 
-	if (!ScriptHelper::AssertArgumentList("GetParent", { eSSType::NUMBER }, aArgumentList, true))
+	if (!ScriptHelper::AssertArgumentCount("GetParent", 1, aArgumentList.Size(), true))
 	{
 		RETURN_ZERO();
 	}
 
-	ComponentId componentID = aArgumentList[0].GetUInt();
+	ComponentId componentID = NULL_COMPONENT;
+	CComponent* component = nullptr;
+	if (aArgumentList.GetFirst().GetType() == eSSType::LIGHTUSERDATA)
+	{
+		component = static_cast<CComponent*>(aArgumentList.GetFirst().GetUserData());
+	}
+	else if (aArgumentList.GetFirst().GetType() == eSSType::NUMBER)
+	{
+		componentID = aArgumentList[0].GetUInt();
+		if (componentID != NULL_COMPONENT)
+		{
+			component = componentManager->GetComponent(componentID);
+		}
+	}
+	else
+	{
+		GLOBAL_LUA_FUNCTION_ERROR("Error in GetParent, expected component pointer (light userdata) or component id (number), got %s", aArgumentList.GetFirst().GetTypeName());
+		RETURN_ZERO();
+	}
 
-	CComponent* component = componentManager->GetComponent(componentID);
 	if (!component)
 	{
 		GLOBAL_LUA_FUNCTION_ERROR("Error in GetParent, component id %u represented NULL", componentID);
@@ -256,13 +274,14 @@ SSlua::ArgumentList GetMessageData(const SSlua::ArgumentList& aArgumentList)
 		return messageData;
 	}
 
-	const std::string stringArg = aArgumentList[1].GetString();
+	std::string stringArg = aArgumentList[1].GetString();
+	CU::ToLowerCase(stringArg);
 	if (stringArg == "number")
 	{
 		messageData.Add(ssLuaNumber(realData->myInt));
 		return messageData;
 	}
-	if (stringArg == "string")
+	else if (stringArg == "string")
 	{
 		const char* str = realData->myString;
 		if (strlen(str) < 100u) // if it is to large, it is probably an error
@@ -271,9 +290,14 @@ SSlua::ArgumentList GetMessageData(const SSlua::ArgumentList& aArgumentList)
 			return messageData;
 		}
 	}
-	if (stringArg == "gameobject")
+	else if (stringArg == "gameobject")
 	{
 		messageData.Add(ssLuaNumber(realData->myGameObject->GetId()));
+		return messageData;
+	}
+	else if (stringArg == "component")
+	{
+		messageData.Add(ssLuaNumber(realData->myComponent->GetId()));
 		return messageData;
 	}
 
@@ -347,15 +371,22 @@ SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
 	if (ScriptHelper::CheckArgumentList("ChangeLevel", { eSSType::STRING }, aArgumentList, true))
 	{
 		const std::string typedName = aArgumentList.GetFirst().GetString();
-		for (int i = 0; i < levelArray.Size(); ++i)
+		if (typedName.size() == 1 && CU::StringHelper::IsInt(typedName))
 		{
-			if (levelArray[i].GetString() == typedName)
-			{
-				levelIndex = i;
-				break;
-			}
+			levelIndex = std::atoi(typedName.c_str());
 		}
-		DL_MESSAGE_BOX("Could not find level with name %s", typedName.c_str());
+		else
+		{
+			for (int i = 0; i < levelArray.Size(); ++i)
+			{
+				if (levelArray[i].GetString() == typedName)
+				{
+					levelIndex = i;
+					break;
+				}
+			}
+			DL_MESSAGE_BOX("Could not find level with name %s", typedName.c_str());
+		}
 	}
 	else if (ScriptHelper::CheckArgumentList("ChangeLevel", { eSSType::NUMBER }, aArgumentList, true))
 	{
@@ -372,6 +403,44 @@ SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
 	}
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CChangeLevel(eMessageType::eChangeLevel, levelIndex));
+	RETURN_VOID();
+}
+
+SSlua::ArgumentList IsPlayer(const SSlua::ArgumentList& aArgumentList)
+{
+	SSlua::ArgumentList isPlayer(1);
+	isPlayer.Add(SSArgument(false));
+	
+	if (ScriptHelper::CheckArgumentList("IsPlayer", { eSSType::NUMBER }, aArgumentList, true))
+	{
+		ComponentId id = aArgumentList.GetFirst().GetUInt();
+		if (id != NULL_COMPONENT)
+		{
+			CComponent* maybePlayer = CComponentManager::GetInstance().GetComponent(id);
+			if (CPollingStation::GetInstance() && maybePlayer == CPollingStation::GetInstance()->GetPlayerObject())
+			{
+				isPlayer.GetFirst() = true;
+			}
+		}
+	}
+
+	return isPlayer;
+}
+
+SSlua::ArgumentList SetUserData(const SSlua::ArgumentList& aArgumentList)
+{
+	if (ScriptHelper::CheckArgumentList("SetUserData", { eSSType::NUMBER, eSSType::STRING }, aArgumentList, false))
+	{
+		ComponentId componentID = aArgumentList.GetFirst().GetUInt();
+		if (componentID != NULL_COMPONENT)
+		{
+			CComponent* component = CComponentManager::GetInstance().GetComponent(componentID);
+		}
+	}
+	else if (ScriptHelper::AssertArgumentList("SetUserData", { eSSType::STRING }, aArgumentList, false))
+	{
+	}
+
 	RETURN_VOID();
 }
 

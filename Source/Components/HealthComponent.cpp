@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HealthComponent.h"
-
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 CHealthComponent::CHealthComponent()
 {
@@ -40,6 +41,10 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			Heal(aMessageData.myInt);
 		}
 		break;
+	case eComponentMessageType::eCheckPointReset:
+		myIsAlive = true;
+		myCurrentHealth = myMaxHeath;
+		break;
 	default:
 		break;
 	}
@@ -62,7 +67,7 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 	{
 		myCurrentHealth = 0;
 		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
-
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 
 		SComponentMessageData data;
 		data.myBool = false;

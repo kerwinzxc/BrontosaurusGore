@@ -128,7 +128,7 @@ void CScene::Render()
 			continue;
 		}*/
 
-		myModels[i]->Render(myShadowCamera);
+		myModels[i]->RenderDeferred(myShadowCamera);
 	}
 
 
@@ -145,7 +145,7 @@ void CScene::Render()
 		{
 			continue;
 		}
-		myModels[i]->Render();
+		myModels[i]->RenderDeferred();
 	}
 
 	SRenderDirectionalLight light;

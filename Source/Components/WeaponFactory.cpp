@@ -82,7 +82,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 	{
 		if(myWeaponDataList[i]->name == aWeaponName)
 		{
-			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i]);
+			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i], myPhysicsScene);
 			SAmmoData* newAmmoData = myAmmoDataList[i];
 			SComponentMessageData newAmmoTypeMessage;
 			newAmmoTypeMessage.myAmmoData = newAmmoData;
@@ -104,7 +104,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CWeaponSystemComponen
 	{
 		if (myWeaponDataList[i]->name == aWeaponName)
 		{
-			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i]);
+			CWeapon* newWeapon = new CWeapon(myWeaponDataList[i], myPhysicsScene);
 			SAmmoData* newAmmoData = myAmmoDataList[i];
 			aWeaponSystemToGiveAWeaponTo->AddWeapon(newWeapon, newAmmoData);
 			myWeaponList.Add(newWeapon);
@@ -115,10 +115,11 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CWeaponSystemComponen
 	return;
 }
 
-void CWeaponFactory::Init(CGameObjectManager* aGameObjectPointer, CModelComponentManager* aModelComponentManager)
+void CWeaponFactory::Init(CGameObjectManager* aGameObjectPointer, CModelComponentManager* aModelComponentManager, Physics::CPhysicsScene* aPhysicsScene)
 {
 	myGameObjectManagerPointer = aGameObjectPointer; 
 	myModelComponentManagerPointer = aModelComponentManager;
+	myPhysicsScene = aPhysicsScene;
 }
 
 void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)

@@ -13,6 +13,7 @@
 
 #include "LoadState.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "PollingStation.h"
 
 //Managers
 
@@ -26,6 +27,7 @@
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
+#include "Components/ScriptComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -52,13 +54,14 @@
 #include "StateStack/StateStack.h"
 #include "CommonUtilities/InputMessage.h"
 #include <CommonUtilities/EKeyboardKeys.h>
-
+#include "../Components/CheckPointSystem.h"
 
 #include "../Components/PlayerNetworkComponent.h"
 
 //Hard code necessary includes
 #include "AmmoReplenishData.h"
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
+#include "HealthComponent.h"
 //
 
 
@@ -88,11 +91,15 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
+	, myScriptComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
+	myCheckPointSystem = nullptr;
+
+	new CPollingStation();
 }
 
 CPlayState::~CPlayState()
@@ -108,13 +115,16 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
-
+	SAFE_DELETE(myScriptComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
-	SAFE_DELETE(myPhysics); // kanske?
+	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
+	//Physics::CFoundation::Destroy(); desstroy this lator
+
+	delete CPollingStation::GetInstance();
 }
 
 void CPlayState::Load()
@@ -131,14 +141,14 @@ void CPlayState::Load()
 	//**************************************************************//
 	//							PHYSICS								//
 	//**************************************************************//
-	Physics::CFoundation::Create();
-	myPhysics = Physics::CFoundation::GetInstance().CreatePhysics();
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
 	myPhysicsScene = myPhysics->CreateScene();
-	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
 	//**************************************************************//
 	//						END OF PHYSICS							//
 	//**************************************************************//
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
 	if (!levelsArray.HasIndex(myLevelIndex))
 	{
 		DL_MESSAGE_BOX("Tried to load level with index out of range (%d), level count is %d", myLevelIndex, levelsArray.Size());
@@ -161,7 +171,7 @@ void CPlayState::Load()
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(110, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
 	
 	myWeaponFactory->LoadWeapons();
 
@@ -175,9 +185,8 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
-	
-	myGameObjectManager->SendObjectsDoneMessage();
+	CreatePlayer(playerCamera); // Hard codes Player!;
+
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
@@ -193,6 +202,8 @@ void CPlayState::Load()
 
 void CPlayState::Init()
 {
+	myCheckPointSystem = new CCheckPointSystem();
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -220,10 +231,13 @@ void CPlayState::Render()
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CPlayState::Pause()
@@ -278,11 +292,13 @@ void CPlayState::CreateManagersAndFactories()
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
-	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager);
+	myWeaponFactory->Init(myGameObjectManager, myModelComponentManager, myPhysicsScene);
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myScriptComponentManager = new CScriptComponentManager();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -330,7 +346,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
-void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
+void CPlayState::CreatePlayer(CU::Camera& aCamera)
 {
 	//create hard coded player:
 	{
@@ -352,9 +368,13 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
 			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+			playerObject->AddComponent(cameraComponent->GetParent());
 		}
 
-		playerObject->AddComponent(cameraComponent->GetParent());
+		if (CPollingStation::GetInstance())
+		{
+			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+		}
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
@@ -398,22 +418,14 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		playerObject->AddComponent(network);
 
 		Physics::SCharacterControllerDesc controllerDesc;
+		controllerDesc.minMoveDistance = 0.00001f;
+		controllerDesc.height = 2.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-
-		/*SBoxColliderData data;
-		data.myHalfExtent = { 0.5f, 0.5f, 0.5f };
-		data.IsTrigger = false;
-		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data);
-		playerObject->AddComponent(collider);
-
-		SRigidBodyData rigidbodyData;
-		rigidbodyData.freezedRotationAxiees = {1, 0, 1};
-		rigidbodyData.mass = 10.f;
-		rigidbodyData.isKinematic = false;
-		rigidbodyData.IsTrigger = false;
-		CColliderComponent* rididbody = myColliderComponentManager->CreateComponent(&rigidbodyData);
-		playerObject->AddComponent(rididbody);*/
+		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		playerHealthComponent->SetMaxHealth(10);
+		playerHealthComponent->SetHealth(10);
+		playerObject->AddComponent(playerHealthComponent);
 
 
 		Component::CEnemy::SetPlayer(playerObject);

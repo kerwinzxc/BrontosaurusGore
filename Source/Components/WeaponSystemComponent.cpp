@@ -23,7 +23,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myActiveWeaponAmmoLeftText = new CTextInstance();
 	myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
 	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
-	myActiveWeaponAmmoLeftText->SetText("");
+	myActiveWeaponAmmoLeftText->SetText(L"");
 	myActiveWeaponAmmoLeftText->Init();
 }
 
@@ -156,7 +156,7 @@ void CWeaponSystemComponent::Update(float aDelta)
 		ammoLeftText += "/";
 		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
 
-		myActiveWeaponAmmoLeftText->SetText(ammoLeftText);
+		myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
 	}
 	myActiveWeaponAmmoLeftText->Render();
 }

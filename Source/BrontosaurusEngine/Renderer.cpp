@@ -40,6 +40,7 @@ CRenderer::CRenderer()
 	mySettings.Bloom = false;
 	mySettings.Motionblur = false;
 	mySettings.CromaticAberration = false;
+	mySettings.FXAA = true;
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
@@ -108,6 +109,7 @@ void CRenderer::Render()
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
 	myGUIData.myInputPackage.Clear();
+	myAntialiasingPackage.Clear();
 
 	renderTo = (mySettings.HDR == true) ? &myHDRData.myInputPackage : &myIntermediatePackage;
 	renderTo->Clear();
@@ -155,10 +157,10 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
-
+	
+	AntiAliasing();
 	RenderGUI();
 	//DoColorGrading();
-
 
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
@@ -222,6 +224,18 @@ void CRenderer::MotionBlur()
 	}
 }
 
+void CRenderer::AntiAliasing()
+{
+	if(mySettings.FXAA == true)
+	{
+		myAntialiasingPackage.Activate();
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAA, &myIntermediatePackage);
+		myIntermediatePackage.Activate();
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myAntialiasingPackage);
+	}
+	
+}
+
 void CRenderer::RenderGUI()
 {
 	SChangeStatesMessage changeStateMessage = {};
@@ -232,30 +246,8 @@ void CRenderer::RenderGUI()
 
 	SetStates(&changeStateMessage);
 
-	if (myGUIData.myShouldDownScale == true)
-	{
-		for (int i = 0; i < myGUIData.myDownScalePackages.Size(); ++i)
-		{
-			myGUIData.myDownScalePackages[i].Clear();
-		}
-
-		myGUIData.myDownScalePackages[0].Activate();
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myInputPackage);
-
-		myGUIData.myDownScalePackages[1].Activate();
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myDownScalePackages[0]);
-
-		myGUIData.myDownScalePackages[2].Activate();
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myDownScalePackages[1]);
-
-		myIntermediatePackage.Activate();
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myDownScalePackages[2]);
-	}
-	else
-	{
-		myIntermediatePackage.Activate();
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myInputPackage);
-	}
+	myIntermediatePackage.Activate();
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myInputPackage);
 
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
@@ -313,6 +305,7 @@ void CRenderer::InitPackages()
 		myIntermediatePackage.Init(windowSize);
 	}
 
+	myAntialiasingPackage.Init(windowSize);
 
 	{
 		myDownsampleData.downsamplePackages.Init(16);
@@ -385,19 +378,6 @@ void CRenderer::InitPackages()
 	//
 	{
 		myGUIData.myInputPackage.Init(windowSize);
-
-		unsigned int minSize = min(windowSize.x, windowSize.y);
-		myGUIData.myDownScalePackages[0].Init(CU::Vector2ui(minSize, minSize));
-
-		unsigned int minPow2Size = 2u;
-		while (minPow2Size * 2u < minSize)
-		{
-			minPow2Size *= 2u;
-		}
-
-		myGUIData.myDownScalePackages[1].Init(CU::Vector2ui(minPow2Size, minPow2Size));
-		myGUIData.myDownScalePackages[2].Init(CU::Vector2ui(minPow2Size / 2u, minPow2Size / 2u));
-		myGUIData.myShouldDownScale = false;
 	}
 
 	//	Backbuffer

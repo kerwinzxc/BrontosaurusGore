@@ -12,7 +12,7 @@ enum class eComponentQuestionType
 	eGetCameraObject,
 	eGetCollisionShape,
 	eMovePhysicsController,
-	ePhysicsControllerGrounded,
+	ePhysicsControllerConstraints,
 	eLength,
 };
 
@@ -33,6 +33,8 @@ struct SComponentQuestionData
 		CU::Vector3f myVector3f;
 
 		bool myBool;
+		char myChar;
+
 		const char* myString;
 		SAmmoLeftData* myAmmoLeftData;
 		CGameObject* myGameObject;

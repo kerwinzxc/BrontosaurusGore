@@ -14,6 +14,7 @@ namespace Physics
 	{
 		myPxActor = aActor;
 		myShape = aShape;
+		myPxActor->userData = this;
 	}
 
 	CPhysicsActor::~CPhysicsActor()
@@ -35,7 +36,7 @@ namespace Physics
 			physx::PxShape* shape = nullptr;
 			myPxActor->getShapes(&shape, 1);
 			myPxActor->detachShape(*shape);
-			//shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !aIsTrigger);
+			shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !aIsTrigger);
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, aIsTrigger);
 			myPxActor->attachShape(*shape);
 		}
@@ -62,5 +63,16 @@ namespace Physics
 	{
 		myPxActor->attachShape(*aShape->myShape);
 		myShape = aShape;
+	}
+
+	Physics::IPhysicsCallback* CPhysicsActor::GetCallbackData()
+	{
+		return myCallback;
+	}
+
+	void CPhysicsActor::SetCallbackData(IPhysicsCallback* aCallbacker)
+	{
+		myCallback = aCallbacker;
+		//myPxActor->userData = aCallbacker;
 	}
 }

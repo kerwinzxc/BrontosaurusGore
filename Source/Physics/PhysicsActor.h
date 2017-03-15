@@ -1,4 +1,6 @@
 #pragma once
+#include "IPhysicsCallback.h"
+#include "PhysicsCallbackActor.h"
 
 namespace physx
 {
@@ -7,17 +9,11 @@ namespace physx
 
 namespace Physics
 {
-	enum class EActorType
+	class CPhysicsActor : public CPhysicsCallbackActor
 	{
-		eStatic,
-		eDynamic
-	};
+		friend class CShape;
+		friend class CPhysicsScene;
 
-	class CPhysicsActor
-	{
-	friend class CShape;
-	friend class CPhysicsScene;
-	
 	public:
 		CPhysicsActor(physx::PxRigidActor* aActor, CShape* aShape);
 		virtual ~CPhysicsActor();
@@ -25,10 +21,11 @@ namespace Physics
 		void SetIsTrigger(const bool aIsTrigger);
 		void SetTransformation(const CU::Matrix44f& aTransformation);
 		CU::Matrix44f GetTransformation();
-		virtual const EActorType GetType() const = 0;
-
 		virtual void SetShape(CShape* aShape);
 
+		IPhysicsCallback* GetCallbackData() override;
+		void SetCallbackData(IPhysicsCallback* aCallbacker) override;
+		
 	protected:
 		CShape* myShape;
 		inline physx::PxRigidActor* GetPxActor() { return myPxActor; };

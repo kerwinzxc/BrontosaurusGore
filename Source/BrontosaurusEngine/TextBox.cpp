@@ -17,9 +17,9 @@ CTextBox::~CTextBox()
 	myTextInstances.DeleteAll();
 }
 
-void CTextBox::AddText(std::string myString)
+void CTextBox::AddText(std::wstring myString)
 {
-	const std::string &currentText = myTextInstances[myTextInstances.Size()-1]->GetText();
+	const std::wstring &currentText = myTextInstances[myTextInstances.Size()-1]->GetText();
 	myTextInstances[myTextInstances.Size() -1]->SetText(currentText + myString);
 }
 

@@ -53,8 +53,8 @@ private:
 
 	unsigned char myCurrentLine;
 
-	std::string myIP;
-	std::string myName;
+	std::wstring myIP;
+	std::wstring myName;
 	CU::Time myBlinkeyTimer;
 
 	bool myTextInputSelected;

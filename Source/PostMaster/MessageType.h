@@ -14,6 +14,10 @@ enum class eMessageType
 	eGameEventMessage,
 	eNetworkMessage,
 	ePrint,
+	eDebugInfo,
+	eAddToCheckPointRespawn,
+	eSetNewCheckPoint,
+	eResetToCheckPointMessage,
 	eLength,
 };
 
