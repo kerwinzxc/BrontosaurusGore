@@ -366,6 +366,7 @@
     <ClInclude Include="AmmoComponentManager.h" />
     <ClInclude Include="AmmoData.h" />
     <ClInclude Include="AmmoReplenishData.h" />
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="AudioSourceComponentManager.h" />
     <ClInclude Include="BoxColliderComponent.h" />
@@ -386,6 +387,7 @@
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthPackComponent.h" />
+    <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
@@ -430,6 +432,7 @@
   <ItemGroup>
     <ClCompile Include="AmmoComponent.cpp" />
     <ClCompile Include="AmmoComponentManager.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AudioSourceComponent.cpp" />
     <ClCompile Include="AudioSourceComponentManager.cpp" />
     <ClCompile Include="BoxColliderComponent.cpp" />
@@ -449,6 +452,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthPackComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />

@@ -217,29 +217,17 @@ SSArgument& SSArgument::operator=(const ssLuaTable& aTable)
 
 const short SSArgument::GetShort() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return static_cast<short>(GetData<ssLuaNumber>());
+	return static_cast<short>(GetDouble());
 }
 
 const int SSArgument::GetInt() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return static_cast<int>(GetData<ssLuaNumber>());
+	return static_cast<short>(GetDouble());
 }
 
 const unsigned int SSArgument::GetUInt() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return static_cast<unsigned int>(GetData<ssLuaNumber>());
+	return static_cast<short>(GetDouble());
 }
 
 const double SSArgument::GetDouble() const
@@ -247,35 +235,24 @@ const double SSArgument::GetDouble() const
 	if (myType != eSSType::NUMBER)
 	{
 		DL_ASSERT("trying to get a number from an argument that isn't a number");
+		return -1.0;
 	}
 	return GetData<ssLuaNumber>();
 }
 
 const float SSArgument::GetFloat() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return static_cast<float>(GetData<ssLuaNumber>());
+	return static_cast<short>(GetDouble());
 }
 
 const unsigned short SSArgument::GetUShort() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return static_cast<unsigned short>(GetData<ssLuaNumber>());
+	return static_cast<short>(GetDouble());
 }
 
 ssLuaNumber SSArgument::GetNumber() const
 {
-	if (myType != eSSType::NUMBER)
-	{
-		DL_ASSERT("trying to get a number from an argument that isn't a number");
-	}
-	return GetData<ssLuaNumber>();
+	return static_cast<short>(GetDouble());
 }
 
 ssLuaString SSArgument::GetString() const
@@ -283,6 +260,7 @@ ssLuaString SSArgument::GetString() const
 	if (myType != eSSType::STRING)
 	{
 		DL_ASSERT("trying to get wrong type from argument");
+		return nullptr;
 	}
 	return GetData<ssLuaString>();
 }
@@ -292,6 +270,7 @@ const ssLuaTable& SSArgument::GetTable() const
 	if (myType != eSSType::TABLE)
 	{
 		DL_ASSERT("trying to get wrong type from argument");
+		return ssLuaTable();
 	}
 	return GetData<ssLuaTable>();
 }
@@ -301,6 +280,7 @@ const bool SSArgument::GetBool() const
 	if (myType != eSSType::BOOL)
 	{
 		DL_ASSERT("trying to get wrong type from argument");
+		return false;
 	}
 	return GetData<bool>();
 }

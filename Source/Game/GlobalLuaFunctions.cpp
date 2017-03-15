@@ -192,8 +192,23 @@ SSlua::ArgumentList ComponentSubscribeToMessage(const SSlua::ArgumentList& aArgu
 		RETURN_VOID();
 	}
 
-	if (!ScriptHelper::AssertArgumentList("SubscribeToMessage", { eSSType::NUMBER, eSSType::NUMBER , eSSType::STRING }, aArgumentList, true))
+	int maybeEnum = -1;
+	if (ScriptHelper::CheckArgumentList("SubscribeToMessage", { eSSType::NUMBER, eSSType::NUMBER , eSSType::STRING }, aArgumentList, true))
 	{
+		maybeEnum = aArgumentList[1].GetInt();
+	}
+	else if (ScriptHelper::AssertArgumentList("SubscribeToMessage", { eSSType::NUMBER, eSSType::STRING , eSSType::STRING }, aArgumentList, true))
+	{
+		maybeEnum = ComponentMessage::GetType(aArgumentList[1].GetString());
+	}
+	else
+	{
+		RETURN_VOID();
+	}
+
+	if (maybeEnum == -1)
+	{
+		GLOBAL_LUA_FUNCTION_ERROR("Error in SubscribeToMessage, got invalid message type: %d", maybeEnum);
 		RETURN_VOID();
 	}
 
@@ -207,7 +222,7 @@ SSlua::ArgumentList ComponentSubscribeToMessage(const SSlua::ArgumentList& aArgu
 
 	SComponentMessageCallback callbackInfo;
 	callbackInfo.myFunctionName = aArgumentList[2].GetString();
-	callbackInfo.myMaybeEnum = aArgumentList[1].GetInt();
+	callbackInfo.myMaybeEnum = maybeEnum;
 
 	SComponentMessageData messageData;
 	messageData.myComponentMessageCallback = &callbackInfo;
