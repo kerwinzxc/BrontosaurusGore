@@ -405,10 +405,10 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 
 	//ANIMATION BUFFER
-	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != nullptr) && (aParamObj.aAnimationState[0] != '\0'))
+	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0'*/)
 	{
 
-		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState, aParamObj.aAnimationLooping);
+		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
 
 		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
 
@@ -475,10 +475,10 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 
 	//ANIMATION BUFFER
-	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != nullptr) && (aParamObj.aAnimationState[0] != '\0'))
+	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
 	{
 
-		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState, aParamObj.aAnimationLooping);
+		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
 
 		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
 

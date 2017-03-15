@@ -23,4 +23,3 @@ private:
 
 	CModelInstance& myModel;
 };
-

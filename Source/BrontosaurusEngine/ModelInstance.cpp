@@ -260,18 +260,9 @@ CU::AABB CModelInstance::GetModelBoundingBox()
 }
 
 
-void CModelInstance::ChangeAnimation(const char* aAnimationKey)
+void CModelInstance::ChangeAnimation(const std::string& aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
-
-	/*if (mySceneAnimator != nullptr)
-	{
-		auto it = mySceneAnimators.find(aAnimationKey);
-		if (it != mySceneAnimators.end())
-		{
-			mySceneAnimator = &it->second;
-		}
-	}*/
 }
 
 void CModelInstance::SetAnimationLooping(const bool aValue)
@@ -284,6 +275,16 @@ void CModelInstance::SetAnimationLooping(const bool aValue)
 void CModelInstance::ResetAnimation()
 {
 	myAnimationCounter = 0.0f;
+}
+
+const std::string& CModelInstance::GetAnimationState() const
+{
+	return myCurrentAnimation;
+}
+
+float CModelInstance::GetAnimationCounter() const
+{
+	return myAnimationCounter;
 }
 
 void CModelInstance::SetHighlightIntencity(const float aHighlightIntencity)
