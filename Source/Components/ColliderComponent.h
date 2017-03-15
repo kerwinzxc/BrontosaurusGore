@@ -29,7 +29,7 @@ class CColliderComponentManager;
 class CColliderComponent : public CComponent , public Physics::IPhysicsCallback
 {
 public:
-	CColliderComponent(SColliderData* aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
+	CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
 	virtual ~CColliderComponent();
 	void UpdatePosition();
 
@@ -53,8 +53,8 @@ protected:
 
 	Physics::CShape* myShape;
 	Physics::CPhysicsActor* myActor;
-private:
 	SColliderData myData;
+private:
 	CColliderComponentManager* myManager;
 };
 

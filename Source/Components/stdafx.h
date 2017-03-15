@@ -21,6 +21,7 @@
 #include "../CommonUtilities/MemoryLeekLogger.h"
 #include "../CommonUtilities/vector2.h"
 #include "../CommonUtilities/vector3.h"
+#include "../CommonUtilities/matrix44.h"
 #include "../CommonUtilities/StringHelper.h"
 
 #include "../PostMaster/PostMaster.h"

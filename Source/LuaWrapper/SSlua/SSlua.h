@@ -5,7 +5,6 @@
 
 #include <map>
 #include "../SSArgument/SSArgument.h"
-#include "../../LuaSource/lua-5.3.3/src/lua.hpp"
 
 #include "../file_watcher.h"
 
@@ -43,9 +42,6 @@ namespace SSlua
 		void GetValueFromTable(const std::string& aTableName, const std::string& aKeyName);
 		void GetLastError(std::string& aErrorMessageOut) const;
 
-
-		bool ParseLuaTable(const std::string& aScriptPath, const std::string& aTableName, std::map<std::string, SSArgument>& aTableMapOut);
-		
 		template<typename T>
 		void Push(const T& aVariable);
 

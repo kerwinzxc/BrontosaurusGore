@@ -174,7 +174,6 @@ bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQ
 			return true;
 		}
 	}
-
 	return false;
 }
 

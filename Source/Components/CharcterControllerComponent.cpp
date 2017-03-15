@@ -54,6 +54,14 @@ void CCharcterControllerComponent::Receive(const eComponentMessageType aMessageT
 		myController->SetPosition(transformation.myPosition);
 	break;
 	}
+	case eComponentMessageType::eSetControllerPosition:
+	{
+		//transformation.SetScale({ 1.0f, 1.0f, 1.0f });
+		//CU::Vector3f worldPos = myData.center;
+		//transformation.SetPosition(transformation.GetPosition() + worldPos);
+		myController->SetPosition(aMessageData.myVector3f);
+		break;
+	}
 	default:
 		break;
 	}
