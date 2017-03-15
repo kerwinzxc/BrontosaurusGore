@@ -8,11 +8,11 @@ CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physi
 
 	myActor = aActor;
 	myActor->SetCallbackData(this);
+	SetUserData(this);
 
 	myShape = aShape;
 	myType = eComponentType::eCollision;
 	myManager = nullptr;
-	SetUserData(this);
 }
 
 CColliderComponent::~CColliderComponent()

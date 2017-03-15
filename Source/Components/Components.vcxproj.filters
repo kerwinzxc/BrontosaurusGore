@@ -155,15 +155,8 @@
       <Filter>CheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="CheckPointSystem.cpp" />
-    <ClCompile Include="SphereColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="CapsuleColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
+    <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="IPickupComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -365,15 +358,8 @@
       <Filter>CheckPoint</Filter>
     </ClInclude>
     <ClInclude Include="CheckPointSystem.h" />
-    <ClInclude Include="SphereColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CapsuleColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
+    <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="IPickupComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
