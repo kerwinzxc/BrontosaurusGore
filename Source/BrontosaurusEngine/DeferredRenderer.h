@@ -81,6 +81,7 @@ private:
 	{
 		CRenderPackage diffuse;
 		CRenderPackage normal;
+		CRenderPackage ao;
 	}myParticleGBuffer;
 	CRenderPackage myIntermediatePackage;
 	

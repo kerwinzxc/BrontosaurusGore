@@ -5,8 +5,8 @@ SamplerState Sampler;
 
 struct PixelOut
 {
-    float4 amplitude: SV_TARGET1;
-    float4 normal: SV_TARGET0;
+    float4 amplitude: SV_TARGET0;
+    float4 normal: SV_TARGET1;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -41,7 +41,7 @@ float3 GetNormal(const InputPixel input)
 
     const float z = GetZ(input, length(dif));
     const float3 texturized = (normalize(float3(dif.xy, z)) + 1.f) / 2.f;
-    return texturized;
+    return normalize(texturized);
 }
 
 PixelOut PS_PosSizeColor(InputPixel input)
@@ -52,19 +52,9 @@ PixelOut PS_PosSizeColor(InputPixel input)
     
     const float f = (1 - interpol * interpol);
     const float f2 = f * f;
-    float amplitude;
-
-    const float minValue = 0.0000001;
-    if(interpol < minValue)
-    {
-        amplitude = 1.f / minValue;
-    }
-    else
-    {
-        amplitude = 1.f / interpol;
-    }
+    
     PixelOut output = (PixelOut)0;
-    output.amplitude.rgba = float4(1.f,1.f,1.f, f2);
+    output.amplitude.rgba = float4(input.color.rgb, f2);
     const float3 normalTexturized = GetNormal(input);
 
     output.normal.rgba = float4(normalTexturized.xyz, f2);

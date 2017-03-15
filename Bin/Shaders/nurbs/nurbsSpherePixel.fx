@@ -5,8 +5,9 @@ SamplerState Sampler;
 
 struct PixelOut
 {
-    float4 diffuse: SV_TARGET1;
-    float4 normal: SV_TARGET0;
+    float4 diffuse: SV_TARGET0;
+    float4 normal: SV_TARGET1;
+    float4 ao: SV_TARGET2;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -52,13 +53,15 @@ PixelOut PS_PosSizeColor(const InputPixel input)
 
     PixelOut output = (PixelOut)0;
     
-    output.diffuse.rgba = float4(1,0,0,1);
+    output.diffuse.rgba = float4(input.color.rgb,1);
     
     output.normal = float4(GetNormal(input),1);
+    output.ao  = float4(1,1,1,1);
     if(interpol >= 1)
     {
         output.diffuse.a = 0;
         output.normal.a = 0;
+        output.ao.a  = 0; 
     }
 
 

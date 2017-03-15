@@ -27,6 +27,7 @@ CDeferredRenderer::CDeferredRenderer()
 
 	myParticleGBuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myParticleGBuffer.ao.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	
@@ -156,12 +157,18 @@ void CDeferredRenderer::UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, c
 
 void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer)
 {
-	//MergeParticles(aFullscreenHelper);
+	SChangeStatesMessage changeStateMessage = {};
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	changeStateMessage.myBlendState = eBlendState::eAddBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	aRenderer.SetStates(&changeStateMessage);
+	MergeParticles(aFullscreenHelper);
 	ActivateIntermediate();
 	SetSRV();
 	SetCBuffer();
 
-	SChangeStatesMessage changeStateMessage = {};
+	
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
@@ -185,34 +192,40 @@ void CDeferredRenderer::DoParticleQueue()
 	SetParticleTargets();
 	for(int i = 0; i < myParticleMessages.Size(); ++i)
 	{
-	SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(myParticleMessages[i]);
-	CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
-	if (emitter == nullptr)	break;
+		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(myParticleMessages[i]);
+		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
+		if (emitter == nullptr)	break;
 
-	emitter->Render(msg->toWorld, msg->particleList);
+		emitter->Render(msg->toWorld, msg->particleList);
 	}
 	myParticleMessages.RemoveAll();
 }
 
 void CDeferredRenderer::MergeParticles(CFullScreenHelper& aFullscreenHelper)
 {
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAdd, &myGbuffer.diffuse, &myParticleGBuffer.diffuse);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAdd, &myGbuffer.normal, &myParticleGBuffer.normal);
+	myFramework->GetDeviceContext()->OMSetRenderTargets(1, &myGbuffer.diffuse.GetRenderTargetView(), nullptr);
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy,&myParticleGBuffer.diffuse);
+	myGbuffer.normal.Activate();
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy,&myParticleGBuffer.normal);
+	myGbuffer.RMAO.Activate();
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.ao);
 }
 
 void CDeferredRenderer::ClearParticleTargets()
 {
 	myParticleGBuffer.diffuse.Clear();
 	myParticleGBuffer.normal.Clear();
+	myParticleGBuffer.ao.Clear();
 }
 
 void CDeferredRenderer::SetParticleTargets()
 {
-	ID3D11RenderTargetView* rtvs[2];
+	ID3D11RenderTargetView* rtvs[3];
 	rtvs[0] = myParticleGBuffer.diffuse.GetRenderTargetView();
 	rtvs[1] = myParticleGBuffer.normal.GetRenderTargetView();
+	rtvs[2] = myParticleGBuffer.ao.GetRenderTargetView();
 
-	myFramework->GetDeviceContext()->OMSetRenderTargets(2, rtvs, myGbuffer.diffuse.GetDepthStencilView());
+	myFramework->GetDeviceContext()->OMSetRenderTargets(3, rtvs, myGbuffer.diffuse.GetDepthStencilView());
 }
 
 void CDeferredRenderer::SetRenderTargets()

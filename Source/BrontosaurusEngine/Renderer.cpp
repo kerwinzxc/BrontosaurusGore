@@ -127,7 +127,6 @@ void CRenderer::Render()
 	DoRenderQueue();
 
 
-	myDeferredRenderer.DoParticleQueue();
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
@@ -137,6 +136,14 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.DoRenderQueue();
+
+	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	SetStates(&changeStateMessage);
+	myDeferredRenderer.DoParticleQueue();
+
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
