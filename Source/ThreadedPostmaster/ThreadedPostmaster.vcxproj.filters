@@ -65,6 +65,9 @@
     <Filter Include="Message\SetNewCheckPoint">
       <UniqueIdentifier>{30575e0a-d1e2-4686-967f-9712139c3019}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\ResetToCheckPoint">
+      <UniqueIdentifier>{54dc4ca4-81ba-45d9-ac81-5f132c307317}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -108,7 +111,12 @@
     <ClCompile Include="AddToCheckPointResetList.cpp">
       <Filter>Message\AddToCheckPointResetList</Filter>
     </ClCompile>
-    <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
+    <ClCompile Include="SetAsNewCheckPointMessage.cpp">
+      <Filter>Message\SetNewCheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="ResetToCheckPointMessage.cpp">
+      <Filter>Message\ResetToCheckPoint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -161,6 +169,11 @@
     <ClInclude Include="AddToCheckPointResetList.h">
       <Filter>Message\AddToCheckPointResetList</Filter>
     </ClInclude>
-    <ClInclude Include="SetAsNewCheckPointMessage.h" />
+    <ClInclude Include="SetAsNewCheckPointMessage.h">
+      <Filter>Message\SetNewCheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="ResetToCheckPointMessage.h">
+      <Filter>Message\ResetToCheckPoint</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

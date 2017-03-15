@@ -126,3 +126,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CSetAsNewCheckPointMessage
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CResetToCheckPointMessage & aResetToCheckPointMessage)
+{
+	return eMessageReturn::eContinue;
+}

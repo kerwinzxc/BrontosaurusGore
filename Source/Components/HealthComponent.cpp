@@ -41,6 +41,10 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			Heal(aMessageData.myInt);
 		}
 		break;
+	case eComponentMessageType::eCheckPointReset:
+		myIsAlive = true;
+		myCurrentHealth = myMaxHeath;
+		break;
 	default:
 		break;
 	}
