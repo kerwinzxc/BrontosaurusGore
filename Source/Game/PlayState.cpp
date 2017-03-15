@@ -187,7 +187,6 @@ void CPlayState::Load()
 
 	CreatePlayer(playerCamera); // Hard codes Player!;
 
-	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
@@ -204,6 +203,7 @@ void CPlayState::Load()
 void CPlayState::Init()
 {
 	myCheckPointSystem = new CCheckPointSystem();
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
