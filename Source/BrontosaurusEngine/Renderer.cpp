@@ -44,7 +44,6 @@ CRenderer::CRenderer()
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
-
 	CreateBuffer();
 
 	InitPackages();
@@ -126,6 +125,9 @@ void CRenderer::Render()
 	}
 
 	DoRenderQueue();
+
+
+	myDeferredRenderer.DoParticleQueue();
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
@@ -268,6 +270,10 @@ void CRenderer::LensDistortion(CRenderPackage & aRenderMessage)
 
 	}
 }
+
+
+
+
 
 void CRenderer::ClearRenderQueue()
 {
@@ -427,6 +433,8 @@ void CRenderer::UpdateBuffer()
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
 	updatedBuffer.fogStart = 0.0f;
 	updatedBuffer.fogEnd = 0.0f;
+
+	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
 	
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
 	
@@ -453,6 +461,8 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
 	updatedBuffer.fogStart = 0.0f;
+
+	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
 	updatedBuffer.fogEnd = 0.0f;
 
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
@@ -1016,11 +1026,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
-		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(aRenderMesage);
-		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
-		if (emitter == nullptr)	break;
-
-		emitter->Render(msg->toWorld, msg->particleList);
+		myDeferredRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
+		
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eActivateRenderPackage:

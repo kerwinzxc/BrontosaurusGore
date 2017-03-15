@@ -74,6 +74,7 @@
 #include "BoxColliderComponent.h"
 #include "Physics/PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
+#include "../Components/ParticleEmitterComponentManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -214,6 +215,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myProjectileComponentManager->Update(aDeltaTime);
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
+	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -299,6 +301,8 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 
 	myScriptComponentManager = new CScriptComponentManager();
+
+	
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)

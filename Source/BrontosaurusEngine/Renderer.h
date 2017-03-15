@@ -41,7 +41,7 @@ public:
 
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
-	
+
 	void Render();
 	void SwapWrite();
 	void ClearRenderQueue();
@@ -60,7 +60,6 @@ private:
 	void Downsample(CRenderPackage& aRenderPackage);
 	void RenderGUI();
 	void LensDistortion(CRenderPackage& AddRenderMessage);
-
 
 	void InitPackages();
 
@@ -81,6 +80,7 @@ private:
 
 	void DoColorGrading();
 private:
+
 	struct SHDRData
 	{
 		CRenderPackage myInputPackage;

@@ -45,7 +45,6 @@ public:
 
 	inline bool IsInit();
 	void operator= (const CRenderPackage& aLeft);
-
 private:
 	void CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat);
 
