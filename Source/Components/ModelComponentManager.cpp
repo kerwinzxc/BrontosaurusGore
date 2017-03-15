@@ -24,8 +24,7 @@ CModelComponentManager::~CModelComponentManager()
 
 void CModelComponentManager::DeleteModelComponent(CModelComponent* aComponent)
 {
-	CModelInstance* const modelInstance = aComponent->GetAndReleaseModel();
-	myScene.DeleteModelInstance(modelInstance);
+	myScene.DeleteModelInstance(&aComponent->GetModelInstance());
 
 	CComponentManager::GetInstance().DeleteComponent(aComponent->GetId());
 	myModels.RemoveCyclic(aComponent);
