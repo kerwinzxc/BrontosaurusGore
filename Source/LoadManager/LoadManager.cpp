@@ -70,6 +70,9 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
+	loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereCollider);
+	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleCollider);
+
 	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
 	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
 
