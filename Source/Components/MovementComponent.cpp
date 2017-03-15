@@ -118,6 +118,18 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	}
 	myVelocity.y += myJumpForce;
 
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	{
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		{
+			myCanDoubleJump = true;
+			myJumpForce = 0.0f;
+		}
+	}
+
+
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
@@ -150,16 +162,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
-	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
-	{
-		myControllerConstraints = groundeddata.myChar;
-		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
-		{
-			myCanDoubleJump = true;
-			myJumpForce = 0.0f;
-		}
-	}
+	
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
