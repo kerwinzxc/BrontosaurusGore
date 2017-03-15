@@ -80,7 +80,7 @@ void CColliderComponentManager::RemoveActorFromScene(Physics::CPhysicsActor* aAc
 CCharcterControllerComponent* CColliderComponentManager::CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams)
 {
 	Physics::CPhysicsCharacterController* controller = myControllerManager->CreateCharacterController(aParams);
-	CCharcterControllerComponent* component = new CCharcterControllerComponent(controller);
+	CCharcterControllerComponent* component = new CCharcterControllerComponent(controller, aParams.center);
 	CComponentManager::GetInstance().RegisterComponent(component);
 	return component;
 }
