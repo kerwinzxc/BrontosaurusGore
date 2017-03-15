@@ -1,6 +1,6 @@
 #include "stdafx.h"
+#include "PollingStation.h"
 #include "PickupAmmoComponent.h"
-
 
 CPickupAmmoComponent::CPickupAmmoComponent()
 {
@@ -28,7 +28,11 @@ void CPickupAmmoComponent::Receive(const eComponentMessageType aMessageType, con
 {
 	switch (aMessageType)
 	{
-		//Needs collision to ammo pickup, will be implemented later
+	case eComponentMessageType::eOnTriggerEnter:
+		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
+		{
+			DoMyEffect();
+		}
 	default:
 		break;
 	}
@@ -45,4 +49,10 @@ void CPickupAmmoComponent::GiveAmmoType()
 	data.myAmmoReplenishData->ammoType = myPickupData.ammoType;
 	data.myAmmoReplenishData->replenishAmount = myPickupData.replenishAmount;
 	GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
+}
+
+void CPickupAmmoComponent::DoMyEffect()
+{
+	CPickupAmmoComponent::DoMyEffect();
+	GiveAmmoType();
 }
