@@ -5,10 +5,10 @@
 #include "ColliderComponentManager.h"
 
 
-CRigidBodyComponent::CRigidBodyComponent(SRigidBodyData* aColliderData, Physics::CPhysicsActor* aActor)
+CRigidBodyComponent::CRigidBodyComponent(const SRigidBodyData& aColliderData, Physics::CPhysicsActor* aActor)
 	: CColliderComponent(aColliderData, nullptr, aActor)
 {
-	myData = *aColliderData;
+	myData = aColliderData;
 }
 
 CRigidBodyComponent::~CRigidBodyComponent()
