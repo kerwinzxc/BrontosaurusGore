@@ -15,6 +15,9 @@ public:
 	TYPE* CreateMessage(const std::string& aTarget);
 
 	template <typename TYPE>
+	TYPE* CreateMessage(const int aTargetID);
+
+	template <typename TYPE>
 	TYPE* CreateMessage(SNetworkMessageHolder aMessageHolder);
 
 private:
@@ -42,6 +45,17 @@ TYPE* CClientMessageManager::CreateMessage(const std::string& aTarget)
 	{
 		header.myTargetID = ID_ALL_BUT_ME;
 	}
+
+	header.mySenderID = myClient.myId;
+	return CMessageManager::CreateMessage<TYPE>(header);
+}
+
+template <typename TYPE>
+TYPE* CClientMessageManager::CreateMessage(const int aID)
+{
+	SNetworkPackageHeader header;
+
+	header.myTargetID = aID;
 
 	header.mySenderID = myClient.myId;
 	return CMessageManager::CreateMessage<TYPE>(header);
