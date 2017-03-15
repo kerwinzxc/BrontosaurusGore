@@ -429,5 +429,16 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 
 		Component::CEnemy::SetPlayer(playerObject);
+
+		/*CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
+		CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+		enemyObject->AddComponent(enemyModelComponent);
+		CHealthComponent* enemyHealthComponent = new CHealthComponent();
+		enemyHealthComponent->SetMaxHealth(1);
+		enemyHealthComponent->SetHealth(1);
+		enemyObject->AddComponent(enemyHealthComponent);*/
+
+
+
 	}
 }
