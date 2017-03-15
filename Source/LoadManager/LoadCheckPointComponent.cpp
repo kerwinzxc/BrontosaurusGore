@@ -6,12 +6,12 @@
 #include "CheckPointComponent.h"
 #include "../Game/PlayState.h"
 
-int LoadCheckPointComponent(KLoader::SLoadedComponentData someData)
+int LoadCheckpointComponent(KLoader::SLoadedComponentData someData)
 {
-
 	CCheckPointComponent* newCheckPointComponent = new CCheckPointComponent();
 	CComponentManager::GetInstance().RegisterComponent(newCheckPointComponent);
 	return newCheckPointComponent->GetId();
 
+	// ifall det går för snabbt, i retail liksom
 	return NULL_COMPONENT;
 }
