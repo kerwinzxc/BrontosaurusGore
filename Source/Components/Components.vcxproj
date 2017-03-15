@@ -366,6 +366,7 @@
     <ClInclude Include="AmmoComponentManager.h" />
     <ClInclude Include="AmmoData.h" />
     <ClInclude Include="AmmoReplenishData.h" />
+    <ClInclude Include="ArmorPickupComponent.h" />
     <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="AudioSourceComponentManager.h" />
     <ClInclude Include="BoxColliderComponent.h" />
@@ -430,6 +431,7 @@
   <ItemGroup>
     <ClCompile Include="AmmoComponent.cpp" />
     <ClCompile Include="AmmoComponentManager.cpp" />
+    <ClCompile Include="ArmorPickupComponent.cpp" />
     <ClCompile Include="AudioSourceComponent.cpp" />
     <ClCompile Include="AudioSourceComponentManager.cpp" />
     <ClCompile Include="BoxColliderComponent.cpp" />

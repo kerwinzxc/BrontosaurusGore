@@ -155,6 +155,9 @@
       <Filter>CheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="CheckPointSystem.cpp" />
+    <ClCompile Include="ArmorPickupComponent.cpp">
+      <Filter>Armor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -356,6 +359,9 @@
       <Filter>CheckPoint</Filter>
     </ClInclude>
     <ClInclude Include="CheckPointSystem.h" />
+    <ClInclude Include="ArmorPickupComponent.h">
+      <Filter>Armor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -426,6 +432,9 @@
     </Filter>
     <Filter Include="CheckPoint">
       <UniqueIdentifier>{0b4ceec9-a814-4474-8934-9b869ee791a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Armor">
+      <UniqueIdentifier>{1fc03bea-81c2-4961-ad29-005ae2547e4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
