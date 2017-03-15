@@ -66,8 +66,8 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 	if(myCurrentHealth - aDamage <= 0)
 	{
 		myCurrentHealth = 0;
-		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 
 		SComponentMessageData data;
 		data.myBool = false;

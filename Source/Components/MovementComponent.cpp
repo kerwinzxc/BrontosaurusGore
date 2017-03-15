@@ -147,7 +147,7 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 			SComponentMessageData takeDamageData;
 			takeDamageData.myInt = 10000;
 			GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);
-
+			myVelocity = CU::Vector3f::Zero;
 			//Teleport stuff back code
 			//CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
 			////parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
