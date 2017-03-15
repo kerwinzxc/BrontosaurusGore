@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "PollingStation.h"
 #include "HealthPackComponent.h"
-
 
 CHealthPackComponent::CHealthPackComponent()
 {
 	myRestoreAmount = 0;
+	myHasBeenPickedUp = false;
 }
 
 
@@ -21,7 +22,11 @@ void CHealthPackComponent::Receive(const eComponentMessageType aMessageType, con
 {
 	switch (aMessageType)
 	{
-		//Again needs collision
+	case eComponentMessageType::eOnTriggerEnter:
+		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
+		{
+			DoMyEffect();
+		}
 	default:
 		break;
 	}
@@ -37,4 +42,13 @@ void CHealthPackComponent::RestoreHealth()
 	SComponentMessageData data;
 	data.myInt;
 	GetParent()->NotifyComponents(eComponentMessageType::eHeal, data);
+}
+
+void CHealthPackComponent::DoMyEffect()
+{
+	if (myHasBeenPickedUp == false)
+	{
+		IPickupComponent::DoMyEffect();
+		RestoreHealth();
+	}
 }
