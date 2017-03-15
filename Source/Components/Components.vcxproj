@@ -387,6 +387,7 @@
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthPackComponent.h" />
+    <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
@@ -451,6 +452,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthPackComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />
