@@ -45,6 +45,7 @@ namespace Physics
 
 		CShape* CreateBoxShape(const CU::Vector3f& aHalfExtent, const SMaterialData& aMaterialData = SMaterialData());
 		CShape* CreateSphereShape(const float aRadius, const SMaterialData& aMaterialData);
+		CShape* CreateCapsuleShape(const float aRadius, const float aHalfHeight, const SMaterialData& aMaterialData);
 		CShape* CreateMeshShape(const char* aPath, const SMaterialData& aMaterialData);
 
 		physx::PxMaterial* CreateMaterial(const SMaterialData & aMaterialData);
