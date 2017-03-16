@@ -9,6 +9,7 @@
 #include "FullScreenHelper.h"
 #include "BufferStructs.h"
 #include "Lights.h"
+#include "ParticleEmitter.h"
 
 struct ID3D11RenderTargetView;
 
@@ -250,6 +251,7 @@ struct SRenderParticlesMessage : SRenderMessage
 	ParticleEmitterID particleEmitter;
 	CU::GrowingArray<SParticle, unsigned int, false> particleList;
 	CU::Matrix44f toWorld;
+	CParticleEmitter::RenderMode renderMode = CParticleEmitter::RenderMode::eMetaBall;
 };
 
 struct SRenderStreakMessage : SRenderMessage

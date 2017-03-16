@@ -6,3 +6,5 @@ namespace KLoader
 }
 
 int LoadEnemy(KLoader::SLoadedComponentData someData);
+
+int ClientLoadEnemy(KLoader::SLoadedComponentData someData);

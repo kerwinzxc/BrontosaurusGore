@@ -55,7 +55,7 @@ PixelOut PS_PosSizeColor(InputPixel input)
     const float f2 = f * f;
     
     PixelOut output = (PixelOut)0;
-    output.diffuse.rgba = float4(input.color.rgb, f2);
+    output.diffuse.rgba = float4(1.f,1.f,1.f, f2);
     const float3 normalTexturized = GetNormal(input);
 
     output.normal.rgba = float4(normalTexturized.xyz, f2);

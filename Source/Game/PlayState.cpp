@@ -77,6 +77,7 @@
 #include "Physics/PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
 #include "../Components/ParticleEmitterComponentManager.h"
+#include "EnemyClientRepresentationManager.h"
 
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
@@ -123,6 +124,7 @@ CPlayState::~CPlayState()
 
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
+	CEnemyClientRepresentationManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -285,7 +287,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
-	myEnemyComponentManager = new CEnemyComponentManager(*myScene);
+	myEnemyComponentManager = new CEnemyComponentManager();
 	myMovementComponentManager = new CMovementComponentManager();
 
 	myColliderComponentManager = new CColliderComponentManager();
@@ -305,6 +307,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
+	CEnemyClientRepresentationManager::Create();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -437,7 +440,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		witch->GetLocalTransform().SetScale({ 0.1f, 0.1f, 0.1f });
 		witch->AddComponent(myModelComponentManager->CreateComponent("Models/Meshes/witch.fbx"));
 
-		Component::CEnemy::SetPlayer(playerObject);
+		//Component::CEnemy::SetPlayer(playerObject);
 
 		/*	CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
 			CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");

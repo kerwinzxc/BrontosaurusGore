@@ -45,6 +45,8 @@ CFullScreenHelper::CFullScreenHelper()
 
 	ID3D11PixelShader* aaShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/antiAliasing.fx", ShaderType);
 
+	ID3D11PixelShader* metaSurfaceShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaSurface.fx", ShaderType);
+
 	myEffects[static_cast<int>(eEffectType::eCopy)]						= new CEffect(vertexShader, cpyShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyDepth)]				= new CEffect(vertexShader, copyDepthShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -69,7 +71,7 @@ CFullScreenHelper::CFullScreenHelper()
 
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	myEffects[static_cast<int>(eEffectType::eMetaSurface)]				= new CEffect(lShvertexShader, metaSurfaceShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CreateQuad();
 }

@@ -45,6 +45,8 @@
 #include "..\TShared\NetworkMessage_PickupHealth.h"
 
 #include "..\Components\PickupComponentManager.h"
+#include "../TShared/NetworkMessage_EnemyPosition.h"
+#include "../Components/EnemyClientRepresentationManager.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -251,6 +253,14 @@ void CClient::Update()
 				string += CU::StringToWString(disconectedMessage->GetClientName());
 				string += L" has disconected!";
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+			}
+			break;
+		case ePackageType::eEnemyPosition:
+			{
+				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
+				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetInstance().GetRepresentation(message->GetId());
+				target.GetParent()->SetWorldPosition(message->GetPosition());
+				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
 		case ePackageType::eZero:

@@ -40,6 +40,7 @@ public:
 		eCopyDepth,
 		eColorGrading,
 		eAA,
+		eMetaSurface,
 		eSize,
 	};
 

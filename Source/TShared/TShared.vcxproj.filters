@@ -127,6 +127,7 @@
       <Filter>NetworkMessage\Disconected</Filter>
     </ClInclude>
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
+    <ClInclude Include="NetworkMessage_EnemyPosition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -181,5 +182,6 @@
       <Filter>NetworkMessage\Disconected</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
+    <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
   </ItemGroup>
 </Project>

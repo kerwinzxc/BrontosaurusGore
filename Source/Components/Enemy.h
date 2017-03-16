@@ -6,7 +6,7 @@ namespace Component
 	class CEnemy : public CComponent
 	{
 	public:
-		CEnemy();
+		CEnemy(unsigned int anId);
 		~CEnemy();
 		void SetHealth(const unsigned aHealth);
 		void SetSpeed(const float aSpeed);
@@ -14,6 +14,7 @@ namespace Component
 		void SetStartAttackRange(const float aStartAttackRange);
 		void SetStopAttackRange(const float aStopAttackRange);
 
+		void Move(const CU::Vector3f& aDispl);
 		void Update(const CU::Time& aDeltaTime);
 
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
@@ -27,6 +28,7 @@ namespace Component
 		float myStartAttackRange2;
 		float myStopAttackRange2;
 		bool myIsDead;
+		unsigned myServerId;
 	};
 }
 
@@ -37,7 +39,7 @@ inline void Component::CEnemy::SetHealth(const unsigned aHealth)
 
 inline void Component::CEnemy::SetSpeed(const float aSpeed)
 {
-	mySpeed = aSpeed * 100;
+	mySpeed = aSpeed *100 ;
 }
 
 inline void Component::CEnemy::SetDetectionRange(const float aDetactionRange)

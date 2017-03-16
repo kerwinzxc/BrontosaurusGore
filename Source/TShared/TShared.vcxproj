@@ -139,6 +139,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NetworkMessage_EnemyPosition.h" />
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
     <ClCompile Include="ImportantNetworkMessage.cpp" />
     <ClCompile Include="MessageManager.cpp" />
