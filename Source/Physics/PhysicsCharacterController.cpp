@@ -37,7 +37,7 @@ namespace Physics
 		controllerFilters.mFilterData = &filterData;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
 
-		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y - 0.001f, aDisplacement.z }; //TODO: om knas kanske här
+		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y - 1000.0f * aDeltaTime.GetSeconds(), aDisplacement.z }; //TODO: om knas kanske här
 		physx::PxControllerCollisionFlags flags = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
 		SetCollisionFlags((uint8_t)flags);
 	}

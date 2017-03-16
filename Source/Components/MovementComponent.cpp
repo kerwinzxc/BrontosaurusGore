@@ -129,11 +129,14 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
-			myCanDoubleJump = true;
-			myJumpForce = 0.0f;
+			if(myJumpForce < 0)
+			{
+				myCanDoubleJump = true;
+				myJumpForce = 0.0f;
+			}
 		}
 	}
-
+	
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -199,5 +202,5 @@ void CMovementComponent::KeyReleased(const ePlayerControls aPlayerControl)
 
 void CMovementComponent::ApplyJumpForce(float aJumpHeight)
 {
-	myJumpForce = sqrtf(gravityAcceleration * aJumpHeight * 2);
+	myJumpForce = sqrtf((gravityAcceleration) * aJumpHeight * 2);
 }
