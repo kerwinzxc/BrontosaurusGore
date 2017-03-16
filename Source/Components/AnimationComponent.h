@@ -9,9 +9,13 @@ public:
 	CAnimationComponent(CModelComponent& aModelComponent);
 	~CAnimationComponent();
 
+	void Update(const CU::Time aDeltaTime);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
-	std::string myCurrentAnimation;
+	struct SAnimationState;
+	std::map<std::string, SAnimationState> myAnimationStates;
+	CU::GrowingArray<std::string> myAnimationStack;
+
 	CModelComponent& myModelComponent;
 };

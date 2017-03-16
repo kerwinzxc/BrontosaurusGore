@@ -236,7 +236,6 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 void CModelInstance::Update(const CU::Time aDeltaTime)
 {
 	myAnimationCounter += aDeltaTime.GetSeconds();
-	myAnimationLerpie = fabs(sinf(myAnimationCounter * 0.2f));
 }
 
 void CModelInstance::SetTransformation(const CU::Matrix44f& aTransformation)
@@ -274,16 +273,25 @@ CU::AABB CModelInstance::GetModelBoundingBox()
 }
 
 
-void CModelInstance::ChangeAnimation(const std::string& aAnimationKey)
+void CModelInstance::SetAnimation(const std::string& aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
+}
+
+void CModelInstance::SetAnimationLerpie(const float aLerpValue)
+{
+	myAnimationLerpie = aLerpValue;
+}
+
+void CModelInstance::SetNextAnimation(const std::string& aAnimationKey)
+{
+	myNextAnimation = aAnimationKey;
 }
 
 void CModelInstance::SetAnimationLooping(const bool aValue)
 {
 	myAnimationLooping = aValue;
 	myAnimationCounter = 0.0f;
-
 }
 
 void CModelInstance::ResetAnimation()

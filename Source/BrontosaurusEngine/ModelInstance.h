@@ -59,7 +59,9 @@ public:
 	void SetPosition(CU::Vector3f aPosition);
 	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
-	void ChangeAnimation(const std::string& aAnimationKey);
+	void SetAnimation(const std::string& aAnimationKey);
+	void SetAnimationLerpie(const float aLerpValue);
+	void SetNextAnimation(const std::string& aAnimationKey);
 	void SetAnimationLooping(const bool aValue);
 	void ResetAnimation();
 	const std::string& GetAnimationState() const;

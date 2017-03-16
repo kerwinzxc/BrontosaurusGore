@@ -477,21 +477,24 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
 	{
-
-		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
-		std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
+		const std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
+		const std::vector<mat4>* finalBones = &bones;
 
 		std::vector<mat4> blendedBones(bones.size());
-		blendedBones.resize(bones.size());
-		BlendBones(bones, nextBones, aParamObj.aAnimationLerper, blendedBones);
 
-		unsigned int bytesToCopy = min(ourMaxBoneBufferSize, blendedBones.size() * sizeof(mat4));
+		if (aParamObj.aAnimationState != aParamObj.aNextAnimationState)
+		{
+			const std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
+
+			blendedBones.resize(bones.size());
+			BlendBones(bones, nextBones, aParamObj.aAnimationLerper, blendedBones);
+			finalBones = &blendedBones;
+		}
+		unsigned int bytesToCopy = min(ourMaxBoneBufferSize, finalBones->size() * sizeof(mat4));
 
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-		memcpy(mappedSubResource.pData, &blendedBones[0], bytesToCopy);
-		//memcpy((char*)mappedSubResource.pData + ourMaxBoneBufferSize, &nextBones[0], bytesToCopy);
-		//memcpy((char*)mappedSubResource.pData + ourMaxBoneBufferSize * 2, &aParamObj.aAnimationLerper, sizeof(float));
+		memcpy(mappedSubResource.pData, &finalBones->front(), bytesToCopy);
 		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
 		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
 	}
