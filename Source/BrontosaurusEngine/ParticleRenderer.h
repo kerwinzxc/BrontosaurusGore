@@ -6,7 +6,7 @@ struct SRenderParticlesMessage;
 class CParticleRenderer
 {
 public:
-	CParticleRenderer();
+	CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper);
 	~CParticleRenderer();
 
 	void AddRenderMessage(SRenderParticlesMessage* aMessage);
@@ -22,6 +22,8 @@ private:
 	}myParticleGBuffer;
 	void ClearParticleTargets();
 	void SetParticleTargets(ID3D11DepthStencilView* aDepthStencilView);
+	CRenderer& mySharedRenderer;
+	CFullScreenHelper& mySharedHelper;
 	CU::GrowingArray<SRenderParticlesMessage*> myParticleMessages;
 };
 

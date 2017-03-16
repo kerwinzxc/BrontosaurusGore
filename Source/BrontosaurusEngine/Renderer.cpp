@@ -32,7 +32,7 @@
 
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
-CRenderer::CRenderer()
+CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 {
 	myIsRunning = true;
 

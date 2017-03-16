@@ -5,7 +5,7 @@
 #include "ParticleEmitterManager.h"
 
 
-CParticleRenderer::CParticleRenderer()
+CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper) : mySharedRenderer(aRenderer), mySharedHelper(aHelper)
 {
 
 	CU::Vector2ui windowSize = CEngine::GetInstance()->GetWindowSize();
