@@ -7,14 +7,12 @@
 
 CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper) : mySharedRenderer(aRenderer), mySharedHelper(aHelper)
 {
-
 	CU::Vector2ui windowSize = CEngine::GetInstance()->GetWindowSize();
 	myParticleGBuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleMessages.Init(10);
 }
-
 
 CParticleRenderer::~CParticleRenderer()
 {
