@@ -63,7 +63,6 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 		Heal(-aDamage);
 		return;
 	}
-	DL_PRINT("Took damage %u", aDamage);
 	GetParent()->NotifyComponents(eComponentMessageType::eTookDamage, SComponentMessageData());
 	if(myCurrentHealth - aDamage <= 0)
 	{

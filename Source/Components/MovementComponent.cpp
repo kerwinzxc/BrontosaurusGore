@@ -39,6 +39,11 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eCheckPointReset:
+		myCanDoubleJump = true;
+		myJumpForce = 0.0f;
+		myVelocity = CU::Vector3f::Zero;
+		break;
 	case eComponentMessageType::eKeyPressed:
 		KeyPressed(aMessageData.myPlayerControl);
 		break;

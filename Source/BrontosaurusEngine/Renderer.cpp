@@ -155,6 +155,7 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 	renderTo->Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	Downsample(*renderTo);
 	HDR();
 	Bloom();

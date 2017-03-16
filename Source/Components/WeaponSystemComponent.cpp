@@ -61,7 +61,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eShootWithNetworking:
 	{
-		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+		myWeapons[myActiveWeaponIndex]->CosmeticShoot(aMessageData.myVector3f);
 		break;
 	}
 	case eComponentMessageType::eAddWeapon:

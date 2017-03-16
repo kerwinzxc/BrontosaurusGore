@@ -11,6 +11,8 @@ CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aH
 	myParticleGBuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myProcessed.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myInteremediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleMessages.Init(10);
 }
 
@@ -25,17 +27,44 @@ void CParticleRenderer::AddRenderMessage(SRenderParticlesMessage* aMessage)
 
 void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView)
 {
-	ClearParticleTargets();
-	SetParticleTargets(aDepthStencilView);
+	myInteremediate.Clear();
 	for (int i = 0; i < myParticleMessages.Size(); ++i)
 	{
+		ClearParticleTargets();
+		SetParticleTargets(aDepthStencilView);
 		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(myParticleMessages[i]);
 		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
 		if (emitter == nullptr)	break;
 
 		emitter->Render(msg->toWorld, msg->particleList);
+
+		CreateSurface();
+		DoLight();
+		ToIntermediate();
 	}
 	myParticleMessages.RemoveAll();
+	
+}
+
+CRenderPackage& CParticleRenderer::GetIntermediatePackage()
+{
+	return myInteremediate;
+}
+
+void CParticleRenderer::CreateSurface()
+{
+}
+
+void CParticleRenderer::DoLight()
+{
+	myProcessed.Activate();
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.diffuse);
+}
+
+void CParticleRenderer::ToIntermediate()
+{
+	myInteremediate.Activate();
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredAmbient, &myProcessed);
 }
 
 void CParticleRenderer::ClearParticleTargets()
@@ -43,6 +72,7 @@ void CParticleRenderer::ClearParticleTargets()
 	myParticleGBuffer.diffuse.Clear();
 	myParticleGBuffer.normal.Clear();
 	myParticleGBuffer.RMAO.Clear();
+	myProcessed.Clear();
 }
 
 void CParticleRenderer::SetParticleTargets(ID3D11DepthStencilView* aDepthStencilView)

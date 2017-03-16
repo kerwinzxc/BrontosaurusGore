@@ -11,19 +11,26 @@ public:
 
 	void AddRenderMessage(SRenderParticlesMessage* aMessage);
 
-	
 	void DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView);
+	CRenderPackage& GetIntermediatePackage();
 private:
+	void CreateSurface();
+	void DoLight();
+	void ToIntermediate();
+
+	void ClearParticleTargets();
+	void SetParticleTargets(ID3D11DepthStencilView* aDepthStencilView);
+	CRenderer& mySharedRenderer;
+	CFullScreenHelper& mySharedHelper;
+	CU::GrowingArray<SRenderParticlesMessage*> myParticleMessages;
+
 	struct
 	{
 		CRenderPackage diffuse;
 		CRenderPackage normal;
 		CRenderPackage RMAO;
 	}myParticleGBuffer;
-	void ClearParticleTargets();
-	void SetParticleTargets(ID3D11DepthStencilView* aDepthStencilView);
-	CRenderer& mySharedRenderer;
-	CFullScreenHelper& mySharedHelper;
-	CU::GrowingArray<SRenderParticlesMessage*> myParticleMessages;
+	CRenderPackage myInteremediate;
+	CRenderPackage myProcessed;
 };
 
