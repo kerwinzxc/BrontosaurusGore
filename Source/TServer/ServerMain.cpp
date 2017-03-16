@@ -27,8 +27,8 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../Components/GameObject.h"
-#include "CommonUtilities/StringHelper.h"
-#include "TShared/NetworkMessage_Disconected.h"
+#include "../CommonUtilities/StringHelper.h"
+#include "../TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -528,7 +528,7 @@ void CServerMain::PrintDebugInfo()
 {
 	std::wstring dataInfo;
 	dataInfo = L"Data sent(kB/s): ";
-	dataInfo += CU::StringHelper::ToWStringWithPrecision(myNetworkWrapper.GetAndClearDataSent(), 3);
+	dataInfo += CU::StringHelper::ToWStringWithPrecision(static_cast<float>(myNetworkWrapper.GetAndClearDataSent()) / 1000, 3);
 	DL_PRINT(dataInfo.c_str());
 
 	for (auto client : myClients)
