@@ -53,6 +53,6 @@ void CPickupAmmoComponent::GiveAmmoType()
 
 void CPickupAmmoComponent::DoMyEffect()
 {
-	CPickupAmmoComponent::DoMyEffect();
+	IPickupComponent::DoMyEffect();
 	GiveAmmoType();
 }

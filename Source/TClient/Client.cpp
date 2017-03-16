@@ -42,6 +42,9 @@
 #include "../Game/GameEventMessenger.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_Disconected.h"
+#include "..\TShared\NetworkMessage_PickupHealth.h"
+
+#include "..\Components\PickupComponentManager.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -221,6 +224,13 @@ void CClient::Update()
 			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
 			data.myVector3f = shoot->GetDirection();
 			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+		}
+		break;
+		case ePackageType::ePickupHealth:
+		{
+			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
+
+			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 		}
 		break;
 		case ePackageType::eConnect:

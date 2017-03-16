@@ -372,6 +372,7 @@
     <ClInclude Include="BoxColliderComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="CapsuleColliderComponent.h" />
     <ClInclude Include="CharcterControllerComponent.h" />
     <ClInclude Include="CheckPointComponent.h" />
     <ClInclude Include="CheckPointSystem.h" />
@@ -388,15 +389,18 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthPackComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
+    <ClInclude Include="MeshColliderComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="PickupAmmoComponent.h" />
+    <ClInclude Include="PickupComponentManager.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
+    <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
@@ -438,6 +442,7 @@
     <ClCompile Include="BoxColliderComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="CapsuleColliderComponent.cpp" />
     <ClCompile Include="CharcterControllerComponent.cpp" />
     <ClCompile Include="CheckPointComponent.cpp" />
     <ClCompile Include="CheckPointSystem.cpp" />
@@ -453,12 +458,14 @@
     <ClCompile Include="HealthPackComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
+    <ClCompile Include="MeshColliderComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
     <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
     <ClCompile Include="PickupAmmoComponent.cpp" />
+    <ClCompile Include="PickupComponentManager.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
@@ -477,6 +484,7 @@
     <ClCompile Include="ParticleEmitterComponent.cpp" />
     <ClCompile Include="ParticleEmitterComponentManager.cpp" />
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
+    <ClCompile Include="SphereColliderComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ModelViewer|Win32'">Create</PrecompiledHeader>

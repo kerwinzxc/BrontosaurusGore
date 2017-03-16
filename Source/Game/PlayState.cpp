@@ -28,6 +28,7 @@
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
 #include "Components/ScriptComponentManager.h"
+#include "Components/PickupComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -62,6 +63,7 @@
 #include "AmmoReplenishData.h"
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "HealthComponent.h"
+#include "CheckPointComponent.h"
 //
 
 
@@ -120,6 +122,7 @@ CPlayState::~CPlayState()
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
+	CPickupComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -301,8 +304,7 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
 
 	myScriptComponentManager = new CScriptComponentManager();
-
-	
+	CPickupComponentManager::Create();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -433,5 +435,30 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 
 		Component::CEnemy::SetPlayer(playerObject);
+
+		/*	CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
+			CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+			enemyObject->AddComponent(enemyModelComponent);
+			CHealthComponent* enemyHealthComponent = new CHealthComponent();
+			enemyHealthComponent->SetMaxHealth(1);
+			enemyHealthComponent->SetHealth(1);
+			enemyObject->AddComponent(enemyHealthComponent);
+
+			SSphereColliderData sphereColliderData;
+			sphereColliderData.IsTrigger = false;
+			sphereColliderData.myRadius = 0.5f;
+			CColliderComponent* enemySphereColiider = myColliderComponentManager->CreateComponent(&sphereColliderData);
+			enemyObject->AddComponent(enemySphereColiider);*/
+		/*CCheckPointComponent* enemyRespanwsPlayerLol = new CCheckPointComponent();
+		enemyRespanwsPlayerLol->SetCheckPointPosition(CU::Vector3f::Zero);
+		enemyObject->AddComponent(enemyRespanwsPlayerLol);
+		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
+		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
+		/*SRigidBodyData enemyRigidBodyData;
+		enemyRigidBodyData.isKinematic = false;
+		enemyRigidBodyData.angularDrag = 0.5f;
+		enemyRigidBodyData.mass = 0.f;
+		CColliderComponent* enemyRigidBodyColliderCHan = myColliderComponentManager->CreateComponent(&enemyRigidBodyData);
+		enemyObject->AddComponent(enemyRigidBodyColliderCHan);*/
 	}
 }
