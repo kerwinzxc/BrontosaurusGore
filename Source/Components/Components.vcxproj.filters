@@ -169,6 +169,12 @@
     <ClCompile Include="PickupComponentManager.cpp">
       <Filter>Pickup</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyClientRepresentation.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyClientRepresentationManager.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -383,6 +389,12 @@
     </ClInclude>
     <ClInclude Include="PickupComponentManager.h">
       <Filter>Pickup</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyClientRepresentation.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyClientRepresentationManager.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

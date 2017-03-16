@@ -2,6 +2,7 @@
 #include "ServerMain.h"
 #include "../CommonUtilities/ThreadPool.h"
 #include "../CommonUtilities/TimerManager.h"
+#include "EnemyComponentManager.h"
 
 class CGameObjectManager;
 class CAmmoComponentManager;
@@ -30,6 +31,7 @@ public:
 
 	bool IsLoaded() const;
 	CServerPlayerNetworkComponent* AddPlayer() const;
+	CEnemyComponentManager* GetEnemyComponentManager();
 private:
 
 
@@ -52,6 +54,7 @@ private:
 	bool myIsLoaded;
 
 	float myTime;
+	CEnemyComponentManager* myEnemyComponentManager;
 };
 
 CMovementComponentManager* CGameServer::GetMovementComponentManager()

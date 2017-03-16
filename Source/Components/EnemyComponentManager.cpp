@@ -2,7 +2,7 @@
 #include "EnemyComponentManager.h"
 #include "Enemy.h"
 
-CEnemyComponentManager::CEnemyComponentManager(CScene& aScene) : myScene(aScene)
+CEnemyComponentManager::CEnemyComponentManager()
 {
 	myEnemies.Init(10);
 }
@@ -15,9 +15,9 @@ void CEnemyComponentManager::Update(const CU::Time& aDeltaTime)
 	}
 }
 
-Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint& anEnemyBlueprint)
+Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId)
 {
-	Component::CEnemy* enemy = new Component::CEnemy();
+	Component::CEnemy* enemy = new Component::CEnemy(anId);
 	enemy->SetHealth(anEnemyBlueprint.health);
 	enemy->SetSpeed(anEnemyBlueprint.speed);
 	enemy->SetDetectionRange(anEnemyBlueprint.detactionRange);
@@ -31,9 +31,9 @@ Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint&
 	return enemy;
 }
 
-CComponent* CEnemyComponentManager::CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint)
+CComponent* CEnemyComponentManager::CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId)
 {
-	return CreateComponent(anEnemyBlueprint);
+	return CreateComponent(anEnemyBlueprint,anId);
 }
 
 void CEnemyComponentManager::DeleteComponent(Component::CEnemy* anEnemy)
