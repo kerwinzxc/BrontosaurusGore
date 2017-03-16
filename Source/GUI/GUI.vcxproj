@@ -349,6 +349,7 @@
     <ClInclude Include="GUIManager.h" />
     <ClInclude Include="GUIPixelConstantBuffer.h" />
     <ClInclude Include="HatIcon.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="ModelWidget.h" />
     <ClInclude Include="SpriteWidget.h" />
     <ClInclude Include="stdafx.h" />
@@ -369,6 +370,7 @@
     <ClCompile Include="GUICursor.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="HatIcon.cpp" />
+    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ModelWidget.cpp" />
     <ClCompile Include="SpriteWidget.cpp" />
     <ClCompile Include="stdafx.cpp">

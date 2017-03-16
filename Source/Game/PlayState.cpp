@@ -371,7 +371,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (playerObject == nullptr)
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
-			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+			playerObject->GetLocalTransform().SetPosition(0, 10, 0);
 			playerObject->AddComponent(cameraComponent->GetParent());
 		}
 
