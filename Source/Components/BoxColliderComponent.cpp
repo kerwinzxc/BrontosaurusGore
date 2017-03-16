@@ -3,10 +3,9 @@
 #include "../Physics/PhysXManager.h"
 
 
-CBoxColliderComponent::CBoxColliderComponent(SBoxColliderData* aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
+CBoxColliderComponent::CBoxColliderComponent(const SBoxColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
 	: CColliderComponent(aColliderData, aShape, aActor)
 {
-	myData = *aColliderData;
 }
 
 CBoxColliderComponent::~CBoxColliderComponent()

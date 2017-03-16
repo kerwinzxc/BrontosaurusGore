@@ -11,9 +11,10 @@ namespace Physics
 {
 	struct SCharacterControllerDesc
 	{
+		CU::Vector3f center;
 		float slopeLimit = 45.f;
 		float stepOffset = 0.3f;
-		//float skinWidth = 0.08f;
+		float skinWidth = 0.08f;
 		float minMoveDistance = 0.001f;
 		float radius = 0.5f;
 		float height = 1.0f;

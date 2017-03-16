@@ -3,11 +3,12 @@
 #include "..\Physics\PhysicsCharacterController.h"
 
 
-CCharcterControllerComponent::CCharcterControllerComponent(Physics::CPhysicsCharacterController * aController)
+CCharcterControllerComponent::CCharcterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter)
 {
+	myCenter = aCenter;
 	myController = aController;
-	myType = eComponentType::eCharacterController;
 	myController->SetCallbackData(this);
+	myType = eComponentType::eCharacterController;
 	SetUserData(this);
 }
 
@@ -36,6 +37,35 @@ bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestion
 		break;
 	}
 	return false;
+}
+
+void CCharcterControllerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
+{
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eAddComponent:
+		if (aMessageData.myComponentTypeAdded != eComponentType::eCharacterController) break; //else: fall through;
+	case eComponentMessageType::eObjectDone:
+	{
+		CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+		//transformation.SetScale({ 1.0f, 1.0f, 1.0f });
+		//CU::Vector3f worldPos = myData.center;
+		//transformation.SetPosition(transformation.GetPosition() + worldPos);
+		myController->SetPosition(transformation.myPosition);
+	break;
+	}
+	case eComponentMessageType::eSetControllerPosition:
+	{
+		//transformation.SetScale({ 1.0f, 1.0f, 1.0f });
+		//CU::Vector3f worldPos = myData.center;
+		//transformation.SetPosition(transformation.GetPosition() + worldPos);
+		myController->SetPosition(aMessageData.myVector3f);
+		break;
+	}
+	default:
+		break;
+	}
+
 }
 
 void CCharcterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)

@@ -13,6 +13,7 @@
 
 #include "LoadState.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "PollingStation.h"
 
 //Managers
 
@@ -26,6 +27,8 @@
 #include "Components/ProjectileFactory.h"
 #include "Components/NetworkComponentManager.h"
 #include "Components/MovementComponentManager.h"
+#include "Components/ScriptComponentManager.h"
+#include "Components/PickupComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -60,6 +63,7 @@
 #include "AmmoReplenishData.h"
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "HealthComponent.h"
+#include "CheckPointComponent.h"
 //
 
 
@@ -89,6 +93,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
+	, myScriptComponentManager(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -96,6 +101,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myColliderComponentManager = nullptr;
 	myCheckPointSystem = nullptr;
 
+	new CPollingStation();
 }
 
 CPlayState::~CPlayState()
@@ -111,14 +117,17 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myProjectileFactory);
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
-
+	SAFE_DELETE(myScriptComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
+	CPickupComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
+
+	delete CPollingStation::GetInstance();
 }
 
 void CPlayState::Load()
@@ -179,9 +188,8 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(playerCamera); // Hard codes Player!;
+	CreatePlayer(playerCamera); // Hard codes Player!;
 
-	myGameObjectManager->SendObjectsDoneMessage();
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
@@ -198,6 +206,7 @@ void CPlayState::Load()
 void CPlayState::Init()
 {
 	myCheckPointSystem = new CCheckPointSystem();
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -291,6 +300,9 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+
+	myScriptComponentManager = new CScriptComponentManager();
+	CPickupComponentManager::Create();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -338,7 +350,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
 
-void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymore(CU::Camera& aCamera)
+void CPlayState::CreatePlayer(CU::Camera& aCamera)
 {
 	//create hard coded player:
 	{
@@ -360,9 +372,13 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
 			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
+			playerObject->AddComponent(cameraComponent->GetParent());
 		}
 
-		playerObject->AddComponent(cameraComponent->GetParent());
+		if (CPollingStation::GetInstance())
+		{
+			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+		}
 
 		CInputComponent* inputComponent = new CInputComponent();
 		CComponentManager::GetInstance().RegisterComponent(inputComponent);
@@ -417,5 +433,30 @@ void CPlayState::TempHardCodePlayerRemoveTHisLaterWhenItIsntNecessaryToHaveAnymo
 
 
 		Component::CEnemy::SetPlayer(playerObject);
+
+		/*	CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
+			CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+			enemyObject->AddComponent(enemyModelComponent);
+			CHealthComponent* enemyHealthComponent = new CHealthComponent();
+			enemyHealthComponent->SetMaxHealth(1);
+			enemyHealthComponent->SetHealth(1);
+			enemyObject->AddComponent(enemyHealthComponent);
+
+			SSphereColliderData sphereColliderData;
+			sphereColliderData.IsTrigger = false;
+			sphereColliderData.myRadius = 0.5f;
+			CColliderComponent* enemySphereColiider = myColliderComponentManager->CreateComponent(&sphereColliderData);
+			enemyObject->AddComponent(enemySphereColiider);*/
+		/*CCheckPointComponent* enemyRespanwsPlayerLol = new CCheckPointComponent();
+		enemyRespanwsPlayerLol->SetCheckPointPosition(CU::Vector3f::Zero);
+		enemyObject->AddComponent(enemyRespanwsPlayerLol);
+		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
+		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
+		/*SRigidBodyData enemyRigidBodyData;
+		enemyRigidBodyData.isKinematic = false;
+		enemyRigidBodyData.angularDrag = 0.5f;
+		enemyRigidBodyData.mass = 0.f;
+		CColliderComponent* enemyRigidBodyColliderCHan = myColliderComponentManager->CreateComponent(&enemyRigidBodyData);
+		enemyObject->AddComponent(enemyRigidBodyColliderCHan);*/
 	}
 }

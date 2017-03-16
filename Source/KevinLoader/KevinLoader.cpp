@@ -70,6 +70,10 @@ namespace KLoader
 	{
 		CU::CJsonValue wrapper;
 		std::string mybeKeepThishshould = wrapper.Parse(aFilePath);
+		if (!mybeKeepThishshould.empty())
+		{
+			DL_MESSAGE_BOX("Error loading level %s\n%s", aFilePath.c_str(), mybeKeepThishshould.c_str());
+		}
 
 		const eError loadObjectError = LoadObjects(wrapper);
 		if (loadObjectError != eError::NO_LOADER_ERROR)
@@ -140,7 +144,7 @@ namespace KLoader
 			return eError::MISSING_OBJECTS;
 		}
 
-		const CU::CJsonValue& objectsArray = aRoot["objects"];
+		const CU::CJsonValue objectsArray = aRoot["objects"];
 
 		for (int i = 0; i < objectsArray.Size(); ++i)
 		{
@@ -149,10 +153,6 @@ namespace KLoader
 
 			componentData.myTypeName = currentObject["name"].GetString();
 			componentData.myData = currentObject;
-			//componentData.myData["name"] = currentObject["name"];
-			//componentData.myData["position"] = currentObject["position"];
-			//componentData.myData["rotation"] = currentObject["rotation"];
-			//componentData.myData["scale"] = currentObject["scale"];
 
 			const KId currentID = currentObject["id"].GetInt() * -1;
 

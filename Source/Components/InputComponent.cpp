@@ -8,6 +8,9 @@
 
 #include "..\BrontosaurusEngine\Engine.h"
 
+#include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 #ifdef INTIFY
 #error "You are breaking windows API"
 #endif // INTIFY
@@ -40,8 +43,24 @@ CInputComponent::~CInputComponent()
 {
 }
 
-void CInputComponent::Receive(const eComponentMessageType /*aMessageType*/, const SComponentMessageData& /*aMessageData*/)
+void CInputComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eObjectDone:
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition()));
+		break;
+	case eComponentMessageType::eDied:
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
+		break;
+	case eComponentMessageType::eCheckPointReset :
+		GetParent()->GetLocalTransform().SetPosition(aMessageData.myVector3f);
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, aMessageData);
+		break;
+	default:
+		break;
+	}
 }
 
 CU::eInputReturn CInputComponent::TakeInput(const CU::SInputMessage& aInputMessage)

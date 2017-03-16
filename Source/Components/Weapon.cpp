@@ -56,7 +56,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition() + myWeaponObject->GetParent()->GetToWorldTransform().myForwardVector, aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
@@ -64,10 +64,15 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 				if(hitData.hit == true)
 				{
-					if (hitData.actor->GetType() == Physics::EActorType::eDynamic)
+					const Physics::EActorType actorType = hitData.actor->GetType();
+					if (actorType == Physics::EActorType::eDynamic)
 					{
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
+						CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
+						SComponentMessageData damageData;
+						damageData.myInt = 1000;
+						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
 
 					};
 
@@ -122,6 +127,42 @@ void CWeapon::SetModelVisibility(bool aVisibility)
 		SComponentMessageData visibilityMessage;
 		visibilityMessage.myBool = aVisibility;
 		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityMessage);
+	}
+}
+
+void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
+{
+	if (myElapsedFireTimer >= myWeaponData->fireRate)
+	{
+		CU::Vector3f shootPosition = myUser->GetWorldPosition();
+		SComponentQuestionData cameraPositionData;
+		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
+		{
+			shootPosition = cameraPositionData.myVector3f;
+			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
+		}
+
+		CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
+		direction.Normalize();
+
+		/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
+		rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
+		rotatedDirection.Normalize();*/
+		if (CProjectileFactory::GetInstance() != nullptr)
+		{
+			CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+			if (myWeaponObject != nullptr)
+			{
+				shootPosition = myWeaponObject->GetWorldPosition();
+				CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				shootPosition = localWeaponMatrix.GetPosition();
+
+			}
+			CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+			myElapsedFireTimer = 0.0f;
+
+		}
 	}
 }
 

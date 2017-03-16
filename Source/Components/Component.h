@@ -17,6 +17,7 @@ enum class eComponentType : unsigned char
 	eModel,
 	eModelDebug,
 	eAmmoPickup,
+	eArmorPickup,
 	eDebugSphere,
 	eCamera,
 	eInventory,

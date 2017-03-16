@@ -67,7 +67,7 @@ struct SForwardRenderModelParams
 	CU::VectorOnStack<Lights::SPointLight, 8> myPointLightList;
 	unsigned char myNumLights;
 
-	const char* aAnimationState = nullptr;
+	std::string aAnimationState;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;
@@ -80,7 +80,7 @@ struct SDeferredRenderModelParams
 	CU::Matrix44f myTransform;
 	CU::Matrix44f myTransformLastFrame;
 
-	const char* aAnimationState = nullptr;
+	std::string aAnimationState;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;
@@ -93,7 +93,7 @@ struct SShadowRenderModelParams
 	CU::Matrix44f myTransform;
 	CU::Matrix44f myTransformLastFrame;
 
-	const char* aAnimationState = nullptr;
+	std::string aAnimationState;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;

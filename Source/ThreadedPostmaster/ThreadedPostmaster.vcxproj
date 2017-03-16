@@ -125,6 +125,7 @@
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
     <ClInclude Include="GameEventMessage.h" />
+    <ClInclude Include="HealthPickupGrabbed.h" />
     <ClInclude Include="LoadLevelMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="NarrowcastStruct.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Postmaster.h" />
     <ClInclude Include="PostOffice.h" />
     <ClInclude Include="PrintMessage.h" />
+    <ClInclude Include="ResetToCheckPointMessage.h" />
     <ClInclude Include="SendNetowrkMessageMessage.h" />
     <ClInclude Include="SetAsNewCheckPointMessage.h" />
     <ClInclude Include="SetClientIDMessage.h" />
@@ -146,6 +148,7 @@
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
     <ClCompile Include="GameEventMessage.cpp" />
+    <ClCompile Include="HealthPickupGrabbed.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />
     <ClCompile Include="NetworkDebugInfo.cpp" />
     <ClCompile Include="OtherPlayerSpawned.cpp" />
@@ -153,6 +156,7 @@
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
     <ClCompile Include="PrintMessage.cpp" />
+    <ClCompile Include="ResetToCheckPointMessage.cpp" />
     <ClCompile Include="SendNetowrkMessageMessage.cpp" />
     <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
     <ClCompile Include="SetClientIDMessage.cpp" />

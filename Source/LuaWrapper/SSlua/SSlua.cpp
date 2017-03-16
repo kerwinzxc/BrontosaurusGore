@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <fstream>
+#include "../../LuaSource/lua-5.3.3/src/lua.hpp"
 
 
 #define ERROR_MESSAGE(message) MessageBeep(MB_ICONERROR); MessageBox(nullptr, message, L"ERROR", MB_OK | MB_ICONERROR);
@@ -195,59 +196,6 @@ namespace SSlua
 			aErrorMessageOut = lua_tostring(myState, -1);
 			lua_pop(myState, 1);
 		}
-	}
-
-	bool LuaWrapper::ParseLuaTable(const std::string& aScriptPath, const std::string& aTableName, std::map<std::string, SSArgument>& aTableMapOut)
-	{
-		LoadCode(aScriptPath);
-		RunLoadedCode();
-
-		lua_getglobal(myState, aTableName.c_str());
-		if (lua_istable(myState, -1) == false)
-		{
-			DL_MESSAGE_BOX("Failed to get lua table %s in file %s", aTableName.c_str(), aScriptPath.c_str());
-			DL_ASSERT("Failed to get lua table %s in file %s", aTableName.c_str(), aScriptPath.c_str());
-		}
-		
-		lua_pushnil(myState);
-
-		bool result = true;
-		while (lua_next(myState, -2))
-		{
-			if (lua_isstring(myState, -2))
-			{
-				std::string key = lua_tostring(myState, -2);
-				aTableMapOut[key] = SSArgument();
-
-				switch (lua_type(myState, -1))
-				{
-				case LUA_TNUMBER:
-					aTableMapOut[key] = SSArgument(lua_tonumber(myState, -1));
-					break;
-				case LUA_TSTRING:
-					aTableMapOut[key] = SSArgument(luaL_tolstring(myState, -1, nullptr));
-					break;
-				case LUA_TBOOLEAN:
-					aTableMapOut[key] = SSArgument(lua_toboolean(myState, -1) != 0);
-					break;
-				default:
-					DL_ASSERT("Lua type is at the moment incompatible with Engine or at least this method");
-					result = false;
-					break;
-				}
-			}
-			else
-			{
-				DL_ASSERT("Error in file %s, table %s: Lua key must be string", aScriptPath, aTableName);
-				result = false;
-			}
-
-			lua_pop(myState, 2);
-		}
-
-		lua_pop(myState, 1);
-
-		return result;
 	}
 
 	template<>

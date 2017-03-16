@@ -155,6 +155,20 @@
       <Filter>CheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="CheckPointSystem.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="IPickupComponent.cpp" />
+    <ClCompile Include="SphereColliderComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshColliderComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleColliderComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PickupComponentManager.cpp">
+      <Filter>Pickup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -356,6 +370,20 @@
       <Filter>CheckPoint</Filter>
     </ClInclude>
     <ClInclude Include="CheckPointSystem.h" />
+    <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="IPickupComponent.h" />
+    <ClInclude Include="SphereColliderComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshColliderComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleColliderComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PickupComponentManager.h">
+      <Filter>Pickup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -426,6 +454,9 @@
     </Filter>
     <Filter Include="CheckPoint">
       <UniqueIdentifier>{0b4ceec9-a814-4474-8934-9b869ee791a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup">
+      <UniqueIdentifier>{aa2a2c2d-cd05-46ef-b91c-5fbc1ad5f700}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

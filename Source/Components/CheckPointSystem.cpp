@@ -8,6 +8,7 @@ CCheckPointSystem::CCheckPointSystem()
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddToCheckPointRespawn);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 	myObjectsToReset.Init(50);
 }
 
@@ -27,5 +28,17 @@ eMessageReturn CCheckPointSystem::DoEvent(const CSetAsNewCheckPointMessage& aSet
 {
 	myObjectsToReset.RemoveAll();
 	myRespawnPlayerPosition = aSetAsNewCheckPointMessage.GetCheckPointPosition();
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	for(unsigned int i = 0; i < myObjectsToReset.Size(); i++)
+	{
+		SComponentMessageData respawnData;
+		respawnData.myVector3f = myRespawnPlayerPosition;
+		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+	}
+	myObjectsToReset.RemoveAll();
 	return eMessageReturn::eContinue;
 }

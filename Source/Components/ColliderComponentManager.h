@@ -1,6 +1,9 @@
 #pragma once
 
 #include "BoxColliderComponent.h"
+#include "SphereColliderComponent.h"
+#include "CapsuleColliderComponent.h"
+#include "MeshColliderComponent.h"
 #include "RigidBodyComponent.h"
 
 namespace Physics
@@ -29,8 +32,11 @@ public:
 	CCharcterControllerComponent* CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams);
 
 private:
-	CColliderComponent* CreateBoxCollider(SBoxColliderData* aBoxColliderData);
-	CColliderComponent* CreateRigidbody(SRigidBodyData* aBoxColliderData);
+	CColliderComponent* CreateBoxCollider(const SBoxColliderData& aBoxColliderData);
+	CColliderComponent* CreateSphereCollider(const SSphereColliderData& aBoxColliderData);
+	CColliderComponent* CreateCapsuleCollider(const SCapsuleColliderData& aBoxColliderData);
+	CColliderComponent* CreateMeshCollider(const SMeshColliderData& aBoxColliderData);
+	CColliderComponent* CreateRigidbody(const SRigidBodyData& aBoxColliderData);
 
 
 private:

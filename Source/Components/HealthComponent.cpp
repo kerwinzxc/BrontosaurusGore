@@ -41,6 +41,12 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			Heal(aMessageData.myInt);
 		}
 		break;
+	case eComponentMessageType::eCheckPointReset:
+	{
+		myIsAlive = true;
+		myCurrentHealth = myMaxHeath;
+		break;	
+	}
 	default:
 		break;
 	}
@@ -57,17 +63,13 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 		Heal(-aDamage);
 		return;
 	}
-
 	GetParent()->NotifyComponents(eComponentMessageType::eTookDamage, SComponentMessageData());
 	if(myCurrentHealth - aDamage <= 0)
 	{
 		myCurrentHealth = 0;
-		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 
-		SComponentMessageData data;
-		data.myBool = false;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
 	}
 	else
 	{
