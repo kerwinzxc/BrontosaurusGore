@@ -55,14 +55,14 @@ InputGeometry VS_PosSizeColor(InputVertex input)
 float4 PS_PosSizeColor(InputPixel input) : SV_TARGET
 {
     float4 color = sprite.Sample(Sampler, input.uv);
-    return  input.color * color;
+    return  input.color;
 }
 
-
-[maxvertexcount(4)] //whaah //one input vertex gives max 4 new vertices in this case I think?
+const uint NumOfOutVerts = 4;
+[maxvertexcount(NumOfOutVerts)] //whaah //one input vertex gives max 4 new vertices in this case I think?
 void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPixel> triStream)
 {
-    const float4 offset[4] =
+    const float4 offset[NumOfOutVerts] =
     {
         {-input[0].size, input[0].size, 0.0f, 1.0f},
         {input[0].size, input[0].size, 0.0f, 1.0f},
@@ -70,7 +70,7 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
         {input[0].size, -input[0].size, 0.0f, 1.0f}
     };
 
-    const float2 uv_coord[4] =
+    const float2 uv_coord[NumOfOutVerts] =
     {
         {0.0f, 1.0f},
         {1.0f, 1.0f},
@@ -87,7 +87,7 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
     rotationMatrix._44 = 1.0f;
 
 
-    for(int i = 0 ; i < 4 ; ++i)
+    for(int i = 0 ; i < NumOfOutVerts ; ++i)
     {
         InputPixel vertex = (InputPixel)0;
         float4 offsetPos = mul(rotationMatrix, offset[i]);
@@ -97,7 +97,7 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
         //vertex.position = mul(rotationMatrix, vertex.position);
         vertex.position = mul(projectionSpace, vertex.position);
 
-        vertex.uv = uv_coord[i];
+        vertex.uv = uv_coord[i % 4];
         vertex.color = input[0].color;
 
         triStream.Append(vertex);

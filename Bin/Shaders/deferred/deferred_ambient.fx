@@ -67,6 +67,9 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float2 uv = inputPixel.tex;
 
 	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
+	
+	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
+
 	if (depth >= DEPTH_BIAS)
 	{
 		output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -74,7 +77,8 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	}
 
 
-	float3 albedo = deferred_diffuse.Sample(samplerWrap, uv).xyz;
+	float3 albedo = fullAlbedo.rgb;
+
 	float3 normal = deferred_normal.Sample(samplerWrap, uv).xyz;
 	normal = (normal * 2.0f);
 	normal -= float3(1.0f, 1.0f, 1.0f);
@@ -136,7 +140,7 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 ambientLightSpec = cubeMap.SampleLevel(samplerWrap, reflectionVector.xyz, lysMipMap).xyz;
 	float3 ambientSpecularity = ambientLightSpec * ambientOcclusion * fresnel;
 
-	output.color = float4(ambientDiffuse + ambientSpecularity, 1.0f);
+	output.color = float4(ambientDiffuse + ambientSpecularity, fullAlbedo.a);
 
 	
 	return output;

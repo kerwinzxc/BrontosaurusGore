@@ -37,7 +37,10 @@ public:
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, const CU::Matrix44f & aProjectionInverse);
 
+	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
+	ID3D11DepthStencilView* GetDepthStencil();
+	ID3D11ShaderResourceView* GetDepthResource();
 private:
 	void SetRenderTargets();
 	void ClearRenderTargets();
@@ -60,7 +63,6 @@ private:
 	CU::GrowingArray<SRenderMessage*> myRenderMessages;
 	CU::GrowingArray<SRenderMessage*> myLightMessages;
 
-
 	CLightModel* myLightModel;
 
 
@@ -70,8 +72,10 @@ private:
 	ID3D11Buffer* mySpotLightBuffer;
 
 	SGBuffer myGbuffer;
+	
 	CRenderPackage myIntermediatePackage;
 	
 	CDXFramework* myFramework;
+	
 };
 

@@ -11,6 +11,7 @@
 //temp includes
 #include "../PostMaster/Subscriber.h" //mvh carl
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "ParticleRenderer.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -34,6 +35,7 @@ struct SRendererSettings
 
 class CRenderer : public Postmaster::ISubscriber
 {
+	friend CParticleRenderer;
 	friend CDeferredRenderer;
 public:
 	CRenderer();
@@ -41,15 +43,16 @@ public:
 
 	void Shutdown();
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
-	
+
 	void Render();
 	void SwapWrite();
 	void ClearRenderQueue();
 	inline bool GetIsRunning();
 	inline SRendererSettings& GetSettings();
-
+	const CU::Camera& GetCamera();
 	//inline const CU::Camera& GetCamera();
 
+	void SetStates(const SChangeStatesMessage* aState);
 private:
 	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	
@@ -60,7 +63,6 @@ private:
 	void Downsample(CRenderPackage& aRenderPackage);
 	void RenderGUI();
 	void LensDistortion(CRenderPackage& AddRenderMessage);
-
 
 	void InitPackages();
 
@@ -77,10 +79,10 @@ private:
 
 	void DoRenderQueue();
 
-	void SetStates(const SChangeStatesMessage* aState);
 
 	void DoColorGrading();
 private:
+
 	struct SHDRData
 	{
 		CRenderPackage myInputPackage;
@@ -120,6 +122,7 @@ private:
 
 	CRenderPackage myColorGradingPackage;
 	CDeferredRenderer myDeferredRenderer;
+	CParticleRenderer myParticleRenderer;
 
 	CSynchronizer<SRenderMessage*> mySynchronizer;
 

@@ -39,16 +39,14 @@ Physics::CApex::CApex(const SApexInit& anApexInit)
 	myApexSDK = nvidia::CreateApexSDK(desc, &error);
 	PX_ASSERT(myApexSDK);
 
-	myModulieDestructible = static_cast<nvidia::ModuleDestructible*>(myApexSDK->createModule("Destructible"));
+	myModulieDestructible = static_cast<nvidia::ModuleDestructible*>(myApexSDK->createModule("Destructible",&error));
 	if (CheckError(error))
 	{
 		NvParameterized::Interface* params = myModulieDestructible->getDefaultModuleDesc();
 		myModulieDestructible->init(*params);
 	}
-
-
 	myModuleParticle = static_cast<nvidia::ModuleParticles*>(myApexSDK->createModule("Particles",&error));
-	
+
 	if(CheckError(error))
 	{
 		NvParameterized::Interface* params = myModuleParticle->getDefaultModuleDesc();

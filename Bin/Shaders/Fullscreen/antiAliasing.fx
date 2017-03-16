@@ -1,4 +1,5 @@
 #include <structs.fx>
+#include "../oncePerFrame.fx"
 
 Texture2D renderPackage : register(t1);
 SamplerState Sampler
@@ -19,7 +20,7 @@ float3 GetColor(float2 uv)
 float3 Blur(PosTex_InputPixel input, const float3 centerColor)
 {
     //const float2 sampleRadius = float2(0.005,0.005); // Activate for awesomeness!
-    const float2 sampleRadius = float2(0.00015,0.00015);
+    const float2 sampleRadius = (float2(1.f, 1.f) / windowSize);
     const float2 uv = input.tex;
     
     const float3 nw = GetColor(uv - sampleRadius);

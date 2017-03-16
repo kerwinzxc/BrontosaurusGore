@@ -19,17 +19,17 @@ public:
 		float startAttackRange;
 		float stopAttackRange;
 	};
-	explicit CEnemyComponentManager(CScene& aScene);
+	explicit CEnemyComponentManager();
 
 	void Update(const CU::Time& aDeltaTime);
 
-	Component::CEnemy* CreateComponent(const EnemyBlueprint& anEnemyBlueprint);
-	CComponent* CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint);
+	Component::CEnemy* CreateComponent(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId);
+	CComponent* CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId);
 	void DeleteComponent(Component::CEnemy* anEnemy);
 
 	~CEnemyComponentManager();
 protected:
 	CU::GrowingArray<Component::CEnemy*> myEnemies;
-	CScene& myScene;
+
 };
 

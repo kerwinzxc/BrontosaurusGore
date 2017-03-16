@@ -51,7 +51,9 @@ struct SOncePerFrameBuffer
 	float fogEnd;
 
 	unsigned int shadows;
-	float garbage[3];
+
+	CU::Vector2ui windowSize;
+	float garbage[1];
 };
 
 struct SAnimationBoneStruct 
