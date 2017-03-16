@@ -40,6 +40,7 @@ public:
 	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
+	ID3D11ShaderResourceView* GetDepthResource();
 private:
 	void SetRenderTargets();
 	void ClearRenderTargets();
@@ -61,7 +62,6 @@ private:
 private:
 	CU::GrowingArray<SRenderMessage*> myRenderMessages;
 	CU::GrowingArray<SRenderMessage*> myLightMessages;
-	CU::GrowingArray<SRenderMessage*> myParticleMessages;
 
 	CLightModel* myLightModel;
 

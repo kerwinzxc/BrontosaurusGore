@@ -35,6 +35,7 @@ struct SRendererSettings
 
 class CRenderer : public Postmaster::ISubscriber
 {
+	friend CParticleRenderer;
 	friend CDeferredRenderer;
 public:
 	CRenderer();
@@ -48,9 +49,10 @@ public:
 	void ClearRenderQueue();
 	inline bool GetIsRunning();
 	inline SRendererSettings& GetSettings();
-
+	const CU::Camera& GetCamera();
 	//inline const CU::Camera& GetCamera();
 
+	void SetStates(const SChangeStatesMessage* aState);
 private:
 	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	
@@ -77,7 +79,6 @@ private:
 
 	void DoRenderQueue();
 
-	void SetStates(const SChangeStatesMessage* aState);
 
 	void DoColorGrading();
 private:
