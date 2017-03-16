@@ -64,7 +64,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 {
 	myDepthStencilResourceToUse = aDepthResourceView;
 	myInteremediate.Clear();
-	UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
+	//UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
 	for (int i = 0; i < myParticleMessages.Size(); ++i)
 	{
 		SetBlendParticlesState();
@@ -74,6 +74,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
 		if (emitter == nullptr)	break;
 
+		//msg->renderMode = CParticleEmitter::RenderMode::eNURBSSphere;
 		//SortParticles(msg->particleList);
 		emitter->Render(msg->toWorld, msg->particleList, msg->renderMode);
 

@@ -40,9 +40,13 @@ float3 GetNormal(const InputPixel input)
 
     const float3 dif = worldPosition - center;
 
-    const float z = GetZ(input, length(dif));
-    const float3 texturized = (normalize(float3(dif.xy, z)) + 1.f) / 2.f;
-    return normalize(float4(texturized,1.f).rgb);
+    const float z = -GetZ(input, length(dif));
+    
+    const float3x3 cameraRot = (float3x3)(cameraSpace);
+    const float3 rotNorm = mul(cameraRot,float3(dif.xy, z));
+    const float3 texturized = (normalize(rotNorm) + 1.f) / 2.f;
+
+    return normalize(texturized);
 }
 
 PixelOut PS_PosSizeColor(InputPixel input)
@@ -55,12 +59,12 @@ PixelOut PS_PosSizeColor(InputPixel input)
     const float f2 = f * f;
     
     PixelOut output = (PixelOut)0;
-    output.diffuse.rgba = float4(1.f,1.f,1.f, f2);
+    output.diffuse.rgba = float4(input.color.rgb, f2);
     const float3 normalTexturized = GetNormal(input);
 
     output.normal.rgba = float4(normalTexturized.xyz, f2);
 
-    output.ao.rgba  = float4(1,0,1,f2);
+    output.ao.rgba  = float4(0.5,0,1,f2);
     
 
     return output;
