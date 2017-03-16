@@ -144,6 +144,7 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
+
 	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
@@ -153,9 +154,11 @@ void CRenderer::Render()
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
+	myDeferredRenderer.myIntermediatePackage.Activate();
+
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	renderTo->Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	Downsample(*renderTo);
 	HDR();
 	Bloom();

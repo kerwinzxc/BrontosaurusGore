@@ -2,7 +2,10 @@
 #include "ServerMain.h"
 #include "../CommonUtilities/ThreadPool.h"
 #include "../CommonUtilities/TimerManager.h"
-#include "EnemyComponentManager.h"
+#include "../Components/EnemyComponentManager.h"
+#include "../Physics/Foundation.h"
+#include "../Physics/Physics.h"
+#include "../Game/BackgroundLoadingManager.h"
 
 class CGameObjectManager;
 class CAmmoComponentManager;
@@ -33,8 +36,6 @@ public:
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 private:
-
-
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
@@ -55,6 +56,9 @@ private:
 
 	float myTime;
 	CEnemyComponentManager* myEnemyComponentManager;
+	Physics::CPhysics* myPhysics;
+	Physics::CPhysicsScene* myPhysicsScene;
+	CColliderComponentManager* myColliderComponentManager;
 };
 
 CMovementComponentManager* CGameServer::GetMovementComponentManager()

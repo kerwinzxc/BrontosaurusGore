@@ -42,7 +42,7 @@ float3 GetNormal(const InputPixel input)
 
     const float z = GetZ(input, length(dif));
     const float3 texturized = (normalize(float3(dif.xy, z)) + 1.f) / 2.f;
-    return normalize(texturized);
+    return normalize(float4(texturized,1.f).rgb);
 }
 
 PixelOut PS_PosSizeColor(InputPixel input)

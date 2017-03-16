@@ -101,7 +101,7 @@ void CParticleRenderer::SetBlendParticlesState()
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eReadOnly;
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
@@ -230,20 +230,15 @@ void CParticleRenderer::DoDirectLighting()
 void CParticleRenderer::DoLight()
 {
 	SChangeStatesMessage changeStateMessage = {};
-	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	mySharedRenderer.SetStates(&changeStateMessage);
+
 	myProcessed.Clear();
 	myProcessed.Activate();
 	SetSRV();
 	SetCBuffer();
 
-
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eNoBlend;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
 
@@ -300,7 +295,14 @@ void CParticleRenderer::CreateSurface(ID3D11DepthStencilView* aDepthStencilView)
 {
 	SetSurfaceTargets(aDepthStencilView);
 	SetSRV();
+	
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eMetaSurface);
+	SChangeStatesMessage message;
+	message.myDepthStencilState = eDepthStencilState::eDefault;
+	message.myBlendState = eBlendState::eAlphaBlend;
+	message.myRasterizerState = eRasterizerState::eDefault;
+	message.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&message);
 	myParticleGBuffer.diffuse.Clear();
 	myParticleGBuffer.diffuse.Activate();
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.surfaceDiffuse);
@@ -310,4 +312,10 @@ void CParticleRenderer::CreateSurface(ID3D11DepthStencilView* aDepthStencilView)
 	myParticleGBuffer.RMAO.Clear();
 	myParticleGBuffer.RMAO.Activate();
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.surfaceRMAO);
+
+	message.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	message.myBlendState = eBlendState::eAlphaBlend;
+	message.myRasterizerState = eRasterizerState::eDefault;
+	message.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&message);
 }
