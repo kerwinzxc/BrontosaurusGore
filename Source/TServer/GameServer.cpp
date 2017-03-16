@@ -20,7 +20,7 @@
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
-#include "Enemy.h"
+#include "../Components/Enemy.h"
 
 
 CGameServer::CGameServer():

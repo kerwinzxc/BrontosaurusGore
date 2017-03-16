@@ -2,7 +2,7 @@
 #include "ServerMain.h"
 #include "../CommonUtilities/ThreadPool.h"
 #include "../CommonUtilities/TimerManager.h"
-#include "EnemyComponentManager.h"
+#include "../Components/EnemyComponentManager.h"
 
 class CGameObjectManager;
 class CAmmoComponentManager;
