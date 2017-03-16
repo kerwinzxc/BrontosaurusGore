@@ -2,6 +2,8 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../Physics/SharedPhysicsPointer.h"
 #include "../Physics/PhysXManager.h"
+#include "ParticleEmitterManager.h"
+#include "ParticleEmitterComponentManager.h"
 
 
 void Init(int argc, char* argv[]);

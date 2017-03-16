@@ -81,7 +81,6 @@ void CRenderPackage::Activate(CRenderPackage& aRenderPackage)
 
 	context->OMSetRenderTargets(2, &renderTargets[0], myDepth);
 	context->RSSetViewports(2, &viewPorts[0]);
-
 }
 
 ID3D11ShaderResourceView *& CRenderPackage::GetDepthResource()
@@ -150,6 +149,8 @@ void CRenderPackage::operator=(const CRenderPackage& aLeft)
 	if (aLeft.myViewport != nullptr)
 		myViewport = new D3D11_VIEWPORT(*aLeft.myViewport);
 }
+
+
 
 void CRenderPackage::CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat)
 {

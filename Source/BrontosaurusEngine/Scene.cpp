@@ -10,6 +10,7 @@
 #include "ParticleEmitterInstance.h"
 #include "FireEmitterInstance.h"
 #include "..\CommonUtilities\Sphere.h"
+#include "../Components/ParticleEmitterComponentManager.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
 #define SHADOWBUFFER_DIM 2048
@@ -26,6 +27,14 @@ CScene::CScene()
 
 	myShadowCamera.InitOrthographic(256, 256, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
 	myShadowCamera.ShadowInit();
+
+	for(int i = 0; i < 20; ++i)
+	{
+		myFreeParticleEmitters.Push(myParticleEmitters.Size());
+		myParticleEmitters.Add(nullptr);
+	}
+
+	CParticleEmitterComponentManager::GetInstance().SetScene(this);
 }
 
 CScene::~CScene()

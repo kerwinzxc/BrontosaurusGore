@@ -38,7 +38,7 @@ cbuffer ConstantBuffer                  : register(b0)
 }
 
 
-// lägg till i ^
+// lï¿½gg till i ^
 cbuffer CameraBuffer					: register(b1)
 {
 	float4x4 projectionInverse;
@@ -169,6 +169,7 @@ Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 	
 	float2 uv = (inputPixel.uv / inputPixel.uv.w).xy;
 	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
+	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
 
 	if (depth >= DEPTH_BIAS)
 	{
@@ -177,7 +178,7 @@ Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 	}
 
 
-	float3 albedo = deferred_diffuse.Sample(samplerWrap, uv).xyz;
+	float3 albedo = fullAlbedo.rgb;
 	float3 normal = Normal(uv);
 
 	float4 roughnessMetalnessAO = deferred_roughnessMetalnessAO.Sample(samplerWrap, uv);
@@ -233,7 +234,7 @@ Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 	float3 finalColor = directionDiffuse + directionSpecularity;
 	finalColor *= pointLight.intensity * lightRange;
 
-	output.color = float4(finalColor, 1.0f);
+	output.color = float4(finalColor, fullAlbedo.a);
 
 	return output;
 }

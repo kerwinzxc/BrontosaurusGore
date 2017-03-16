@@ -357,6 +357,7 @@
     <ClInclude Include="LoadNetworkComponent.h" />
     <ClInclude Include="LoadObject.h" />
     <ClInclude Include="LoadColliderComponent.h" />
+    <ClInclude Include="LoadParticleEmitterComponent.h" />
     <ClInclude Include="LoadPointLightComponent.h" />
     <ClInclude Include="LoadScriptComponent.h" />
     <ClInclude Include="LoadSoundComponent.h" />
@@ -383,6 +384,7 @@
     <ClCompile Include="LoadNetworkComponent.cpp" />
     <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="LoadColliderComponent.cpp" />
+    <ClCompile Include="LoadParticleEmitterComponent.cpp" />
     <ClCompile Include="LoadPointLightComponent.cpp" />
     <ClCompile Include="LoadScriptComponent.cpp" />
     <ClCompile Include="LoadSoundComponent.cpp" />

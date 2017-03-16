@@ -272,6 +272,9 @@
     <ClInclude Include="LightModel.h">
       <Filter>Light</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -420,6 +423,9 @@
     </ClCompile>
     <ClCompile Include="LightModel.cpp">
       <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRenderer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

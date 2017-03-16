@@ -12,6 +12,8 @@
 #include "Engine.h"
 #include "ShaderManager.h"
 #include "FBXLoader.h"
+#include "ParticleEmitterManager.h"
+#include "ParticleEmitter.h"
 
 CDeferredRenderer::CDeferredRenderer()
 {
@@ -23,12 +25,15 @@ CDeferredRenderer::CDeferredRenderer()
 	myGbuffer.emissive.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myGbuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
+	
+
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	
 	
 
 	myRenderMessages.Init(128);
 	myLightMessages.Init(128);
+	myParticleMessages.Init(10);
 
 	SCameraStruct temp;
 	myProjectionInverseBuffer = BSR::CreateCBuffer<SCameraStruct>(&temp);
@@ -96,6 +101,7 @@ void CDeferredRenderer::DoRenderQueue()
 	ClearRenderTargets();
 	SetRenderTargets();
 
+
 	for (unsigned int i = 0; i < myRenderMessages.Size(); ++i)
 	{
 		switch (myRenderMessages[i]->myType)
@@ -116,6 +122,7 @@ void CDeferredRenderer::DoRenderQueue()
 			break;
 		}
 	}
+
 	myRenderMessages.RemoveAll();
 }
 
@@ -131,6 +138,9 @@ void CDeferredRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)
 	case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
 		myRenderMessages.Add(aRenderMessage);
 		break;
+	case SRenderMessage::eRenderMessageType::eRenderParticles:
+		myParticleMessages.Add(aRenderMessage);
+		break;
 	}
 }
 
@@ -145,11 +155,17 @@ void CDeferredRenderer::UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, c
 
 void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer)
 {
+	SChangeStatesMessage changeStateMessage = {};
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	aRenderer.SetStates(&changeStateMessage);
 	ActivateIntermediate();
 	SetSRV();
 	SetCBuffer();
 
-	SChangeStatesMessage changeStateMessage = {};
+	
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
@@ -165,6 +181,11 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 	aRenderer.SetStates(&changeStateMessage);
 
 	DoDirectLighting(aFullscreenHelper);
+}
+
+ID3D11DepthStencilView* CDeferredRenderer::GetDepthStencil()
+{
+	return myGbuffer.diffuse.GetDepthStencilView();
 }
 
 void CDeferredRenderer::SetRenderTargets()

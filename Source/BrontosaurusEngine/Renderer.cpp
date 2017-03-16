@@ -32,7 +32,7 @@
 
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
-CRenderer::CRenderer()
+CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 {
 	myIsRunning = true;
 
@@ -44,7 +44,6 @@ CRenderer::CRenderer()
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
-
 	CreateBuffer();
 
 	InitPackages();
@@ -127,6 +126,8 @@ void CRenderer::Render()
 
 	DoRenderQueue();
 
+
+
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
@@ -135,6 +136,14 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.DoRenderQueue();
+
+	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	SetStates(&changeStateMessage);
+	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil());
+
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
@@ -146,6 +155,7 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 	renderTo->Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	Downsample(*renderTo);
 	HDR();
 	Bloom();
@@ -268,6 +278,10 @@ void CRenderer::LensDistortion(CRenderPackage & aRenderMessage)
 
 	}
 }
+
+
+
+
 
 void CRenderer::ClearRenderQueue()
 {
@@ -427,6 +441,8 @@ void CRenderer::UpdateBuffer()
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
 	updatedBuffer.fogStart = 0.0f;
 	updatedBuffer.fogEnd = 0.0f;
+
+	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
 	
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
 	
@@ -453,6 +469,8 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
 	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
 	updatedBuffer.fogStart = 0.0f;
+
+	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
 	updatedBuffer.fogEnd = 0.0f;
 
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
@@ -644,7 +662,7 @@ void CRenderer::CreateBlendStates()
 		CHECK_RESULT(result, "Failed to create No-Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eAddBlend)] = blendState;
 	}
-
+	
 }
 
 void CRenderer::CreateDepthStencilStates()
@@ -1016,11 +1034,9 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
-		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(aRenderMesage);
-		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
-		if (emitter == nullptr)	break;
-
-		emitter->Render(msg->toWorld, msg->particleList);
+		myParticleRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
+		
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eActivateRenderPackage:
