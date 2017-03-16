@@ -479,12 +479,19 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	{
 
 		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
+		std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
 
-		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
+		std::vector<mat4> blendedBones(bones.size());
+		blendedBones.resize(bones.size());
+		BlendBones(bones, nextBones, aParamObj.aAnimationLerper, blendedBones);
+
+		unsigned int bytesToCopy = min(ourMaxBoneBufferSize, blendedBones.size() * sizeof(mat4));
 
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-		memcpy(mappedSubResource.pData, &bones[0], min(ourMaxBoneBufferSize, bones.size() * sizeof(mat4)));
+		memcpy(mappedSubResource.pData, &blendedBones[0], bytesToCopy);
+		//memcpy((char*)mappedSubResource.pData + ourMaxBoneBufferSize, &nextBones[0], bytesToCopy);
+		//memcpy((char*)mappedSubResource.pData + ourMaxBoneBufferSize * 2, &aParamObj.aAnimationLerper, sizeof(float));
 		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
 		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
 	}
@@ -501,6 +508,16 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
 	params.myRenderToDepth = false;
 	UpdateCBuffer(params);
+}
+
+void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut)
+{
+	for (size_t i = 0; i < aBlendFrom.size(); ++i)
+	{
+		aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
+		aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
+		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
+	}
 }
 
 void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)

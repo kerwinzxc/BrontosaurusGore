@@ -13,6 +13,11 @@
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
+	if (std::string(aModelPath) != "Models/chromeBall/chromeBall.fbx")
+	{
+		int br = 0;
+		br++;
+	}
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
@@ -23,6 +28,8 @@ CModelInstance::CModelInstance(const char* aModelPath)
 		myHasAnimations = model->HasAnimations();
 	}
 	myCurrentAnimation = "idle";
+	myNextAnimation = "walk";
+	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
 }
 
@@ -178,6 +185,8 @@ void CModelInstance::RenderDeferred()
 	{
 		msg.myRenderParams.aAnimationLooping = myAnimationLooping;
 		msg.myRenderParams.aAnimationState = myCurrentAnimation;
+		msg.myRenderParams.aNextAnimationState = myNextAnimation;
+		msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
 		msg.myRenderParams.aAnimationTime = myAnimationCounter;
 	}	
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
@@ -198,6 +207,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
@@ -214,6 +225,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 	}
@@ -223,6 +236,7 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 void CModelInstance::Update(const CU::Time aDeltaTime)
 {
 	myAnimationCounter += aDeltaTime.GetSeconds();
+	myAnimationLerpie = fabs(sinf(myAnimationCounter * 0.2f));
 }
 
 void CModelInstance::SetTransformation(const CU::Matrix44f& aTransformation)

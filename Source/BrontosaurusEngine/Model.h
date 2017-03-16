@@ -125,7 +125,7 @@ private:
 	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
 	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
-
+	static void BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut);
 
 
 	inline void SetBoundingBox(const CU::AABB& aAABB);

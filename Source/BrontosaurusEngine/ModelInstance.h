@@ -75,12 +75,15 @@ private:
 	CU::Matrix44f myTransformation;
 	CU::Matrix44f myLastFrame;
 
-	ModelId myModel;
-
 	std::string myCurrentAnimation;
+	std::string myNextAnimation;
 
+	ModelId myModel;
+	
+	float myAnimationLerpie;
 	float myAnimationCounter;
 	float myHighlightIntencity;
+	
 	bool myIsVisible;
 	bool myHasAnimations;
 	bool myAnimationLooping;
