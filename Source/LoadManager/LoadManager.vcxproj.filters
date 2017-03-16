@@ -203,7 +203,7 @@
     <Filter Include="LoadThings\LoadParticleComponent">
       <UniqueIdentifier>{008e4187-743c-435d-9166-ed5d1e6732d7}</UniqueIdentifier>
     </Filter>
-	<Filter Include="LoadThings\LoadCheckPointComponent">
+    <Filter Include="LoadThings\LoadCheckPointComponent">
       <UniqueIdentifier>{c2fd6e44-7dea-4c49-807e-765ef63e75b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
