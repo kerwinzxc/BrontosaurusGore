@@ -9,7 +9,6 @@ namespace Physics
 	{
 	}
 
-
 	CPhysXErrorHander::~CPhysXErrorHander()
 	{
 	}

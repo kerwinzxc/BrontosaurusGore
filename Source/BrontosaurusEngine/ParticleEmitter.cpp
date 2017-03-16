@@ -41,10 +41,10 @@ void CParticleEmitter::Init(const SEmitterData& aEmitterData)
 	ShaderType |= EModelBluePrint_Size;
 	ShaderType |= EModelBluePrint_Color;
 	
-	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/particle_shader.fx", ShaderType);
-	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/particle_shader.fx", ShaderType);
-	ID3D11GeometryShader* geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/particle_shader.fx", ShaderType);
-	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/particle_shader.fx", ShaderType);
+	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
+	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaballsSpherePixel.fx", ShaderType);
+	ID3D11GeometryShader* geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/metaballs/metaballsGeometry.fx", ShaderType);
+	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
 
 	CEffect* effect = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	myEffect = effect;

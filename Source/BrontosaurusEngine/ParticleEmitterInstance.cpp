@@ -210,6 +210,7 @@ void CParticleEmitterInstance::Render(const CU::Camera& aCamera)
 		msg.particleEmitter = myEmitterID;
 		msg.toWorld = myToWorldSpace;
 		msg.particleList = myParticles;
+		msg.myType = SRenderMessage::eRenderMessageType::eRenderParticles;
 		DistanceSort(msg.particleList, aCamera);
 		RENDERER.AddRenderMessage(new SRenderParticlesMessage(msg));
 	}
@@ -226,6 +227,7 @@ void CParticleEmitterInstance::EmitParticle()
 		volumePos.y = RAND_FLOAT_RANGE(myEmitterData.MinEmissionArea.y, myEmitterData.MaxEmissionArea.y);
 		volumePos.z = RAND_FLOAT_RANGE(myEmitterData.MinEmissionArea.z, myEmitterData.MaxEmissionArea.z);
 		particle.position = volumePos * myToWorldSpace;
+		particle.position.w = 1;
 
 
 		particle.color = myEmitterData.StartColor;

@@ -19,5 +19,6 @@ cbuffer OncePerFrame			: register(b0)
 
 	uint shadowCount;
 
-	float garbage[3];
+	uint2 windowSize;
+	float garbage;
 }

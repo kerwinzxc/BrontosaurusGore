@@ -191,15 +191,19 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float2 uv = inputPixel.tex;
 	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
 
+	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
+
 	if (depth >= DEPTH_BIAS)
 	{
 		output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		return output;
 	}
+
+
+	float3 albedo = fullAlbedo.rgb;
 	float3 worldPosition = WorldPosition(uv, depth);
 	float3 cameraPosition = CameraPosition(cameraSpace);
 
-	float3 albedo = deferred_diffuse.Sample(samplerWrap, uv).xyz;
 	float3 normal = Normal(uv);
 
 	float4 RMAO = deferred_RMAO.Sample(samplerWrap, uv);
@@ -245,6 +249,6 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 	float3 finalColor = (directionDiffuse + directionSpecularity);
 	finalColor *= directionalLight.intensity * shadow;
-	output.color = float4(finalColor, 1.0f);
+	output.color = float4(finalColor, fullAlbedo.a);
 	return output;
 }
