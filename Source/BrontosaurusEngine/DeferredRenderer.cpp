@@ -14,6 +14,13 @@
 #include "FBXLoader.h"
 #include "ParticleEmitterManager.h"
 #include "ParticleEmitter.h"
+#include "Texture.h"
+#include "TextureManager.h"
+#include "Engine.h"
+
+#include <../CommonUtilities/InputWrapper.h>
+#include "WindowsWindow.h"
+#include "EKeyboardKeys.h"
 
 CDeferredRenderer::CDeferredRenderer()
 {
@@ -25,11 +32,10 @@ CDeferredRenderer::CDeferredRenderer()
 	myGbuffer.emissive.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myGbuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	
-	
+	mySSAORandomTexture = &CEngine::GetInstance()->GetTextureManager().LoadTexture("SSAORandomTexture.dds");
+	mySSAOPackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myRenderMessages.Init(128);
 	myLightMessages.Init(128);
@@ -48,6 +54,13 @@ CDeferredRenderer::CDeferredRenderer()
 	mySpotLightBuffer = BSR::CreateCBuffer<Lights::SSpotLight>(&spotLight);
 
 	InitPointLightModel();
+	
+	
+#ifdef _ENABLE_RENDERMODES
+	myInputWrapper = new CU::InputWrapper();
+	myInputWrapper->Init(HINSTGET, HWNDGET);
+	myRenderMode = ERenderMode::eIntermediate;
+#endif
 }
 
 CDeferredRenderer::~CDeferredRenderer()
@@ -155,32 +168,90 @@ void CDeferredRenderer::UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, c
 
 void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer)
 {
+	SetCBuffer();
+
+	//SSAO
+#ifdef _ENABLE_RENDERMODES
+	if(myRenderMode == ERenderMode::eSSAO)
+#endif
+	{
+		SChangeStatesMessage changeStateMessage = {};
+		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+		changeStateMessage.myBlendState = eBlendState::eMulBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		aRenderer.SetStates(&changeStateMessage);
+
+
+		ActivateSSAO();
+		DoSSAO(aFullscreenHelper);
+	}
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
+
+
 	ActivateIntermediate();
 	SetSRV();
-	SetCBuffer();
+#ifdef _ENABLE_RENDERMODES
+	myInputWrapper->Update();
+	HandleInput();
 
-	
-	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eNoBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	aRenderer.SetStates(&changeStateMessage);
+	switch (myRenderMode)
+	{
+	case CDeferredRenderer::eDiffuse:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.diffuse);
+		break;
+	case CDeferredRenderer::eNormal:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.normal);
+		break;
+	case CDeferredRenderer::eRoughness:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyR, &myGbuffer.RMAO);
+		break;
+	case CDeferredRenderer::eMetalness:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyG, &myGbuffer.RMAO);
+		break;
+	case CDeferredRenderer::eAO:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.RMAO);
+		break;
+	case CDeferredRenderer::eSSAO:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.RMAO);
+		break;
+	case CDeferredRenderer::eIntermediate:
+		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStateMessage.myBlendState = eBlendState::eNoBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		aRenderer.SetStates(&changeStateMessage);
+		DoAmbientLighting(aFullscreenHelper);
+		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStateMessage.myBlendState = eBlendState::eAddBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		aRenderer.SetStates(&changeStateMessage);
+		DoDirectLighting(aFullscreenHelper);
+		break;
+	default:
+		break;
+	}
 
-	DoAmbientLighting(aFullscreenHelper);
-
-	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eAddBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	aRenderer.SetStates(&changeStateMessage);
-
-	DoDirectLighting(aFullscreenHelper);
+#else
+		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStateMessage.myBlendState = eBlendState::eNoBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		aRenderer.SetStates(&changeStateMessage);
+		DoAmbientLighting(aFullscreenHelper);
+		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStateMessage.myBlendState = eBlendState::eAddBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		aRenderer.SetStates(&changeStateMessage);
+		DoDirectLighting(aFullscreenHelper);
+#endif
 }
 
 ID3D11DepthStencilView* CDeferredRenderer::GetDepthStencil()
@@ -231,6 +302,28 @@ void CDeferredRenderer::ActivateIntermediate()
 	myIntermediatePackage.Activate();
 }
 
+void CDeferredRenderer::ActivateSSAO()
+{
+	ID3D11RenderTargetView* rtvs[4];
+	rtvs[0] = nullptr;
+	rtvs[1] = nullptr;
+	rtvs[2] = nullptr;
+	rtvs[3] = nullptr;
+	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, nullptr);
+
+	myGbuffer.RMAO.Activate();
+	//mySSAOPackage.Clear();
+	//mySSAOPackage.Activate();
+
+	ID3D11ShaderResourceView* srvs[5];
+	srvs[0] = myGbuffer.diffuse.GetResource();
+	srvs[1] = myGbuffer.normal.GetResource();
+	srvs[2] = nullptr;//myGbuffer.RMAO.GetResource();
+	srvs[3] = myGbuffer.emissive.GetResource();
+	srvs[4] = myGbuffer.diffuse.GetDepthResource();
+	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
+}
+
 void CDeferredRenderer::SetSRV()
 {
 	ID3D11ShaderResourceView* srvs[5];
@@ -240,6 +333,11 @@ void CDeferredRenderer::SetSRV()
 	srvs[3] = myGbuffer.emissive.GetResource();
 	srvs[4] = myGbuffer.diffuse.GetDepthResource();
 	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
+}
+
+void CDeferredRenderer::SetRMAOSRV()
+{
+	myFramework->GetDeviceContext()->PSSetShaderResources(3, 1, &myGbuffer.RMAO.GetResource());
 }
 
 void CDeferredRenderer::SetCBuffer()
@@ -300,3 +398,42 @@ void CDeferredRenderer::RenderSpotLight(SRenderMessage* aRenderMessage, CFullScr
 	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredSpotLight);
 }
 
+void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)
+{
+	myFramework->GetDeviceContext()->PSSetShaderResources(6, 1, mySSAORandomTexture->GetShaderResourceViewPointer());
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eSSAO);
+}
+
+#ifdef _ENABLE_RENDERMODES
+void CDeferredRenderer::HandleInput()
+{
+	if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F1))
+	{
+		myRenderMode = ERenderMode::eIntermediate;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F1))
+	{
+		myRenderMode = ERenderMode::eDiffuse;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F2))
+	{
+		myRenderMode = ERenderMode::eNormal;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F3))
+	{
+		myRenderMode = ERenderMode::eRoughness;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F4))
+	{
+		myRenderMode = ERenderMode::eMetalness;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F5))
+	{
+		myRenderMode = ERenderMode::eAO;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F6))
+	{
+		myRenderMode = ERenderMode::eSSAO;
+	}
+}
+#endif
