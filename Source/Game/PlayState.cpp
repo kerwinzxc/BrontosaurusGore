@@ -29,6 +29,8 @@
 #include "Components/MovementComponentManager.h"
 #include "Components/ScriptComponentManager.h"
 #include "Components/PickupComponentManager.h"
+#include "Components/ExplosionFactory.h"
+#include "Components/ExplosionComponentManager.h"
 #include "Components/HealthComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
@@ -97,6 +99,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, myScriptComponentManager(nullptr)
+	,myExplosionComponentManager(nullptr)
+	,myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -223,6 +227,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
+	myExplosionComponentManager->Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -311,6 +316,9 @@ void CPlayState::CreateManagersAndFactories()
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
+	
+	myExplosionComponentManager = new CExplosionComponentManager();
+	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)

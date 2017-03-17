@@ -18,6 +18,8 @@ enum class eMessageType
 	eAddToCheckPointRespawn,
 	eSetNewCheckPoint,
 	eResetToCheckPointMessage,
+	eCreateExplosionMessage,
+	eDeactivateExplosion,
 	eLength,
 };
 

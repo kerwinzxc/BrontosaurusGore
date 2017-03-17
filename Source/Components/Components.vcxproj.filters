@@ -175,7 +175,17 @@
     <ClCompile Include="EnemyClientRepresentationManager.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="HealthComponentManager.cpp" />
+    <ClCompile Include="ExplosionComponent.cpp">
+      <Filter>Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionFactory.cpp">
+      <Filter>Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionComponentManager.cpp" />
+   <ClCompile Include="HealthComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -400,7 +410,20 @@
     <ClInclude Include="ExplosionData.h">
       <Filter>Explosion</Filter>
     </ClInclude>
-    <ClInclude Include="HealthComponentManager.h" />
+    <ClInclude Include="ExplosionFactory.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionComponent.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPointSystem.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionComponentManager.h" />
+    <ClInclude Include="ExplosionBufferData.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
+<ClInclude Include="HealthComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
