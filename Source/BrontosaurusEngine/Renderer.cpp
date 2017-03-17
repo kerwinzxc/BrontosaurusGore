@@ -279,10 +279,6 @@ void CRenderer::LensDistortion(CRenderPackage & aRenderMessage)
 	}
 }
 
-
-
-
-
 void CRenderer::ClearRenderQueue()
 {
 	mySynchronizer.ClearAll();
@@ -659,10 +655,31 @@ void CRenderer::CreateBlendStates()
 		blendDesc_Blend.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		result = DEVICE->CreateBlendState(&blendDesc_Blend, &blendState);
-		CHECK_RESULT(result, "Failed to create No-Blend State.");
+		CHECK_RESULT(result, "Failed to create add-Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eAddBlend)] = blendState;
 	}
-	
+
+	blendState = NULL;
+	{
+		D3D11_BLEND_DESC blendDesc_mul = {};
+
+		blendDesc_mul.AlphaToCoverageEnable = FALSE;
+		blendDesc_mul.IndependentBlendEnable = TRUE;
+
+		blendDesc_mul.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_mul.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_ZERO;
+		blendDesc_mul.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+		blendDesc_mul.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+
+		blendDesc_mul.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
+		blendDesc_mul.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+		blendDesc_mul.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+		blendDesc_mul.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_mul, &blendState);
+		CHECK_RESULT(result, "Failed to create mul-Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eMulBlend)] = blendState;
+	}
 }
 
 void CRenderer::CreateDepthStencilStates()
@@ -1058,7 +1075,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myIntermediatePackage.Activate();
 
 		myFullScreenHelper.DoEffect(
-			msg->useDepthResource ? CFullScreenHelper::eEffectType::eCopyDepth : CFullScreenHelper::eEffectType::eCopy,
+			msg->useDepthResource ? CFullScreenHelper::eEffectType::eCopyR : CFullScreenHelper::eEffectType::eCopy,
 			msg->myRect, 
 			msg->useDepthResource ? msg->myRenderPackage.GetDepthResource() : msg->myRenderPackage.GetResource());
 		break;
