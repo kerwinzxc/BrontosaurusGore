@@ -42,10 +42,12 @@ void CNetworkMessage_TakeDamage::DoSerialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myNetworkID, aStream);
+	serialize(myDamageTaken, aStream);
 }
 
 void CNetworkMessage_TakeDamage::DoDeserialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myNetworkID = deserialize<unsigned int>(aStream);
+	myDamageTaken = deserialize<unsigned int>(aStream);
 }
