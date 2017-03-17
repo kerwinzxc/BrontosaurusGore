@@ -423,6 +423,21 @@ namespace CU
 	{
 		return self[aKey];
 	}
+
+	bool CJsonValue::CheckKeys(CU::GrowingArray<std::string> someKeys) const
+	{
+#ifdef _DEBUG 
+		for (CU::GrowingArray<std::string>::size_type i = 0; i < someKeys.Size(); ++i)
+		{
+			if (Count(someKeys[i]) == 0)
+			{
+				return false;
+			}
+		}
+#endif //_DEBUG
+
+		return true;
+	}
 #undef self
 
 	CJsonValue::CJsonValue(const picojson::value* aValuePointer)
