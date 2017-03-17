@@ -39,6 +39,8 @@ class CMovementComponentManager;
 class CColliderComponentManager;
 class CCheckPointSystem;
 class CScriptComponentManager;
+class CExplosionFactory;
+class CExplosionComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -99,6 +101,8 @@ private:
 	CInputComponentManager* myInputComponentManager;
 	CMovementComponentManager* myMovementComponentManager;
 	CScriptComponentManager* myScriptComponentManager;
+	CExplosionFactory* myExplosionFactory;
+	CExplosionComponentManager* myExplosionComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;

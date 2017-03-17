@@ -74,6 +74,12 @@
     <Filter Include="Message\Pickup\Health">
       <UniqueIdentifier>{e7ae65ce-24d9-4f06-a615-72a2a7592060}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\CreateExplosion">
+      <UniqueIdentifier>{4f876cca-e5c3-4585-84d6-f5b66a531ba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\DeactivateExplosion">
+      <UniqueIdentifier>{d373eb8f-6798-4d50-8329-bbd1593ba2a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -124,6 +130,12 @@
       <Filter>Message\ResetToCheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="HealthPickupGrabbed.cpp" />
+    <ClCompile Include="CreateExplosionMessage.cpp">
+      <Filter>Message\CreateExplosion</Filter>
+    </ClCompile>
+    <ClCompile Include="DeactivateExplosionMessage.cpp">
+      <Filter>Message\DeactivateExplosion</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -183,5 +195,11 @@
       <Filter>Message\ResetToCheckPoint</Filter>
     </ClInclude>
     <ClInclude Include="HealthPickupGrabbed.h" />
+    <ClInclude Include="CreateExplosionMessage.h">
+      <Filter>Message\CreateExplosion</Filter>
+    </ClInclude>
+    <ClInclude Include="DeactivateExplosionMessage.h">
+      <Filter>Message\DeactivateExplosion</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -124,6 +124,8 @@
     <ClInclude Include="AddToCheckPointResetList.h" />
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
+    <ClInclude Include="CreateExplosionMessage.h" />
+    <ClInclude Include="DeactivateExplosionMessage.h" />
     <ClInclude Include="GameEventMessage.h" />
     <ClInclude Include="HealthPickupGrabbed.h" />
     <ClInclude Include="LoadLevelMessage.h" />
@@ -147,6 +149,8 @@
     <ClCompile Include="AddToCheckPointResetList.cpp" />
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
+    <ClCompile Include="CreateExplosionMessage.cpp" />
+    <ClCompile Include="DeactivateExplosionMessage.cpp" />
     <ClCompile Include="GameEventMessage.cpp" />
     <ClCompile Include="HealthPickupGrabbed.cpp" />
     <ClCompile Include="LoadLevelMessage.cpp" />
