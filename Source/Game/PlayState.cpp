@@ -436,9 +436,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerHealthComponent->SetHealth(10);
 		playerObject->AddComponent(playerHealthComponent);
 
-		CGameObject* witch = myGameObjectManager->CreateGameObject();
-		witch->GetLocalTransform().SetScale({ 0.1f, 0.1f, 0.1f });
-		witch->AddComponent(myModelComponentManager->CreateComponent("Models/Meshes/witch.fbx"));
 
 		//Component::CEnemy::SetPlayer(playerObject);
 
