@@ -60,6 +60,9 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	case eComponentMessageType::eSetHighlight:
 		myModel.SetHighlightIntencity(aData.myFloat);
 		break;
+	case eComponentMessageType::eDied:
+		myModel.SetVisibility(false);
+		break;
 	}
 }
 

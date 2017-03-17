@@ -31,6 +31,7 @@
 #include "Components/PickupComponentManager.h"
 #include "Components/ExplosionFactory.h"
 #include "Components/ExplosionComponentManager.h"
+#include "Components/HealthComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -129,6 +130,7 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
+	CHealthComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -287,6 +289,7 @@ void CPlayState::CreateManagersAndFactories()
 	CComponentManager::CreateInstance();
 
 	CNetworkComponentManager::Create();
+	CHealthComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -439,7 +442,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.height = 2.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		playerHealthComponent->SetMaxHealth(10);
 		playerHealthComponent->SetHealth(10);
 		playerObject->AddComponent(playerHealthComponent);
