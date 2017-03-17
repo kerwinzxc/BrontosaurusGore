@@ -83,6 +83,8 @@ struct SDeferredRenderModelParams
 	CU::Matrix44f myTransformLastFrame;
 
 	std::string aAnimationState;
+	std::string aNextAnimationState;
+	float aAnimationLerper = 0.0f;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;
@@ -96,6 +98,8 @@ struct SShadowRenderModelParams
 	CU::Matrix44f myTransformLastFrame;
 
 	std::string aAnimationState;
+	std::string aNextAnimationState;
+	float aAnimationLerper = 0.0f;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;

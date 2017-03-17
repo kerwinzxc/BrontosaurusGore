@@ -387,6 +387,7 @@
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="ExplosionData.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthComponentManager.h" />

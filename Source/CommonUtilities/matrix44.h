@@ -646,7 +646,14 @@ namespace CU
 			return matrixToReturn;
 		}
 
-		Matrix44 Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed)
+		Matrix44 Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed) const
+		{
+			Matrix44 copy = *this;
+			copy.Lerp(aInterpolateToMatrix, aInterpolatingSpeed);
+			return copy;
+		}
+
+		Matrix44& Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed)
 		{
 			m21 = m21 + aInterpolatingSpeed * (aInterpolateToMatrix.m21 - m21);
 			m22 = m22 + aInterpolatingSpeed * (aInterpolateToMatrix.m22 - m22);
@@ -663,12 +670,29 @@ namespace CU
 			return *this;
 		}
 
-		Matrix44 LerpPosition(const CU::Vector3<TYPE>& aInterpolateToPosition, const TYPE aInterpolatingSpeed)
+		Matrix44& LerpPosition(const Vector3<TYPE>& aInterpolateToPosition, const TYPE aInterpolatingSpeed)
 		{
 			myPosition.Lerp(aInterpolateToPosition, aInterpolatingSpeed);
 
 			return *this;
 		}
+
+		Matrix44 SlerpRotation(const Matrix44& aSlerpTo, const TYPE aSlerpValue) const
+		{
+			Matrix44 copy = *this;
+			copy.SlerpRotation(aSlerpTo, aSlerpValue);
+			return copy;
+		}
+
+		Matrix44& SlerpRotation(const Matrix44& aSlerpTo, const TYPE aSlerpValue)
+		{
+			myRightVector.Slerp(aSlerpTo.myRightVector, aSlerpValue);
+			myUpVector.Slerp(aSlerpTo.myUpVector, aSlerpValue);
+			myForwardVector.Slerp(aSlerpTo.myForwardVector, aSlerpValue);
+
+			return *this;
+		}
+
 		void InvertMe()
 		{
 			InvertMatrix(&m11);

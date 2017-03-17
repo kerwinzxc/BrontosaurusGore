@@ -397,6 +397,9 @@
     <ClInclude Include="EnemyClientRepresentationManager.h">
       <Filter>Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="ExplosionData.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
     <ClInclude Include="HealthComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +474,9 @@
     </Filter>
     <Filter Include="Pickup">
       <UniqueIdentifier>{aa2a2c2d-cd05-46ef-b91c-5fbc1ad5f700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Explosion">
+      <UniqueIdentifier>{ae5926f1-1e49-4d37-9d59-767b6089c695}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

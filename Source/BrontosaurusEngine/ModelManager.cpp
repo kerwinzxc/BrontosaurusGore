@@ -50,12 +50,6 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 
 		myModels[aModelPath.c_str()] = newModelID;
 
-		if (aModelPath.find("standardEnemy") != std::string::npos)
-		{
-			int br = 0;
-			br++;
-		}
-
 		if (CreateModel(aModelPath, newModelID) == false)
 		{
 			myModelList.Pop();
@@ -217,12 +211,6 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 	modelName -= std::string(".fbx");
 	modelName += std::string("_");
 
-	if (modelName.find("standardEnemy") != std::string::npos)
-	{
-		int br = 0;
-		br++;
-	}
-
 	const ModelId animationCount = 13;
 	const std::string animationNames[animationCount] = { ("idle"), ("idle2"), ("walk"), ("pickup"), ("turnRight90"), ("turnLeft90"), ("attack") , ("summon"), ("die"), ("sweep"), ("whirlwind"), ("hurt"), ("spawn") };
 
@@ -234,8 +222,8 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 		mdl->myBindposeSceneAnimator = new CSceneAnimator();
 		mdl->myBindposeSceneAnimator->Init(scene); // shuld do it?
 
+		mdl->mySceneAnimators.clear();
 		CFBXLoader loader;
-		bool foundSpecial = false;
 		for (int i = 0; i < animationCount; ++i)
 		{
 			const std::string& animationName = animationNames[i];
@@ -247,13 +235,11 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 				continue;
 			}
 
-			foundSpecial = true;
-
 			mdl->mySceneAnimators[animationName] = CSceneAnimator();
 			mdl->mySceneAnimators[animationName].Init(animationScene);
 		}
 
-		if (foundSpecial == false)
+		if (mdl->mySceneAnimators.empty() == true)
 		{
 			mdl->mySceneAnimators["idle"] = CSceneAnimator();
 			mdl->mySceneAnimators["idle"].Init(mdl->GetScene());
