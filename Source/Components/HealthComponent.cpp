@@ -57,6 +57,12 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 		myCurrentHealth = myMaxHeath;
 		break;	
 	}
+	case eComponentMessageType::eNetworkDoDamage:
+		if (myIsAlive == true)
+		{
+			TakeDamage(aMessageData.myInt);
+		}
+		break;
 	default:
 		break;
 	}
