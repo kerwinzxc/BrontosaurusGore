@@ -18,8 +18,12 @@ public:
 	void Receive(const eComponentMessageType, const SComponentMessageData&) override;
 	inline CModelInstance& GetModelInstance() { return myModel; }
 
+	void SetAnimation(const std::string& aAnimationKey);
+	void SetNextAnimation(const std::string& aAnimationKey);
+	void SetAnimationLerpValue(const float aLerpValue);
+
 private:
-	void ChangeAnimation(const char* aAnimationKey);
+	void CreateAnimationComponent();
 
 	CModelInstance& myModel;
 };
