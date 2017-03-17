@@ -10,11 +10,11 @@ SamplerState Sampler
 
 
 
-// COPY SHADER
+// COPY B SHADER
 PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
 	PixelOutput output;
-	output.color = renderPackage.SampleLevel(Sampler, input.tex, 0).xxxx;
+	output.color = renderPackage.SampleLevel(Sampler, input.tex, 0).bbbb;
 	output.color.a = 1.0f;
 
 	return output;
