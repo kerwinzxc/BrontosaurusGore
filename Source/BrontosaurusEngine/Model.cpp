@@ -505,6 +505,8 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	SDeferredRenderModelParams params;
 	params.aAnimationLooping = aParamObj.aAnimationLooping;
 	params.aAnimationState = aParamObj.aAnimationState;
+	params.aNextAnimationState = aParamObj.aNextAnimationState;
+	params.aAnimationLerper = aParamObj.aAnimationLerper;
 	params.aAnimationTime = aParamObj.aAnimationTime;
 	params.aHighlightIntencity = aParamObj.aHighlightIntencity;
 	params.myTransform = aParamObj.myTransform;

@@ -13,6 +13,10 @@
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
+	if (std::string(aModelPath).find("M_Placeholder_3m") != std::string::npos)
+	{
+		int br = 0;
+	}
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
@@ -23,7 +27,7 @@ CModelInstance::CModelInstance(const char* aModelPath)
 		myHasAnimations = model->HasAnimations();
 	}
 	myCurrentAnimation = "idle";
-	myNextAnimation = "walk";
+	myNextAnimation = "";
 	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
 }
@@ -64,11 +68,8 @@ CModelInstance::~CModelInstance()
 	if (myModel != NULL_MODEL)
 	{
 		MODELMGR->GetModel(myModel)->RemoveRef();
-		myModel = -1; 
+		myModel = NULL_MODEL;
 	}
-	
-	
-	//TODO: memoryleek mebe // still exists in ModelManager <-- looks like model manager owns this but a refcount would maybe be something
 }
 
 void CModelInstance::RenderForward(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList)
