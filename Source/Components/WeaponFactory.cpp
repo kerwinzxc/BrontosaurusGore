@@ -10,6 +10,7 @@
 #include "ModelComponent.h"
 #include "ModelComponentManager.h"
 #include "GameObjectManager.h"
+#include "ExplosionData.h"
 
 CWeaponFactory::CWeaponFactory()
 {
@@ -25,6 +26,10 @@ CWeaponFactory::~CWeaponFactory()
 {
 	for(unsigned int i = 0; i < myWeaponDataList.Size(); i++)
 	{
+		if(myWeaponDataList[i]->projectileData->explosionData != nullptr)
+		{
+			SAFE_DELETE(myWeaponDataList[i]->projectileData->explosionData);
+		}
 		SAFE_DELETE(myWeaponDataList[i]->projectileData);
 	}
 	myWeaponDataList.DeleteAll();
@@ -62,12 +67,29 @@ void CWeaponFactory::LoadWeapons()
 		newWeaponData->randomSpreadAngle = levelsArray[i].at("RandomSpreadAngle").GetInt();
 		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();
 		newWeaponData->shouldRayCast = levelsArray[i].at("ShouldRayCast").GetBool();
+
 		newProjectileData->projectileModelFilePath = levelsArray[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(levelsArray[i].at("Damage").GetFloat());
 		newProjectileData->movementSpeed = levelsArray[i].at("ProjectileMovementSpeed").GetFloat();
 		newProjectileData->maximumTravelRange = levelsArray[i].at("MaximumTravelRange").GetFloat();
+		newProjectileData->shouldExplodeOnImpact = levelsArray[i].at("ShouldProjectilesExplode").GetBool();
+
+		if(newProjectileData->shouldExplodeOnImpact == true)
+		{
+			SExplosionData* newExplosionData = new SExplosionData();
+			newExplosionData->radius = levelsArray[i].at("ExplosionRange").GetFloat();
+			newExplosionData->knockBackForce = levelsArray[i].at("ExplosionKnockBackForce").GetFloat();
+			newExplosionData->damage = static_cast<healthPoint>(levelsArray[i].at("ExplosionDamage").GetFloat());
+			newProjectileData->explosionData = newExplosionData;
+		}
+		else
+		{
+			newProjectileData->explosionData = nullptr;
+		}
+
 		newAmmoData->maxAmmo = levelsArray[i].at("MaxAmmoAmount").GetInt();
 		newAmmoData->ammoForWeaponName = newWeaponData->name;
+
 		myWeaponDataList.Add(newWeaponData);
 		myAmmoDataList.Add(newAmmoData);
 		if(CProjectileFactory::GetInstance() != nullptr)
