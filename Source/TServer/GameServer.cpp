@@ -20,20 +20,19 @@
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
-
-
-
+#include "../Components/Enemy.h"
 
 
 CGameServer::CGameServer():
 	myAmmoComponentManager(nullptr)
-	,myGameObjectManager(nullptr)
-	,myWeaponFactory(nullptr)
-	,myMainTimer(0)
-	,myInGame(false)
-	,myIsLoaded(false)
-	,myWeaponSystemManager(nullptr)
-	,myMovementComponentManager(nullptr)
+	, myGameObjectManager(nullptr)
+	, myWeaponFactory(nullptr)
+	, myMainTimer(0)
+	, myInGame(false)
+	, myIsLoaded(false)
+	, myEnemyComponentManager(nullptr)
+	, myWeaponSystemManager(nullptr)
+	, myMovementComponentManager(nullptr)
 {
 	myIsRunning = false;
 	myTime = 0;
@@ -70,8 +69,6 @@ void CGameServer::Load(const int aLevelIndex)
 	timerMgr.StartTimer(handle);
 
 	srand(static_cast<unsigned int>(time(nullptr)));
-
-
 
 	myWeaponFactory->LoadWeapons();
 
@@ -115,6 +112,7 @@ void CGameServer::CreateManagersAndFactories()
 
 	myGameObjectManager = new CGameObjectManager();
 	myMovementComponentManager = new CMovementComponentManager();
+	myEnemyComponentManager = new CEnemyComponentManager();
 
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
@@ -132,21 +130,21 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myWeaponSystemManager);
+	SAFE_DELETE(myEnemyComponentManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
 	//DL_PRINT("In Update");
 	myTime += aDeltaTime.GetMilliseconds();
-	if (myTime >= 120)
+
+	const float updateFrequecy = 0.016f * 1000;
+	if(myTime > updateFrequecy)
 	{
-		CNetworkComponent* temp = CNetworkComponentManager::GetInstance()->GetComponent(0);
-		if (temp != nullptr)
-		{
-			temp->GetParent()->NotifyComponents(eComponentMessageType::eHeal, SComponentMessageData());
-		}
+		myEnemyComponentManager->Update(aDeltaTime);
 		myTime = 0;
 	}
+
 	return true;
 }
 
@@ -163,5 +161,12 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 
+	Component::CEnemy::SetPlayer(gameObject);
+
 	return serverPlayerNetworkComponent;
+}
+
+CEnemyComponentManager* CGameServer::GetEnemyComponentManager()
+{
+	return myEnemyComponentManager;
 }

@@ -41,6 +41,7 @@ public:
 		eDeferredSpotLight,
 		eColorGrading,
 		eAA,
+		eMetaSurface,
 		eSSAO,
 		eSize,
 	};

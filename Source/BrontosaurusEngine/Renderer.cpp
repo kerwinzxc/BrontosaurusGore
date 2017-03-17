@@ -142,9 +142,9 @@ void CRenderer::Render()
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
-	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil());
 
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
+	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
 
@@ -839,6 +839,11 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 	//}
 }
 
+const CU::Camera& CRenderer::GetCamera()
+{
+	return myCamera;
+}
+
 void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
 {
 	switch (aRenderMesage->myType)
@@ -848,6 +853,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eRenderDirectionalLight:
 	{
 		myDeferredRenderer.AddRenderMessage(aRenderMesage);
+		myParticleRenderer.AddRenderMessage(aRenderMesage);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eSetCubemapResource:

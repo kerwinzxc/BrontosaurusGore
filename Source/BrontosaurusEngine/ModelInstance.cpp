@@ -23,6 +23,8 @@ CModelInstance::CModelInstance(const char* aModelPath)
 		myHasAnimations = model->HasAnimations();
 	}
 	myCurrentAnimation = "idle";
+	myNextAnimation = "walk";
+	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
 }
 
@@ -178,6 +180,8 @@ void CModelInstance::RenderDeferred()
 	{
 		msg.myRenderParams.aAnimationLooping = myAnimationLooping;
 		msg.myRenderParams.aAnimationState = myCurrentAnimation;
+		msg.myRenderParams.aNextAnimationState = myNextAnimation;
+		msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
 		msg.myRenderParams.aAnimationTime = myAnimationCounter;
 	}	
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
@@ -198,6 +202,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
@@ -214,6 +220,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 	}
@@ -260,16 +268,25 @@ CU::AABB CModelInstance::GetModelBoundingBox()
 }
 
 
-void CModelInstance::ChangeAnimation(const std::string& aAnimationKey)
+void CModelInstance::SetAnimation(const std::string& aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
+}
+
+void CModelInstance::SetAnimationLerpie(const float aLerpValue)
+{
+	myAnimationLerpie = aLerpValue;
+}
+
+void CModelInstance::SetNextAnimation(const std::string& aAnimationKey)
+{
+	myNextAnimation = aAnimationKey;
 }
 
 void CModelInstance::SetAnimationLooping(const bool aValue)
 {
 	myAnimationLooping = aValue;
 	myAnimationCounter = 0.0f;
-
 }
 
 void CModelInstance::ResetAnimation()

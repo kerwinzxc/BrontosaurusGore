@@ -39,7 +39,6 @@ CDeferredRenderer::CDeferredRenderer()
 
 	myRenderMessages.Init(128);
 	myLightMessages.Init(128);
-	myParticleMessages.Init(10);
 
 	SCameraStruct temp;
 	myProjectionInverseBuffer = BSR::CreateCBuffer<SCameraStruct>(&temp);
@@ -151,9 +150,6 @@ void CDeferredRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)
 	case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
 		myRenderMessages.Add(aRenderMessage);
 		break;
-	case SRenderMessage::eRenderMessageType::eRenderParticles:
-		myParticleMessages.Add(aRenderMessage);
-		break;
 	}
 }
 
@@ -257,6 +253,11 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 ID3D11DepthStencilView* CDeferredRenderer::GetDepthStencil()
 {
 	return myGbuffer.diffuse.GetDepthStencilView();
+}
+
+ID3D11ShaderResourceView* CDeferredRenderer::GetDepthResource()
+{
+	return myGbuffer.diffuse.GetDepthResource();
 }
 
 void CDeferredRenderer::SetRenderTargets()

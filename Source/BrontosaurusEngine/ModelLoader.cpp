@@ -97,12 +97,7 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	CEffect* deferredEffect = new CEffect(vertexShader, deferredPixelShader, geometryShader, inputLayout, topology);
 
 	CSurface* surface = new CSurface(MODEL_TEXTURE_DIRECTORY, scene.myTextures);
-	//CSurface* surface = new CSurface(texturePaths);
 
-	if (scene.mySphereColData.radius > 0.0f)
-	{
-		aNewModel->mySphereColData = /*SSphereColData*/(scene.mySphereColData);
-	}
 	aNewModel->Initialize(forwardEffect, surface, scene.myMeshes);
 	aNewModel->myDeferredEffect = deferredEffect;
 	aNewModel->SetScene(scene.myScene);

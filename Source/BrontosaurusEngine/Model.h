@@ -1,7 +1,6 @@
 #pragma once
 #include <atomic>
 #include "BufferStructs.h"
-#include "SphereColData.h"
 #include "AnimationController.h"
 
 #include "../CommonUtilities/StaticArray.h"
@@ -89,7 +88,6 @@ public:
 	void Render(SShadowRenderModelParams& aParamObj);
 
 	inline bool GetInitialized() const;
-	inline const SSphereColData& GetCollisionData() const;
 
 	void UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize);
 	inline void AddConstantBuffer(const eShaderStage aShaderStage, ID3D11Buffer* aConstantBuffer);
@@ -125,7 +123,7 @@ private:
 	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
 	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
-
+	static void BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut);
 
 
 	inline void SetBoundingBox(const CU::AABB& aAABB);
@@ -164,17 +162,12 @@ private:
 
 	unsigned int myVertexSize;
 
-	SSphereColData mySphereColData;
 
 	bool myIsAlphaModel;
 
 	int myRefCount;
 
 };
-inline const SSphereColData& CModel::GetCollisionData() const
-{
-	return mySphereColData;
-}
 
 inline const CU::AABB & CModel::GetBoundingBox() const
 {

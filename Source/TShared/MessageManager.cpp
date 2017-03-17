@@ -13,6 +13,7 @@
 #include "NetworkMessage_PlayerPositionMessage.h"
 #include "NetworkMessage_WeaponShoot.h"
 #include "NetworkMessage_PickupHealth.h"
+#include "NetworkMessage_EnemyPosition.h"
 
 CMessageManager::CMessageManager()
 {
@@ -64,6 +65,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_WeaponShoot>(aHeader);
 	case ePackageType::ePickupHealth:
 		return CreateMessage<CNetworkMessage_PickupHealth>(aHeader);
+	case ePackageType::eEnemyPosition:
+		return CreateMessage<CNetworkMessage_EnemyPosition>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 
