@@ -333,51 +333,6 @@ const aiNode* FindLODDNode(const aiNode* aNode)
 	return aNode;
 }
 
-const aiNode* FindColDataNode(const aiNode* aNode)
-{
-	for (unsigned int i = 0; i < aNode->mNumChildren; ++i )
-	{
-		std::string name = aNode->mChildren[i]->mName.C_Str();
-
-		if (name.find("COL_DATA") == 0)
-		{
-			return aNode->mChildren[i];
-		}
-	}
-	return nullptr;
-}
-
-void CreateCollisionData(SSphereColData* aCollisionData, const aiNode* aCollisionNode)
-{
-	float x = aCollisionNode->mTransformation.a4;
-	float y = aCollisionNode->mTransformation.b4;
-	float z = aCollisionNode->mTransformation.c4;
-	float scale = aCollisionNode->mTransformation.a1;
-
-	aCollisionData->pos = { x, y, z };
-
-	aCollisionData->radius = scale * BASE_SCALE * 10;
-
-	for (unsigned int i = 0; i < aCollisionNode->mNumChildren; ++i)
-	{
-		aCollisionData->children.Add(new SSphereColData());
-		CreateCollisionData(aCollisionData->children.GetLast(), aCollisionNode->mChildren[i]);
-	}
-
-	
-	for (unsigned int i = 0; i < aCollisionData->children.Size(); ++i)
-	{
-		//aCollisionData->children[i]->radius *= BASE_SCALE;
-		aCollisionData->children[i]->pos *= BASE_SCALE /*/ 10*/;
-		aCollisionData->children[i]->pos -= aCollisionData->pos ; // för ofsettade objekt. ( annars tar den bara minus 0 )
-	}
-
-	
-
-}
-
-
-
 bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 {
 	if (does_file_exist(aFilePath) == false)
@@ -519,16 +474,6 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 	{
 		DL_ASSERT("fbx file root node is empty or massive: %s", aFilePath);
 		return false;
-	}
-
-	//COL DATA
-	const aiNode* colNode = FindColDataNode(root);
-	if (colNode != nullptr)
-	{
-		for (unsigned int i = 0; i < colNode->mNumChildren; ++i)
-		{
-			CreateCollisionData(&aSceneOut.mySphereColData, colNode->mChildren[i]);
-		}
 	}
 
 	CU::GrowingArray<aiNode*> nodes(4);

@@ -16,8 +16,12 @@ CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	, myModelComponent(aModelCompoent)
 {
 	myType = eComponentType::eAnimationComponent;
-	myAnimationStack.Add("idle");
-	myModelComponent.SetAnimation(myAnimationStack.GetLast());
+
+	SAnimationState idleState;
+	idleState.myAnimationKey = "idle";
+
+	myAnimationStack.Add(idleState);
+	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
 	myModelComponent.SetNextAnimation("");
 	myModelComponent.SetAnimationLerpValue(0.f);
 }

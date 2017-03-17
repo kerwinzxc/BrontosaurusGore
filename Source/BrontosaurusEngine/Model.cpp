@@ -480,9 +480,9 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 		const std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
 		const std::vector<mat4>* finalBones = &bones;
 
-		std::vector<mat4> blendedBones(bones.size());
+		std::vector<mat4> blendedBones;
 
-		if (aParamObj.aAnimationState != aParamObj.aNextAnimationState)
+		if (!aParamObj.aNextAnimationState.empty() && aParamObj.aAnimationState != aParamObj.aNextAnimationState)
 		{
 			const std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
 
@@ -667,8 +667,6 @@ CModel& CModel::operator=(CModel&& aModel)
 	myVertexSize = aModel.myVertexSize;
 	aModel.myVertexSize = 0;
 
-	mySphereColData = std::move(aModel.mySphereColData);
-
 	for (int i = 0; i < myConstantBuffers.Size(); ++i)
 	{
 		myConstantBuffers[i] = aModel.myConstantBuffers[i];
@@ -740,8 +738,6 @@ CModel& CModel::operator=(const CModel& aModel)
 	myIsInitialized = aModel.myIsInitialized.load();
 
 	myVertexSize = aModel.myVertexSize;
-
-	mySphereColData = aModel.mySphereColData;
 
 	for (int i = 0; i < myConstantBuffers.Size(); ++i)
 	{

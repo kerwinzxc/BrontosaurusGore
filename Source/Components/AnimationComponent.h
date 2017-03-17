@@ -6,6 +6,7 @@ class CModelComponent;
 class CAnimationComponent : public CComponent
 {
 public:
+	struct SAnimationState;
 	CAnimationComponent(CModelComponent& aModelComponent);
 	~CAnimationComponent();
 
@@ -13,9 +14,8 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
-	struct SAnimationState;
 	std::map<std::string, SAnimationState> myAnimationStates;
-	CU::GrowingArray<std::string> myAnimationStack;
+	CU::GrowingArray<SAnimationState> myAnimationStack;
 
 	CModelComponent& myModelComponent;
 };

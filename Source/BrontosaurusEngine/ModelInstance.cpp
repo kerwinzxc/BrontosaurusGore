@@ -13,11 +13,6 @@
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
-	if (std::string(aModelPath) != "Models/chromeBall/chromeBall.fbx")
-	{
-		int br = 0;
-		br++;
-	}
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
