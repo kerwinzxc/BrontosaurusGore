@@ -175,6 +175,7 @@
     <ClCompile Include="EnemyClientRepresentationManager.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="HealthComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -396,6 +397,7 @@
     <ClInclude Include="EnemyClientRepresentationManager.h">
       <Filter>Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="HealthComponentManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

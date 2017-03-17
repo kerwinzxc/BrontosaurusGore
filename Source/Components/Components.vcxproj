@@ -389,6 +389,7 @@
     <ClInclude Include="EnemyComponentManager.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HealthComponentManager.h" />
     <ClInclude Include="HealthPackComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
@@ -459,6 +460,7 @@
     <ClCompile Include="EnemyComponentManager.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="HealthPackComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />

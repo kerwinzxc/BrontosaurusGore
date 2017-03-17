@@ -19,5 +19,6 @@ enum class ePackageType: __int8
 	eDisconected,
 	ePickupHealth,
 	eEnemyPosition,
+	eTakeDamage,
 	eSize,
 };

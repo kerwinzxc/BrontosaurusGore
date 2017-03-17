@@ -5,7 +5,7 @@
 class CHealthComponent : public CComponent
 {
 public:
-	CHealthComponent();
+	CHealthComponent(unsigned int aNetworkID);
 	~CHealthComponent();
 
 	void SetMaxHealth(const healthPoint aHealthPointValue);
@@ -18,8 +18,11 @@ private:
 	void Heal(const healthPoint aHealAmount);
 	
 private:
+	unsigned int myNetworkID;
+
 	healthPoint myMaxHeath;
 	healthPoint myCurrentHealth;
+
 	bool myIsAlive;
 };
 

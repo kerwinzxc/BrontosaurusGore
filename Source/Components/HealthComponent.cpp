@@ -2,8 +2,11 @@
 #include "HealthComponent.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_TakeDamage.h"
+#include "../TClient/ClientMessageManager.h"
 
-CHealthComponent::CHealthComponent()
+CHealthComponent::CHealthComponent(unsigned int aNetworkID) : myNetworkID(aNetworkID)
 {
 	myMaxHeath = 0;
 	myCurrentHealth = 0;
@@ -33,6 +36,13 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 		if(myIsAlive == true)
 		{
 			TakeDamage(aMessageData.myInt);
+			
+			CNetworkMessage_TakeDamage* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_TakeDamage>(ID_ALL_BUT_ME);
+
+			message->SetDamageTaken(aMessageData.myInt);
+			message->SetID(myNetworkID);
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 		}
 		break;
 	case eComponentMessageType::eHeal:
