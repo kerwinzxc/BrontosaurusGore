@@ -477,14 +477,24 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
 	{
+		const std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
+		const std::vector<mat4>* finalBones = &bones;
 
-		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
+		std::vector<mat4> blendedBones;
 
-		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
+		if (!aParamObj.aNextAnimationState.empty() && aParamObj.aAnimationState != aParamObj.aNextAnimationState)
+		{
+			const std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
+
+			blendedBones.resize(bones.size());
+			BlendBones(bones, nextBones, aParamObj.aAnimationLerper, blendedBones);
+			finalBones = &blendedBones;
+		}
+		unsigned int bytesToCopy = min(ourMaxBoneBufferSize, finalBones->size() * sizeof(mat4));
 
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-		memcpy(mappedSubResource.pData, &bones[0], min(ourMaxBoneBufferSize, bones.size() * sizeof(mat4)));
+		memcpy(mappedSubResource.pData, &finalBones->front(), bytesToCopy);
 		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
 		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
 	}
@@ -495,12 +505,24 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	SDeferredRenderModelParams params;
 	params.aAnimationLooping = aParamObj.aAnimationLooping;
 	params.aAnimationState = aParamObj.aAnimationState;
+	params.aNextAnimationState = aParamObj.aNextAnimationState;
+	params.aAnimationLerper = aParamObj.aAnimationLerper;
 	params.aAnimationTime = aParamObj.aAnimationTime;
 	params.aHighlightIntencity = aParamObj.aHighlightIntencity;
 	params.myTransform = aParamObj.myTransform;
 	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
 	params.myRenderToDepth = false;
 	UpdateCBuffer(params);
+}
+
+void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut)
+{
+	for (size_t i = 0; i < aBlendFrom.size(); ++i)
+	{
+		//aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
+		aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
+		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
+	}
 }
 
 void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)
@@ -647,8 +669,6 @@ CModel& CModel::operator=(CModel&& aModel)
 	myVertexSize = aModel.myVertexSize;
 	aModel.myVertexSize = 0;
 
-	mySphereColData = std::move(aModel.mySphereColData);
-
 	for (int i = 0; i < myConstantBuffers.Size(); ++i)
 	{
 		myConstantBuffers[i] = aModel.myConstantBuffers[i];
@@ -720,8 +740,6 @@ CModel& CModel::operator=(const CModel& aModel)
 	myIsInitialized = aModel.myIsInitialized.load();
 
 	myVertexSize = aModel.myVertexSize;
-
-	mySphereColData = aModel.mySphereColData;
 
 	for (int i = 0; i < myConstantBuffers.Size(); ++i)
 	{

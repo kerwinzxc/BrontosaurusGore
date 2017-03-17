@@ -131,3 +131,13 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CResetToCheckPointMessage 
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CCreateExplosionMessage & aCreateExplosionMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CDeactivateExplosionMessage & aDeactivateExplosionMessage)
+{
+	return eMessageReturn::eContinue;
+}

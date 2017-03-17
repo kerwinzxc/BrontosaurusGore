@@ -8,11 +8,6 @@ CModelComponent::CModelComponent(CModelInstance& aModel)
 	: myModel(aModel)
 {
 	myType = eComponentType::eModel;
-
-	if (myModel.myHasAnimations)
-	{
-
-	}
 }
 
 CModelComponent::CModelComponent(CModelInstance& aModel, const bool aIsDebugSphere)
@@ -54,6 +49,8 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	switch (aType)
 	{
 	case eComponentMessageType::eAddComponent:
+		//if (aData.myComponentTypeAdded != eComponentType::eModel) break;
+		//CreateAnimationComponent();
 	case eComponentMessageType::eMoving:
 		myModel.SetTransformation(GetToWorldTransform());
 		break;
@@ -63,10 +60,36 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	case eComponentMessageType::eSetHighlight:
 		myModel.SetHighlightIntencity(aData.myFloat);
 		break;
+	case eComponentMessageType::eDied:
+		myModel.SetVisibility(false);
+		break;
 	}
 }
 
-void CModelComponent::ChangeAnimation(const char* aAnimationKey)
+void CModelComponent::CreateAnimationComponent()
 {
-	myModel.ChangeAnimation(aAnimationKey);
+	if (myModel.myHasAnimations)
+	{
+		if (GetParent() && CComponentManager::GetInstancePtr() != nullptr)
+		{
+			CAnimationComponent* animationComponent = new CAnimationComponent(*this);
+			CComponentManager::GetInstance().RegisterComponent(animationComponent);
+			GetParent()->AddComponent(animationComponent);
+		}
+	}
+}
+
+void CModelComponent::SetAnimation(const std::string& aAnimationKey)
+{
+	myModel.SetAnimation(aAnimationKey);
+}
+
+void CModelComponent::SetNextAnimation(const std::string& aAnimationKey)
+{
+	myModel.SetNextAnimation(aAnimationKey);
+}
+
+void CModelComponent::SetAnimationLerpValue(const float aLerpValue)
+{
+	myModel.SetAnimationLerpie(aLerpValue);
 }

@@ -158,6 +158,7 @@
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
+    <ClInclude Include="NetworkMessage_TakeDamage.h" />
     <ClInclude Include="NetworkMessage_WeaponShoot.h" />
     <ClInclude Include="NetworkMesssage_Connect.h" />
     <ClInclude Include="PackageType.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
+    <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
     <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
     <ClCompile Include="NetworkMesssage_Connect.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -59,7 +59,9 @@ namespace CU
 		Vector3 GetNormalized() const;
 
 		Vector3& Normalize();
+		Vector3 Lerp(const Vector3<TYPE>& aInterpolateToVector, const TYPE aInterpolatingSpeed) const;
 		Vector3& Lerp(const Vector3<TYPE>& aInterpolateToVector, const TYPE aInterpolatingSpeed);
+		Vector3& Slerp(const Vector3& aSlerpTo, const TYPE aLerpValue);
 
 		Vector3& InterPolateTowards(Vector3 aVectorToInterPolateTowards, float aInterpolatingSpeed);
 
@@ -401,6 +403,42 @@ namespace CU
 		}
 
 		return self;
+	}
+
+	template<typename TYPE>
+	Vector3<TYPE>& Vector3<TYPE>::Slerp(const Vector3& aSlerpTo, const TYPE aLerpValue)
+	{
+		///https://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+
+		// Dot product - the cosine of the angle between 2 vectors.
+		TYPE dot = Dot(aSlerpTo);
+
+		// Clamp it to be in the range of Acos()
+		// This may be unnecessary, but floating point
+		// precision can be a fickle mistress.
+
+#define CLAMPY(A,B,C) ((A) < (B)) ? B : ((A) > (C)) ? C : A
+		dot = CLAMPY(dot, -1.f, 1.f);
+#undef CLAMPY
+		// Acos(dot) returns the angle between start and end,
+		// And multiplying that by percent returns the angle between
+		// start and the final result.
+		TYPE theta = acos(dot) * aLerpValue;
+		Vector3 relativeVec = aSlerpTo - self * dot;
+		relativeVec.Normalize();     // Orthonormal basis
+									 // The final result.
+		self = ((self * cos(theta)) + (relativeVec * sin(theta)));
+		return self;
+	}
+
+	template<typename TYPE>
+	Vector3<TYPE> Vector3<TYPE>::Lerp(const Vector3<TYPE>& aInterpolateToVector, const TYPE aInterpolatingSpeed) const
+	{
+		Vector3 copy = self;
+		copy.x = copy.x + aInterpolatingSpeed * (aInterpolateToVector.x - copy.x);
+		copy.y = copy.y + aInterpolatingSpeed * (aInterpolateToVector.y - copy.y);
+		copy.z = copy.z + aInterpolatingSpeed * (aInterpolateToVector.z - copy.z);
+		return copy;
 	}
 
 	template<typename TYPE>

@@ -29,6 +29,9 @@
 #include "Components/MovementComponentManager.h"
 #include "Components/ScriptComponentManager.h"
 #include "Components/PickupComponentManager.h"
+#include "Components/ExplosionFactory.h"
+#include "Components/ExplosionComponentManager.h"
+#include "Components/HealthComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -96,6 +99,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, myScriptComponentManager(nullptr)
+	,myExplosionComponentManager(nullptr)
+	,myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -125,6 +130,7 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
+	CHealthComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -221,6 +227,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
+	myExplosionComponentManager->Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -282,6 +289,7 @@ void CPlayState::CreateManagersAndFactories()
 	CComponentManager::CreateInstance();
 
 	CNetworkComponentManager::Create();
+	CHealthComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -308,6 +316,9 @@ void CPlayState::CreateManagersAndFactories()
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
+	
+	myExplosionComponentManager = new CExplosionComponentManager();
+	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -431,7 +442,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.height = 2.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		playerHealthComponent->SetMaxHealth(10);
 		playerHealthComponent->SetHealth(10);
 		playerObject->AddComponent(playerHealthComponent);

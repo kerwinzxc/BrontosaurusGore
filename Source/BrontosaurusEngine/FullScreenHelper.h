@@ -22,6 +22,9 @@ public:
 	enum class eEffectType
 	{
 		eCopy,
+		eCopyR,
+		eCopyG,
+		eCopyB,
 		eHDR,
 		eAdd,
 		eLuminance,
@@ -35,12 +38,11 @@ public:
 		eMotionBlur, //ooh
 		eDeferredAmbient, //oh oh oh oh
 		eDeferredDirectional,
-		//eDeferredPointLight,
 		eDeferredSpotLight,
-		eCopyDepth,
 		eColorGrading,
 		eAA,
 		eMetaSurface,
+		eSSAO,
 		eSize,
 	};
 
