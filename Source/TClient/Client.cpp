@@ -48,6 +48,9 @@
 #include "../TShared/NetworkMessage_EnemyPosition.h"
 #include "../Components/EnemyClientRepresentationManager.h"
 
+#include "../Components/HealthComponentManager.h"
+#include "../TShared/NetworkMessage_TakeDamage.h"
+
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
 {
@@ -263,6 +266,13 @@ void CClient::Update()
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
+		case ePackageType::eTakeDamage:
+		{
+			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+
+			CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
+		}
+		break;
 		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;

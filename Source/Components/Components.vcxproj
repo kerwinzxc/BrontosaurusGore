@@ -387,8 +387,14 @@
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="ExplosionBufferData.h" />
+    <ClInclude Include="ExplosionComponent.h" />
+    <ClInclude Include="ExplosionComponentManager.h" />
+    <ClInclude Include="ExplosionData.h" />
+    <ClInclude Include="ExplosionFactory.h" />
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HealthComponentManager.h" />
     <ClInclude Include="HealthPackComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
@@ -457,8 +463,12 @@
     <ClCompile Include="EnemyClientRepresentation.cpp" />
     <ClCompile Include="EnemyClientRepresentationManager.cpp" />
     <ClCompile Include="EnemyComponentManager.cpp" />
+    <ClCompile Include="ExplosionComponent.cpp" />
+    <ClCompile Include="ExplosionComponentManager.cpp" />
+    <ClCompile Include="ExplosionFactory.cpp" />
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="HealthPackComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
