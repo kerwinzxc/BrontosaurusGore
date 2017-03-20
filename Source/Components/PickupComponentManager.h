@@ -12,7 +12,7 @@ public:
 	static void Destroy();
 	static CPickupComponentManager* GetInstance();
 
-	CHealthPickupComponent* CreateAndRegisterHealthPickupComponent(const int aId, const healthPoint aHealthAmount);
+	CHealthPickupComponent* CreateAndRegisterHealthPickupComponent(const healthPoint aHealthAmount);
 	CAmmoPickupComponent* CreateAndRegisterAmmoPickupComponent(const int aId);
 
 	CHealthPickupComponent* GethHealthPackComponent(const int aId);
