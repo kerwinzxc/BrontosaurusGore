@@ -75,6 +75,11 @@ CAmmoPickupComponent * CPickupComponentManager::GetAmmoPickupComponent(const int
 	return myAmmoPacks.at(aId);
 }
 
+CArmorPickupComponent * CPickupComponentManager::GetArmorPickupComponent(const int aId)
+{
+	return myArmorPacks.at(aId);
+}
+
 void CPickupComponentManager::DeactivateHealthPack(const int aId)
 {
 	myHealthPacks.at(aId)->SetActive(false);

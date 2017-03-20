@@ -19,6 +19,7 @@ public:
 
 	CHealthPickupComponent* GethHealthPackComponent(const int aId);
 	CAmmoPickupComponent* GetAmmoPickupComponent(const int aId);
+	CArmorPickupComponent* GetArmorPickupComponent(const int aId);
 
 	void DeactivateHealthPack(const int aId);
 	void DeactivateAmmoPack(const int aId);
