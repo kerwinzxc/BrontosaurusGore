@@ -124,7 +124,7 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.radius = someData.myData.at("radius").GetFloat();
-	data.height = someData.myData.at("height").GetFloat();
+	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 	CCharcterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data);
 	return component->GetId();
 }

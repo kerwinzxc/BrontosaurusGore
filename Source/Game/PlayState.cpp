@@ -436,7 +436,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.height = 2.0f;
+		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 		CHealthComponent* playerHealthComponent = new CHealthComponent();
