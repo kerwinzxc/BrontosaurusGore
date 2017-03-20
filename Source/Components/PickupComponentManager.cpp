@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PickupComponentManager.h"
-#include "HealthPackComponent.h"
-#include "PickupAmmoComponent.h"
+#include "HealthPickupComponent.h"
+#include "AmmoPickupComponent.h"
 
 
 CPickupComponentManager* CPickupComponentManager::ourInstance = nullptr;
@@ -28,9 +28,9 @@ CPickupComponentManager * CPickupComponentManager::GetInstance()
 	return ourInstance;
 }
 
-CHealthPackComponent * CPickupComponentManager::CreateAndRegisterHealthPickupComponent(const int aId, const healthPoint aHealthAmount)
+CHealthPickupComponent * CPickupComponentManager::CreateAndRegisterHealthPickupComponent(const int aId, const healthPoint aHealthAmount)
 {
-	CHealthPackComponent* healthPackComponent = new CHealthPackComponent();
+	CHealthPickupComponent* healthPackComponent = new CHealthPickupComponent();
 	COMPMGR.RegisterComponent(healthPackComponent);
 	healthPackComponent->SetNetworkId(aId);
 	healthPackComponent->SetRestoreAmount(aHealthAmount);
@@ -38,17 +38,17 @@ CHealthPackComponent * CPickupComponentManager::CreateAndRegisterHealthPickupCom
 	return healthPackComponent;
 }
 
-CPickupAmmoComponent * CPickupComponentManager::CreateAndRegisterAmmoPickupComponent(const int aId)
+CAmmoPickupComponent * CPickupComponentManager::CreateAndRegisterAmmoPickupComponent(const int aId)
 {
 	return nullptr;
 }
 
-CHealthPackComponent * CPickupComponentManager::GethHealthPackComponent(const int aId)
+CHealthPickupComponent * CPickupComponentManager::GethHealthPackComponent(const int aId)
 {
 	return myHealthPacks.at(aId);
 }
 
-CPickupAmmoComponent * CPickupComponentManager::GetAmmoPickupComponent(const int aId)
+CAmmoPickupComponent * CPickupComponentManager::GetAmmoPickupComponent(const int aId)
 {
 	return myAmmoPacks.at(aId);
 }

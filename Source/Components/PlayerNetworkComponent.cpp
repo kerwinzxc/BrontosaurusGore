@@ -7,9 +7,11 @@
 #include "../ThreadedPostmaster/PlayerPositionMessage.h"
 
 
+
 CPlayerNetworkComponent::CPlayerNetworkComponent() : myID(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetClientIDMessage(*this));
+
 }
 
 

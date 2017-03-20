@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "LoadAmmoPickupComponent.h"
-#include "PickupAmmoComponent.h"
+#include "AmmoPickupComponent.h"
 #include "ComponentManager.h"
 
 int LoadAmmoPickupComponent(KLoader::SLoadedComponentData someData)
 {
-	CPickupAmmoComponent* ammoPickupComponent = new CPickupAmmoComponent();
+	CAmmoPickupComponent* ammoPickupComponent = new CAmmoPickupComponent();
 	COMPMGR.RegisterComponent(ammoPickupComponent);
 	std::string ammoType = someData.myData.at("AmmoType").GetString();
 	ammoPickupComponent->SetType(ammoType);

@@ -85,6 +85,7 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 		myCurrentHealth = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
+		//kom du hit sätt en break point i model componets recive eDied!
 
 	}
 	else
