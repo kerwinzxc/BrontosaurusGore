@@ -2,6 +2,7 @@
 #include "PickupComponentManager.h"
 #include "HealthPickupComponent.h"
 #include "AmmoPickupComponent.h"
+#include "ArmorPickupComponent.h"
 
 
 CPickupComponentManager* CPickupComponentManager::ourInstance = nullptr;
@@ -30,19 +31,38 @@ CPickupComponentManager * CPickupComponentManager::GetInstance()
 
 CHealthPickupComponent * CPickupComponentManager::CreateAndRegisterHealthPickupComponent(const healthPoint aHealthAmount)
 {
-	static int id = 0;
+	static int healthPickupID = 0;
 	CHealthPickupComponent* healthPackComponent = new CHealthPickupComponent();
 	COMPMGR.RegisterComponent(healthPackComponent);
-	healthPackComponent->SetNetworkId(id);
+	healthPackComponent->SetNetworkId(healthPickupID);
 	healthPackComponent->SetRestoreAmount(aHealthAmount);
-	myHealthPacks.emplace(id, healthPackComponent);
-	++id;
+	myHealthPacks.emplace(healthPickupID, healthPackComponent);
+	++healthPickupID;
 	return healthPackComponent;
 }
 
-CAmmoPickupComponent * CPickupComponentManager::CreateAndRegisterAmmoPickupComponent(const int aId)
+CAmmoPickupComponent * CPickupComponentManager::CreateAndRegisterAmmoPickupComponent(const int aAmmoAmount)
 {
-	return nullptr;
+	static int ammoPickupID = 0;
+	CAmmoPickupComponent* ammoPickupComponent = new CAmmoPickupComponent();
+	COMPMGR.RegisterComponent(ammoPickupComponent);
+	ammoPickupComponent->SetNetworkId(ammoPickupID);
+	ammoPickupComponent->SetPickupAmount(aAmmoAmount);
+	myAmmoPacks.emplace(ammoPickupID, ammoPickupComponent);
+	++ammoPickupID;
+	return ammoPickupComponent;
+}
+
+CArmorPickupComponent * CPickupComponentManager::CreateAndRegisterArmorPickupComponent(const armorPoint aArmorAmount)
+{
+	static int armorPickupID = 0;
+	CArmorPickupComponent* armorPickupComponent = new CArmorPickupComponent();
+	COMPMGR.RegisterComponent(armorPickupComponent);
+	armorPickupComponent->SetNetworkId(armorPickupID);
+	armorPickupComponent->SetReplenishAmount(aArmorAmount);
+	myAmmoPacks.emplace(armorPickupID, armorPickupComponent);
+	++armorPickupID;
+	return armorPickupComponent;
 }
 
 CHealthPickupComponent * CPickupComponentManager::GethHealthPackComponent(const int aId)
