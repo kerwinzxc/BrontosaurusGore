@@ -36,12 +36,8 @@ void CHealthPickupComponent::RestoreHealth()
 
 void CHealthPickupComponent::DoMyEffect()
 {
-	if (myHasBeenPickedUp == false)
-	{
-		IPickupComponent::DoMyEffect();
-		RestoreHealth();
-		CNetworkMessage_PickupHealth* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupHealth>(ID_ALL_BUT_ME);
-		message->SetID(myNetworkId);
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
-	}
+	RestoreHealth();
+	CNetworkMessage_PickupHealth* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupHealth>(ID_ALL_BUT_ME);
+	message->SetID(myNetworkId);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 }

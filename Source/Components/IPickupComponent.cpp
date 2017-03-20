@@ -4,6 +4,7 @@
 
 IPickupComponent::IPickupComponent()
 {
+	myHasBeenPickedUp = false;
 }
 
 
@@ -37,7 +38,11 @@ void IPickupComponent::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{
-			DoMyEffect();
+			if (myHasBeenPickedUp == false)
+			{
+				IPickupComponent::DoMyEffect();
+				DoMyEffect();
+			}
 		}
 		break;
 	default:

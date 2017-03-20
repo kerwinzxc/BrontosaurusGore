@@ -16,7 +16,8 @@ public:
 
 	virtual void DoMyEffect() = 0;
 protected:
-	bool myHasBeenPickedUp;
 	int myNetworkId;
+private:
+	bool myHasBeenPickedUp;
 };
 
