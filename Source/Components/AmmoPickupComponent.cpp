@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "PollingStation.h"
 #include "AmmoPickupComponent.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetWorkMessage_PickupAmmo.h"
+#include "../TClient/ClientMessageManager.h"
 
 CAmmoPickupComponent::CAmmoPickupComponent()
 {
@@ -24,20 +28,6 @@ void CAmmoPickupComponent::SetPickupAmount(const unsigned short aAmount)
 	myPickupData.replenishAmount = aAmount;
 }
 
-void CAmmoPickupComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
-{
-	switch (aMessageType)
-	{
-	case eComponentMessageType::eOnTriggerEnter:
-		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
-		{
-			DoMyEffect();
-		}
-	default:
-		break;
-	}
-}
-
 bool CAmmoPickupComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
 {
 	return false;
@@ -53,6 +43,8 @@ void CAmmoPickupComponent::GiveAmmoType()
 
 void CAmmoPickupComponent::DoMyEffect()
 {
-	IPickupComponent::DoMyEffect();
 	GiveAmmoType();
+	CNetWorkMessage_PickupAmmo* message = CClientMessageManager::GetInstance()->CreateMessage<CNetWorkMessage_PickupAmmo>(ID_ALL_BUT_ME);
+	message->SetID(myNetworkId);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 }

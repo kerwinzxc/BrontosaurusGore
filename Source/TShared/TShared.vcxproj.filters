@@ -129,6 +129,7 @@
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
     <ClInclude Include="NetworkMessage_TakeDamage.h" />
+    <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -185,5 +186,6 @@
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
+    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
   </ItemGroup>
 </Project>
