@@ -60,7 +60,7 @@ CArmorPickupComponent * CPickupComponentManager::CreateAndRegisterArmorPickupCom
 	COMPMGR.RegisterComponent(armorPickupComponent);
 	armorPickupComponent->SetNetworkId(armorPickupID);
 	armorPickupComponent->SetReplenishAmount(aArmorAmount);
-	myAmmoPacks.emplace(armorPickupID, armorPickupComponent);
+	myArmorPacks.emplace(armorPickupID, armorPickupComponent);
 	++armorPickupID;
 	return armorPickupComponent;
 }
