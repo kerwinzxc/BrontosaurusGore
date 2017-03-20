@@ -194,7 +194,11 @@ void CClient::Update()
 
 			const unsigned ID = playerPosition->GetID();
 
-			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+
+			CU::CJsonValue playerControls;
+			std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().Lerp(playerPosition->GetTransformation(), playerControls["MaxSpeed"].GetFloat());
 
 
 			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
