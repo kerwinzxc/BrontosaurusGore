@@ -26,5 +26,4 @@ void CArmorPickupComponent::DoMyEffect()
 	data.myInt = myReplenishAmount;
 	//armor systems needs to be added, maybe healthcomponent can hold how much armor the player has
 	GetParent()->NotifyComponents(eComponentMessageType::eAddArmor, data);
-	// network stuff here
 }

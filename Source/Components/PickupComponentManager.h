@@ -23,7 +23,6 @@ public:
 
 	void DeactivateHealthPack(const int aId);
 	void DeactivateAmmoPack(const int aId);
-
 private:
 	std::map<int, CHealthPickupComponent*> myHealthPacks;
 	std::map<int, CAmmoPickupComponent*> myAmmoPacks;

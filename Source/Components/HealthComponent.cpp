@@ -10,6 +10,8 @@ CHealthComponent::CHealthComponent(unsigned int aNetworkID) : myNetworkID(aNetwo
 {
 	myMaxHeath = 0;
 	myCurrentHealth = 0;
+	myArmor = 0;
+	myMaxArmor = 0;
 	myIsAlive = true;
 }
 
@@ -26,6 +28,16 @@ void CHealthComponent::SetMaxHealth(const healthPoint aHealthPointValue)
 void CHealthComponent::SetHealth(const healthPoint aHealthPointValue)
 {
 	myCurrentHealth = aHealthPointValue;
+}
+
+void CHealthComponent::SetMaxArmor(const armorPoint aArmorValue)
+{
+	myMaxArmor = aArmorValue;
+}
+
+void CHealthComponent::SetArmor(const armorPoint aArmorValue)
+{
+	myArmor = aArmorValue;
 }
 
 void CHealthComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -63,6 +75,12 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			TakeDamage(aMessageData.myInt);
 		}
 		break;
+	case eComponentMessageType::eAddArmor:
+		if (myIsAlive == true)
+		{
+			AddArmor(aMessageData.myInt);
+		}
+		break;
 	default:
 		break;
 	}
@@ -80,7 +98,7 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 		return;
 	}
 	GetParent()->NotifyComponents(eComponentMessageType::eTookDamage, SComponentMessageData());
-	if(myCurrentHealth - aDamage <= 0)
+	if((myCurrentHealth + myArmor) - aDamage <= 0)
 	{
 		myCurrentHealth = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
@@ -90,7 +108,21 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 	}
 	else
 	{
-		myCurrentHealth -= aDamage;
+		healthPoint damage = aDamage;
+		if (myArmor > 0)
+		{
+			if (myArmor - damage < 0)
+			{
+				damage -= myArmor;
+				myArmor = 0;
+			}
+			else
+			{
+				myArmor -= damage;
+				damage = 0;
+			}
+		}
+		myCurrentHealth -= damage;
 	}
 }
 void CHealthComponent::Heal(const healthPoint aHealAmount)
@@ -108,5 +140,13 @@ void CHealthComponent::Heal(const healthPoint aHealAmount)
 	else
 	{
 		myCurrentHealth += aHealAmount;
+	}
+}
+void CHealthComponent::AddArmor(const armorPoint aArmorValue)
+{
+	myArmor += aArmorValue;
+	if (myArmor > myMaxArmor)
+	{
+		myArmor = myMaxArmor;
 	}
 }
