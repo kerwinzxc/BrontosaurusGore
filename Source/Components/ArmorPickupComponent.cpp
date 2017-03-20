@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "ArmorPickupComponent.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_PickupArmor.h"
+#include "../TClient/ClientMessageManager.h"
 
 
 CArmorPickupComponent::CArmorPickupComponent()
@@ -26,4 +30,7 @@ void CArmorPickupComponent::DoMyEffect()
 	data.myInt = myReplenishAmount;
 	//armor systems needs to be added, maybe healthcomponent can hold how much armor the player has
 	GetParent()->NotifyComponents(eComponentMessageType::eAddArmor, data);
+	CNetworkmessage_PickupArmor* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkmessage_PickupArmor>(ID_ALL_BUT_ME);
+	message->SetID(myNetworkId);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 }

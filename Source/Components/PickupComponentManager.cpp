@@ -90,6 +90,11 @@ void CPickupComponentManager::DeactivateAmmoPack(const int aId)
 	myAmmoPacks.at(aId)->SetActive(false);
 }
 
+void CPickupComponentManager::DeactivateArmorPack(const int aId)
+{
+	myArmorPacks.at(aId)->SetActive(false);
+}
+
 CPickupComponentManager::CPickupComponentManager()
 {
 }
