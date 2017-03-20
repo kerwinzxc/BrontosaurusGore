@@ -11,6 +11,11 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
-	unsigned myID;
+	CU::Vector3f myInterpolationPosition;
+
+	float myInterpolationSpeed;
+
+	unsigned short myID;
+
 };
 

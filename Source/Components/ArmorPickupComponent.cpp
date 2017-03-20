@@ -16,4 +16,5 @@ CArmorPickupComponent::~CArmorPickupComponent()
 
 void CArmorPickupComponent::DoMyEffect()
 {
+	
 }

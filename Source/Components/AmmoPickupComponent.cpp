@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "PollingStation.h"
-#include "PickupAmmoComponent.h"
+#include "AmmoPickupComponent.h"
 
-CPickupAmmoComponent::CPickupAmmoComponent()
+CAmmoPickupComponent::CAmmoPickupComponent()
 {
 	myType = eComponentType::eAmmoPickup;
 	myPickupData.ammoType = "";
@@ -10,21 +10,21 @@ CPickupAmmoComponent::CPickupAmmoComponent()
 }
 
 
-CPickupAmmoComponent::~CPickupAmmoComponent()
+CAmmoPickupComponent::~CAmmoPickupComponent()
 {
 }
 
-void CPickupAmmoComponent::SetType(const std::string & aType)
+void CAmmoPickupComponent::SetType(const std::string & aType)
 {
 	myPickupData.ammoType = aType.c_str();
 }
 
-void CPickupAmmoComponent::SetPickupAmount(const unsigned short aAmount)
+void CAmmoPickupComponent::SetPickupAmount(const unsigned short aAmount)
 {
 	myPickupData.replenishAmount = aAmount;
 }
 
-void CPickupAmmoComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CAmmoPickupComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -38,12 +38,12 @@ void CPickupAmmoComponent::Receive(const eComponentMessageType aMessageType, con
 	}
 }
 
-bool CPickupAmmoComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
+bool CAmmoPickupComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
 {
 	return false;
 }
 
-void CPickupAmmoComponent::GiveAmmoType()
+void CAmmoPickupComponent::GiveAmmoType()
 {
 	SComponentMessageData data;
 	data.myAmmoReplenishData->ammoType = myPickupData.ammoType;
@@ -51,7 +51,7 @@ void CPickupAmmoComponent::GiveAmmoType()
 	GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
 }
 
-void CPickupAmmoComponent::DoMyEffect()
+void CAmmoPickupComponent::DoMyEffect()
 {
 	IPickupComponent::DoMyEffect();
 	GiveAmmoType();
