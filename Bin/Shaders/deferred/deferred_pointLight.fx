@@ -171,11 +171,11 @@ Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
 	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
 
-	if (depth >= DEPTH_BIAS)
-	{
-		output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
-		return output;
-	}
+	// if (depth >= DEPTH_BIAS)
+	// {
+	// 	output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	// 	return output;
+	// }
 
 
 	float3 albedo = fullAlbedo.rgb;

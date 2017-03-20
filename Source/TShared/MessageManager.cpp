@@ -14,6 +14,7 @@
 #include "NetworkMessage_WeaponShoot.h"
 #include "NetworkMessage_PickupHealth.h"
 #include "NetworkMessage_EnemyPosition.h"
+#include "NetworkMessage_TakeDamage.h"
 
 CMessageManager::CMessageManager()
 {
@@ -67,6 +68,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_PickupHealth>(aHeader);
 	case ePackageType::eEnemyPosition:
 		return CreateMessage<CNetworkMessage_EnemyPosition>(aHeader);
+	case ePackageType::eTakeDamage:
+		return CreateMessage<CNetworkMessage_TakeDamage>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

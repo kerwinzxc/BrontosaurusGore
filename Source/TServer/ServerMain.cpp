@@ -31,6 +31,7 @@
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
+#include "../TShared/NetworkMessage_TakeDamage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -463,6 +464,12 @@ bool CServerMain::Update()
 		case ePackageType::eDisconected:
 		{
 			DisconectClient(currentMessage->GetHeader().mySenderID);
+		}
+		break;
+		case ePackageType::eTakeDamage:
+		{
+			CNetworkMessage_TakeDamage* damage = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+			SendTo(damage);
 		}
 		break;
 		case ePackageType::ePickupHealth:

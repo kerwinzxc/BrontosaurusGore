@@ -77,6 +77,7 @@ enum class eComponentMessageType
 	eOnCollisionExit,
 	eCheckPointReset,
 	eSetControllerPosition,
+	eNetworkDoDamage,
 	eLength,
 };
 

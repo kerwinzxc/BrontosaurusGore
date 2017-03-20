@@ -21,7 +21,8 @@ namespace Component
 
 		static void SetPlayer(CGameObject* playerObject);
 	protected:
-		static CGameObject* myPlayerObject;
+		CU::Vector3f ClosestPlayerPosition();
+		static CU::GrowingArray<CGameObject*> myPlayerObject;
 		unsigned myHealth;
 		float mySpeed;
 		float myDetectionRange2;

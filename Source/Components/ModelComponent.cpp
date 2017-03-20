@@ -49,8 +49,8 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	switch (aType)
 	{
 	case eComponentMessageType::eAddComponent:
-		if (aData.myComponentTypeAdded != eComponentType::eModel) break;
-		CreateAnimationComponent();
+		//if (aData.myComponentTypeAdded != eComponentType::eModel) break;
+		//CreateAnimationComponent();
 	case eComponentMessageType::eMoving:
 		myModel.SetTransformation(GetToWorldTransform());
 		break;
@@ -59,6 +59,9 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 		break;
 	case eComponentMessageType::eSetHighlight:
 		myModel.SetHighlightIntencity(aData.myFloat);
+		break;
+	case eComponentMessageType::eDied:
+		myModel.SetVisibility(false);
 		break;
 	}
 }
