@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IPickupComponent.h"
-
+#include "PollingStation.h"
 
 IPickupComponent::IPickupComponent()
 {
@@ -28,6 +28,21 @@ void IPickupComponent::SetNetworkId(const int aID)
 const int IPickupComponent::GetNetworkId() const
 {
 	return myNetworkId;
+}
+
+void IPickupComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+{
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eOnTriggerEnter:
+		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
+		{
+			DoMyEffect();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 const bool IPickupComponent::GetIsActive() const
