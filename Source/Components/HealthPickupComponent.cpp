@@ -1,27 +1,28 @@
 #include "stdafx.h"
 #include "PollingStation.h"
-#include "HealthPackComponent.h"
-#include "../ThreadedPostmaster\Postmaster.h"
+#include "HealthPickupComponent.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
-#include "../TShared\NetworkMessage_PickupHealth.h"
-#include "..\TClient\ClientMessageManager.h"
-CHealthPackComponent::CHealthPackComponent()
+#include "../TShared/NetworkMessage_PickupHealth.h"
+#include "../TClient/ClientMessageManager.h"
+
+CHealthPickupComponent::CHealthPickupComponent()
 {
 	myRestoreAmount = 0;
 	myHasBeenPickedUp = false;
 }
 
 
-CHealthPackComponent::~CHealthPackComponent()
+CHealthPickupComponent::~CHealthPickupComponent()
 {
 }
 
-void CHealthPackComponent::SetRestoreAmount(const healthPoint aResoreAmount)
+void CHealthPickupComponent::SetRestoreAmount(const healthPoint aResoreAmount)
 {
 	myRestoreAmount = aResoreAmount;
 }
 
-void CHealthPackComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CHealthPickupComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -38,19 +39,19 @@ void CHealthPackComponent::Receive(const eComponentMessageType aMessageType, con
 	}
 }
 
-bool CHealthPackComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
+bool CHealthPickupComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
 {
 	return false;
 }
 
-void CHealthPackComponent::RestoreHealth()
+void CHealthPickupComponent::RestoreHealth()
 {
 	SComponentMessageData data;
 	data.myInt;
 	GetParent()->NotifyComponents(eComponentMessageType::eHeal, data);
 }
 
-void CHealthPackComponent::DoMyEffect()
+void CHealthPickupComponent::DoMyEffect()
 {
 	if (myHasBeenPickedUp == false)
 	{

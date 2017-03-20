@@ -3,11 +3,11 @@
 #include "IPickupComponent.h"
 #include "AmmoReplenishData.h"
 
-class CPickupAmmoComponent : public IPickupComponent
+class CAmmoPickupComponent : public IPickupComponent
 {
 public:
-	CPickupAmmoComponent();
-	~CPickupAmmoComponent();
+	CAmmoPickupComponent();
+	~CAmmoPickupComponent();
 
 	void SetType(const std::string& aType);
 	void SetPickupAmount(const unsigned short aAmount);

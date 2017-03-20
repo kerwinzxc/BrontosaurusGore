@@ -367,6 +367,7 @@
     <ClInclude Include="AmmoData.h" />
     <ClInclude Include="AmmoReplenishData.h" />
     <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="ArmorPickupComponent.h" />
     <ClInclude Include="AudioSourceComponent.h" />
     <ClInclude Include="AudioSourceComponentManager.h" />
     <ClInclude Include="BoxColliderComponent.h" />
@@ -395,14 +396,14 @@
     <ClInclude Include="GeneralAmmoData.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthComponentManager.h" />
-    <ClInclude Include="HealthPackComponent.h" />
+    <ClInclude Include="HealthPickupComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkComponentManager.h" />
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
-    <ClInclude Include="PickupAmmoComponent.h" />
+    <ClInclude Include="AmmoPickupComponent.h" />
     <ClInclude Include="PickupComponentManager.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
@@ -445,6 +446,7 @@
     <ClCompile Include="AmmoComponent.cpp" />
     <ClCompile Include="AmmoComponentManager.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="ArmorPickupComponent.cpp" />
     <ClCompile Include="AudioSourceComponent.cpp" />
     <ClCompile Include="AudioSourceComponentManager.cpp" />
     <ClCompile Include="BoxColliderComponent.cpp" />
@@ -469,7 +471,7 @@
     <ClCompile Include="FireComponent.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthComponentManager.cpp" />
-    <ClCompile Include="HealthPackComponent.cpp" />
+    <ClCompile Include="HealthPickupComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="MeshColliderComponent.cpp" />
@@ -478,7 +480,7 @@
     <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
-    <ClCompile Include="PickupAmmoComponent.cpp" />
+    <ClCompile Include="AmmoPickupComponent.cpp" />
     <ClCompile Include="PickupComponentManager.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
