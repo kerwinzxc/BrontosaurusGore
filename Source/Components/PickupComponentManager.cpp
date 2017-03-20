@@ -28,13 +28,15 @@ CPickupComponentManager * CPickupComponentManager::GetInstance()
 	return ourInstance;
 }
 
-CHealthPickupComponent * CPickupComponentManager::CreateAndRegisterHealthPickupComponent(const int aId, const healthPoint aHealthAmount)
+CHealthPickupComponent * CPickupComponentManager::CreateAndRegisterHealthPickupComponent(const healthPoint aHealthAmount)
 {
+	static int id = 0;
 	CHealthPickupComponent* healthPackComponent = new CHealthPickupComponent();
 	COMPMGR.RegisterComponent(healthPackComponent);
-	healthPackComponent->SetNetworkId(aId);
+	healthPackComponent->SetNetworkId(id);
 	healthPackComponent->SetRestoreAmount(aHealthAmount);
-	myHealthPacks.emplace(aId, healthPackComponent);
+	myHealthPacks.emplace(id, healthPackComponent);
+	++id;
 	return healthPackComponent;
 }
 
