@@ -13,11 +13,11 @@
 #include "../Components/ParticleEmitterComponentManager.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
-#define SHADOWBUFFER_DIM 2048
+#define SHADOWBUFFER_DIM /*16384*/2048
 
 CScene::CScene()
 {
-	myModels.Init(64);
+	myModels.Init(4096);
 	myPointLights.Init(32);
 	myParticleEmitters.Init(8);
 	myFireEmitters.Init(8);
@@ -25,7 +25,7 @@ CScene::CScene()
 
 	myCubemap = nullptr;
 
-	myShadowCamera.InitOrthographic(256, 256, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
+	myShadowCamera.InitOrthographic(16, 16, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
 	myShadowCamera.ShadowInit();
 
 	for(int i = 0; i < 20; ++i)
@@ -71,7 +71,7 @@ void CScene::Render()
 	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
 
 	CU::Vector3f shadowCamDirection = { myDirectionalLight.direction.x, myDirectionalLight.direction.y, myDirectionalLight.direction.z };
-	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 100);
+	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 10);
 	myShadowCamera.GetCamera().SetPosition(shadowCameraPosition);
 	myShadowCamera.GetCamera().LookAt(myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition());
 

@@ -44,7 +44,10 @@ CHealthComponent * CHealthComponentManager::CreateAndRegisterComponent(unsigned 
 void CHealthComponentManager::TakeDamage(const unsigned int aID, const unsigned int aDamageTaken)
 {
 	SComponentMessageData data; data.myInt = aDamageTaken;
-	myHealthComponents.at(aID)->Receive(eComponentMessageType::eNetworkDoDamage, data);
+	if (myHealthComponents.count(aID) > 0)
+	{
+		myHealthComponents.at(aID)->Receive(eComponentMessageType::eNetworkDoDamage, data);
+	}
 }
 
 CHealthComponentManager::CHealthComponentManager()

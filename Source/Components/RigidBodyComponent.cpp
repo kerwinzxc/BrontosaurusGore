@@ -29,6 +29,7 @@ void CRigidBodyComponent::Receive(const eComponentMessageType aMessageType, cons
 			myShape = new Physics::CShape(*data.myCollider->GetShape());
 			reinterpret_cast<Physics::CPhysicsActorDynamic*>(myActor)->SetMass(myData.mass);
 			myActor->SetShape(myShape);
+			myData.center = data.myCollider->GetData()->center;
 			GetManager()->RemoveActorFromScene(data.myCollider->GetActor());
 			GetParent()->RemoveComponent(data.myCollider);
 		}
