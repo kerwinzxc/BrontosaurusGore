@@ -78,8 +78,8 @@ void CExplosionFactory::CreateExplosion()
 	CGameObject* newExplosionObject = myGameObjectManagerPointer->CreateGameObject();
 	CExplosionComponent* tempExplosionComponent = myExplosionComponentsManager->CreateAndRegisterComponent();
 	newExplosionObject->AddComponent(tempExplosionComponent);
-	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
-	newExplosionObject->AddComponent(modelComponent);
+	/*CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
+	newExplosionObject->AddComponent(modelComponent);*/
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
@@ -101,25 +101,26 @@ void CExplosionFactory::CreateExplosion()
 
 	SEmitterData emitterData;
 	emitterData.UseGravity = true;
-	emitterData.Gravity = CU::Vector3f(0, -2, 0);
-	emitterData.EmissionRate = 1000;
-	emitterData.StartSize = 0.5;
+	emitterData.Gravity = CU::Vector3f(0, -5, 0);
+	emitterData.EmissionRate = 10000;
+	emitterData.StartSize = 0.2;
 	emitterData.EndSize = 0.5;
-	emitterData.NumOfParticles = 1000;
+	emitterData.NumOfParticles = 2500;
 	emitterData.MinParticleLifeTime = 5;
 	emitterData.MaxParticleLifeTime = 10;
 	const float bounds = 0;
 	emitterData.MaxEmissionArea = (CU::Vector3f(bounds, bounds * 2.f, bounds));
 	emitterData.MinEmissionArea = (CU::Vector3f(-bounds, 0.f, -bounds));
-	const float vel = 10;
-	const float nVel = vel / 10;
+	const float vel = 5;
+	const float nVel = vel / 5;
 	emitterData.MinEmissionVelocity = CU::Vector3f(-nVel, vel / 2.f, -nVel);
 	emitterData.MaxEmissionVelocity = CU::Vector3f(nVel, vel, nVel);
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
-	emitterData.StartColor = CU::Vector4f(0, 1, 1, 1);
+	emitterData.StartColor = CU::Vector4f(0.8, 0.3, 0.1, 1);
 	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);
+	emitterData.ColorCurve;
 	emitterData.ShouldLoop = false;
-	emitterData.Lifetime = 3.0f;
+	emitterData.Lifetime = .25f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	newExplosionObject->AddComponent(companent);
 

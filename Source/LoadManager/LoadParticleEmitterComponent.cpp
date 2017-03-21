@@ -16,7 +16,7 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.NumOfParticles = someData.myData["MaxParticles"].GetInt();
 
 	emitterData.StartSize =	someData.myData["StartSize"].GetFloat();
-	emitterData.EndSize =	someData.myData["EndSize"].GetFloat();
+	emitterData.EndSize =	someData.myData["EndSize"].GetFloat() / 2.5;
 
 	emitterData.MinParticleLifeTime = someData.myData["MinParticleLifetime"].GetFloat();
 	emitterData.MaxParticleLifeTime = someData.myData["MaxParticleLifetime"].GetFloat();
@@ -31,7 +31,7 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.MaxEmissionVelocity = someData.myData["MaxVelocity"].GetVector3f();
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
 
-	emitterData.ShouldLoop = false;
+	emitterData.ShouldLoop = true;
 	emitterData.Lifetime = 5.f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	return companent->GetId();
