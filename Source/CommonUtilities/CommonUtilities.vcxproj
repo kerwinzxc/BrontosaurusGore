@@ -413,6 +413,7 @@
     <ClInclude Include="MemoryLeekLogger.h" />
     <ClInclude Include="MoveArray.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="ReverseGrowingArray.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="StaticMemoryPool.h" />
@@ -502,6 +503,7 @@
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PJWrapper.cpp" />
     <ClCompile Include="PostMasterKyle.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="stdafx.cpp">

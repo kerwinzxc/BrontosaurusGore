@@ -91,6 +91,9 @@
     <Filter Include="Input\Recieving">
       <UniqueIdentifier>{59267a83-3d43-4a17-9acd-7413750948d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Quaternion">
+      <UniqueIdentifier>{2a2284d3-c86e-4af4-b2ae-2ee2b42ae0b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -395,6 +398,9 @@
     <ClInclude Include="MoveArray.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Math\Quaternion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -489,6 +495,9 @@
       <Filter>Input\Recieving</Filter>
     </ClCompile>
     <ClCompile Include="ConsolePrinter.cpp" />
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Math\Quaternion</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CommonUtilities.rc" />
