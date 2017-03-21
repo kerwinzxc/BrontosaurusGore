@@ -10,6 +10,7 @@
 #include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
 #include "ExplosionComponent.h"
 #include "ColliderComponentManager.h"
+#include "ParticleEmitterComponentManager.h"
 
 CExplosionFactory::CExplosionFactory(CExplosionComponentManager* aExplosionComponentManager)
 {
@@ -41,8 +42,10 @@ eMessageReturn CExplosionFactory::DoEvent(const CCreateExplosionMessage& aCreate
 		myActiveExplosions.Add(myPassiveExplosions[0]);
 		myPassiveExplosions.RemoveCyclicAtIndex(0);
 		SComponentMessageData EXuPlosssiioooooooonData;
-		EXuPlosssiioooooooonData.myExplosionData = myActiveExplosions.GetLast()->data;
+		EXuPlosssiioooooooonData.myExplosionData = &aCreateExplosionMessage.GetExplosionData();
 		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eActivateExplosion, EXuPlosssiioooooooonData);
+		myActiveExplosions.GetLast()->gameObject->SetWorldPosition(aCreateExplosionMessage.GetPosition());
+		myActiveExplosions.GetLast()->gameObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
@@ -74,20 +77,53 @@ void CExplosionFactory::CreateExplosion()
 	CGameObject* newExplosionObject = myGameObjectManagerPointer->CreateGameObject();
 	CExplosionComponent* tempExplosionComponent = myExplosionComponentsManager->CreateAndRegisterComponent();
 	newExplosionObject->AddComponent(tempExplosionComponent);
-	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/chromeBall/chromeBall.fbx");
+	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
 	newExplosionObject->AddComponent(modelComponent);
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 
-	SRigidBodyData explosionRigidBodyData;
-	explosionRigidBodyData.isKinematic = false;
-	explosionRigidBodyData.angularDrag = 0.5f;
-	explosionRigidBodyData.mass = 0.f;
-	CColliderComponent* projectileCollider = myColliderComponentManagerPointer->CreateComponent(&explosionRigidBodyData);
-	newExplosionObject->AddComponent(projectileCollider);
+	SSphereColliderData sphereColliderDesc;
+	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.IsTrigger = false;
+
+	unsigned int collideWith = Physics::CollideEverything;
+	collideWith &= ~Physics::ECollisionLayer::eProjectile;
+	sphereColliderDesc.myLayer = Physics::eProjectile;
+	sphereColliderDesc.myCollideAgainst = static_cast<Physics::ECollisionLayer>(collideWith);
+	sphereColliderDesc.IsTrigger = true;
+
+
+	CColliderComponent* explosionSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc);
+	newExplosionObject->AddComponent(explosionSphereCollider);
+
+	SEmitterData emitterData;
+	emitterData.UseGravity = true;
+	emitterData.Gravity = CU::Vector3f(0, -2, 0);
+	emitterData.EmissionRate = 1000;
+	emitterData.StartSize = 0.5;
+	emitterData.EndSize = 0.5;
+	emitterData.NumOfParticles = 1000;
+	emitterData.MinParticleLifeTime = 5;
+	emitterData.MaxParticleLifeTime = 10;
+	const float bounds = 0;
+	emitterData.MaxEmissionArea = (CU::Vector3f(bounds, bounds * 2.f, bounds));
+	emitterData.MinEmissionArea = (CU::Vector3f(-bounds, 0.f, -bounds));
+	const float vel = 10;
+	const float nVel = vel / 10;
+	emitterData.MinEmissionVelocity = CU::Vector3f(-nVel, vel / 2.f, -nVel);
+	emitterData.MaxEmissionVelocity = CU::Vector3f(nVel, vel, nVel);
+	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
+	emitterData.StartColor = CU::Vector4f(0, 1, 1, 1);
+	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);
+	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
+	newExplosionObject->AddComponent(companent);
+
 	SExplosionBufferData* newSexplosionData = new SExplosionBufferData();
 	newSexplosionData->gameObject = newExplosionObject;
+	newSexplosionData->data = nullptr;
 	myPassiveExplosions.Add(newSexplosionData);
+
+
 }

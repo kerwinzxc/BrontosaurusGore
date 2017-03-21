@@ -112,7 +112,7 @@ struct SComponentMessageData
 		SAmmoData* myAmmoData;
 		SAmmoCheckData* myAmmoCheckData;
 		SAmmoReplenishData* myAmmoReplenishData;
-		SExplosionData* myExplosionData;
+		const SExplosionData* myExplosionData;
 		CWeapon* myWeapon;
 	};
 };

@@ -11,7 +11,7 @@ public:
 	void Destroy() override;
 private:
 	CU::GrowingArray<CGameObject*> myCollidedWithGameObjects;
-	SExplosionData* myData;
+	const SExplosionData* myData;
 	float myDuration;
 	float myElapsedLivingTime;
 	bool myIsActive;
