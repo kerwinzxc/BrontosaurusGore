@@ -46,6 +46,7 @@ eMessageReturn CExplosionFactory::DoEvent(const CCreateExplosionMessage& aCreate
 		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eActivateExplosion, EXuPlosssiioooooooonData);
 		myActiveExplosions.GetLast()->gameObject->SetWorldPosition(aCreateExplosionMessage.GetPosition());
 		myActiveExplosions.GetLast()->gameObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		myActiveExplosions.GetLast()->gameObject->NotifyOnlyComponents(eComponentMessageType::eActivateEmitter, SComponentMessageData());
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
@@ -80,7 +81,6 @@ void CExplosionFactory::CreateExplosion()
 	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
 	newExplosionObject->AddComponent(modelComponent);
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eActivateEmitter, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
