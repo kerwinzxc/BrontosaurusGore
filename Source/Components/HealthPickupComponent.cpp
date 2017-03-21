@@ -31,7 +31,7 @@ void CHealthPickupComponent::RestoreHealth()
 {
 	SComponentMessageData data;
 	data.myInt = myRestoreAmount;
-	GetParent()->NotifyComponents(eComponentMessageType::eHeal, data);
+	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eHeal, data);
 }
 
 void CHealthPickupComponent::DoMyEffect()
