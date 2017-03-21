@@ -258,7 +258,6 @@ void CClient::Update()
 		case ePackageType::ePickupHealth:
 		{
 			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
-
 			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 		}
 		break;
