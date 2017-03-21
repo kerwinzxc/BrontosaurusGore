@@ -86,7 +86,7 @@ void CExplosionFactory::CreateExplosion()
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 
 	SSphereColliderData sphereColliderDesc;
-	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.myRadius = 6.0f;
 	sphereColliderDesc.IsTrigger = false;
 
 	unsigned int collideWith = Physics::CollideEverything;

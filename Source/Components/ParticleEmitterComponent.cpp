@@ -26,7 +26,6 @@ void CParticleEmitterComponent::Receive(const eComponentMessageType aMessageType
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eActivateEmitter:
-		DL_PRINT("Activate");
 		Activate();
 		break;
 	default: break;
