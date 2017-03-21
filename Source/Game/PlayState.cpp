@@ -82,6 +82,9 @@
 #include "../Components/ParticleEmitterComponentManager.h"
 #include "EnemyClientRepresentationManager.h"
 
+#include "TextInstance.h"
+#include "GameObject.h"
+#include "ComponentAnswer.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -219,6 +222,14 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	myPlayerHealthText = new CTextInstance();
+	myPlayerHealthText->Init();
+	myPlayerHealthText->SetPosition(CU::Vector2f(0.1f, 0.825f));
+
+	myPlayerArmorText = new CTextInstance();
+	myPlayerArmorText->Init();
+	myPlayerArmorText->SetPosition(CU::Vector2f(0.1f, 0.8f));
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -232,6 +243,20 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
 
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	SComponentQuestionData healthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
+	SComponentQuestionData maxHealthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxHealth, maxHealthData);
+
+	myPlayerHealthText->SetText(L"Health: " +std::to_wstring(healthData.myInt) + L"/" + std::to_wstring(maxHealthData.myInt));
+
+	SComponentQuestionData armorData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetArmor, armorData);
+	SComponentQuestionData maxArmorthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
+	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
+
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
 	{
@@ -244,6 +269,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+	myPlayerHealthText->Render();
+	myPlayerArmorText->Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
