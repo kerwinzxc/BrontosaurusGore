@@ -347,7 +347,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	addHandGunData.myString = "Shotgun";
+	/*addHandGunData.myString = "Shotgun";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	tempAmmoReplensihData.ammoType = "Shotgun";
 	tempAmmoReplensihData.replenishAmount = 100;
@@ -359,7 +359,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	tempAmmoReplensihData.ammoType = "PlasmaRifle";
 	tempAmmoReplensihData.replenishAmount = 1000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);*/
 
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);

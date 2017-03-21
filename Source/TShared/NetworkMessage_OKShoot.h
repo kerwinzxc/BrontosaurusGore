@@ -2,11 +2,11 @@
 #include "ImportantNetworkMessage.h"
 #include "../CommonUtilities/vector3.h"
 
-class CNetworkMessage_WeaponShoot : public CImportantNetworkMessage
+class CNetworkMessage_OKShoot : public CImportantNetworkMessage
 {
 public:
-	CNetworkMessage_WeaponShoot();
-	~CNetworkMessage_WeaponShoot();
+	CNetworkMessage_OKShoot();
+	~CNetworkMessage_OKShoot();
 
 	ePackageType GetPackageType()const override;
 

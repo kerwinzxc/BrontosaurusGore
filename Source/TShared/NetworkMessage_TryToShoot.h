@@ -2,11 +2,11 @@
 #include "ImportantNetworkMessage.h"
 #include "../CommonUtilities/vector3.h"
 
-class CNetworkMessage_WeaponShoot : public CImportantNetworkMessage
+class CNetworkMessage_TryToShoot : public CImportantNetworkMessage
 {
 public:
-	CNetworkMessage_WeaponShoot();
-	~CNetworkMessage_WeaponShoot();
+	CNetworkMessage_TryToShoot();
+	~CNetworkMessage_TryToShoot();
 
 	ePackageType GetPackageType()const override;
 
@@ -14,6 +14,9 @@ public:
 	CU::Vector3f GetDirection();
 	void SetWeaponIndex(const unsigned char aWeaponIndex);
 	int GetWeaponIndex();
+	void SetWeaponName(const std::string aWeaponName);
+	const std::string& GetWeaponName();
+
 
 private:
 	void DoSerialize(StreamType& aStream) override;
@@ -21,5 +24,6 @@ private:
 
 	CU::Vector3f myDirection;
 	unsigned char myWeaponIndex;
+	std::string myWeaponName;
 };
 
