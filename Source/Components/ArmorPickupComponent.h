@@ -8,6 +8,8 @@ public:
 	CArmorPickupComponent();
 	~CArmorPickupComponent();
 
+	void SetReplenishAmount(const armorPoint aAmount);
+
 	void DoMyEffect() override;
 private:
 	armorPoint myReplenishAmount;

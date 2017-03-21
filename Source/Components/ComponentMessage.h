@@ -42,6 +42,7 @@ enum class eComponentMessageType
 	eAddComponent,
 	ePlaySound,
 	eMoving,
+	eAddArmor,
 	eSetVisibility,
 	eSetIsColliderActive,
 	eObjectDone,
@@ -81,6 +82,7 @@ enum class eComponentMessageType
 	eActivateExplosion,
 	eActivate,
 	eDeactivate,
+	eNetworkDoDamage,
 	eLength,
 };
 

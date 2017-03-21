@@ -1,10 +1,10 @@
 #pragma once
 #include "ImportantNetworkMessage.h"
-class CNetworkMessage_PickupHealth : public CImportantNetworkMessage
+class CNetWorkMessage_PickupAmmo : public CImportantNetworkMessage
 {
 public:
-	CNetworkMessage_PickupHealth();
-	~CNetworkMessage_PickupHealth();
+	CNetWorkMessage_PickupAmmo();
+	~CNetWorkMessage_PickupAmmo();
 
 	ePackageType GetPackageType()const override;
 

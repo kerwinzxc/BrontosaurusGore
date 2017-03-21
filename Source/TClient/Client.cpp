@@ -42,11 +42,21 @@
 #include "../Game/GameEventMessenger.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_Disconected.h"
-#include "..\TShared\NetworkMessage_PickupHealth.h"
+#include "../TShared/NetworkMessage_PickupHealth.h"
+#include "../TShared/NetWorkMessage_PickupAmmo.h"
+#include "../TShared/NetWorkmessage_PickupArmor.h"
 
 #include "..\Components\PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
 #include "../Components/EnemyClientRepresentationManager.h"
+
+#include "../Components/HealthComponentManager.h"
+#include "../TShared/NetworkMessage_TakeDamage.h"
+
+#include "../Components/NetworkPlayerReciverComponent.h"
+
+//temp!!! hoppas jag...
+#include "../CommonUtilities/JsonValue.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -186,7 +196,24 @@ void CClient::Update()
 
 			const unsigned ID = playerPosition->GetID();
 
-			myNetworkRecieverComonents.at(ID)->GetParent()->SetWorldTransformation(playerPosition->GetTransformation());
+			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+
+			/*CU::CJsonValue playerControls;
+			std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
+
+			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+			myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+
+			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+
+			/*CU::CJsonValue playerControls;
+			std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+
+			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+
+
 			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		}
 		break;
@@ -235,6 +262,17 @@ void CClient::Update()
 			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 		}
 		break;
+		case ePackageType::ePickupAmmo:
+		{
+			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
+			CPickupComponentManager::GetInstance()->DeactivateAmmoPack(pickup->GetID());
+		}
+		break;
+		case ePackageType::ePickupArmor:
+		{
+			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
+		}
 		case ePackageType::eConnect:
 			{
 				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
@@ -263,6 +301,13 @@ void CClient::Update()
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
+		case ePackageType::eTakeDamage:
+		{
+			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+
+			CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
+		}
+		break;
 		case ePackageType::eZero:
 		case ePackageType::eSize:
 		default: break;
@@ -275,6 +320,15 @@ void CClient::Update()
 			currentTime = 0.f;
 
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CNetworkDebugInfo(myNetworkWrapper.GetAndClearDataSent(), myRoundTripTime));
+		}
+
+		std::map<unsigned int, CNetworkPlayerReciverComponent*>::iterator it;
+		for (it = myNetworkRecieverComonents.begin(); it != myNetworkRecieverComonents.end(); it++)
+		{
+			if (it->second != nullptr)
+			{
+				it->second->Update(deltaTime);
+			}
 		}
 
 		if (positionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)

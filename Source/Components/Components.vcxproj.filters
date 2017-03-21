@@ -124,14 +124,8 @@
       <Filter>PlayerNetwork</Filter>
     </ClCompile>
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
-    <ClCompile Include="HealthPackComponent.cpp">
-      <Filter>Health</Filter>
-    </ClCompile>
     <ClCompile Include="HealthComponent.cpp">
       <Filter>Health</Filter>
-    </ClCompile>
-    <ClCompile Include="PickupAmmoComponent.cpp">
-      <Filter>Ammo</Filter>
     </ClCompile>
     <ClCompile Include="BoxColliderComponent.cpp">
       <Filter>Collider/Physics</Filter>
@@ -154,8 +148,8 @@
     <ClCompile Include="CheckPointComponent.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
-    <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
@@ -164,9 +158,6 @@
     </ClCompile>
     <ClCompile Include="CapsuleColliderComponent.cpp">
       <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="PickupComponentManager.cpp">
-      <Filter>Pickup</Filter>
     </ClCompile>
     <ClCompile Include="EnemyClientRepresentation.cpp">
       <Filter>Enemy</Filter>
@@ -184,6 +175,22 @@
       <Filter>CheckPoint</Filter>
     </ClCompile>
     <ClCompile Include="ExplosionComponentManager.cpp" />
+    <ClCompile Include="HealthComponentManager.cpp" />
+    <ClCompile Include="IPickupComponent.cpp">
+      <Filter>Pickup</Filter>
+    </ClCompile>
+    <ClCompile Include="PickupComponentManager.cpp">
+      <Filter>Pickup\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ArmorPickupComponent.cpp">
+      <Filter>Pickup\Armor</Filter>
+    </ClCompile>
+    <ClCompile Include="AmmoPickupComponent.cpp">
+      <Filter>Pickup\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthPickupComponent.cpp">
+      <Filter>Pickup\Health</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -357,12 +364,6 @@
     <ClInclude Include="HealthComponent.h">
       <Filter>Health</Filter>
     </ClInclude>
-    <ClInclude Include="HealthPackComponent.h">
-      <Filter>Health</Filter>
-    </ClInclude>
-    <ClInclude Include="PickupAmmoComponent.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
     <ClInclude Include="BoxColliderComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
@@ -384,8 +385,8 @@
     <ClInclude Include="CheckPointComponent.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="CheckPointSystem.h" />
     <ClInclude Include="AnimationComponent.h" />
-    <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="SphereColliderComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
@@ -394,9 +395,6 @@
     </ClInclude>
     <ClInclude Include="CapsuleColliderComponent.h">
       <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PickupComponentManager.h">
-      <Filter>Pickup</Filter>
     </ClInclude>
     <ClInclude Include="EnemyClientRepresentation.h">
       <Filter>Enemy</Filter>
@@ -419,6 +417,22 @@
     <ClInclude Include="ExplosionComponentManager.h" />
     <ClInclude Include="ExplosionBufferData.h">
       <Filter>Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponentManager.h" />
+    <ClInclude Include="IPickupComponent.h">
+      <Filter>Pickup</Filter>
+    </ClInclude>
+    <ClInclude Include="PickupComponentManager.h">
+      <Filter>Pickup\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmorPickupComponent.h">
+      <Filter>Pickup\Armor</Filter>
+    </ClInclude>
+    <ClInclude Include="AmmoPickupComponent.h">
+      <Filter>Pickup\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthPickupComponent.h">
+      <Filter>Pickup\Health</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -496,6 +510,18 @@
     </Filter>
     <Filter Include="Explosion">
       <UniqueIdentifier>{ae5926f1-1e49-4d37-9d59-767b6089c695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Health">
+      <UniqueIdentifier>{19113ce6-30fd-47a5-8b50-3e68e38ce740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Ammo">
+      <UniqueIdentifier>{f2931254-a86c-4351-83a9-a613de24aaf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Armor">
+      <UniqueIdentifier>{b0aded43-3675-4b79-9003-0c6aea49377c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Manager">
+      <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

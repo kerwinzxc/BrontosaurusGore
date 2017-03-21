@@ -31,6 +31,7 @@
 #include "Components/PickupComponentManager.h"
 #include "Components/ExplosionFactory.h"
 #include "Components/ExplosionComponentManager.h"
+#include "Components/HealthComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -131,6 +132,7 @@ CPlayState::~CPlayState()
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
+	CHealthComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -290,6 +292,7 @@ void CPlayState::CreateManagersAndFactories()
 	CComponentManager::CreateInstance();
 
 	CNetworkComponentManager::Create();
+	CHealthComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -324,7 +327,7 @@ void CPlayState::CreateManagersAndFactories()
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Shotgun_01.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_BFG_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -439,10 +442,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.height = 2.0f;
+		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		playerHealthComponent->SetMaxHealth(10);
 		playerHealthComponent->SetHealth(10);
 		playerObject->AddComponent(playerHealthComponent);

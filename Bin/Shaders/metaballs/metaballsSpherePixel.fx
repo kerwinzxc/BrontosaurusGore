@@ -60,7 +60,7 @@ PixelOut PS_PosSizeColor(InputPixel input)
 
     output.normal.rgba = float4(normalTexturized.xyz, f2);
 
-    output.ao.rgba  = float4(1,0,1,f2);
+    output.ao.rgba  = float4(0.,0,1,1.f);
     
 
     return output;

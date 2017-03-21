@@ -1,8 +1,9 @@
 #pragma once
 #include "HealthPoint.h"
 
-class CHealthPackComponent;
-class CPickupAmmoComponent;
+class CHealthPickupComponent;
+class CAmmoPickupComponent;
+class CArmorPickupComponent;
 
 
 class CPickupComponentManager
@@ -12,18 +13,21 @@ public:
 	static void Destroy();
 	static CPickupComponentManager* GetInstance();
 
-	CHealthPackComponent* CreateAndRegisterHealthPickupComponent(const int aId, const healthPoint aHealthAmount);
-	CPickupAmmoComponent* CreateAndRegisterAmmoPickupComponent(const int aId);
+	CHealthPickupComponent* CreateAndRegisterHealthPickupComponent(const healthPoint aHealthAmount);
+	CAmmoPickupComponent* CreateAndRegisterAmmoPickupComponent(const int aAmmoAmount);
+	CArmorPickupComponent* CreateAndRegisterArmorPickupComponent(const armorPoint aArmorAmount);
 
-	CHealthPackComponent* GethHealthPackComponent(const int aId);
-	CPickupAmmoComponent* GetAmmoPickupComponent(const int aId);
+	CHealthPickupComponent* GethHealthPackComponent(const int aId);
+	CAmmoPickupComponent* GetAmmoPickupComponent(const int aId);
+	CArmorPickupComponent* GetArmorPickupComponent(const int aId);
 
 	void DeactivateHealthPack(const int aId);
 	void DeactivateAmmoPack(const int aId);
-
+	void DeactivateArmorPack(const int aId);
 private:
-	std::map<int, CHealthPackComponent*> myHealthPacks;
-	std::map<int, CPickupAmmoComponent*> myAmmoPacks;
+	std::map<int, CHealthPickupComponent*> myHealthPacks;
+	std::map<int, CAmmoPickupComponent*> myAmmoPacks;
+	std::map<int, CArmorPickupComponent*> myArmorPacks;
 
 	static CPickupComponentManager* ourInstance;
 	CPickupComponentManager();

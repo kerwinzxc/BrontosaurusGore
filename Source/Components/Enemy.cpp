@@ -5,7 +5,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
-CGameObject* Component::CEnemy::myPlayerObject = nullptr;
+CU::GrowingArray<CGameObject*> Component::CEnemy::myPlayerObject;
 
 Component::CEnemy::CEnemy(unsigned int anId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myServerId(anId)
 {
@@ -31,11 +31,11 @@ void Component::CEnemy::Move(const CU::Vector3f& aDispl)
 
 void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 {
-	if(myPlayerObject != nullptr)
-	{
+
 		if (myIsDead == false)
 		{
-			const CU::Vector3f playerPosition = myPlayerObject->GetWorldPosition();
+
+			const CU::Vector3f playerPosition = ClosestPlayerPosition();
 			const CU::Vector3f position = GetParent()->GetWorldPosition();
 			const CU::Vector3f dif = playerPosition - position;
 			const CU::Vector3f difNorm = dif.GetNormalized();
@@ -58,7 +58,7 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 				GetParent()->Face(difNorm);
 			}
 		}
-	}
+	
 }
 
 void Component::CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -73,5 +73,33 @@ void Component::CEnemy::Receive(const eComponentMessageType aMessageType, const 
 
 void Component::CEnemy::SetPlayer(CGameObject* playerObject)
 {
-	myPlayerObject = playerObject;
+	if (myPlayerObject.IsInitialized() == false)
+	{
+		myPlayerObject.Init(2);
+	}
+	myPlayerObject.Add(playerObject);
+}
+
+CU::Vector3f Component::CEnemy::ClosestPlayerPosition()
+{
+	const CU::Vector3f position = GetParent()->GetWorldPosition();
+
+	if(myPlayerObject.IsInitialized() == false || myPlayerObject.Size() == 0)
+	{
+		return position;
+	}
+
+	CU::Vector3f playerPos = myPlayerObject[0]->GetWorldPosition();
+	for(int i = 0; i < myPlayerObject.Size(); ++i)
+	{
+		CGameObject*const player = myPlayerObject[i];
+		const CU::Vector3f newPlayerPos = player->GetWorldPosition();
+
+		if((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+		{
+			playerPos = newPlayerPos;
+		}
+	}
+
+	return playerPos;
 }
