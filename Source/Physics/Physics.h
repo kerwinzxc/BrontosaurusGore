@@ -10,8 +10,6 @@ namespace physx
 
 namespace Physics
 {
-	enum ECollisionLayer;
-
 	class CPhysicsScene;
 	class CPhysicsActor;
 	class CPhysicsCharacterController;
