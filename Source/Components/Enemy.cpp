@@ -43,12 +43,7 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 			if (distToPlayer < myDetectionRange2)
 			{
 				//GetParent()->Face(toPlayer);
-				//GetParent()->GetToWorldTransform().LookAt(playerPosition);
-				//GetParent()->GetLocalTransform().Rotate(distToPlayer, CU::Axees::Y);
 				GetParent()->GetLocalTransform().LookAt(playerPosition);
-				//GetParent()->GetLocalTransform().Rotate(distToPlayer, CU::Axees::Z);
-				//GetParent()->GetToWorldTransform().CreateLookAt(playerPosition);
-				//GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 			}
 			if (distToPlayer < myStartAttackRange2)
@@ -60,13 +55,6 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
 				//CU::Vector3f displacement = toPlayer.GetNormalized() * movementAmount;
 				//Move(displacement);
-			
-				//CU::Matrix44f rot = GetParent()->GetLocalTransform().GetRotation();
-				//SComponentQuestionData data; // Velocity * rotation * deltaTime;							
-				//data.myVector4f = position; //(w also = deltaTime for some reason)
-				//data.myVector4f.z += movementAmount;
-				//data.myVector4f.w = aDeltaTime.GetSeconds(); // mebe ?
-				//
 
 				//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 				//{
