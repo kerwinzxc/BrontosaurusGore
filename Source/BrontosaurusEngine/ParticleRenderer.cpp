@@ -257,7 +257,7 @@ void CParticleRenderer::DoLight()
 void CParticleRenderer::ToIntermediate()
 {
 	myInteremediate.Activate();
-	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredAmbient, &myProcessed);
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myProcessed);
 }
 
 void CParticleRenderer::ClearParticleTargets()
