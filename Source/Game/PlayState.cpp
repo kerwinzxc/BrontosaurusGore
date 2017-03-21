@@ -324,7 +324,7 @@ void CPlayState::CreateManagersAndFactories()
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Shotgun_01.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_BFG_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -439,7 +439,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.height = 2.0f;
+		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);

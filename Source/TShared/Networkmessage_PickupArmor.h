@@ -1,10 +1,10 @@
 #pragma once
 #include "ImportantNetworkMessage.h"
-class CNetworkMessage_PickupHealth : public CImportantNetworkMessage
+class CNetworkmessage_PickupArmor : public CImportantNetworkMessage
 {
 public:
-	CNetworkMessage_PickupHealth();
-	~CNetworkMessage_PickupHealth();
+	CNetworkmessage_PickupArmor();
+	~CNetworkmessage_PickupArmor();
 
 	ePackageType GetPackageType()const override;
 
@@ -12,7 +12,6 @@ public:
 	void SetID(const int aId);
 private:
 	int myNetworkID;
-
 
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;

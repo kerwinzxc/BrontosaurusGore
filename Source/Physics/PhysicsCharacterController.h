@@ -17,7 +17,7 @@ namespace Physics
 		float skinWidth = 0.08f;
 		float minMoveDistance = 0.001f;
 		float radius = 0.5f;
-		float height = 1.0f;
+		float halfHeight = 1.0f;
 	};
 
 	using EControllerConstraintsFlags = char;

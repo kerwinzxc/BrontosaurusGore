@@ -140,6 +140,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
+    <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
+    <ClInclude Include="Networkmessage_PickupArmor.h" />
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
@@ -171,6 +173,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
+    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
+    <ClCompile Include="Networkmessage_PickupArmor.cpp" />
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
     <ClCompile Include="ImportantNetworkMessage.cpp" />
     <ClCompile Include="MessageManager.cpp" />
