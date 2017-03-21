@@ -64,7 +64,9 @@ private:
 		CRenderPackage surfaceRMAO;
 	}myParticleGBuffer;
 	CRenderPackage myInteremediate;
+	CRenderPackage myTempIntermediate;
 	CRenderPackage myProcessed;
+
 	ID3D11Buffer* myProjectionInverseBuffer;
 	ID3D11Buffer* myDirectionalLightBuffer;
 	ID3D11Buffer* myPointLightBuffer;

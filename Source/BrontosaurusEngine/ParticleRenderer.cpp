@@ -22,6 +22,8 @@ CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aH
 
 	myProcessed.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myInteremediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+	myTempIntermediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleMessages.Init(10);
 	myLightMessages.Init(10);
 
@@ -256,8 +258,13 @@ void CParticleRenderer::DoLight()
 
 void CParticleRenderer::ToIntermediate()
 {
+	myTempIntermediate.Clear();
+	myTempIntermediate.Activate();
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myInteremediate);
+
+	//TODO: Find right way to mix these
 	myInteremediate.Activate();
-	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myProcessed);
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eOverlay, &myProcessed, &myTempIntermediate);
 }
 
 void CParticleRenderer::ClearParticleTargets()

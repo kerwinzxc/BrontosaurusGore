@@ -30,6 +30,9 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.MinEmissionVelocity = someData.myData["MinVelocity"].GetVector3f();
 	emitterData.MaxEmissionVelocity = someData.myData["MaxVelocity"].GetVector3f();
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
+
+	emitterData.ShouldLoop = false;
+	emitterData.Lifetime = 5.f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	return companent->GetId();
 }
