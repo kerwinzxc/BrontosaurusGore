@@ -6,8 +6,7 @@ cbuffer ConstantBuffer : register( b0 ) //to vertex & geometry
 
 cbuffer ToWorld : register(b1)
 {
-    float4x4 projectionInverse;
-    float4x4 cameraSpace;
+    float4x4 worldSpace;
 }
 
 struct InputVertex

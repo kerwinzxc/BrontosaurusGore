@@ -40,7 +40,5 @@ SurfacePixelOutput PS_PosTex(PosTex_InputPixel input)
         output.rmao.rgba = float4(0,0,0,0);
     }
 
-    output.normal.rgb = normalize(output.normal.rgb);
-
     return output;
 }
