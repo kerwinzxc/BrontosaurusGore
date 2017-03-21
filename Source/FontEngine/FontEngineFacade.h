@@ -11,6 +11,7 @@ public:
 	static void CreateInstance();
 	static CFontEngineFacade GetInstance();
 	static void DestroyInstance();
+	static bool GetIsCreated();
 
 	void Init() const;
 	CFT_FontFacade GetFace(const char* aFilePath) const;
