@@ -96,7 +96,7 @@ CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColli
 		return nullptr;
 	}
 
-	shape->SetCollisionLayers(Physics::ECollisionLayer::eDefault);
+	shape->SetCollisionLayers(aBoxColliderData.myLayer, aBoxColliderData.myCollideAgainst);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aBoxColliderData.IsTrigger);
 	if (!actor)
@@ -120,7 +120,7 @@ CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSpher
 		return nullptr;
 	}
 
-	shape->SetCollisionLayers(Physics::ECollisionLayer::eDefault);
+	shape->SetCollisionLayers(aSphereColliderData.myLayer, aSphereColliderData.myCollideAgainst);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aSphereColliderData.IsTrigger);
 	if (!actor)
@@ -144,7 +144,7 @@ CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCaps
 		return nullptr;
 	}
 
-	shape->SetCollisionLayers(Physics::ECollisionLayer::eDefault);
+	shape->SetCollisionLayers(aCapsuleColliderData.myLayer, aCapsuleColliderData.myCollideAgainst);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aCapsuleColliderData.IsTrigger);
 	if (!actor)
@@ -168,7 +168,7 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 		return nullptr;
 	}
 
-	shape->SetCollisionLayers(Physics::ECollisionLayer::eDefault);
+	shape->SetCollisionLayers(aMeshColliderData.myLayer, aMeshColliderData.myCollideAgainst);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aMeshColliderData.IsTrigger);
 	if (!actor)

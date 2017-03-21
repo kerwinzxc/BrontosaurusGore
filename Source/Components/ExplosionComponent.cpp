@@ -6,7 +6,9 @@
 
 CExplosionComponent::CExplosionComponent()
 {
-	myDuration = 10.0f;
+	myDuration = 1.0f;
+	myCollidedWithGameObjects.Init(100);
+	myIsActive = false;
 }
 
 
@@ -20,12 +22,22 @@ void CExplosionComponent::Receive(const eComponentMessageType aMessageType, cons
 	{
 	case eComponentMessageType::eOnTriggerEnter:
 	{
-		SComponentMessageData damageData; 
-		damageData.myInt = myData->damage;
-		aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-	}
-
+		if(myCollidedWithGameObjects.Find(aMessageData.myComponent->GetParent()) == myCollidedWithGameObjects.FoundNone)
+		{
+			SComponentMessageData damageData;
+			damageData.myInt = myData->damage;
+			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+			myCollidedWithGameObjects.Add(aMessageData.myComponent->GetParent());
+		}
 		break;
+	}
+	case eComponentMessageType::eActivateExplosion:
+	{
+		myIsActive = true;
+		myElapsedLivingTime = 0.0f;
+		myData = aMessageData.myExplosionData;
+		break;
+	}
 	default:
 		break;
 	}
@@ -37,9 +49,19 @@ void CExplosionComponent::Destroy()
 
 void CExplosionComponent::Update(float aDeltaTime)
 {
-	myElapsedLivingTime += aDeltaTime;
-	if(myElapsedLivingTime > myDuration)
+	if(myIsActive == true)
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CDeactivateExplosionMessage(GetParent()));
+		myElapsedLivingTime += aDeltaTime;
+		if (myElapsedLivingTime > myDuration)
+		{
+			GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = false;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CDeactivateExplosionMessage(GetParent()));
+			myCollidedWithGameObjects.RemoveAll();
+			myElapsedLivingTime = 0.0f;
+			myIsActive = false;
+		}
 	}
 }
