@@ -7,6 +7,11 @@
 #include "ModelComponent.h"
 #include "ProjectileData.h"
 #include "ProjectileBufferData.h"
+#include "ColliderComponentManager.h"
+#include "../Physics/PhysicsCharacterController.h"
+#include "CharcterControllerComponent.h"
+#include "../Physics/CollisionLayers.h"
+#include "../Physics/Shape.h"
 
 CProjectileFactory* CProjectileFactory::ourInstance = nullptr;
 
@@ -68,12 +73,13 @@ void CProjectileFactory::Update(float aDeltaTime)
 		}
 	}
 }
-void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComponentManager* aModelComponentManagerPointer)
+void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComponentManager* aModelComponentManagerPointer, CColliderComponentManager* aColliderComponentManager)
 {
 	myGameObjectManagerPointer = aGameObjectManager;
 	myActiveProjectiles.Init(5);
 	myPassiveProjectiles.Init(5);
 	myModelComponentManagerPointer = aModelComponentManagerPointer;
+	myColliderComponentManagerPointer = aColliderComponentManager;
 	//for(unsigned short i = 0; i < 500; i++)
 	//{
 	//	CreateProjectile();
@@ -82,15 +88,36 @@ void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComp
 
 void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 {
-	CGameObject* aNewProjectileObject = myGameObjectManagerPointer->CreateGameObject();
+	CGameObject* newProjectileObject = myGameObjectManagerPointer->CreateGameObject();
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
-	aNewProjectileObject->AddComponent(tempProjectileComponent);
+	newProjectileObject->AddComponent(tempProjectileComponent);
 	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
-	aNewProjectileObject->AddComponent(modelComponent);
-	aNewProjectileObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	newProjectileObject->AddComponent(modelComponent);
+	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
-	aNewProjectileObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+
+	SSphereColliderData sphereColliderDesc;
+	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.IsTrigger = false;
+
+	unsigned int collideWith = Physics::CollideEverything;
+	collideWith &= ~Physics::ECollisionLayer::eProjectile;
+	sphereColliderDesc.myLayer = Physics::eProjectile;
+	sphereColliderDesc.myCollideAgainst = static_cast<Physics::ECollisionLayer>(collideWith);
+
+	
+	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc);
+	newProjectileObject->AddComponent(projectileSphereCollider);
+	
+	SRigidBodyData rigidbodyData;
+	rigidbodyData.isKinematic = false;
+	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData);
+	
+	newProjectileObject->AddComponent(projectileRigidBodyCollider);
+
+	newProjectileObject->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 	myPassiveProjectiles[aIndex]->projectileBuffer.Add(tempProjectileComponent);
 }
 

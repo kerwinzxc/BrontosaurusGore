@@ -124,6 +124,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myScriptComponentManager);
+	SAFE_DELETE(myExplosionFactory);
+	SAFE_DELETE(myExplosionComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
@@ -214,6 +216,7 @@ void CPlayState::Init()
 {
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
+	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -308,7 +311,7 @@ void CPlayState::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
-	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
 
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
@@ -465,11 +468,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->AddComponent(enemyRespanwsPlayerLol);
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
-		/*SRigidBodyData enemyRigidBodyData;
-		enemyRigidBodyData.isKinematic = false;
-		enemyRigidBodyData.angularDrag = 0.5f;
-		enemyRigidBodyData.mass = 0.f;
-		CColliderComponent* enemyRigidBodyColliderCHan = myColliderComponentManager->CreateComponent(&enemyRigidBodyData);
-		enemyObject->AddComponent(enemyRigidBodyColliderCHan);*/
+		/**/
 	}
 }

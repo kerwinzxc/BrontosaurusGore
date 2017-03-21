@@ -5,10 +5,10 @@
 struct SRigidBodyData : public SColliderData
 {
 	SRigidBodyData() { myType = eColliderType::eRigidbody; }
-	float mass;
-	float angularDrag;
-	float useGravity;
-	float isKinematic;
+	float mass = 1.0f;
+	float angularDrag = 1.0f;
+	float useGravity = true;
+	float isKinematic = false;
 
 	CU::Vector3<bool> freezedRotationAxiees;
 };

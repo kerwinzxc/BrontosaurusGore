@@ -18,6 +18,10 @@ namespace Physics
 		CPhysicsActor(physx::PxRigidActor* aActor, CShape* aShape);
 		virtual ~CPhysicsActor();
 
+		void SetIsActive(const bool aIsActive);
+		void SetUseGravity(const bool aUseGravity);
+
+		
 		void SetIsTrigger(const bool aIsTrigger);
 		void SetTransformation(const CU::Matrix44f& aTransformation);
 		CU::Matrix44f GetTransformation();
