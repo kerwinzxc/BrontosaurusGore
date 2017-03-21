@@ -36,6 +36,7 @@ void CExplosionComponent::Receive(const eComponentMessageType aMessageType, cons
 		myIsActive = true;
 		myElapsedLivingTime = 0.0f;
 		myData = aMessageData.myExplosionData;
+		myCollidedWithGameObjects.RemoveAll();
 		break;
 	}
 	default:
@@ -62,6 +63,8 @@ void CExplosionComponent::Update(float aDeltaTime)
 			myCollidedWithGameObjects.RemoveAll();
 			myElapsedLivingTime = 0.0f;
 			myIsActive = false;
+			GetParent()->SetWorldPosition(CU::Vector3f(0.0f, -10000, 0.0f));
+			GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		}
 	}
 }
