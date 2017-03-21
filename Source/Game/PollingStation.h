@@ -10,11 +10,11 @@ public:
 
 	static CPollingStation* GetInstance();
 
-	void SetPlayerObject(const CGameObject* aPlayerObject);
-	const CGameObject* GetPlayerObject();
+	void SetPlayerObject(CGameObject* aPlayerObject);
+	CGameObject* GetPlayerObject();
 
 private:
-	const CGameObject* myPlayerObject;
+	CGameObject* myPlayerObject;
 
 	static CPollingStation* ourInstance;
 };
