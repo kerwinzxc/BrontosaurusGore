@@ -46,7 +46,7 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 				//GetParent()->GetToWorldTransform().LookAt(playerPosition);
 				//GetParent()->GetLocalTransform().Rotate(distToPlayer, CU::Axees::Y);
 				GetParent()->GetLocalTransform().LookAt(playerPosition);
-				GetParent()->GetLocalTransform().Rotate(distToPlayer, CU::Axees::Z);
+				//GetParent()->GetLocalTransform().Rotate(distToPlayer, CU::Axees::Z);
 				//GetParent()->GetToWorldTransform().CreateLookAt(playerPosition);
 				//GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
@@ -62,11 +62,10 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 				//Move(displacement);
 			
 				//CU::Matrix44f rot = GetParent()->GetLocalTransform().GetRotation();
-				SComponentQuestionData data; // Velocity * rotation * deltaTime;							
-				data.myVector4f = position; //(w also = deltaTime for some reason)
-				data.myVector4f.z += movementAmount;
-
-				data.myVector4f.w = aDeltaTime.GetSeconds(); // mebe ?
+				//SComponentQuestionData data; // Velocity * rotation * deltaTime;							
+				//data.myVector4f = position; //(w also = deltaTime for some reason)
+				//data.myVector4f.z += movementAmount;
+				//data.myVector4f.w = aDeltaTime.GetSeconds(); // mebe ?
 				//
 
 				//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
