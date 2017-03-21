@@ -83,6 +83,7 @@ enum class eComponentMessageType
 	eActivate,
 	eDeactivate,
 	eNetworkDoDamage,
+	eActivateEmitter,
 	eLength,
 };
 

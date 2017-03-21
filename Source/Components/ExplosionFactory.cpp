@@ -80,6 +80,7 @@ void CExplosionFactory::CreateExplosion()
 	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
 	newExplosionObject->AddComponent(modelComponent);
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eActivateEmitter, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
@@ -117,6 +118,8 @@ void CExplosionFactory::CreateExplosion()
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
 	emitterData.StartColor = CU::Vector4f(0, 1, 1, 1);
 	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);
+	emitterData.ShouldLoop = false;
+	emitterData.Lifetime = 3.0f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	newExplosionObject->AddComponent(companent);
 
