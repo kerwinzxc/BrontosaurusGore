@@ -13,10 +13,10 @@ SamplerState Sampler
 // COPY SHADER
 PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
-    float3 resource1 = renderPackage1.SampleLevel(Sampler, input.tex, 0).rgb;
-    float resource2 = renderPackage2.SampleLevel(Sampler, input.tex, 0).r;
+    float4 resource1 = renderPackage1.SampleLevel(Sampler, input.tex, 0).rgba;
+    float resource2 = renderPackage2.SampleLevel(Sampler, input.tex, 0).a;
     
     PixelOutput output;
-    output.color = float4(resource1.rgb,resource2);
+    output.color = float4(resource1.rgb,resource1.a * resource2);
     return output;
 }

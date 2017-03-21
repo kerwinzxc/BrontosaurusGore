@@ -8,7 +8,7 @@ struct PixelOut
     float4 diffuse: SV_TARGET0;
     float4 normal: SV_TARGET1;
     float4 ao: SV_TARGET2;
-    float alpha: SV_TARGET3;
+    float4 alpha: SV_TARGET3;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -50,7 +50,7 @@ PixelOut PS_PosSizeColor(InputPixel input)
 {
     const float3 dif = input.worldPosition.xyz - input.center.xyz;
     const float dist = length(dif);
-    const float interpol = saturate(dist / input.radius);
+    const float interpol = saturate((dist) / (input.radius));
     
     const float f = (1 - interpol * interpol);
     const float f2 = f * f;
@@ -62,7 +62,8 @@ PixelOut PS_PosSizeColor(InputPixel input)
     output.normal.rgba = float4(normalTexturized.xyz, f2);
 
     output.ao.rgba  = float4(0.,0,1,1.f);
-    output.alpha = input.color.a;
+    output.alpha.a = input.color.a;
+    output.alpha.r = 1.f;
     
 
     return output;

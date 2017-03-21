@@ -86,7 +86,7 @@ void CExplosionFactory::CreateExplosion()
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 
 	SSphereColliderData sphereColliderDesc;
-	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.myRadius = 6.0f;
 	sphereColliderDesc.IsTrigger = false;
 
 	unsigned int collideWith = Physics::CollideEverything;
@@ -102,7 +102,7 @@ void CExplosionFactory::CreateExplosion()
 	SEmitterData emitterData;
 	emitterData.UseGravity = true;
 	emitterData.Gravity = CU::Vector3f(0, -5, 0);
-	emitterData.EmissionRate = 10000;
+	emitterData.EmissionRate = 1000;
 	emitterData.StartSize = 0.2;
 	emitterData.EndSize = 0.5;
 	emitterData.NumOfParticles = 1000;
@@ -117,9 +117,11 @@ void CExplosionFactory::CreateExplosion()
 	emitterData.MaxEmissionVelocity = CU::Vector3f(nVel, vel, nVel);
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
 	emitterData.StartColor = CU::Vector4f(0.8, 0.3, 0.1, 1);
-	emitterData.EndColor = CU::Vector4f(0.8, 0.3, 0.1, 1) / 5;
-	emitterData.EndColor.a = 0;
-	emitterData.ColorCurve;
+	emitterData.EndColor = emitterData.StartColor;
+	emitterData.EndColor.a = 0.f;
+	emitterData.ColorCurve = eLerpCurve::eSmootherStep;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
+	emitterData.RotationCurve = eLerpCurve::eSmootherStep;
 	emitterData.ShouldLoop = false;
 	emitterData.Lifetime = .25f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);

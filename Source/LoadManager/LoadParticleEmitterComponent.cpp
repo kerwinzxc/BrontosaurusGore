@@ -33,6 +33,10 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 
 	emitterData.ShouldLoop = true;
 	emitterData.Lifetime = 5.f;
+
+	emitterData.ColorCurve = eLerpCurve::eLinear;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	return companent->GetId();
 }
