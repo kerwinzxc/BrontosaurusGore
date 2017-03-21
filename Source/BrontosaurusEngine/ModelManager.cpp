@@ -208,11 +208,16 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
 	std::string modelName = aPath;
+	if (modelName.find("Shotgun") != std::string::npos)
+	{
+		int br = 0;
+	}
 	modelName -= std::string(".fbx");
-	modelName += std::string("_");
+	CU::FindAndReplace(modelName, "Meshes", "Animations");
+	modelName += std::string("@");
 
-	const ModelId animationCount = 13;
-	const std::string animationNames[animationCount] = { ("idle"), ("idle2"), ("walk"), ("pickup"), ("turnRight90"), ("turnLeft90"), ("attack") , ("summon"), ("die"), ("sweep"), ("whirlwind"), ("hurt"), ("spawn") };
+	const ModelId animationCount = 3;
+	const std::string animationNames[animationCount] = { ("idle"), ("walk"), ("shot") };
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
@@ -237,6 +242,8 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 
 			mdl->mySceneAnimators[animationName] = CSceneAnimator();
 			mdl->mySceneAnimators[animationName].Init(animationScene);
+			//mdl->mySceneAnimators[animationName].CarlSave(modelName + animationName + ".animation");
+			//mdl->mySceneAnimators[animationName].CarlLoad(modelName + animationName + ".animation");
 		}
 
 		if (mdl->mySceneAnimators.empty() == true)

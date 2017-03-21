@@ -13,7 +13,7 @@
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
-	if (std::string(aModelPath).find("M_Placeholder_3m") != std::string::npos)
+	if (std::string(aModelPath).find("M_Shotgun_01") != std::string::npos)
 	{
 		int br = 0;
 	}
