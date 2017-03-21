@@ -37,26 +37,31 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 
 			const CU::Vector3f playerPosition = ClosestPlayerPosition();
 			const CU::Vector3f position = GetParent()->GetWorldPosition();
-			const CU::Vector3f dif = playerPosition - position;
-			const CU::Vector3f difNorm = dif.GetNormalized();
-			const float dist2 = dif.Length2();
+			const CU::Vector3f toPlayer = playerPosition - position;
+			const float distToPlayer = toPlayer.Length2();
 
-			if (dist2 < myStartAttackRange2)
+			if (distToPlayer < myDetectionRange2)
+			{
+				//GetParent()->Face(toPlayer);
+				GetParent()->GetLocalTransform().LookAt(playerPosition);
+
+			}
+			if (distToPlayer < myStartAttackRange2)
 			{
 
 			}
-			else if (dist2 < myDetectionRange2)
+			else if (distToPlayer < myDetectionRange2)
 			{
 				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
-				//const CU::Vector3f displ = difNorm * mySpeed * aDeltaTime.GetSeconds();
-				
-				Move(CU::Vector3f(0.0f, 0.0f, movementAmount));
-				
+				//CU::Vector3f displacement = toPlayer.GetNormalized() * movementAmount;
+				//Move(displacement);
+
+				//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+				//{
+					Move({ 0.f, 0.f, movementAmount });
+				//}
 			}
-			if (dist2 < myDetectionRange2)
-			{
-				GetParent()->Face(difNorm);
-			}
+
 		}
 	
 }
