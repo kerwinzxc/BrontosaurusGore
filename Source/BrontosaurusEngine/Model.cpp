@@ -210,7 +210,7 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 
 
 	//ANIMATION BUFFER
-	if (aLoadedMesh->myScene != nullptr && aLoadedMesh->myScene->myNumBones > 0)
+	if (aLoadedMesh->myScene != nullptr && aLoadedMesh->myScene->myScene->mNumAnimations > 0)
 	{
 		SAnimationBoneStruct boneBuffer;
 		myBoneBuffer = BSR::CreateCBuffer<SAnimationBoneStruct>(&boneBuffer);
@@ -491,12 +491,14 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 			finalBones = &blendedBones;
 		}
 		unsigned int bytesToCopy = min(ourMaxBoneBufferSize, finalBones->size() * sizeof(mat4));
-
-		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-		memcpy(mappedSubResource.pData, &finalBones->front(), bytesToCopy);
-		DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
-		DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
+		if (bytesToCopy > 0)
+		{
+			ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+			DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+			memcpy(mappedSubResource.pData, &finalBones->front(), bytesToCopy);
+			DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
+			DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
+		}
 	}
 }
 
