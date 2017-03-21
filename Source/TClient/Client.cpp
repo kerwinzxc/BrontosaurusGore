@@ -42,7 +42,9 @@
 #include "../Game/GameEventMessenger.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_Disconected.h"
-#include "..\TShared\NetworkMessage_PickupHealth.h"
+#include "../TShared/NetworkMessage_PickupHealth.h"
+#include "../TShared/NetWorkMessage_PickupAmmo.h"
+#include "../TShared/NetWorkmessage_PickupArmor.h"
 
 #include "..\Components\PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
@@ -260,6 +262,17 @@ void CClient::Update()
 			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 		}
 		break;
+		case ePackageType::ePickupAmmo:
+		{
+			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
+			CPickupComponentManager::GetInstance()->DeactivateAmmoPack(pickup->GetID());
+		}
+		break;
+		case ePackageType::ePickupArmor:
+		{
+			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
+		}
 		case ePackageType::eConnect:
 			{
 				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();

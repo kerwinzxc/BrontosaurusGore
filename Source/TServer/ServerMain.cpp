@@ -9,7 +9,9 @@
 #include "../TShared/NetworkMessage_ConectResponse.h"
 #include "../TShared/NetworkMessage_ChatMessage.h"
 #include "../TShared/NetworkMessage_Position.h"
-#include "../TShared\NetworkMessage_PickupHealth.h"
+#include "../TShared/NetworkMessage_PickupHealth.h"
+#include "../TShared/NetworkMessage_PickupAmmo.h"
+#include "../TShared/Networkmessage_PickupArmor.h"
 
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
@@ -477,6 +479,18 @@ bool CServerMain::Update()
 			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
 			SendTo(pickup);
 		}
+		break;
+		case ePackageType::ePickupAmmo:
+		{
+			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
+			SendTo(pickup);
+		}
+		case ePackageType::ePickupArmor:
+		{
+			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+			SendTo(pickup);
+		}
+		break;
 		break;
 		case ePackageType::eZero:
 		case ePackageType::eSize:

@@ -10,6 +10,7 @@ struct SAmmoData;
 struct SAmmoCheckData;
 struct SAmmoReplenishData;
 class CWeapon;
+struct SExplosionData;
 enum class ePlayerControls;
 
 namespace CU
@@ -78,6 +79,9 @@ enum class eComponentMessageType
 	eOnCollisionExit,
 	eCheckPointReset,
 	eSetControllerPosition,
+	eActivateExplosion,
+	eActivate,
+	eDeactivate,
 	eNetworkDoDamage,
 	eLength,
 };
@@ -108,6 +112,7 @@ struct SComponentMessageData
 		SAmmoData* myAmmoData;
 		SAmmoCheckData* myAmmoCheckData;
 		SAmmoReplenishData* myAmmoReplenishData;
+		SExplosionData* myExplosionData;
 		CWeapon* myWeapon;
 	};
 };
