@@ -20,6 +20,6 @@ PixelOutput PS_PosTex(PosTex_InputPixel input)
     
 
     PixelOutput output;
-    output.color = float4(resource1.rgba + resource2.rgba);
+    output.color = float4(resource1.rgba + float4(resource2.rgb * resource2.a, resource2.a));
     return output;
 }

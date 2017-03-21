@@ -28,6 +28,16 @@ namespace Physics
 		myShape = nullptr;
 	}
 
+	void CPhysicsActor::SetIsActive(const bool aIsActive)
+	{
+		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
+	}
+
+	void CPhysicsActor::SetUseGravity(const bool aUseGravity)
+	{
+		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !aUseGravity);
+	}
+
 	void CPhysicsActor::SetIsTrigger(const bool aIsTrigger)
 	{
 		if (myShape != nullptr)

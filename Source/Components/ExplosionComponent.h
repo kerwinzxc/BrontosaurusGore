@@ -10,8 +10,10 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	void Destroy() override;
 private:
-	SExplosionData* myData;
+	CU::GrowingArray<CGameObject*> myCollidedWithGameObjects;
+	const SExplosionData* myData;
 	float myDuration;
 	float myElapsedLivingTime;
+	bool myIsActive;
 };
 

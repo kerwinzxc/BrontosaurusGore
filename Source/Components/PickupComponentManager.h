@@ -13,9 +13,9 @@ public:
 	static void Destroy();
 	static CPickupComponentManager* GetInstance();
 
-	CHealthPickupComponent* CreateAndRegisterHealthPickupComponent(const healthPoint aHealthAmount);
-	CAmmoPickupComponent* CreateAndRegisterAmmoPickupComponent(const int aAmmoAmount);
-	CArmorPickupComponent* CreateAndRegisterArmorPickupComponent(const armorPoint aArmorAmount);
+	CHealthPickupComponent* CreateHealthPickupComponent(const healthPoint aHealthAmount);
+	CAmmoPickupComponent* CreateAmmoPickupComponent(const int aAmmoAmount, const std::string& aAmmoType);
+	CArmorPickupComponent* CreateArmorPickupComponent(const armorPoint aArmorAmount);
 
 	CHealthPickupComponent* GethHealthPackComponent(const int aId);
 	CAmmoPickupComponent* GetAmmoPickupComponent(const int aId);

@@ -35,6 +35,16 @@ void CFontEngineFacade::DestroyInstance()
 	}
 }
 
+bool CFontEngineFacade::GetIsCreated()
+{
+	if (ourInstance != nullptr)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void CFontEngineFacade::Init() const
 {
 	ourInstance->Init();

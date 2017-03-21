@@ -86,8 +86,8 @@ struct SEmitterData
 	eLerpCurve ColorCurve;
 	eLerpCurve SizeCurve;
 	bool UseGravity;
-
-
+	bool ShouldLoop;
+	float Lifetime;
 };
 
 struct  SStreakEmitterData
