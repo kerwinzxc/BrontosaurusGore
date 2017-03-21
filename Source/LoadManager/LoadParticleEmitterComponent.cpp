@@ -16,7 +16,7 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.NumOfParticles = someData.myData["MaxParticles"].GetInt();
 
 	emitterData.StartSize =	someData.myData["StartSize"].GetFloat();
-	emitterData.EndSize =	someData.myData["EndSize"].GetFloat() / 2.5;
+	emitterData.EndSize =	someData.myData["EndSize"].GetFloat();
 
 	emitterData.MinParticleLifeTime = someData.myData["MinParticleLifetime"].GetFloat();
 	emitterData.MaxParticleLifeTime = someData.myData["MaxParticleLifetime"].GetFloat();

@@ -8,6 +8,7 @@ struct PixelOut
     float4 diffuse: SV_TARGET0;
     float4 normal: SV_TARGET1;
     float4 ao: SV_TARGET2;
+    float alpha : SV_TARGET3;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -57,11 +58,13 @@ PixelOut PS_PosSizeColor(const InputPixel input)
     
     output.normal.rgba = float4(GetNormal(input),1);
     output.ao.rgba  = float4(1,1,1,1);
+    output.alpha = input.color.a;
     if(interpol >= 1)
     {
         output.diffuse.rgba = float4(0,0,0,0);
         output.normal.rgba = float4(0,0,0,0);
-        output.ao.rgba  = float4(0,0,0,0); 
+        output.ao.rgba  = float4(0,0,0,0);
+        output.alpha = 0.f;
     }
 
 

@@ -8,6 +8,7 @@ struct PixelOut
     float4 diffuse: SV_TARGET0;
     float4 normal: SV_TARGET1;
     float4 ao: SV_TARGET2;
+    float alpha: SV_TARGET3;
 };
 
 float GetZ(const InputPixel input, float difLength)
@@ -61,6 +62,7 @@ PixelOut PS_PosSizeColor(InputPixel input)
     output.normal.rgba = float4(normalTexturized.xyz, f2);
 
     output.ao.rgba  = float4(0.,0,1,1.f);
+    output.alpha = input.color.a;
     
 
     return output;
