@@ -16,11 +16,14 @@ CAmmoPickupComponent::CAmmoPickupComponent()
 
 CAmmoPickupComponent::~CAmmoPickupComponent()
 {
+
 }
 
-void CAmmoPickupComponent::SetType(const std::string & aType)
+void CAmmoPickupComponent::SetType(const std::string& aType)
 {
-	myPickupData.ammoType = aType.c_str();
+	myPickupData.ammoType = std::string(aType);
+	int br = 0;
+	br++;
 }
 
 void CAmmoPickupComponent::SetPickupAmount(const unsigned short aAmount)
@@ -36,8 +39,10 @@ bool CAmmoPickupComponent::Answer(const eComponentQuestionType aQuestionType, SC
 void CAmmoPickupComponent::GiveAmmoType()
 {
 	SComponentMessageData data;
-	data.myAmmoReplenishData->ammoType = myPickupData.ammoType;
-	data.myAmmoReplenishData->replenishAmount = myPickupData.replenishAmount;
+	SAmmoReplenishData data2;
+	data2.ammoType = myPickupData.ammoType.c_str();
+	data2.replenishAmount = myPickupData.replenishAmount;
+	data.myAmmoReplenishData = &data2;
 	GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
 }
 

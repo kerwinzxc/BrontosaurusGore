@@ -2,7 +2,6 @@
 #include "LoadHealthPackComponent.h"
 #include "HealthPickupComponent.h"
 #include "PickupComponentManager.h"
-#include "ComponentManager.h"
 
 int LoadHealthPackComponent(KLoader::SLoadedComponentData someData)
 {

@@ -14,11 +14,13 @@ IPickupComponent::~IPickupComponent()
 
 void IPickupComponent::SetActive(const bool aFlag)
 {
-	myHasBeenPickedUp = aFlag;
-
-	SComponentMessageData data;
-	data.myBool = aFlag;
-	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+	myHasBeenPickedUp = !aFlag;
+	if (GetParent() != nullptr)
+	{
+		SComponentMessageData data;
+		data.myBool = aFlag;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+	}
 }
 
 void IPickupComponent::SetNetworkId(const int aID)

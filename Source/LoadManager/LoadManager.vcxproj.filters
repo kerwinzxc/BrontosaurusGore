@@ -70,6 +70,7 @@
     <ClInclude Include="LoadCheckPointComponent.h">
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadArmorComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -138,6 +139,7 @@
     <ClCompile Include="LoadCheckPointComponent.cpp">
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClCompile>
+    <ClCompile Include="LoadArmorComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -205,6 +207,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadCheckPointComponent">
       <UniqueIdentifier>{c2fd6e44-7dea-4c49-807e-765ef63e75b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadArmorPickupComponent">
+      <UniqueIdentifier>{6bef8a7f-9f51-471d-894c-e19cde254bf7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -272,6 +272,7 @@ void CClient::Update()
 			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
 			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
 		}
+		break;
 		case ePackageType::eConnect:
 			{
 				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
