@@ -574,9 +574,9 @@ namespace CU
 
 		Matrix44<TYPE>& Scale(const Vector3<TYPE>& aScaleVector)
 		{
-			m11 *= aScaleVector.x;
-			m22 *= aScaleVector.y;
-			m33 *= aScaleVector.z;
+			myRightVector *= aScaleVector.x;
+			myUpVector *= aScaleVector.y;
+			myForwardVector *= aScaleVector.z;
 
 			return *this;
 		}
