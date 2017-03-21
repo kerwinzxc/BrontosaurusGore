@@ -69,7 +69,7 @@ void CParticleEmitterComponent::Receive(const eComponentMessageType aMessageType
 	case eComponentMessageType::eDeactivate: break;
 	case eComponentMessageType::eNetworkDoDamage: break;
 	case eComponentMessageType::eLength: break;
-	case eComponentMessageType::eActivateEmitter:
+	case eComponentMessageType::eActivateEmitter: break;
 		Activate();
 		break;
 	default: break;
