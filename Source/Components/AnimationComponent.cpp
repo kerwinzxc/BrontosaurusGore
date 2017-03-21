@@ -43,6 +43,8 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		//maybe check my velocity and update running/walking animation
 		break;
 	case eComponentMessageType::eShoot:
+		DL_PRINT("shot in animation component");
+		myModelComponent.SetAnimation("shot");
 		//play shoot animation (if this is the real shoot message?)
 		break;
 	}

@@ -91,6 +91,9 @@
     <Filter Include="Input\Recieving">
       <UniqueIdentifier>{59267a83-3d43-4a17-9acd-7413750948d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Serializer">
+      <UniqueIdentifier>{9aefc103-3826-40d7-a80a-bf65ad18d20e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -395,6 +398,15 @@
     <ClInclude Include="MoveArray.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Serializer.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializerLoader.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializerSaver.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -489,6 +501,15 @@
       <Filter>Input\Recieving</Filter>
     </ClCompile>
     <ClCompile Include="ConsolePrinter.cpp" />
+    <ClCompile Include="Serializer.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializerLoader.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializerSaver.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CommonUtilities.rc" />

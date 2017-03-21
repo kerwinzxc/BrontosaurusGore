@@ -18,6 +18,7 @@
 #include <string.h>
 #include <cstdint>
 #include <stdlib.h>
+#include <fstream>
 
 #include "DL_Debug.h"
 #include "EMouseButtons.h"
@@ -26,6 +27,7 @@
 #include "vector2.h"
 #include "vector3.h"
 #include "vector4.h"
+#include "matrix.h"
 
 #include "MemoryLeekLogger.h"
 
