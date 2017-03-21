@@ -8,13 +8,19 @@ namespace CU
 		~Quaternion();
 
 		float Magnitude() const;
-		void Normalize();
+		float Magnitude2() const;
+
+		const CU::Quaternion& Normalize();
 		const Quaternion GetNormalized() const;
+
+		const CU::Quaternion& Invert();
+		const Quaternion GetInverse() const;
 
 		const Quaternion& operator+=(const Quaternion& right);
 		const Quaternion& operator-=(const Quaternion& right);
 		const Quaternion& operator*=(const Quaternion& right);
 		const Quaternion& operator*=(const float right);
+		const Quaternion& operator/=(const float right);
 		const Quaternion operator*() const;
 
 		const std::string ToString() const;

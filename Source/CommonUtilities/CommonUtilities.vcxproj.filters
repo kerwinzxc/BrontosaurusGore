@@ -93,6 +93,9 @@
     </Filter>
     <Filter Include="Math\Quaternion">
       <UniqueIdentifier>{2a2284d3-c86e-4af4-b2ae-2ee2b42ae0b0}</UniqueIdentifier>
+</Filter>    
+<Filter Include="Serializer">
+      <UniqueIdentifier>{9aefc103-3826-40d7-a80a-bf65ad18d20e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +403,15 @@
     </ClInclude>
     <ClInclude Include="Quaternion.h">
       <Filter>Math\Quaternion</Filter>
+	</ClInclude>
+    <ClInclude Include="Serializer.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializerLoader.h">
+      <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializerSaver.h">
+      <Filter>Serializer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -497,6 +509,15 @@
     <ClCompile Include="ConsolePrinter.cpp" />
     <ClCompile Include="Quaternion.cpp">
       <Filter>Math\Quaternion</Filter>
+</ClCompile>
+    <ClCompile Include="Serializer.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializerLoader.cpp">
+      <Filter>Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializerSaver.cpp">
+      <Filter>Serializer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

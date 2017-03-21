@@ -415,6 +415,9 @@
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="ReverseGrowingArray.h" />
+    <ClInclude Include="Serializer.h" />
+    <ClInclude Include="SerializerLoader.h" />
+    <ClInclude Include="SerializerSaver.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="StaticMemoryPool.h" />
     <ClInclude Include="MessageKyle.h" />
@@ -505,6 +508,9 @@
     <ClCompile Include="PostMasterKyle.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="Serializer.cpp" />
+    <ClCompile Include="SerializerLoader.cpp" />
+    <ClCompile Include="SerializerSaver.cpp" />
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
