@@ -268,6 +268,7 @@ void CParticleEmitterInstance::EmitParticle()
 void CParticleEmitterInstance::Activate()
 {
 	myLifetime = myEmitterData.Lifetime;
+	DL_PRINT("Lifetime %f", myLifetime);
 	myIsActive = true;
 }
 
