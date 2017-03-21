@@ -208,10 +208,11 @@ void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 
 		float colorT = (particleLifetime - startK.time) / (endK.time - startK.time);
 
+		const float curve = CalcCurve(colorT, myEmitterData.ColorCurve);
 		CU::Vector4f colr = vectorFlerp(
 			startK.value,
 			endK.value,
-			CalcCurve(colorT, myEmitterData.ColorCurve));
+			curve);
 
 		myParticles[i].color = colr;
 

@@ -4,7 +4,7 @@
 #include "ExplosionComponentManager.h"
 #include "ModelComponentManager.h"
 #include "ExplosionBufferData.h"
-#include "../ThreadedPostmaster/CreateExplosionMessage.h"'
+#include "../ThreadedPostmaster/CreateExplosionMessage.h"
 #include "../ThreadedPostmaster/DeactivateExplosionMessage.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
@@ -78,8 +78,8 @@ void CExplosionFactory::CreateExplosion()
 	CGameObject* newExplosionObject = myGameObjectManagerPointer->CreateGameObject();
 	CExplosionComponent* tempExplosionComponent = myExplosionComponentsManager->CreateAndRegisterComponent();
 	newExplosionObject->AddComponent(tempExplosionComponent);
-	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
-	newExplosionObject->AddComponent(modelComponent);
+	/*CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_Cactus_Large_03.fbx");
+	newExplosionObject->AddComponent(modelComponent);*/
 	newExplosionObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
@@ -101,25 +101,29 @@ void CExplosionFactory::CreateExplosion()
 
 	SEmitterData emitterData;
 	emitterData.UseGravity = true;
-	emitterData.Gravity = CU::Vector3f(0, -2, 0);
+	emitterData.Gravity = CU::Vector3f(0, -5, 0);
 	emitterData.EmissionRate = 1000;
-	emitterData.StartSize = 0.5;
+	emitterData.StartSize = 0.2;
 	emitterData.EndSize = 0.5;
 	emitterData.NumOfParticles = 1000;
-	emitterData.MinParticleLifeTime = 5;
-	emitterData.MaxParticleLifeTime = 10;
+	emitterData.MinParticleLifeTime = 2.5;
+	emitterData.MaxParticleLifeTime = 5;
 	const float bounds = 0;
 	emitterData.MaxEmissionArea = (CU::Vector3f(bounds, bounds * 2.f, bounds));
 	emitterData.MinEmissionArea = (CU::Vector3f(-bounds, 0.f, -bounds));
-	const float vel = 10;
+	const float vel = 7.5;
 	const float nVel = vel / 10;
 	emitterData.MinEmissionVelocity = CU::Vector3f(-nVel, vel / 2.f, -nVel);
 	emitterData.MaxEmissionVelocity = CU::Vector3f(nVel, vel, nVel);
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
-	emitterData.StartColor = CU::Vector4f(0, 1, 1, 1);
-	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);
+	emitterData.StartColor = CU::Vector4f(0.8, 0.3, 0.1, 1);
+	emitterData.EndColor = emitterData.StartColor;
+	emitterData.EndColor.a = 0.f;
+	emitterData.ColorCurve = eLerpCurve::eSmootherStep;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
+	emitterData.RotationCurve = eLerpCurve::eSmootherStep;
 	emitterData.ShouldLoop = false;
-	emitterData.Lifetime = 3.0f;
+	emitterData.Lifetime = .25f;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	newExplosionObject->AddComponent(companent);
 
