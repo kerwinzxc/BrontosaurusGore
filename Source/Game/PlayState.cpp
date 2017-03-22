@@ -67,6 +67,7 @@
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "HealthComponent.h"
 #include "CheckPointComponent.h"
+#include "Enemy.h"
 //
 
 
@@ -143,6 +144,7 @@ CPlayState::~CPlayState()
 
 void CPlayState::Load()
 {
+	Component::CEnemy::SetPlayer(nullptr);
 	CU::CStopWatch loadPlaystateTimer;
 	loadPlaystateTimer.Start();
 
@@ -219,6 +221,8 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	
+
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -397,6 +401,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (CPollingStation::GetInstance())
 		{
 			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+			Component::CEnemy::SetPlayer(playerObject);
 		}
 
 		CInputComponent* inputComponent = new CInputComponent();
@@ -451,17 +456,24 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->AddComponent(playerHealthComponent);
 
 
-		//Component::CEnemy::SetPlayer(playerObject);
 
-		/*	CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
-			CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
-			enemyObject->AddComponent(enemyModelComponent);
-			CHealthComponent* enemyHealthComponent = new CHealthComponent();
-			enemyHealthComponent->SetMaxHealth(1);
-			enemyHealthComponent->SetHealth(1);
-			enemyObject->AddComponent(enemyHealthComponent);
 
-			SSphereColliderData sphereColliderData;
+
+		//CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
+		//CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+		//enemyObject->AddComponent(enemyModelComponent);
+		//
+		//CEnemyComponentManager::EnemyBlueprint bluePrint;
+		//bluePrint.health = 10;
+		//bluePrint.detactionRange = 1000000;
+		//bluePrint.startAttackRange = 0;
+		//bluePrint.stopAttackRange = 0;
+		//bluePrint.speed = 0;
+		//Component::CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
+		//enemyObject->AddComponent(enemyEnemy);
+		//enemyObject->SetWorldPosition(CU::Vector3f(-5, -33, -13));
+
+			/*SSphereColliderData sphereColliderData;
 			sphereColliderData.IsTrigger = false;
 			sphereColliderData.myRadius = 0.5f;
 			CColliderComponent* enemySphereColiider = myColliderComponentManager->CreateComponent(&sphereColliderData);
@@ -471,6 +483,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->AddComponent(enemyRespanwsPlayerLol);
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
-		/**/
+		
 	}
 }
