@@ -43,7 +43,7 @@ void CAmmoPickupComponent::GiveAmmoType()
 	data2.ammoType = myPickupData.ammoType.c_str();
 	data2.replenishAmount = myPickupData.replenishAmount;
 	data.myAmmoReplenishData = &data2;
-	GetParent()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
+	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
 }
 
 void CAmmoPickupComponent::DoMyEffect()

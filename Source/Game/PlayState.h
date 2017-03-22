@@ -41,6 +41,7 @@ class CCheckPointSystem;
 class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
+class CTextInstance;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -111,6 +112,10 @@ private:
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+
+	//Super temp ta bort när guit börjar ta form
+	CTextInstance* myPlayerHealthText;
+	CTextInstance* myPlayerArmorText;
 
 };
 

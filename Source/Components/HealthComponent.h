@@ -15,6 +15,7 @@ public:
 	void SetArmor(const armorPoint aArmorValue);
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 	void Destroy() override;
 private:
 	void TakeDamage(const healthPoint aDamage);
