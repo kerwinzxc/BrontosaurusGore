@@ -128,6 +128,11 @@
     </ClInclude>
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
+    <ClInclude Include="NetworkMessage_TakeDamage.h" />
+    <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
+    <ClInclude Include="Networkmessage_PickupArmor.h" />
+    <ClInclude Include="NetworkMessage_TryToShoot.h" />
+    <ClInclude Include="NetworkMessage_OKShoot.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -183,5 +188,10 @@
     </ClCompile>
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
+    <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
+    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
+    <ClCompile Include="Networkmessage_PickupArmor.cpp" />
+    <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
+    <ClCompile Include="NetworkMessage_OKShoot.cpp" />
   </ItemGroup>
 </Project>

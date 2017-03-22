@@ -50,12 +50,6 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 
 		myModels[aModelPath.c_str()] = newModelID;
 
-		if (aModelPath.find("standardEnemy") != std::string::npos)
-		{
-			int br = 0;
-			br++;
-		}
-
 		if (CreateModel(aModelPath, newModelID) == false)
 		{
 			myModelList.Pop();
@@ -214,17 +208,16 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
 	std::string modelName = aPath;
-	modelName -= std::string(".fbx");
-	modelName += std::string("_");
-
-	if (modelName.find("standardEnemy") != std::string::npos)
+	if (modelName.find("Shotgun") != std::string::npos)
 	{
 		int br = 0;
-		br++;
 	}
+	modelName -= std::string(".fbx");
+	CU::FindAndReplace(modelName, "Meshes", "Animations");
+	modelName += std::string("@");
 
-	const ModelId animationCount = 13;
-	const std::string animationNames[animationCount] = { ("idle"), ("idle2"), ("walk"), ("pickup"), ("turnRight90"), ("turnLeft90"), ("attack") , ("summon"), ("die"), ("sweep"), ("whirlwind"), ("hurt"), ("spawn") };
+	const ModelId animationCount = 3;
+	const std::string animationNames[animationCount] = { ("idle"), ("walk"), ("shot") };
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
@@ -234,8 +227,8 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 		mdl->myBindposeSceneAnimator = new CSceneAnimator();
 		mdl->myBindposeSceneAnimator->Init(scene); // shuld do it?
 
+		mdl->mySceneAnimators.clear();
 		CFBXLoader loader;
-		bool foundSpecial = false;
 		for (int i = 0; i < animationCount; ++i)
 		{
 			const std::string& animationName = animationNames[i];
@@ -247,13 +240,13 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 				continue;
 			}
 
-			foundSpecial = true;
-
 			mdl->mySceneAnimators[animationName] = CSceneAnimator();
 			mdl->mySceneAnimators[animationName].Init(animationScene);
+			//mdl->mySceneAnimators[animationName].CarlSave(modelName + animationName + ".animation");
+			//mdl->mySceneAnimators[animationName].CarlLoad(modelName + animationName + ".animation");
 		}
 
-		if (foundSpecial == false)
+		if (mdl->mySceneAnimators.empty() == true)
 		{
 			mdl->mySceneAnimators["idle"] = CSceneAnimator();
 			mdl->mySceneAnimators["idle"].Init(mdl->GetScene());

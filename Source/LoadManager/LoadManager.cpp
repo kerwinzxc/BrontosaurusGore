@@ -10,11 +10,12 @@
 #include "LoadScriptComponent.h"
 #include "LoadFireComponent.h"
 #include "LoadHealthComponent.h"
+#include "LoadArmorComponent.h"
+#include "LoadAmmoComponent.h"
 #include "LoadPointLightComponent.h"
 #include "LoadEnemy.h"
 #include "LoadNetworkComponent.h"
 #include "LoadWeaponSystemComponent.h"
-#include "LoadAmmoComponent.h"
 #include "LoadMovementComponent.h"
 #include "LoadInputComponent.h"
 #include "LoadCollider.h"
@@ -71,12 +72,14 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("InputComponent", LoadInputComponent);
 	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
+	loader.RegisterComponentLoadFunction("ArmorPickupComponent", LoadArmorPackComponent);
 	loader.RegisterComponentLoadFunction("ParticleSystem", LoadParticleEmitterComponent);
 	loader.RegisterComponentLoadFunction("CheckpointComponent", LoadCheckpointComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
 	loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereCollider);
 	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleCollider);
 	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
+	loader.RegisterComponentLoadFunction("CharacterController", LoadCharacterController);
 	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);

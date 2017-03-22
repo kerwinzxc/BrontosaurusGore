@@ -12,7 +12,7 @@ public:
 
 	void SetDirection(const CU::Vector3f& aDirection);
 	CU::Vector3f GetDirection();
-	void SetWeaponIndex(int aWeaponIndex);
+	void SetWeaponIndex(const unsigned char aWeaponIndex);
 	int GetWeaponIndex();
 
 private:
@@ -20,6 +20,6 @@ private:
 	void DoDeserialize(StreamType& aStream) override;
 
 	CU::Vector3f myDirection;
-	int myWeaponIndex;
+	unsigned char myWeaponIndex;
 };
 

@@ -1,6 +1,12 @@
 #pragma once
 #include "RenderPackage.h"
 
+
+#ifndef _RETAIL_BUILD
+#define _ENABLE_RENDERMODES
+#endif
+
+
 struct SRenderMessage;
 struct ID3D11Buffer;
 class CDXFramework;
@@ -8,6 +14,14 @@ class CDXFramework;
 class CLightModel;
 
 class CFullScreenHelper;
+class CTexture;
+
+#ifdef _ENABLE_RENDERMODES
+namespace CU
+{
+	class InputWrapper;
+}
+#endif
 
 
 class CDeferredRenderer
@@ -36,7 +50,6 @@ public:
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, const CU::Matrix44f & aProjectionInverse);
-
 	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
@@ -54,17 +67,21 @@ private:
 	void RenderSpotLight(SRenderMessage* aRenderMessage, CFullScreenHelper& aFullscreenHelper);
 
 	void ActivateIntermediate();
+	void ActivateSSAO();
 	void SetSRV();
+	void SetRMAOSRV();
+
 	void SetCBuffer();
 
 	void InitPointLightModel();
+	void DoSSAO(CFullScreenHelper& aFullscreenHelper);
+
 
 private:
 	CU::GrowingArray<SRenderMessage*> myRenderMessages;
 	CU::GrowingArray<SRenderMessage*> myLightMessages;
 
 	CLightModel* myLightModel;
-
 
 	ID3D11Buffer* myProjectionInverseBuffer;
 	ID3D11Buffer* myDirectionalLightBuffer;
@@ -76,6 +93,22 @@ private:
 	CRenderPackage myIntermediatePackage;
 	
 	CDXFramework* myFramework;
-	
+	CTexture* mySSAORandomTexture;
+	CRenderPackage mySSAOPackage;
+
+#ifdef _ENABLE_RENDERMODES
+	enum ERenderMode
+	{
+		eDiffuse,
+		eNormal,
+		eRoughness,
+		eMetalness,
+		eAO,
+		eSSAO,
+		eIntermediate,
+	} myRenderMode;
+	CU::InputWrapper* myInputWrapper;
+	void HandleInput();
+#endif 
 };
 

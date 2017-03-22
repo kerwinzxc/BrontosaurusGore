@@ -140,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
+    <ClInclude Include="NetworkMessage_OKShoot.h" />
+    <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
+    <ClInclude Include="Networkmessage_PickupArmor.h" />
     <ClInclude Include="NetworkMessage_PickupHealth.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
@@ -158,6 +161,8 @@
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
+    <ClInclude Include="NetworkMessage_TakeDamage.h" />
+    <ClInclude Include="NetworkMessage_TryToShoot.h" />
     <ClInclude Include="NetworkMessage_WeaponShoot.h" />
     <ClInclude Include="NetworkMesssage_Connect.h" />
     <ClInclude Include="PackageType.h" />
@@ -170,6 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
+    <ClCompile Include="NetworkMessage_OKShoot.cpp" />
+    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
+    <ClCompile Include="Networkmessage_PickupArmor.cpp" />
     <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
     <ClCompile Include="ImportantNetworkMessage.cpp" />
     <ClCompile Include="MessageManager.cpp" />
@@ -186,6 +194,8 @@
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
+    <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
+    <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
     <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
     <ClCompile Include="NetworkMesssage_Connect.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "..\Physics\PhysicsActor.h"
 #include "..\Physics\IPhysicsCallback.h"
+#include "..\Physics\CollisionLayers.h"
 
 namespace Physics
 {
@@ -21,6 +22,9 @@ struct SColliderData
 	} myType = eColliderType::eNone;
 	CU::Vector3f material;
 	CU::Vector3f center;
+
+	Physics::ECollisionLayer myLayer = Physics::ECollisionLayer::eDefault;
+	Physics::ECollisionLayer myCollideAgainst = static_cast<Physics::ECollisionLayer>(Physics::CollideEverything);
 
 	bool IsTrigger = false;
 };

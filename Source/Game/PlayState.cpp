@@ -29,6 +29,9 @@
 #include "Components/MovementComponentManager.h"
 #include "Components/ScriptComponentManager.h"
 #include "Components/PickupComponentManager.h"
+#include "Components/ExplosionFactory.h"
+#include "Components/ExplosionComponentManager.h"
+#include "Components/HealthComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -79,6 +82,9 @@
 #include "../Components/ParticleEmitterComponentManager.h"
 #include "EnemyClientRepresentationManager.h"
 
+#include "TextInstance.h"
+#include "GameObject.h"
+#include "ComponentAnswer.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -96,6 +102,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, myScriptComponentManager(nullptr)
+	,myExplosionComponentManager(nullptr)
+	,myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 {
 	myPhysicsScene = nullptr;
@@ -120,11 +128,14 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myMovementComponentManager);
 	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myScriptComponentManager);
+	SAFE_DELETE(myExplosionFactory);
+	SAFE_DELETE(myExplosionComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
+	CHealthComponentManager::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -211,6 +222,15 @@ void CPlayState::Init()
 {
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
+	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	myPlayerHealthText = new CTextInstance();
+	myPlayerHealthText->Init();
+	myPlayerHealthText->SetPosition(CU::Vector2f(0.1f, 0.825f));
+
+	myPlayerArmorText = new CTextInstance();
+	myPlayerArmorText->Init();
+	myPlayerArmorText->SetPosition(CU::Vector2f(0.1f, 0.8f));
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -222,6 +242,21 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
+	myExplosionComponentManager->Update(aDeltaTime);
+
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	SComponentQuestionData healthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
+	SComponentQuestionData maxHealthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxHealth, maxHealthData);
+
+	myPlayerHealthText->SetText(L"Health: " +std::to_wstring(healthData.myInt) + L"/" + std::to_wstring(maxHealthData.myInt));
+
+	SComponentQuestionData armorData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetArmor, armorData);
+	SComponentQuestionData maxArmorthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
+	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
 	myHUD.Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
@@ -236,6 +271,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+	myPlayerHealthText->Render();
+	myPlayerArmorText->Render();
 	myHUD.Render();
 }
 
@@ -285,6 +322,7 @@ void CPlayState::CreateManagersAndFactories()
 	CComponentManager::CreateInstance();
 
 	CNetworkComponentManager::Create();
+	CHealthComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -306,17 +344,20 @@ void CPlayState::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
-	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager);
+	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
 
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
+	
+	myExplosionComponentManager = new CExplosionComponentManager();
+	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Shotgun_01.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_BFG_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -336,7 +377,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	addHandGunData.myString = "Shotgun";
+	/*addHandGunData.myString = "Shotgun";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	tempAmmoReplensihData.ammoType = "Shotgun";
 	tempAmmoReplensihData.replenishAmount = 100;
@@ -348,7 +389,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	tempAmmoReplensihData.ammoType = "PlasmaRifle";
 	tempAmmoReplensihData.replenishAmount = 1000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);*/
 
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);
@@ -431,10 +472,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.height = 2.0f;
+		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
-		CHealthComponent* playerHealthComponent = new CHealthComponent();
+		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		playerHealthComponent->SetMaxHealth(10);
 		playerHealthComponent->SetHealth(10);
 		playerObject->AddComponent(playerHealthComponent);
@@ -460,11 +501,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->AddComponent(enemyRespanwsPlayerLol);
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
-		/*SRigidBodyData enemyRigidBodyData;
-		enemyRigidBodyData.isKinematic = false;
-		enemyRigidBodyData.angularDrag = 0.5f;
-		enemyRigidBodyData.mass = 0.f;
-		CColliderComponent* enemyRigidBodyColliderCHan = myColliderComponentManager->CreateComponent(&enemyRigidBodyData);
-		enemyObject->AddComponent(enemyRigidBodyColliderCHan);*/
+		/**/
 	}
 }

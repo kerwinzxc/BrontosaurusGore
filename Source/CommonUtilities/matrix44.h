@@ -10,6 +10,7 @@
 #include "StaticArray.h"
 
 #include "InvertMatrix.h"
+#include "matrix33.h"
 
 namespace CU
 {
@@ -349,6 +350,10 @@ namespace CU
 			return matrix;
 		}
 
+		void SetEulerRotation(const Vector3f& aRotation);
+		//Doesn't work, don't use
+		const CU::Vector3f GetEulerRotation() const;
+
 		static Matrix44 CreateRotateAroundX(const TYPE aAngle)
 		{
 			Matrix44 rotationX;
@@ -468,7 +473,7 @@ namespace CU
 			return myPosition;
 		}
 
-		Matrix44<TYPE> GetRotation()
+		Matrix44<TYPE> GetRotation() const
 		{
 			return Matrix44(m11, m12, m13, 0,
 							m21, m22, m23, 0,
@@ -574,9 +579,9 @@ namespace CU
 
 		Matrix44<TYPE>& Scale(const Vector3<TYPE>& aScaleVector)
 		{
-			m11 *= aScaleVector.x;
-			m22 *= aScaleVector.y;
-			m33 *= aScaleVector.z;
+			myRightVector *= aScaleVector.x;
+			myUpVector *= aScaleVector.y;
+			myForwardVector *= aScaleVector.z;
 
 			return *this;
 		}
@@ -646,7 +651,14 @@ namespace CU
 			return matrixToReturn;
 		}
 
-		Matrix44 Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed)
+		Matrix44 Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed) const
+		{
+			Matrix44 copy = *this;
+			copy.Lerp(aInterpolateToMatrix, aInterpolatingSpeed);
+			return copy;
+		}
+
+		Matrix44& Lerp(const Matrix44<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed)
 		{
 			m21 = m21 + aInterpolatingSpeed * (aInterpolateToMatrix.m21 - m21);
 			m22 = m22 + aInterpolatingSpeed * (aInterpolateToMatrix.m22 - m22);
@@ -663,12 +675,29 @@ namespace CU
 			return *this;
 		}
 
-		Matrix44 LerpPosition(const CU::Vector3<TYPE>& aInterpolateToPosition, const TYPE aInterpolatingSpeed)
+		Matrix44& LerpPosition(const Vector3<TYPE>& aInterpolateToPosition, const TYPE aInterpolatingSpeed)
 		{
 			myPosition.Lerp(aInterpolateToPosition, aInterpolatingSpeed);
 
 			return *this;
 		}
+
+		Matrix44 SlerpRotation(const Matrix44& aSlerpTo, const TYPE aSlerpValue) const
+		{
+			Matrix44 copy = *this;
+			copy.SlerpRotation(aSlerpTo, aSlerpValue);
+			return copy;
+		}
+
+		Matrix44& SlerpRotation(const Matrix44& aSlerpTo, const TYPE aSlerpValue)
+		{
+			myRightVector.Slerp(aSlerpTo.myRightVector, aSlerpValue);
+			myUpVector.Slerp(aSlerpTo.myUpVector, aSlerpValue);
+			myForwardVector.Slerp(aSlerpTo.myForwardVector, aSlerpValue);
+
+			return *this;
+		}
+
 		void InvertMe()
 		{
 			InvertMatrix(&m11);
@@ -714,6 +743,23 @@ namespace CU
 		static const Matrix44 Identity;
 		static const Matrix44 Zero;
 	};
+
+	template <typename TYPE>
+	void Matrix44<TYPE>::SetEulerRotation(const Vector3f& aRotation)
+	{
+		const CU::Matrix33f mRotationY = CU::Matrix33f::CreateRotateAroundY(aRotation.y);
+		const CU::Matrix33f mRotationX = CU::Matrix33f::CreateRotateAroundX(-aRotation.x);
+		const CU::Matrix33f mRotationZ = CU::Matrix33f::CreateRotateAroundZ(aRotation.z);
+		SetRotation(mRotationZ * mRotationX * mRotationY);
+	}
+
+	template <typename TYPE>
+	const CU::Vector3f Matrix44<TYPE>::GetEulerRotation() const
+	{
+		const CU::Matrix33<TYPE> rotation = GetRotation();
+		
+		return rotation.GetEulerRotation();
+	}
 
 	using Matrix44f = Matrix44<float>;
 

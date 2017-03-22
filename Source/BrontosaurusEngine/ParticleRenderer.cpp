@@ -15,13 +15,17 @@ CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aH
 	myParticleGBuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myParticleGBuffer.alpha.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myParticleGBuffer.surfaceDiffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.surfaceNormal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleGBuffer.surfaceRMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	myParticleGBuffer.sulfaceAlpha.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myProcessed.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myInteremediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+	myTempIntermediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleMessages.Init(10);
 	myLightMessages.Init(10);
 
@@ -37,6 +41,7 @@ CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aH
 
 	Lights::SSpotLight spotLight;
 	mySpotLightBuffer = BSR::CreateCBuffer<Lights::SSpotLight>(&spotLight);
+
 
 	InitPointLightModel();
 }
@@ -64,7 +69,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 {
 	myDepthStencilResourceToUse = aDepthResourceView;
 	myInteremediate.Clear();
-	UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
+	//UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
 	for (int i = 0; i < myParticleMessages.Size(); ++i)
 	{
 		SetBlendParticlesState();
@@ -74,6 +79,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
 		if (emitter == nullptr)	break;
 
+		//msg->renderMode = CParticleEmitter::RenderMode::eNURBSSphere;
 		//SortParticles(msg->particleList);
 		emitter->Render(msg->toWorld, msg->particleList, msg->renderMode);
 
@@ -101,7 +107,7 @@ void CParticleRenderer::SetBlendParticlesState()
 
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eReadOnly;
 	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
@@ -164,7 +170,7 @@ void CParticleRenderer::SetSRV()
 	srvs[0] = myParticleGBuffer.diffuse.GetResource();
 	srvs[1] = myParticleGBuffer.normal.GetResource();
 	srvs[2] = myParticleGBuffer.RMAO.GetResource();
-	srvs[3] = nullptr;
+	srvs[3] = myParticleGBuffer.alpha.GetResource();
 	srvs[4] = myDepthStencilResourceToUse;
 	DEVICE_CONTEXT->PSSetShaderResources(1, 5, srvs);
 }
@@ -230,20 +236,15 @@ void CParticleRenderer::DoDirectLighting()
 void CParticleRenderer::DoLight()
 {
 	SChangeStatesMessage changeStateMessage = {};
-	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	mySharedRenderer.SetStates(&changeStateMessage);
+
 	myProcessed.Clear();
 	myProcessed.Activate();
 	SetSRV();
 	SetCBuffer();
 
-
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eNoBlend;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
 
@@ -260,8 +261,18 @@ void CParticleRenderer::DoLight()
 
 void CParticleRenderer::ToIntermediate()
 {
+	SChangeStatesMessage changeStateMessage;
+	/*myTempIntermediate.Clear();
+	myTempIntermediate.Activate();
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myInteremediate);*/
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&changeStateMessage);
+	//TODO: Find right way to mix these
 	myInteremediate.Activate();
-	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eDeferredAmbient, &myProcessed);
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eAlphaBlend, &myProcessed, &myParticleGBuffer.alpha);
 }
 
 void CParticleRenderer::ClearParticleTargets()
@@ -269,30 +280,34 @@ void CParticleRenderer::ClearParticleTargets()
 	myParticleGBuffer.diffuse.Clear();
 	myParticleGBuffer.normal.Clear();
 	myParticleGBuffer.RMAO.Clear();
+	myParticleGBuffer.alpha.Clear();
 	myParticleGBuffer.surfaceDiffuse.Clear();
 	myParticleGBuffer.surfaceNormal.Clear();
 	myParticleGBuffer.surfaceRMAO.Clear();
+	myParticleGBuffer.sulfaceAlpha.Clear();
 	myProcessed.Clear();
 }
 
 void CParticleRenderer::SetParticleTargets(ID3D11DepthStencilView* aDepthStencilView)
 {
-	ID3D11RenderTargetView* rtvs[3];
+	ID3D11RenderTargetView* rtvs[4];
 	rtvs[0] = myParticleGBuffer.diffuse.GetRenderTargetView();
 	rtvs[1] = myParticleGBuffer.normal.GetRenderTargetView();
 	rtvs[2] = myParticleGBuffer.RMAO.GetRenderTargetView();
+	rtvs[3] = myParticleGBuffer.alpha.GetRenderTargetView();
 
-	DEVICE_CONTEXT->OMSetRenderTargets(3, rtvs, aDepthStencilView);
+	DEVICE_CONTEXT->OMSetRenderTargets(4, rtvs, aDepthStencilView);
 }
 
 void CParticleRenderer::SetSurfaceTargets(ID3D11DepthStencilView* aDepthStencilView)
 {
-	ID3D11RenderTargetView* rtvs[3];
+	ID3D11RenderTargetView* rtvs[4];
 	rtvs[0] = myParticleGBuffer.surfaceDiffuse.GetRenderTargetView();
 	rtvs[1] = myParticleGBuffer.surfaceNormal.GetRenderTargetView();
 	rtvs[2] = myParticleGBuffer.surfaceRMAO.GetRenderTargetView();
+	rtvs[3] = myParticleGBuffer.sulfaceAlpha.GetRenderTargetView();
 
-	DEVICE_CONTEXT->OMSetRenderTargets(3, rtvs, aDepthStencilView);
+	DEVICE_CONTEXT->OMSetRenderTargets(4, rtvs, aDepthStencilView);
 }
 
 
@@ -300,7 +315,14 @@ void CParticleRenderer::CreateSurface(ID3D11DepthStencilView* aDepthStencilView)
 {
 	SetSurfaceTargets(aDepthStencilView);
 	SetSRV();
+	
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eMetaSurface);
+	SChangeStatesMessage message;
+	message.myDepthStencilState = eDepthStencilState::eDefault;
+	message.myBlendState = eBlendState::eAlphaBlend;
+	message.myRasterizerState = eRasterizerState::eDefault;
+	message.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&message);
 	myParticleGBuffer.diffuse.Clear();
 	myParticleGBuffer.diffuse.Activate();
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.surfaceDiffuse);
@@ -310,4 +332,10 @@ void CParticleRenderer::CreateSurface(ID3D11DepthStencilView* aDepthStencilView)
 	myParticleGBuffer.RMAO.Clear();
 	myParticleGBuffer.RMAO.Activate();
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.surfaceRMAO);
+
+	message.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	message.myBlendState = eBlendState::eAlphaBlend;
+	message.myRasterizerState = eRasterizerState::eDefault;
+	message.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&message);
 }

@@ -20,7 +20,10 @@
 #include "../Components/NetworkComponent.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
-#include "Enemy.h"
+#include "../Components/Enemy.h"
+#include "../Physics/Foundation.h"
+#include "../Components/ColliderComponentManager.h"
+#include "../Physics/PhysicsScene.h"
 
 
 CGameServer::CGameServer():
@@ -31,6 +34,8 @@ CGameServer::CGameServer():
 	, myInGame(false)
 	, myIsLoaded(false)
 	, myEnemyComponentManager(nullptr)
+	, myPhysics(nullptr)
+	, myPhysicsScene(nullptr)
 	, myWeaponSystemManager(nullptr)
 	, myMovementComponentManager(nullptr)
 {
@@ -60,6 +65,11 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 
 void CGameServer::Load(const int aLevelIndex)
 {
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+	myPhysicsScene = myPhysics->CreateScene();
+
 	ServerLoadManagerGuard loadManagerGuard(*this);
 	CreateManagersAndFactories();
 
@@ -117,6 +127,11 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+
+	myColliderComponentManager = new CColliderComponentManager();
+	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
+	myColliderComponentManager->SetPhysics(myPhysics);
+	myColliderComponentManager->InitControllerManager();
 }
 
 void CGameServer::DestroyManagersAndFactories()
@@ -143,6 +158,10 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myEnemyComponentManager->Update(aDeltaTime);
 		myTime = 0;
+	}
+	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	{
+		myColliderComponentManager->Update();
 	}
 
 	return true;

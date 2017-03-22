@@ -36,7 +36,8 @@ namespace Physics
 		desc.slopeLimit = aDesc.slopeLimit;
 		desc.stepOffset = aDesc.stepOffset;
 		desc.radius = aDesc.radius;
-		desc.height = aDesc.height;
+		desc.height = aDesc.halfHeight;
+		desc.contactOffset = aDesc.skinWidth;
 		desc.material = myPhysics->CreateMaterial(SMaterialData());
 		PxController* controller = myControllerManager->createController(desc);
 		return new CPhysicsCharacterController(controller, aDesc);

@@ -5,23 +5,38 @@
 int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 {
 	SEmitterData emitterData;
-	emitterData.UseGravity = true;
-	emitterData.Gravity = CU::Vector3f(0, 0.01, 0);
-	emitterData.EmissionRate = 20;
-	emitterData.StartSize = 0.25;
-	emitterData.EndSize = 0.25;
-	emitterData.NumOfParticles = 4000;
-	emitterData.MinParticleLifeTime = 10;
-	emitterData.MaxParticleLifeTime = 20;
-	const float bounds = 1;
-	emitterData.MaxEmissionArea = (CU::Vector3f(bounds, bounds * 2.f, bounds));
-	emitterData.MinEmissionArea = (CU::Vector3f(-bounds, 0.f, -bounds));
-	const float vel = 0;
-	emitterData.MinEmissionVelocity = CU::Vector3f(-vel, -vel, -vel);
-	emitterData.MaxEmissionVelocity = CU::Vector3f(vel, 1, vel);
+	emitterData.UseGravity = someData.myData["UseGravity"].GetBool();
+
+	if(emitterData.UseGravity == true)
+	{
+		emitterData.Gravity = someData.myData["Gravity"].GetVector3f();
+	}
+
+	emitterData.EmissionRate = someData.myData["EmissionRate"].GetFloat();
+	emitterData.NumOfParticles = someData.myData["MaxParticles"].GetInt();
+
+	emitterData.StartSize =	someData.myData["StartSize"].GetFloat();
+	emitterData.EndSize =	someData.myData["EndSize"].GetFloat();
+
+	emitterData.MinParticleLifeTime = someData.myData["MinParticleLifetime"].GetFloat();
+	emitterData.MaxParticleLifeTime = someData.myData["MaxParticleLifetime"].GetFloat();
+
+	emitterData.StartColor = someData.myData["StartColor"].GetVector4f("rgba");
+	emitterData.EndColor = someData.myData["EndColor"].GetVector4f("rgba");
+
+	emitterData.MaxEmissionArea = someData.myData["MaxEmissionArea"].GetVector3f();
+	emitterData.MinEmissionArea = someData.myData["MinEmissionArea"].GetVector3f();
+
+	emitterData.MinEmissionVelocity = someData.myData["MinVelocity"].GetVector3f();
+	emitterData.MaxEmissionVelocity = someData.myData["MaxVelocity"].GetVector3f();
 	emitterData.TexturePath = "Models/Textures/T_M_Rock_10m_RMA.dds";
-	emitterData.StartColor = CU::Vector4f(0, 0, 1, 1);
-	emitterData.EndColor = CU::Vector4f(1, 1, 1, 1);
+
+	emitterData.ShouldLoop = true;
+	emitterData.Lifetime = 5.f;
+
+	emitterData.ColorCurve = eLerpCurve::eLinear;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
+	emitterData.SizeCurve = eLerpCurve::eLinear;
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	return companent->GetId();
 }

@@ -13,6 +13,10 @@
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
+	if (std::string(aModelPath).find("M_Shotgun_01") != std::string::npos)
+	{
+		int br = 0;
+	}
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
@@ -23,6 +27,8 @@ CModelInstance::CModelInstance(const char* aModelPath)
 		myHasAnimations = model->HasAnimations();
 	}
 	myCurrentAnimation = "idle";
+	myNextAnimation = "";
+	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
 }
 
@@ -62,11 +68,8 @@ CModelInstance::~CModelInstance()
 	if (myModel != NULL_MODEL)
 	{
 		MODELMGR->GetModel(myModel)->RemoveRef();
-		myModel = -1; 
+		myModel = NULL_MODEL;
 	}
-	
-	
-	//TODO: memoryleek mebe // still exists in ModelManager <-- looks like model manager owns this but a refcount would maybe be something
 }
 
 void CModelInstance::RenderForward(Lights::SDirectionalLight* aLight, CU::VectorOnStack<CPointLightInstance, 8>& aPointLightList)
@@ -178,6 +181,8 @@ void CModelInstance::RenderDeferred()
 	{
 		msg.myRenderParams.aAnimationLooping = myAnimationLooping;
 		msg.myRenderParams.aAnimationState = myCurrentAnimation;
+		msg.myRenderParams.aNextAnimationState = myNextAnimation;
+		msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
 		msg.myRenderParams.aAnimationTime = myAnimationCounter;
 	}	
 	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
@@ -198,6 +203,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
@@ -214,6 +221,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		{
 			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
 			msg->myRenderParams.aAnimationState = myCurrentAnimation;
+			msg->myRenderParams.aNextAnimationState = myNextAnimation;
+			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
 			msg->myRenderParams.aAnimationTime = myAnimationCounter;
 		}
 	}
@@ -260,16 +269,25 @@ CU::AABB CModelInstance::GetModelBoundingBox()
 }
 
 
-void CModelInstance::ChangeAnimation(const std::string& aAnimationKey)
+void CModelInstance::SetAnimation(const std::string& aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
+}
+
+void CModelInstance::SetAnimationLerpie(const float aLerpValue)
+{
+	myAnimationLerpie = aLerpValue;
+}
+
+void CModelInstance::SetNextAnimation(const std::string& aAnimationKey)
+{
+	myNextAnimation = aAnimationKey;
 }
 
 void CModelInstance::SetAnimationLooping(const bool aValue)
 {
 	myAnimationLooping = aValue;
 	myAnimationCounter = 0.0f;
-
 }
 
 void CModelInstance::ResetAnimation()

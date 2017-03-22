@@ -65,29 +65,29 @@ struct SEmitterData
 
 	CU::Vector3f Gravity;
 	
-	float StartSize;
-	float EndSize;
+	float StartSize = 1.f;
+	float EndSize = 1.f;
 	
-	float EmissionRate;
+	float EmissionRate = 10.f;
 
-	float StartRotation;
-	float EndRotation;
+	float StartRotation = 0.f;
+	float EndRotation = 0.f;
 
-	float MinParticleLifeTime;
-	float MaxParticleLifeTime;
+	float MinParticleLifeTime = 1.f;
+	float MaxParticleLifeTime = 1.f;
 	
 	CU::StaticArray<SEmitterKeyframe, 2> ColorOverLife; // sort these badboys
 
 
-	int NumOfParticles;
+	int NumOfParticles = 1000;
 
 
-	eLerpCurve RotationCurve;
-	eLerpCurve ColorCurve;
-	eLerpCurve SizeCurve;
-	bool UseGravity;
-
-
+	eLerpCurve RotationCurve = eLerpCurve::eLinear;
+	eLerpCurve ColorCurve = eLerpCurve::eLinear;
+	eLerpCurve SizeCurve = eLerpCurve::eLinear;
+	bool UseGravity = false;
+	bool ShouldLoop = true;
+	float Lifetime = 0.f;
 };
 
 struct  SStreakEmitterData

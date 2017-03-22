@@ -15,7 +15,7 @@ enum class eBlendState
 	eAlphaBlend,
 	eNoBlend,
 	eAddBlend,
-
+	eMulBlend,
 	eSize,
 };
 

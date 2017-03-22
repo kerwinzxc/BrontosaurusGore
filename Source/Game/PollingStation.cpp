@@ -21,12 +21,12 @@ CPollingStation* CPollingStation::GetInstance()
 	return ourInstance;
 }
 
-void CPollingStation::SetPlayerObject(const CGameObject* aPlayerObject)
+void CPollingStation::SetPlayerObject(CGameObject* aPlayerObject)
 {
 	myPlayerObject = aPlayerObject;
 }
 
-const CGameObject* CPollingStation::GetPlayerObject()
+CGameObject* CPollingStation::GetPlayerObject()
 {
 	return myPlayerObject;
 }

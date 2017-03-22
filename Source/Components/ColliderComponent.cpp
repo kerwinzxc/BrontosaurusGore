@@ -69,6 +69,12 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 		break;
 	case eComponentMessageType::eSetIsColliderActive:
 		break;
+	case eComponentMessageType::eActivate:
+		myActor->SetIsActive(true);
+		break;
+	case eComponentMessageType::eDeactivate:
+		myActor->SetIsActive(false);
+		break;
 	default:
 		break;
 	}
@@ -96,7 +102,6 @@ void CColliderComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerEnter, data);
-	DL_PRINT("TriggerEnter");
 }
 
 void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
@@ -105,7 +110,6 @@ void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerExit, data);
-	DL_PRINT("TriggerExit");
 }
 
 void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
@@ -114,7 +118,6 @@ void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionEnter, data);
-	DL_PRINT("ColEnter");
 
 }
 
@@ -124,5 +127,4 @@ void CColliderComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionExit, data);
-	DL_PRINT("ColExit");
 }

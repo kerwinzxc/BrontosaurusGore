@@ -88,6 +88,8 @@ void CParticleEmitterInstance::Init()
 	myIsActive = true;
 	myIsVisible = true;
 
+	myLifetime = myEmitterData.Lifetime;
+
 	myEmitDelta = 1.f / myEmitterData.EmissionRate;
 	myEmitTimer = 0.f;
 
@@ -103,6 +105,20 @@ void CParticleEmitterInstance::Init()
 void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 {
 	float deltaTime = aDeltaTime.GetSeconds();
+
+	myLifetime -= deltaTime;
+
+	if(myLifetime < 0)
+	{
+		if(myEmitterData.ShouldLoop == true)
+		{
+			myLifetime = myEmitterData.Lifetime;
+		}
+		else
+		{
+			myIsActive = false;
+		}
+	}
 
 	if (myIsActive == true)
 	{
@@ -192,10 +208,11 @@ void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 
 		float colorT = (particleLifetime - startK.time) / (endK.time - startK.time);
 
+		const float curve = CalcCurve(colorT, myEmitterData.ColorCurve);
 		CU::Vector4f colr = vectorFlerp(
 			startK.value,
 			endK.value,
-			CalcCurve(colorT, myEmitterData.ColorCurve));
+			curve);
 
 		myParticles[i].color = colr;
 
@@ -251,6 +268,7 @@ void CParticleEmitterInstance::EmitParticle()
 
 void CParticleEmitterInstance::Activate()
 {
+	myLifetime = myEmitterData.Lifetime;
 	myIsActive = true;
 }
 

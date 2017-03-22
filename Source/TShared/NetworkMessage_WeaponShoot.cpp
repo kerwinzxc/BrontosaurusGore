@@ -4,6 +4,7 @@
 
 CNetworkMessage_WeaponShoot::CNetworkMessage_WeaponShoot()
 {
+
 }
 
 
@@ -40,7 +41,7 @@ void CNetworkMessage_WeaponShoot::DoDeserialize(StreamType & aStream)
 	DESERIALIZE(myWeaponIndex, aStream);
 }
 
-void CNetworkMessage_WeaponShoot::SetWeaponIndex(int aWeaponIndex)
+void CNetworkMessage_WeaponShoot::SetWeaponIndex(const unsigned char aWeaponIndex)
 {
 	myWeaponIndex = aWeaponIndex;
 }

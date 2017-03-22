@@ -12,9 +12,12 @@ public:
 	const bool GetIsActive() const;
 	const int GetNetworkId() const;
 
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+
 	virtual void DoMyEffect() = 0;
 protected:
-	bool myHasBeenPickedUp;
 	int myNetworkId;
+private:
+	bool myHasBeenPickedUp;
 };
 
