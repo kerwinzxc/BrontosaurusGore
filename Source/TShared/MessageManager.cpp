@@ -16,6 +16,7 @@
 #include "NetWorkMessage_PickupAmmo.h"
 #include "Networkmessage_PickupArmor.h"
 #include "NetworkMessage_EnemyPosition.h"
+#include "NetworkMessage_EnemyTransformation.h"
 #include "NetworkMessage_TakeDamage.h"
 #include "NetworkMessage_OKShoot.h"
 #include "NetworkMessage_TryToShoot.h"
@@ -76,6 +77,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkmessage_PickupArmor>(aHeader);
 	case ePackageType::eEnemyPosition:
 		return CreateMessage<CNetworkMessage_EnemyPosition>(aHeader);
+	case ePackageType::eEnemyTransformaion:
+		return CreateMessage<CNetworkMessage_EnemyTransformation>(aHeader);
 	case ePackageType::eTakeDamage:
 		return CreateMessage<CNetworkMessage_TakeDamage>(aHeader);
 	case ePackageType::eTryToShoot:
