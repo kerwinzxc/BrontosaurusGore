@@ -21,9 +21,12 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	{
 	case eComponentMessageType::eOnCollisionEnter:
 	{
-		SComponentMessageData damageData;
-		damageData.myInt = myData->damage;
-		aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+		if(myData->shouldRayCast == true)
+		{
+			SComponentMessageData damageData;
+			damageData.myInt = myData->damage;
+			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
