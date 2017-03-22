@@ -50,6 +50,7 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 		newGeneralAmmoData->currentAmmoAmount = 0;
 		newGeneralAmmoData->ammoTypeData = aMessageData.myAmmoData;
 		myGeneralAmmoDataList.Add(newGeneralAmmoData);
+		mySelectedAmmoType = myGeneralAmmoDataList.Size() - 1;
 		break;
 	}
 	case eComponentMessageType::eGiveAmmo:
