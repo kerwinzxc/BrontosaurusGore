@@ -4,6 +4,7 @@
 #include <atomic>
 #include "../Components/EnemyComponentManager.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../GUI/HUD.h"
 
 namespace CU
 {
@@ -41,6 +42,7 @@ class CCheckPointSystem;
 class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
+class CTextInstance;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -86,6 +88,7 @@ private:
 
 	CColliderComponentManager* myColliderComponentManager;
 
+	CHUD myHUD;
 
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
@@ -111,6 +114,10 @@ private:
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+
+	//Super temp ta bort när guit börjar ta form
+	CTextInstance* myPlayerHealthText;
+	CTextInstance* myPlayerArmorText;
 
 };
 

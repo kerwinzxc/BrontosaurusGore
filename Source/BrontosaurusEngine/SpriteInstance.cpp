@@ -53,6 +53,21 @@ void CSpriteInstance::Render()
 	RENDERER.AddRenderMessage(renderMessage);
 }
 
+void CSpriteInstance::RenderToGUI(const std::wstring& anElementName)
+{
+	SRenderSpriteMessage* renderMessage = new SRenderSpriteMessage();
+	renderMessage->myPosition = myPosition;
+	renderMessage->mySize = mySize;
+	renderMessage->myRect = myRect;
+	renderMessage->myPivot = myPivot;
+	renderMessage->myColor = myColor;
+	renderMessage->mySprite = mySprite;
+
+	SRenderToGUI* renderToGuiMessage = new SRenderToGUI(anElementName, renderMessage);
+
+	RENDERER.AddRenderMessage(renderToGuiMessage);
+}
+
 CU::Vector2f CSpriteInstance::GetTextureSize() const
 {
 	if (mySprite != nullptr)

@@ -190,6 +190,8 @@ namespace CU
 			return rotationZ;
 		}
 
+		const CU::Vector3f GetEulerRotation() const;
+
 		Matrix33 Lerp(const Matrix33<TYPE>& aInterpolateToMatrix, const TYPE aInterpolatingSpeed)
 		{
 			m21 = m21 + aInterpolatingSpeed * (aInterpolateToMatrix.m21 - m21);
@@ -327,6 +329,15 @@ namespace CU
 		static const Matrix33 Identity;
 		static const Matrix33 Zero;
 	};
+
+	template <typename TYPE>
+	const CU::Vector3f Matrix33<TYPE>::GetEulerRotation() const
+	{
+		const float aX = atan2(m33, m23);
+		const float aY = sqrt(m11 * m11 + m21 * m21);
+		const float aZ = atan2(m21, m11);
+		return CU::Vector3f(aX, aY, aZ);
+	}
 
 	using Matrix33f = Matrix33<float>;
 

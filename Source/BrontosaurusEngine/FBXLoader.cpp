@@ -595,11 +595,11 @@ void CFBXLoader::LoadMeshChildren(aiNode* aNode, CU::GrowingArray<aiNode*>& aNod
 		std::string nodeName = aNode->mName.C_Str();
 		if (nodeName.find(animationIdentifier) != std::string::npos)
 		{
-			continue;
+			//continue;
 		}
 		if (nodeName.find(animationIdentifier2) != std::string::npos)
 		{
-			continue;
+			//continue;
 		}
 		LoadMeshChildren(child, aNodesOut);
 	}

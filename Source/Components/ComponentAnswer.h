@@ -7,6 +7,10 @@ enum class eComponentQuestionType
 {
 	eHasCameraComponent,
 	eGetCameraLookat,
+	eGetHealth,
+	eGetMaxHealth,
+	eGetArmor,
+	eGetMaxArmor,
 	eGetCameraPosition,
 	eGetAmmoLeftString,
 	eGetCameraObject,
@@ -28,9 +32,11 @@ struct SComponentQuestionData
 
 	union
 	{
-		CColliderComponent* myCollider;
 		CU::Vector4f myVector4f;
 		CU::Vector3f myVector3f;
+		CColliderComponent* myCollider;
+
+		int myInt;
 
 		bool myBool;
 		char myChar;

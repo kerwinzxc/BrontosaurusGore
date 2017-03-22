@@ -56,6 +56,15 @@
       <Filter>Widgets\Misc</Filter>
     </ClInclude>
     <ClInclude Include="HatIcon.h" />
+    <ClInclude Include="HUD.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="BarInstance.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIElement.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BarWidget.cpp">
@@ -107,6 +116,12 @@
       <Filter>Widgets\Misc</Filter>
     </ClCompile>
     <ClCompile Include="HatIcon.cpp" />
+    <ClCompile Include="HUD.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="BarInstance.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Widgets">
@@ -132,6 +147,9 @@
     </Filter>
     <Filter Include="Widgets\Misc">
       <UniqueIdentifier>{cd6ddb7c-ed3f-488a-815b-9096c64ed699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD">
+      <UniqueIdentifier>{5cfcb43b-63ee-485a-9e21-32557ebc0fa0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

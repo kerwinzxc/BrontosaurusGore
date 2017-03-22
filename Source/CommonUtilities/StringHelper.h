@@ -22,6 +22,7 @@ namespace CU
 	wchar_t* CharToWChar(wchar_t aBuffer[], const char* aText);
 	std::wstring StringToWString(const std::string& aString);
 	std::string& FindAndErase(std::string& aStringToClean, const std::string& aSubStringToErase);
+	std::string& FindAndReplace(std::string& aStringToClean, const std::string& aSubStringToErase, const std::string& aSubStringToReplaceWith);
 	std::string& ToLowerCase(std::string& aString);
 	std::string& ToUpperCase(std::string& aString);
 	std::wstring& ToLowerCase(std::wstring& aString);

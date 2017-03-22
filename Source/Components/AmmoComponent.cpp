@@ -49,7 +49,7 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 	}
 	case eComponentMessageType::eGiveAmmo:
 	{
-		ChangeSelectedAmmoType(aMessageData.myAmmoReplenishData->ammoType);
+		ChangeSelectedAmmoType(aMessageData.myAmmoReplenishData->ammoType.c_str());
 		if(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
 		{
 			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;

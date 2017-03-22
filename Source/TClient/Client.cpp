@@ -258,7 +258,6 @@ void CClient::Update()
 		case ePackageType::ePickupHealth:
 		{
 			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
-
 			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 		}
 		break;
@@ -273,6 +272,7 @@ void CClient::Update()
 			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
 			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
 		}
+		break;
 		case ePackageType::eConnect:
 			{
 				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();

@@ -1,6 +1,6 @@
 #pragma once
 struct SAmmoReplenishData
 {
-	const char* ammoType;
+	std::string ammoType;
 	unsigned short replenishAmount;
 };

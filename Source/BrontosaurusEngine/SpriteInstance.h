@@ -15,6 +15,7 @@ public:
 	~CSpriteInstance();
 
 	void Render();
+	void RenderToGUI(const std::wstring& anElementName);
 
 	inline void SetPosition(const CU::Vector2f& aPosition);
 	inline const CU::Vector2f& GetPosition() const;

@@ -12,6 +12,7 @@
 #include "../PostMaster/Subscriber.h" //mvh carl
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "ParticleRenderer.h"
+#include "C2DGUIRenderer.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -37,6 +38,7 @@ class CRenderer : public Postmaster::ISubscriber
 {
 	friend CParticleRenderer;
 	friend CDeferredRenderer;
+	friend C2DGUIRenderer;
 public:
 	CRenderer();
 	~CRenderer();
@@ -112,10 +114,6 @@ private:
 		CRenderPackage inputPackage;
 		CRenderPackage distortionPackage;
 	} myDistortionData;
-	struct SGUIData
-	{
-		CRenderPackage myInputPackage;
-	} myGUIData;
 
 private:
 	CTexture* myLut;
@@ -149,6 +147,8 @@ private:
 	CU::TimerHandle myOncePerFrameBufferTimer;
 	CU::TimerHandle myFireTimer;
 	bool myIsRunning;
+
+	C2DGUIRenderer myGUIRenderer;
 };
 
 inline SRendererSettings& CRenderer::GetSettings()

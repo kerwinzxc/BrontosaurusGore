@@ -59,13 +59,23 @@ public:
 	std::vector<std::vector<mat4>> Transforms;//, QuatTransforms;/** Array to return transformations results inside. */
 };
 
- 
+namespace CU
+{
+	class CSerilizerSaver;
+	class CSerializerLoader;
+}
+
 class CSceneAnimator
 {
 public:
 
 	CSceneAnimator(): Skeleton(0), CurrentAnimIndex(-1) {}
 	~CSceneAnimator(){ Release(); }
+
+	bool CarlSave(const std::string& aFilePath);
+	bool CarlSaveRecursive(CBone& aChild, CU::CSerilizerSaver& aSaver);
+	bool CarlLoad(const std::string& aFilePath);
+	bool CarlLoadRecursive(CBone& aChild, CU::CSerializerLoader& aLoader);
 
 	void Init(const aiScene* pScene);// this must be called to fill the CSceneAnimator with valid data
 	void Release();// frees all memory and initializes everything to a default state

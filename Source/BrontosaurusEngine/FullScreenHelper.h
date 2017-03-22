@@ -44,6 +44,7 @@ public:
 		eMetaSurface,
 		eSSAO,
 		eOverlay,
+		eAlphaBlend,
 		eSize,
 	};
 

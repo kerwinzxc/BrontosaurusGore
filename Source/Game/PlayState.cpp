@@ -83,6 +83,9 @@
 #include "../Components/ParticleEmitterComponentManager.h"
 #include "EnemyClientRepresentationManager.h"
 
+#include "TextInstance.h"
+#include "GameObject.h"
+#include "ComponentAnswer.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -221,8 +224,14 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
-	
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	myPlayerHealthText = new CTextInstance();
+	myPlayerHealthText->Init();
+	myPlayerHealthText->SetPosition(CU::Vector2f(0.1f, 0.825f));
 
+	myPlayerArmorText = new CTextInstance();
+	myPlayerArmorText->Init();
+	myPlayerArmorText->SetPosition(CU::Vector2f(0.1f, 0.8f));
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -236,6 +245,20 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
 
+	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
+	SComponentQuestionData healthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
+	SComponentQuestionData maxHealthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxHealth, maxHealthData);
+
+	myPlayerHealthText->SetText(L"Health: " +std::to_wstring(healthData.myInt) + L"/" + std::to_wstring(maxHealthData.myInt));
+
+	SComponentQuestionData armorData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetArmor, armorData);
+	SComponentQuestionData maxArmorthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
+	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
+
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
 	{
@@ -248,6 +271,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+	myPlayerHealthText->Render();
+	myPlayerArmorText->Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
@@ -351,7 +376,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	addHandGunData.myString = "Shotgun";
+	/*addHandGunData.myString = "Shotgun";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	tempAmmoReplensihData.ammoType = "Shotgun";
 	tempAmmoReplensihData.replenishAmount = 100;
@@ -363,7 +388,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	tempAmmoReplensihData.ammoType = "PlasmaRifle";
 	tempAmmoReplensihData.replenishAmount = 1000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);*/
 
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);
@@ -418,10 +443,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		SComponentMessageData addHandGunData;
 		SComponentMessageData giveAmmoData;
 
-		addHandGunData.myString = "Handgun";
+		addHandGunData.myString = "BFG";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		SAmmoReplenishData tempAmmoReplensihData;
-		tempAmmoReplensihData.ammoType = "Handgun";
+		tempAmmoReplensihData.ammoType = "BFG";
 		tempAmmoReplensihData.replenishAmount = 100;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
@@ -440,6 +465,13 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
+		addHandGunData.myString = "MeleeWeapon";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		tempAmmoReplensihData.ammoType = "MeleeWeapon";
+		tempAmmoReplensihData.replenishAmount = 1000000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 		CPlayerNetworkComponent* network = new CPlayerNetworkComponent();
 		CComponentManager::GetInstance().RegisterComponent(network);
 
@@ -450,9 +482,27 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
+
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
-		playerHealthComponent->SetMaxHealth(10);
-		playerHealthComponent->SetHealth(10);
+		CU::CJsonValue playerControls;
+		std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
+		if (!errorMessage.empty())
+		{
+			DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
+
+			playerHealthComponent->SetMaxHealth(200);
+			playerHealthComponent->SetHealth(200);
+			playerHealthComponent->SetMaxArmor(200);
+		}
+		else
+		{
+
+			playerHealthComponent->SetMaxHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
+			playerHealthComponent->SetHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
+			playerHealthComponent->SetMaxArmor(static_cast<healthPoint>(playerControls["MaxArmor"].GetFloat()));
+		}
+		playerHealthComponent->SetArmor(0);
+
 		playerObject->AddComponent(playerHealthComponent);
 
 
