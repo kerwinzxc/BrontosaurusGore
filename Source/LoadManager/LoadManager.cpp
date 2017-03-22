@@ -61,7 +61,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterObjectLinkFunction(LinkObject);
 
 	loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
-	loader.RegisterComponentLoadFunction("Enemy", ClientLoadEnemy);
+	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy);
 	loader.RegisterComponentLoadFunction("Camera", LoadCamera);
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadClientNetworkComponent);
 	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
