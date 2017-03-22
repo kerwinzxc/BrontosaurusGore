@@ -103,6 +103,7 @@ namespace CU
 	using Point4ui = Vector4<unsigned int>;
 	using Point4f = Vector4<float>;
 
+
 	template<typename TYPE> const Vector4<TYPE> Vector4<TYPE>::Zero(0, 0, 0, 0);
 	template<typename TYPE> const Vector4<TYPE> Vector4<TYPE>::UnitX(1, 0, 0, 0);
 	template<typename TYPE> const Vector4<TYPE> Vector4<TYPE>::UnitY(0, 1, 0, 0);
