@@ -25,6 +25,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
 	myActiveWeaponAmmoLeftText->SetText(L"");
 	myActiveWeaponAmmoLeftText->Init();
+	myIsActive = true;
 }
 
 
@@ -49,14 +50,17 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	//}
 	case eComponentMessageType::eShoot:
 	{
-		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+		if (myIsActive == true)
+		{
+			myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 
-		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
-		
-		shootMessage->SetDirection(aMessageData.myVector3f);
-		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+			CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+			shootMessage->SetDirection(aMessageData.myVector3f);
+			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		}
 		break;
 	}
 	case eComponentMessageType::eShootWithNetworking:
@@ -79,18 +83,22 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eChangeWeapon:
 	{
-		short index = myActiveWeaponIndex + aMessageData.myInt;
-		myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
-		if (index < 0)
+		if(myIsActive == true)
 		{
-			index = myWeapons.Size() - 1;
+			short index = myActiveWeaponIndex + aMessageData.myInt;
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
+			if (index < 0)
+			{
+				index = myWeapons.Size() - 1;
+			}
+			else if (static_cast<unsigned int>(index) >= myWeapons.Size())
+			{
+				index = 0;
+			}
+			myActiveWeaponIndex = static_cast<unsigned int>(index);
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+		
 		}
-		else if (static_cast<unsigned int>(index) >= myWeapons.Size())
-		{
-			index = 0;
-		}
-		myActiveWeaponIndex = static_cast<unsigned int>(index);
-		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		break;
 	}
 	case eComponentMessageType::eObjectDone:
@@ -124,6 +132,16 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myActiveWeaponIndex = aMessageData.myInt;
 		break;
 	}
+	case eComponentMessageType::eDied:
+	{
+		myIsActive = false;
+		break;
+	}
+	case eComponentMessageType::eCheckPointReset:
+	{
+		myIsActive = true;
+		break;
+	}
 	default:
 		break;
 	}
@@ -133,10 +151,14 @@ void CWeaponSystemComponent::Update(float aDelta)
 {
 	if (myIsShooting == true)
 	{
-		SComponentQuestionData lookatData;
-		if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraLookat, lookatData) == true)
+		if(myIsActive == true)
 		{
-			myWeapons[myActiveWeaponIndex]->TryToShoot(lookatData.myVector3f);
+			SComponentQuestionData lookatData;
+			if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraLookat, lookatData) == true)
+			{
+				myWeapons[myActiveWeaponIndex]->TryToShoot(lookatData.myVector3f);
+			}
+		
 		}
 	}
 
