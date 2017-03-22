@@ -11,7 +11,7 @@ CHealthComponent::CHealthComponent(unsigned int aNetworkID) : myNetworkID(aNetwo
 	myMaxHeath = 0;
 	myCurrentHealth = 0;
 	myArmor = 0;
-	myMaxArmor = 10;
+	myMaxArmor = 0;
 	myIsAlive = true;
 }
 
