@@ -15,6 +15,7 @@ namespace Component
 		inline void SetEnemyData(const SEnemyBlueprint& aData);
 		static void SetPlayerObject(CGameObject* aPlayerObj);
 
+		void Attack();
 		void Update(const CU::Time& aDeltaTime);
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
@@ -34,13 +35,13 @@ namespace Component
 
 		bool myIsDead;
 		unsigned myServerId;
+		bool myIsAttacing;
 	};
 }
 
 inline void Component::CEnemy::SetEnemyData(const SEnemyBlueprint& aData)
 {
-	myHealth = aData.health;
-	mySpeed = aData.health;
+	mySpeed = aData.speed * 100.f;
 	myDetectionRange2 = aData.detectionRange * aData.detectionRange;
 	myStartAttackRange2 = aData.startAttackRange * aData.startAttackRange;
 	myStopAttackRange2 = aData.stopAttackRange * aData.stopAttackRange;

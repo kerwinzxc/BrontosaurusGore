@@ -42,7 +42,6 @@ void Component::CEnemy::Attack()
 
 void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 {
-
 	if (myIsDead == false)
 	{
 		bool hasChanged = false;

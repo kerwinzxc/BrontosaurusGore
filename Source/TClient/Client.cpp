@@ -367,6 +367,8 @@ void CClient::Update()
 			myPlayerPositionUpdated = false;
 			positionWaitTime = 0;
 		}
+
+		std::this_thread::yield();
 	}
 
 	myCanQuit = true;

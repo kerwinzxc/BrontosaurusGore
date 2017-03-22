@@ -111,6 +111,7 @@ namespace CU
 			}
 			myWork.DoWork();
 			CU::SetThreadName("Worker thread");
+			std::this_thread::yield();
 		}
 	}
 }
