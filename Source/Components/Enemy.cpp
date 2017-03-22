@@ -7,7 +7,7 @@
 
 CU::GrowingArray<CGameObject*> Component::CEnemy::ourPlayerObjects;
 
-Component::CEnemy::CEnemy(unsigned int aId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0)
+Component::CEnemy::CEnemy(unsigned int aId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacing(false)
 {
 	myIsDead = false;
 	myServerId = aId;
@@ -32,9 +32,16 @@ void Component::CEnemy::MoveForward(const float aMovAmount)
 	GetParent()->GetLocalTransform().Move({0.f, 0.f, aMovAmount});
 }
 
+void Component::CEnemy::Attack()
+{
+	SComponentMessageData messageData;
+	messageData.myVector3f = GetParent()->GetWorldPosition();
+	messageData.myVector4f.w = myServerId;
+	GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
+}
+
 void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 {
-
 	if (myIsDead == false)
 	{
 		bool hasChanged = false;
@@ -50,14 +57,23 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 
 			GetParent()->Face(toPlayer);
 		}
-		if (distToPlayer < myStartAttackRange2)
+		if (myIsAttacing == false && distToPlayer < myStartAttackRange2)
 		{
-			// impl attack code.
+			myIsAttacing = true;
 		}
-		else if (distToPlayer < myDetectionRange2)
+		else if (myIsAttacing == true && distToPlayer > myStopAttackRange2)
+		{
+			myIsAttacing = false;
+		}
+		else if (myIsAttacing == false && distToPlayer < myDetectionRange2)
 		{
 			float movementAmount = mySpeed * aDeltaTime.GetSeconds();
 			MoveForward(movementAmount);
+		}
+
+		if(myIsAttacing == true)
+		{
+			Attack();
 		}
 
 

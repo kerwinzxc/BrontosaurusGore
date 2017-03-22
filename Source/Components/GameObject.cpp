@@ -126,7 +126,12 @@ void CGameObject::Move(const CU::Vector3f& aDispl)
 
 void CGameObject::Face(const CU::Vector3f& aDirection)
 {
-	GetLocalTransform().LookAt(GetWorldPosition() + aDirection);
+	LookAt(GetWorldPosition() + aDirection);
+}
+
+void CGameObject::LookAt(const CU::Vector3f& aDirection)
+{
+	GetLocalTransform().LookAt(aDirection);
 	NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 }
 

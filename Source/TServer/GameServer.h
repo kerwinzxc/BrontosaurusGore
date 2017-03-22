@@ -35,7 +35,8 @@ public:
 	bool IsLoaded() const;
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
-	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
+	CWeaponSystemManager* GetCWeaponSystemManager();
+inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;

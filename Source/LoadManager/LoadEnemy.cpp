@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "LoadEnemy.h"
 #include "EnemyComponentManager.h"
-//#include "Enemy.h"
 #include "Component.h"
 #include "EnemyClientRepresentation.h"
 #include "EnemyClientRepresentationManager.h"
-#include "Enemy.h"
 
 int LoadEnemy(KLoader::SLoadedComponentData someData)
 {
@@ -14,14 +12,13 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
-	//CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentPLaystate().GetEnemyComponentManager();
+	
 	if (!enemyComponentManager)
 	{
+
 		return NULL_COMPONENT;
 	}
-
 	SEnemyBlueprint blueprint;
-	blueprint.health = someData.myData.at("health").GetUInt();
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();

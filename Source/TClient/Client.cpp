@@ -247,13 +247,28 @@ void CClient::Update()
 		case ePackageType::eWeaponShoot:
 		{
 			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
-
 			SComponentMessageData data;
 			SComponentMessageData data2;
 			data2.myInt = shoot->GetWeaponIndex();
-			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
 			data.myVector3f = shoot->GetDirection();
-			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+
+			switch (shoot->GetShooter())
+			{
+			case CNetworkMessage_WeaponShoot::Shooter::Player: 
+				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data); 
+				break;
+			case CNetworkMessage_WeaponShoot::Shooter::Enemy:
+				{
+					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
+					target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+					target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+				}
+				break;
+			default: break;
+			}
+			
+			
 		}
 		break;
 		case ePackageType::ePickupHealth:
@@ -352,6 +367,8 @@ void CClient::Update()
 			myPlayerPositionUpdated = false;
 			positionWaitTime = 0;
 		}
+
+		std::this_thread::yield();
 	}
 
 	myCanQuit = true;
