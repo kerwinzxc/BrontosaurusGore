@@ -25,4 +25,5 @@ enum class ePackageType: __int8
 	eEnemyPosition,
 	eTakeDamage,
 	eSize,
+	eEnemyTransformaion
 };
