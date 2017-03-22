@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
+    <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
     <ClInclude Include="NetworkMessage_OKShoot.h" />
     <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
     <ClInclude Include="Networkmessage_PickupArmor.h" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
+    <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
     <ClCompile Include="NetworkMessage_OKShoot.cpp" />
     <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
     <ClCompile Include="Networkmessage_PickupArmor.cpp" />
