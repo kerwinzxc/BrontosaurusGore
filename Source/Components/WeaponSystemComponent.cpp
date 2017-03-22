@@ -11,6 +11,8 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_WeaponShoot.h"
 #include "../TClient/ClientMessageManager.h"
+#include "../FontEngine/FontEngineFacade.h"
+#include "../TServer/ServerMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -20,11 +22,15 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myWeapons.Init(5);
 	myIsShooting = false;
 	myTemporaryAmmoDataList.Init(5);
-	myActiveWeaponAmmoLeftText = new CTextInstance();
-	myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
-	myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
-	myActiveWeaponAmmoLeftText->SetText(L"");
-	myActiveWeaponAmmoLeftText->Init();
+
+	if(CFontEngineFacade::GetIsCreated() == true)
+	{
+		myActiveWeaponAmmoLeftText = new CTextInstance();
+		myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
+		myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
+		myActiveWeaponAmmoLeftText->SetText(L"");
+		myActiveWeaponAmmoLeftText->Init();
+	}
 }
 
 
@@ -54,6 +60,20 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		CNetworkMessage_WeaponShoot* shootMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>("__All");
 		
 		shootMessage->SetDirection(aMessageData.myVector3f);
+		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		break;
+	}
+	case eComponentMessageType::eServerShoot:
+	{
+		myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+
+		CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
+
+		shootMessage->SetDirection(aMessageData.myVector3f);
+		shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Enemy);
+		shootMessage->SetShooterId(aMessageData.myVector4f.w);
 		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
@@ -146,19 +166,23 @@ void CWeaponSystemComponent::Update(float aDelta)
 	}
 	SComponentQuestionData ammoLeftQuestionData;
 	SAmmoLeftData ammoLeftData;
-	ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
-	ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
-	if(GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString , ammoLeftQuestionData) == true)
-	{
-		std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
-		ammoLeftText += ": ";
-		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
-		ammoLeftText += "/";
-		ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
 
-		myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
+	if (CFontEngineFacade::GetIsCreated() == true)
+	{
+		ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+		ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
+		if (GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString, ammoLeftQuestionData) == true)
+		{
+			std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
+			ammoLeftText += ": ";
+			ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
+			ammoLeftText += "/";
+			ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
+
+			myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
+		}
+		myActiveWeaponAmmoLeftText->Render();
 	}
-	myActiveWeaponAmmoLeftText->Render();
 }
 
 void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)

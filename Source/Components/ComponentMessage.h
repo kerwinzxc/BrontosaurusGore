@@ -85,6 +85,7 @@ enum class eComponentMessageType
 	eDeactivate,
 	eNetworkDoDamage,
 	eActivateEmitter,
+	eServerShoot,
 	eLength,
 };
 
@@ -107,6 +108,7 @@ struct SComponentMessageData
 		float myFloat;
 		CU::Vector2f myVector2f;
 		CU::Vector3f myVector3f;
+		CU::Vector4f myVector4f;
 
 		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;

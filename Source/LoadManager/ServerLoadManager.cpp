@@ -51,7 +51,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
 	loader.RegisterComponentLoadFunction("MovementComponent", ServerLoadMovementComponent);
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy); 
-	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemComponent);
+	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemServerComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);

@@ -52,7 +52,6 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 	CreateDepthStencilStates();
 	CreateSamplerStates();
 
-
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
@@ -107,7 +106,7 @@ void CRenderer::Render()
 
 	myBackBufferPackage.Clear();
 	myIntermediatePackage.Clear();
-	myGUIData.myInputPackage.Clear();
+	myGUIRenderer.GetInputPackage().Clear();
 	myAntialiasingPackage.Clear();
 
 	renderTo = (mySettings.HDR == true) ? &myHDRData.myInputPackage : &myIntermediatePackage;
@@ -170,10 +169,23 @@ void CRenderer::Render()
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.0f, 1.0f, 0.5f }, &myDeferredRenderer.myGbuffer.normal);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.0f, 0.5f, 0.5f, 1.0f }, &myDeferredRenderer.myGbuffer.RMAO);
 	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, { 0.5f, 0.5f, 1.0f, 1.0f }, &myDeferredRenderer.myGbuffer.emissive);
-	
+
 	AntiAliasing();
+
+	int blup;//temp
+	myGUIRenderer.DoRenderQueues(*this, blup);
+
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	SetStates(&changeStateMessage);
+	myGUIRenderer.RenderWholeGuiToPackage(myGUIRenderer.GetInputPackage(), myFullScreenHelper);
+
 	RenderGUI();
 	//DoColorGrading();
+
+
 
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
@@ -239,14 +251,14 @@ void CRenderer::MotionBlur()
 
 void CRenderer::AntiAliasing()
 {
-	if(mySettings.FXAA == true)
+	if (mySettings.FXAA == true)
 	{
 		myAntialiasingPackage.Activate();
 		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eAA, &myIntermediatePackage);
 		myIntermediatePackage.Activate();
 		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myAntialiasingPackage);
 	}
-	
+
 }
 
 void CRenderer::RenderGUI()
@@ -260,7 +272,7 @@ void CRenderer::RenderGUI()
 	SetStates(&changeStateMessage);
 
 	myIntermediatePackage.Activate();
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIData.myInputPackage);
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIRenderer.GetInputPackage());
 
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
@@ -390,7 +402,7 @@ void CRenderer::InitPackages()
 	//  GUI
 	//
 	{
-		myGUIData.myInputPackage.Init(windowSize);
+		myGUIRenderer.GetInputPackage().Init(windowSize);
 	}
 
 	//	Backbuffer
@@ -414,7 +426,7 @@ void CRenderer::CreateBuffer()
 	buffer.myShadowCameraMatrices.myProjectionSpace = CU::Matrix44f::Zero;
 
 	buffer.deltaTime = 0.0f;
-	
+
 	buffer.time = 0.0f;
 	buffer.deltaTime = 0.0f;
 
@@ -442,9 +454,9 @@ void CRenderer::UpdateBuffer()
 	updatedBuffer.fogEnd = 0.0f;
 
 	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
-	
+
 	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	
+
 	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
 	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
@@ -453,7 +465,7 @@ void CRenderer::UpdateBuffer()
 
 }
 
-void CRenderer::UpdateBuffer(SSetShadowBuffer* msg) 
+void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
 	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -461,7 +473,7 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 
 	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
 	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
-	
+
 	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = msg->myCameraTransformation;
 	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = msg->myCameraProjection;
 
@@ -484,7 +496,7 @@ void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
 void CRenderer::CreateRasterizerStates()
 {
 	HRESULT result;
-	
+
 	ID3D11RasterizerState* defaultState = nullptr;
 	D3D11_RASTERIZER_DESC rasterFillDesc;
 	ZeroMemory(&rasterFillDesc, sizeof(rasterFillDesc));
@@ -543,7 +555,7 @@ void CRenderer::CreateRasterizerStates()
 	result = DEVICE->CreateRasterizerState(&rasterNoCullClockDesc, &noCullClockwiseState);
 	CHECK_RESULT(result, "Failed to create Rasterizer Default State.");
 	myRasterizerStates[static_cast<int>(eRasterizerState::eNoCullingClockwise)] = noCullClockwiseState;
-	
+
 
 	ID3D11RasterizerState* FrontCullState = nullptr;
 	D3D11_RASTERIZER_DESC rasterFrontFace;
@@ -821,7 +833,7 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 {
 	DEVICE_CONTEXT->RSSetState(myRasterizerStates[static_cast<int>(aState->myRasterizerState)]);
 	DEVICE_CONTEXT->OMSetDepthStencilState(myDepthStencilStates[static_cast<int>(aState->myDepthStencilState)], 0);
-	
+
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	UINT sampleMask = 0xffffffff;
@@ -891,7 +903,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		SForwardRenderModelParams params;
 		params.myTransform = msg->myTransformation;
 		params.myTransformLastFrame = msg->myTransformation;
-		
+
 		params.myRenderToDepth = false;
 
 
@@ -921,7 +933,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		context->ClearRenderTargetView(msg->CameraRenderPackage.GetRenderTargetView(), clearColour);
 		context->ClearDepthStencilView(msg->CameraRenderPackage.GetDepthStencilView(), D3D11_CLEAR_DEPTH, 1.f, 0);
 		msg->CameraRenderPackage.Activate();
-		
+
 		for (unsigned int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
 		{
 			HandleRenderMessage(msg->CameraRenderQueue[i], aDrawCallCount);
@@ -988,7 +1000,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderGUIModel:
 	{
-		myGUIData.myInputPackage.Activate();
+		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderGUIModelMessage* msg = static_cast<SRenderGUIModelMessage*>(aRenderMesage);
 		CModelManager* modelManager = CEngine::GetInstance()->GetModelManager();
 		CModel* model = modelManager->GetModel(msg->myModelID);
@@ -1018,7 +1030,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderSprite:
 	{
-		myGUIData.myInputPackage.Activate();
+		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderSpriteMessage* msg = static_cast<SRenderSpriteMessage*>(aRenderMesage);
 		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRect, msg->myColor);
 		++aDrawCallCount;
@@ -1029,7 +1041,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderText:
 	{
-		myGUIData.myInputPackage.Activate();
+		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderTextMessage* msg = static_cast<SRenderTextMessage*>(aRenderMesage);
 		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement);
 		aDrawCallCount += msg->myStrings.Size();
@@ -1061,7 +1073,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
 		myParticleRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
-		
+
 		++aDrawCallCount;
 		break;
 	}
@@ -1096,13 +1108,13 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		bool c1 = msg->myFirstUseDepthResource;
 		bool c2 = msg->mySecondUseDepthResource;
 
-		CRenderPackage& p1  = msg->myFirstPackage;
-		CRenderPackage& p2  = msg->mySecondPackage;
+		CRenderPackage& p1 = msg->myFirstPackage;
+		CRenderPackage& p2 = msg->mySecondPackage;
 
 		myFullScreenHelper.DoEffect(
 			msg->myEffectType,
 			msg->myRect,
-			c1 ? p1.GetDepthResource() : p1.GetResource(), 
+			c1 ? p1.GetDepthResource() : p1.GetResource(),
 			c2 ? p2.GetDepthResource() : p2.GetResource());
 
 		++aDrawCallCount;
@@ -1136,7 +1148,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	case SRenderMessage::eRenderMessageType::eRenderLineBuffer:
 	{
-		myGUIData.myInputPackage.Activate();
+		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderLineBuffer* msg = static_cast<SRenderLineBuffer*>(aRenderMesage);
 		CLineDrawer& lineDrawer = ENGINE->GetLineDrawer();
 		lineDrawer.RenderLineChunk(msg->myLineBuffer);
@@ -1146,6 +1158,18 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		else renderTo->Activate();
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eCreateGuiElement:
+	{
+		SCreateOrClearGuiElement* createOrClearGuiElement = static_cast<SCreateOrClearGuiElement*>(aRenderMesage);
+		myGUIRenderer.CreateOrClearEvent(createOrClearGuiElement->myElementName, createOrClearGuiElement->myPixelSize, createOrClearGuiElement->myGuiElement);
+		break;
+	}
+	case SRenderBarMessage::eRenderMessageType::eRenderToGui:
+	{
+		SRenderToGUI* renderToGuiMessage = static_cast<SRenderToGUI*>(aRenderMesage);
+		myGUIRenderer.RenderToGUI(renderToGuiMessage->myElementName, renderToGuiMessage->myRenderMessage);
+		break;
+	}
 	}
 }
 
@@ -1153,6 +1177,6 @@ void CRenderer::DoColorGrading()
 {
 	myColorGradingPackage.Clear();
 	myColorGradingPackage.Activate();
-	DEVICE_CONTEXT->PSSetShaderResources(2 , 1 , myLut->GetShaderResourceViewPointer());
+	DEVICE_CONTEXT->PSSetShaderResources(2, 1, myLut->GetShaderResourceViewPointer());
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eColorGrading, &myIntermediatePackage);
 }

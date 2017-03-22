@@ -189,3 +189,8 @@ CEnemyComponentManager* CGameServer::GetEnemyComponentManager()
 {
 	return myEnemyComponentManager;
 }
+
+CWeaponSystemManager* CGameServer::GetCWeaponSystemManager()
+{
+	return myWeaponSystemManager;
+}

@@ -98,7 +98,8 @@ void Component::CEnemy::Attack()
 {
 	SComponentMessageData messageData;
 	messageData.myVector3f = GetParent()->GetToWorldTransform().myForwardVector;
-	GetParent()->NotifyComponents(eComponentMessageType::eShoot, messageData);
+	messageData.myVector4f.w = myServerId;
+	GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 }
 
 CU::Vector3f Component::CEnemy::ClosestPlayerPosition()
