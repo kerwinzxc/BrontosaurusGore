@@ -111,7 +111,6 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
 	myCheckPointSystem = nullptr;
-
 	new CPollingStation();
 }
 
@@ -147,7 +146,6 @@ CPlayState::~CPlayState()
 
 void CPlayState::Load()
 {
-	Component::CEnemy::SetPlayer(nullptr);
 	CU::CStopWatch loadPlaystateTimer;
 	loadPlaystateTimer.Start();
 
@@ -426,7 +424,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (CPollingStation::GetInstance())
 		{
 			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
-			Component::CEnemy::SetPlayer(playerObject);
 		}
 
 		CInputComponent* inputComponent = new CInputComponent();
@@ -506,8 +503,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->AddComponent(playerHealthComponent);
 
 
-
-
+		
 
 		//CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
 		//CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
