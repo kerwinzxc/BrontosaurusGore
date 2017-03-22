@@ -97,6 +97,9 @@
 <Filter Include="Serializer">
       <UniqueIdentifier>{9aefc103-3826-40d7-a80a-bf65ad18d20e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Colour">
+      <UniqueIdentifier>{9703f98d-943d-4c63-bd37-e7ae970a009a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="SerializerSaver.h">
       <Filter>Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="Colour.h">
+      <Filter>Colour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

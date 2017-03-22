@@ -275,6 +275,9 @@
     <ClInclude Include="ParticleRenderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="C2DGUIRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -425,6 +428,9 @@
       <Filter>Light</Filter>
     </ClCompile>
     <ClCompile Include="ParticleRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="C2DGUIRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>

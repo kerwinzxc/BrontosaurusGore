@@ -4,6 +4,7 @@
 #include <atomic>
 #include "../Components/EnemyComponentManager.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../GUI/HUD.h"
 
 namespace CU
 {
@@ -87,6 +88,7 @@ private:
 
 	CColliderComponentManager* myColliderComponentManager;
 
+	CHUD myHUD;
 
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;

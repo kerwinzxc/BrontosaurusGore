@@ -190,3 +190,18 @@ SRenderModelShadowMessage::SRenderModelShadowMessage()
 {
 	myModelID = -1;
 }
+
+SCreateOrClearGuiElement::SCreateOrClearGuiElement(const std::wstring& anElementName, const SGUIElement& aGUIElement, const CU::Vector2ui aPixelSize) :
+	SRenderMessage(eRenderMessageType::eCreateGuiElement),
+	myElementName(anElementName),
+	myGuiElement(aGUIElement),
+	myPixelSize(aPixelSize)
+{
+}
+
+SRenderToGUI::SRenderToGUI(const std::wstring& anElementName, SRenderMessage* const aRenderMessage): 
+	SRenderMessage(eRenderMessageType::eRenderToGui), 
+	myElementName(anElementName), 
+	myRenderMessage(aRenderMessage)
+{
+}
