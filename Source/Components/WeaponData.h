@@ -14,5 +14,4 @@ struct SWeaponData
 	float shootPositionZ;
 	unsigned short randomSpreadAngle;
 	unsigned short projectilesFiredPerShot;
-	bool shouldRayCast;
 };

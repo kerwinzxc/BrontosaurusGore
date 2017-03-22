@@ -9,4 +9,5 @@ struct SProjectileData
 	float maximumTravelRange;
 	healthPoint damage;
 	bool shouldExplodeOnImpact;
+	bool shouldRayCast;
 };
