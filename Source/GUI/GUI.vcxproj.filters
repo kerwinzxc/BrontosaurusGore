@@ -59,6 +59,12 @@
     <ClInclude Include="HUD.h">
       <Filter>HUD</Filter>
     </ClInclude>
+    <ClInclude Include="BarInstance.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIElement.h">
+      <Filter>HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BarWidget.cpp">
@@ -111,6 +117,9 @@
     </ClCompile>
     <ClCompile Include="HatIcon.cpp" />
     <ClCompile Include="HUD.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="BarInstance.cpp">
       <Filter>HUD</Filter>
     </ClCompile>
   </ItemGroup>

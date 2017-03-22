@@ -341,11 +341,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BarInstance.h" />
     <ClInclude Include="BarWidget.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ButtonAnimation.h" />
     <ClInclude Include="DraggableArea.h" />
     <ClInclude Include="GUICursor.h" />
+    <ClInclude Include="GUIElement.h" />
     <ClInclude Include="GUIManager.h" />
     <ClInclude Include="GUIPixelConstantBuffer.h" />
     <ClInclude Include="HatIcon.h" />
@@ -363,6 +365,7 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BarInstance.cpp" />
     <ClCompile Include="BarWidget.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ButtonAnimation.cpp" />

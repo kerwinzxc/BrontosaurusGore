@@ -1,6 +1,6 @@
 #pragma once
-#include "BrontosaurusEngine/TextInstance.h"
-#include "JsonValue.h"
+#include "../BrontosaurusEngine/TextInstance.h"
+#include "../CommonUtilities/JsonValue.h"
 
 class CSpriteInstance;
 class CBarInstance;
@@ -22,7 +22,7 @@ public:
 	void LoadArmourAndHealth(const CU::CJsonValue& aJsonValue);
 
 	void Update(CU::Time aDeltaTime);
-	void Render();
+	void Render() const;
 
 private:
 	//health and armour

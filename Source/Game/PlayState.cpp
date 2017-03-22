@@ -181,6 +181,7 @@ void CPlayState::Load()
 	
 	myWeaponFactory->LoadWeapons();
 
+	myHUD.LoadHUD();
 
 	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
@@ -221,6 +222,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
+	myHUD.Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -234,6 +236,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+	myHUD.Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)

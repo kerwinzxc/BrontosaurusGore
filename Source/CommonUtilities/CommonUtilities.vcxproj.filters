@@ -91,6 +91,9 @@
     <Filter Include="Input\Recieving">
       <UniqueIdentifier>{59267a83-3d43-4a17-9acd-7413750948d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Colour">
+      <UniqueIdentifier>{9703f98d-943d-4c63-bd37-e7ae970a009a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="MoveArray.h">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Colour.h">
+      <Filter>Colour</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -377,6 +377,7 @@
     <ClInclude Include="binary_tree.h" />
     <ClInclude Include="BitSet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Colour.h" />
     <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="ConsolePrinter.h" />
