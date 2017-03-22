@@ -434,6 +434,9 @@
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyBlueprint.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

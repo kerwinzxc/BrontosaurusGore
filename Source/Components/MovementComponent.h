@@ -28,7 +28,9 @@ private:
 	float myJumpHeight;
 	float myDoubleJumpHeight;
 	float myJumpForce;
+	float myFrameLastPositionY;
 
 	char myControllerConstraints;
 	bool myCanDoubleJump;
+	bool myIsNotFalling;
 };

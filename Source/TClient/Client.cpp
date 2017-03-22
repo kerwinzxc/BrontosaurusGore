@@ -48,6 +48,7 @@
 
 #include "..\Components\PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
+#include "..\TShared\NetworkMessage_EnemyTransformation.h"
 #include "../Components/EnemyClientRepresentationManager.h"
 
 #include "../Components/HealthComponentManager.h"
@@ -311,11 +312,19 @@ void CClient::Update()
 		case ePackageType::eEnemyPosition:
 			{
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
-				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetInstance().GetRepresentation(message->GetId());
+				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.GetParent()->SetWorldPosition(message->GetPosition());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
+		case ePackageType::eEnemyTransformaion:
+			{
+				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
+				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
+				target.GetParent()->SetWorldTransformation(message->GetTransformation());
+				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+			}
+		break;
 		case ePackageType::eTakeDamage:
 		{
 			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
