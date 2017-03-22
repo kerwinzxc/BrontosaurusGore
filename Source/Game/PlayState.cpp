@@ -32,6 +32,7 @@
 #include "Components/ExplosionFactory.h"
 #include "Components/ExplosionComponentManager.h"
 #include "Components/HealthComponentManager.h"
+#include "DamageOnCollisionComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -130,6 +131,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myScriptComponentManager);
 	SAFE_DELETE(myExplosionFactory);
 	SAFE_DELETE(myExplosionComponentManager);
+	SAFE_DELETE(myDamageOnCollisionComponentManager);
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
@@ -242,6 +244,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
+	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	SComponentQuestionData healthData;
@@ -342,6 +345,7 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();

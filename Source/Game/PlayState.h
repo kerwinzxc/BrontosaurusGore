@@ -43,6 +43,7 @@ class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
 class CTextInstance;
+class CDamageOnCollisionComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -106,6 +107,7 @@ private:
 	CScriptComponentManager* myScriptComponentManager;
 	CExplosionFactory* myExplosionFactory;
 	CExplosionComponentManager* myExplosionComponentManager;
+	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;

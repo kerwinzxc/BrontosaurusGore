@@ -384,6 +384,8 @@
     <ClInclude Include="ComponentAnswer.h" />
     <ClInclude Include="ComponentMessageCallback.h" />
     <ClInclude Include="ComponentMessageTypeToLua.h" />
+    <ClInclude Include="DamageOnCollisionComponent.h" />
+    <ClInclude Include="DamageOnCollisionComponentManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
@@ -461,6 +463,8 @@
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionComponentManager.cpp" />
     <ClCompile Include="ComponentMessageTypeToLua.cpp" />
+    <ClCompile Include="DamageOnCollisionComponent.cpp" />
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyClientRepresentation.cpp" />
     <ClCompile Include="EnemyClientRepresentationManager.cpp" />
