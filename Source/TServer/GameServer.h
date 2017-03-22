@@ -36,13 +36,14 @@ public:
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
+inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
 	CWeaponFactory* myWeaponFactory;
 	CMovementComponentManager* myMovementComponentManager;
-
+	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
@@ -65,4 +66,9 @@ private:
 CMovementComponentManager* CGameServer::GetMovementComponentManager()
 {
 	return myMovementComponentManager;
+}
+
+inline CDamageOnCollisionComponentManager* CGameServer::GetDamageOnCollisionComponentManager() const
+{
+	return myDamageOnCollisionComponentManager;
 }

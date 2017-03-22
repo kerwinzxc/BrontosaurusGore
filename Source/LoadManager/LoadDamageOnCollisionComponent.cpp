@@ -23,3 +23,21 @@ int LoadDamageOnCollisionComponent(KLoader::SLoadedComponentData someData)
 
 	return NULL_COMPONENT;
 }
+
+
+int LoadDamageOnCollisionComponentForServer(KLoader::SLoadedComponentData someData)
+{
+	GET_SERVERLOADMANAGER(loadManager);
+	CDamageOnCollisionComponentManager* damageOnCollisionComponentManager = loadManager.GetCurrentGameServer().GetDamageOnCollisionComponentManager();
+	if (damageOnCollisionComponentManager != nullptr)
+	{
+		CDamageOnCollisionComponent* newDamageOnCollisionComponent = damageOnCollisionComponentManager->CreateAndRegisterComponent();
+		healthPoint loadedHealthValue = static_cast<healthPoint>(someData.myData.at("Damage").GetFloat());
+		newDamageOnCollisionComponent->SetDamage(loadedHealthValue);
+		float loadedDamageCooldownValue = (someData.myData.at("Cooldown").GetFloat());
+		newDamageOnCollisionComponent->SetDamageCooldown(loadedDamageCooldownValue);
+		return newDamageOnCollisionComponent->GetId();
+	}
+
+	return NULL_COMPONENT;
+}
