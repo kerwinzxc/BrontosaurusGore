@@ -13,6 +13,7 @@ public:
 	~CWeaponSystemComponent();
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
+	bool WeaponIndexValid() const;
 	void Update(float aDelta);
 	void GiveWeapon(const char* aWeaponName);
 	void AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData);

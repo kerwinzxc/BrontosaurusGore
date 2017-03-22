@@ -167,6 +167,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 }
 
+bool CWeaponSystemComponent::WeaponIndexValid() const
+{
+	return myActiveWeaponIndex < myWeapons.Size();
+}
+
 void CWeaponSystemComponent::Update(float aDelta)
 {
 	if (myIsShooting == true)
@@ -191,19 +196,23 @@ void CWeaponSystemComponent::Update(float aDelta)
 
 	if (CFontEngineFacade::GetIsCreated() == true)
 	{
-		ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
-		ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
-		if (GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString, ammoLeftQuestionData) == true)
+		if(WeaponIndexValid() == true)
 		{
-			std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
-			ammoLeftText += ": ";
-			ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
-			ammoLeftText += "/";
-			ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
+			ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+			ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
+			if (GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString, ammoLeftQuestionData) == true)
+			{
+				std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
+				ammoLeftText += ": ";
+				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
+				ammoLeftText += "/";
+				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
 
-			myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
+				myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
+			}
+			myActiveWeaponAmmoLeftText->Render();
 		}
-		myActiveWeaponAmmoLeftText->Render();
+		
 	}
 }
 
