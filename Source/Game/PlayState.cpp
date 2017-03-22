@@ -440,10 +440,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		SComponentMessageData addHandGunData;
 		SComponentMessageData giveAmmoData;
 
-		addHandGunData.myString = "Handgun";
+		addHandGunData.myString = "BFG";
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		SAmmoReplenishData tempAmmoReplensihData;
-		tempAmmoReplensihData.ammoType = "Handgun";
+		tempAmmoReplensihData.ammoType = "BFG";
 		tempAmmoReplensihData.replenishAmount = 100;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
@@ -459,6 +459,13 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 		tempAmmoReplensihData.ammoType = "PlasmaRifle";
 		tempAmmoReplensihData.replenishAmount = 1000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "MeleeWeapon";
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		tempAmmoReplensihData.ammoType = "MeleeWeapon";
+		tempAmmoReplensihData.replenishAmount = 1000000;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
