@@ -180,7 +180,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 
-	Component::CEnemy::SetPlayer(gameObject);
+	Component::CEnemy::SetPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }

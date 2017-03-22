@@ -387,6 +387,7 @@
     <ClInclude Include="DamageOnCollisionComponent.h" />
     <ClInclude Include="DamageOnCollisionComponentManager.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyBlueprint.h" />
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />

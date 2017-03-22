@@ -5,20 +5,25 @@
 #include "Component.h"
 #include "EnemyClientRepresentation.h"
 #include "EnemyClientRepresentationManager.h"
+#include "Enemy.h"
 
 int LoadEnemy(KLoader::SLoadedComponentData someData)
 {
 	static unsigned int ID = 0;
 
+	
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
-	
-	if (!enemyComponentManager) return NULL_COMPONENT;
+	//CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentPLaystate().GetEnemyComponentManager();
+	if (!enemyComponentManager)
+	{
+		return NULL_COMPONENT;
+	}
 
-	CEnemyComponentManager::EnemyBlueprint blueprint;
+	SEnemyBlueprint blueprint;
 	blueprint.health = someData.myData.at("health").GetUInt();
 	blueprint.speed = someData.myData.at("speed").GetFloat();
-	blueprint.detactionRange = someData.myData.at("detactionRange").GetFloat();
+	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 

@@ -15,14 +15,10 @@ void CEnemyComponentManager::Update(const CU::Time& aDeltaTime)
 	}
 }
 
-Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId)
+Component::CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
 {
 	Component::CEnemy* enemy = new Component::CEnemy(anId);
-	enemy->SetHealth(anEnemyBlueprint.health);
-	enemy->SetSpeed(anEnemyBlueprint.speed);
-	enemy->SetDetectionRange(anEnemyBlueprint.detactionRange);
-	enemy->SetStartAttackRange(anEnemyBlueprint.startAttackRange);
-	enemy->SetStopAttackRange(anEnemyBlueprint.stopAttackRange);
+	enemy->SetEnemyData(anEnemyBlueprint);
 
 	myEnemies.Add(enemy);
 
@@ -31,7 +27,7 @@ Component::CEnemy* CEnemyComponentManager::CreateComponent(const EnemyBlueprint&
 	return enemy;
 }
 
-CComponent* CEnemyComponentManager::CreateComponentAbstract(const EnemyBlueprint& anEnemyBlueprint, unsigned int anId)
+CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
 {
 	return CreateComponent(anEnemyBlueprint,anId);
 }
