@@ -73,6 +73,7 @@ public:
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline CScriptComponentManager* GetScriptComponentManager();
+	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager();
 
 	inline bool IsLoaded() const;
 
@@ -156,4 +157,9 @@ inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
 inline CScriptComponentManager* CPlayState::GetScriptComponentManager()
 {
 	return myScriptComponentManager;
+}
+
+inline CDamageOnCollisionComponentManager* CPlayState::GetDamageOnCollisionComponentManager()
+{
+	return myDamageOnCollisionComponentManager;
 }

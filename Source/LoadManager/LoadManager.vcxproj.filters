@@ -71,6 +71,9 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadArmorComponent.h" />
+    <ClInclude Include="LoadDamageOnCollisionComponent.h">
+      <Filter>LoadThings\LoadDamageOnCollisionComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,6 +143,9 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadArmorComponent.cpp" />
+    <ClCompile Include="LoadDamageOnCollisionComponent.cpp">
+      <Filter>LoadThings\LoadDamageOnCollisionComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -210,6 +216,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadArmorPickupComponent">
       <UniqueIdentifier>{6bef8a7f-9f51-471d-894c-e19cde254bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadDamageOnCollisionComponent">
+      <UniqueIdentifier>{f12f10a7-f4a1-493e-8b44-c7018470721d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
