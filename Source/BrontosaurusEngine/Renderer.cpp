@@ -1168,6 +1168,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderToGUI* renderToGuiMessage = static_cast<SRenderToGUI*>(aRenderMesage);
 		myGUIRenderer.RenderToGUI(renderToGuiMessage->myElementName, renderToGuiMessage->myRenderMessage);
+		//renderToGuiMessage->myRenderMessage = nullptr;
 		break;
 	}
 	}

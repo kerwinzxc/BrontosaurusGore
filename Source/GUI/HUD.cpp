@@ -38,12 +38,12 @@ void CHUD::Update(CU::Time aDeltaTime)
 
 void CHUD::Render() const
 {
-	/*SGUIElement tempElement;
+	SGUIElement tempElement;
 	tempElement.myScreenRect = CU::Vector4f(0.2f, 0.2f, 0.1f, 0.2f);
 	tempElement.myAnchor = 0;
 	tempElement.myOrigin = CU::Vector2f(0.f, 0.f);
 
 	RENDERER.AddRenderMessage(new SCreateOrClearGuiElement(L"TestElement", tempElement, CU::Vector2ui(256, 64)));
 
-	myHealthAndArmorSprite->RenderToGUI(L"TestElement");*/
+	myHealthAndArmorSprite->RenderToGUI(L"TestElement");
 }

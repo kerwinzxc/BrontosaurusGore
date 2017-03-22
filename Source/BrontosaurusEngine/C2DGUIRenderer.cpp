@@ -133,7 +133,7 @@ void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFu
 
 void C2DGUIRenderer::DoRenderQueues(CRenderer & aRenderer, int & drawCallsCount)
 {
-	for (unsigned char i = 0; i < myElements.Size(); ++i)
+	for (unsigned char i = 0; i < myRenderQueus.Size(); ++i)
 	{
 		if (myRenderQueus[i].Size() == 0)
 		{
@@ -146,7 +146,7 @@ void C2DGUIRenderer::DoRenderQueues(CRenderer & aRenderer, int & drawCallsCount)
 		{
 			SRenderMessage* const renderMessage = myRenderQueus[i].Pop();
 			aRenderer.HandleRenderMessage(renderMessage, drawCallsCount);
-			delete renderMessage;
+			//delete renderMessage;
 		}
 	}
 	myCurrentPackage = &myInputPackage;
@@ -154,7 +154,10 @@ void C2DGUIRenderer::DoRenderQueues(CRenderer & aRenderer, int & drawCallsCount)
 
 void C2DGUIRenderer::RenderToGUI(const std::wstring anElementName, SRenderMessage* aRenderMessage)
 {
-	myRenderQueus[myElementIndexMap.at(anElementName)].Push(aRenderMessage);
+	if (aRenderMessage != nullptr)
+	{
+		myRenderQueus[myElementIndexMap.at(anElementName)].Push(aRenderMessage);
+	}
 }
 
 CRenderPackage& C2DGUIRenderer::GetCurrentPackage()

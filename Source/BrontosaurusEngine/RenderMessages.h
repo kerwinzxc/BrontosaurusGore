@@ -349,6 +349,7 @@ struct SCreateOrClearGuiElement : SRenderMessage
 struct SRenderToGUI : SRenderMessage
 {
 	SRenderToGUI(const std::wstring& anElementName, SRenderMessage * const aRenderMessage);
+	~SRenderToGUI();
 
 	const std::wstring myElementName;
 	SRenderMessage* myRenderMessage;
