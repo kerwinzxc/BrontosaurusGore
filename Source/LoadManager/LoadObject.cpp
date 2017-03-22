@@ -46,13 +46,20 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 	currentMatrix.SetPosition({ positionX, positionY, positionZ });
 	
-	const CU::Vector3f rotation(rotationX, rotationY, rotationZ);
+	//Non euler code
+	const CU::Matrix33f mRotationY = CU::Matrix33f::CreateRotateAroundY(rotationY);
+	const CU::Matrix33f mRotationX = CU::Matrix33f::CreateRotateAroundX(-rotationX) * mRotationY;
+	const CU::Matrix33f mRotationZ = CU::Matrix33f::CreateRotateAroundZ(rotationZ) * mRotationX;
+	currentMatrix.SetRotation(mRotationZ);
+	//what
+
+	/*const CU::Vector3f rotation(rotationX, rotationY, rotationZ);
 	currentMatrix.SetEulerRotation(rotation);
 
 	const CU::Vector3f eulerRotation = currentMatrix.GetEulerRotation();
 
 	currentMatrix.SetEulerRotation(eulerRotation);
-
+*/
 	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
 
 	gameObject->SetName(someData.myData.at("name").GetString().c_str());
