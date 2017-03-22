@@ -472,11 +472,29 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.halfHeight = 1.0f;
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
+
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
-		playerHealthComponent->SetMaxHealth(200);
-		playerHealthComponent->SetHealth(200);
+		CU::CJsonValue playerControls;
+		std::string errorMessage = playerControls.Parse("Json/Player/playerStats.json");
+		if (!errorMessage.empty())
+		{
+			DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
+
+			playerHealthComponent->SetMaxHealth(200);
+			playerHealthComponent->SetHealth(200);
+			playerHealthComponent->SetMaxArmor(200);
+		}
+		else
+		{
+
+			playerHealthComponent->SetMaxHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
+			playerHealthComponent->SetHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
+			playerHealthComponent->SetMaxArmor(playerControls["MaxArmor"].GetFloat());
+			myJumpHeight = playerControls["MaxHealth"].GetFloat();
+			myDoubleJumpHeight = playerControls["MaxArmor"].GetFloat();
+		}
 		playerHealthComponent->SetArmor(0);
-		playerHealthComponent->SetMaxArmor(200);
+
 		playerObject->AddComponent(playerHealthComponent);
 
 
