@@ -473,8 +473,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
-		playerHealthComponent->SetMaxHealth(10);
-		playerHealthComponent->SetHealth(10);
+		playerHealthComponent->SetMaxHealth(200);
+		playerHealthComponent->SetHealth(200);
+		playerHealthComponent->SetArmor(0);
+		playerHealthComponent->SetMaxArmor(200);
 		playerObject->AddComponent(playerHealthComponent);
 
 
