@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+class CGameObject;
+
 namespace Component
 {
 	class CEnemy : public CComponent
@@ -19,10 +21,13 @@ namespace Component
 
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
-		static void SetPlayer(CGameObject* playerObject);
+		static void SetPlayer(CGameObject* aPlayerObject);
+
 	protected:
+		static CGameObject* myPlayerObj;
+
 		CU::Vector3f ClosestPlayerPosition();
-		static CU::GrowingArray<CGameObject*> myPlayerObject;
+		//static CU::GrowingArray<CGameObject*> myPlayerObject;
 		unsigned myHealth;
 		float mySpeed;
 		float myDetectionRange2;
@@ -30,6 +35,7 @@ namespace Component
 		float myStopAttackRange2;
 		bool myIsDead;
 		unsigned myServerId;
+
 	};
 }
 
