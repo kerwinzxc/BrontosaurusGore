@@ -7,3 +7,5 @@ namespace KLoader
 
 int LoadDamageOnCollisionComponent(KLoader::SLoadedComponentData someData);
 
+int LoadDamageOnCollisionComponentForServer(KLoader::SLoadedComponentData someData);
+

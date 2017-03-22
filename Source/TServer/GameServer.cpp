@@ -15,6 +15,7 @@
 #include "../Components/AmmoComponentManager.h"
 #include "../Components/WeaponSystemManager.h"
 #include "../Components/WeaponFactory.h"
+#include "../Components/DamageOnCollisionComponentManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -127,6 +128,7 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 
 	myColliderComponentManager = new CColliderComponentManager();
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
@@ -146,6 +148,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myWeaponSystemManager);
 	SAFE_DELETE(myEnemyComponentManager);
+	SAFE_DELETE(myDamageOnCollisionComponentManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
@@ -163,6 +166,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
+	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 
 	return true;
 }
