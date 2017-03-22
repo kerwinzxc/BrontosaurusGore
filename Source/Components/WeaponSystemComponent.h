@@ -26,5 +26,6 @@ private:
 	CTextInstance* myActiveWeaponAmmoLeftText;
 	unsigned short myActiveWeaponIndex;
 	bool myIsShooting;
+	bool myIsActive;
 };
 

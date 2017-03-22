@@ -191,6 +191,10 @@
     <ClCompile Include="HealthPickupComponent.cpp">
       <Filter>Pickup\Health</Filter>
     </ClCompile>
+    <ClCompile Include="DamageOnCollisionComponent.cpp">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -434,6 +438,10 @@
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
     </ClInclude>
+    <ClInclude Include="DamageOnCollisionComponent.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageOnCollisionComponentManager.h" />
     <ClInclude Include="EnemyBlueprint.h">
       <Filter>Enemy</Filter>
     </ClInclude>
@@ -525,6 +533,9 @@
     </Filter>
     <Filter Include="Pickup\Manager">
       <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DamageOnCollisionComponent">
+      <UniqueIdentifier>{b28664eb-e439-4cf8-ad8d-0140542edf4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

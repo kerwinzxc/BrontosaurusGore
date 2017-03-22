@@ -43,6 +43,7 @@ class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
 class CTextInstance;
+class CDamageOnCollisionComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -72,6 +73,7 @@ public:
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline CScriptComponentManager* GetScriptComponentManager();
+	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager();
 
 	inline bool IsLoaded() const;
 
@@ -106,6 +108,7 @@ private:
 	CScriptComponentManager* myScriptComponentManager;
 	CExplosionFactory* myExplosionFactory;
 	CExplosionComponentManager* myExplosionComponentManager;
+	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;
@@ -154,4 +157,9 @@ inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
 inline CScriptComponentManager* CPlayState::GetScriptComponentManager()
 {
 	return myScriptComponentManager;
+}
+
+inline CDamageOnCollisionComponentManager* CPlayState::GetDamageOnCollisionComponentManager()
+{
+	return myDamageOnCollisionComponentManager;
 }
