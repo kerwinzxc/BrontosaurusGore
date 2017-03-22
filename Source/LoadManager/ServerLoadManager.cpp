@@ -4,6 +4,7 @@
 #include "LoadNetworkComponent.h"
 #include "LoadMovementComponent.h"
 #include "LoadEnemy.h"
+#include "LoadWeaponSystemComponent.h"
 
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
@@ -50,6 +51,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("NetworkComponent", LoadServerNetworkComponent);
 	loader.RegisterComponentLoadFunction("MovementComponent", ServerLoadMovementComponent);
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy); 
+	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);

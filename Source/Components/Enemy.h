@@ -15,12 +15,14 @@ namespace Component
 		void SetStopAttackRange(const float aStopAttackRange);
 
 		void Move(const CU::Vector3f& aDispl);
+		
 		void Update(const CU::Time& aDeltaTime);
 
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 		static void SetPlayer(CGameObject* playerObject);
 	protected:
+		void Attack();
 		CU::Vector3f ClosestPlayerPosition();
 		static CU::GrowingArray<CGameObject*> myPlayerObject;
 		unsigned myHealth;
@@ -30,6 +32,7 @@ namespace Component
 		float myStopAttackRange2;
 		bool myIsDead;
 		unsigned myServerId;
+		bool myAttacking;
 	};
 }
 

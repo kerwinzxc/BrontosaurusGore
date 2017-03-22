@@ -16,7 +16,6 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	if (!enemyComponentManager) return NULL_COMPONENT;
 
 	CEnemyComponentManager::EnemyBlueprint blueprint;
-	blueprint.health = someData.myData.at("health").GetUInt();
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detactionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
