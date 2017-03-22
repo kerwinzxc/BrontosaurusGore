@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "EnemyBlueprint.h"
 
 class CGameObject;
 
@@ -8,58 +9,39 @@ namespace Component
 	class CEnemy : public CComponent
 	{
 	public:
-		CEnemy(unsigned int anId);
+		CEnemy(unsigned int aId);
 		~CEnemy();
-		void SetHealth(const unsigned aHealth);
-		void SetSpeed(const float aSpeed);
-		void SetDetectionRange(const float aDetactionRange);
-		void SetStartAttackRange(const float aStartAttackRange);
-		void SetStopAttackRange(const float aStopAttackRange);
 
-		void Move(const CU::Vector3f& aDispl);
+		inline void SetEnemyData(const SEnemyBlueprint& aData);
+		static void SetPlayerObject(CGameObject* aPlayerObj);
+
 		void Update(const CU::Time& aDeltaTime);
-
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
-		static void SetPlayer(CGameObject* aPlayerObject);
+	private:
+		CU::Vector3f ClosestPlayerPosition();
+		void UpdateTransformation();
+		void MoveForward(const float aMovAmount);
 
 	protected:
-		static CGameObject* myPlayerObj;
+		static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 
-		CU::Vector3f ClosestPlayerPosition();
-		//static CU::GrowingArray<CGameObject*> myPlayerObject;
 		unsigned myHealth;
 		float mySpeed;
 		float myDetectionRange2;
 		float myStartAttackRange2;
 		float myStopAttackRange2;
+
 		bool myIsDead;
 		unsigned myServerId;
-
 	};
 }
 
-inline void Component::CEnemy::SetHealth(const unsigned aHealth)
+inline void Component::CEnemy::SetEnemyData(const SEnemyBlueprint& aData)
 {
-	myHealth = aHealth;
-}
-
-inline void Component::CEnemy::SetSpeed(const float aSpeed)
-{
-	mySpeed = aSpeed *100 ;
-}
-
-inline void Component::CEnemy::SetDetectionRange(const float aDetactionRange)
-{
-	myDetectionRange2 = aDetactionRange * aDetactionRange;
-}
-
-inline void Component::CEnemy::SetStartAttackRange(const float aStartAttackRange)
-{
-	myStartAttackRange2 = aStartAttackRange  * aStartAttackRange;
-}
-
-inline void Component::CEnemy::SetStopAttackRange(const float aStopAttackRange)
-{
-	myStopAttackRange2 = aStopAttackRange * aStopAttackRange;
+	myHealth = aData.health;
+	mySpeed = aData.health;
+	myDetectionRange2 = aData.detectionRange * aData.detectionRange;
+	myStartAttackRange2 = aData.startAttackRange * aData.startAttackRange;
+	myStopAttackRange2 = aData.stopAttackRange * aData.stopAttackRange;
 }
