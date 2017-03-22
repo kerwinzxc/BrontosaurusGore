@@ -192,7 +192,6 @@ void CPlayState::Load()
 	
 	myWeaponFactory->LoadWeapons();
 
-	myHUD.LoadHUD();
 
 	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
@@ -257,7 +256,6 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	SComponentQuestionData maxArmorthData;
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
 	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
-	myHUD.Update(aDeltaTime);
 
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -273,7 +271,6 @@ void CPlayState::Render()
 	myScene->Render();
 	myPlayerHealthText->Render();
 	myPlayerArmorText->Render();
-	myHUD.Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
@@ -420,7 +417,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (playerObject == nullptr)
 		{
 			playerObject = myGameObjectManager->CreateGameObject();
-			playerObject->GetLocalTransform().SetPosition(0, 10, 0);
+			playerObject->GetLocalTransform().SetPosition(0, 0, 0);
 			playerObject->AddComponent(cameraComponent->GetParent());
 		}
 
@@ -478,7 +475,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		CU::CJsonValue playerControls;
-		std::string errorMessage = playerControls.Parse("Json/Player/playerStats.json");
+		std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
 		if (!errorMessage.empty())
 		{
 			DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
@@ -492,9 +489,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 			playerHealthComponent->SetMaxHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
 			playerHealthComponent->SetHealth(static_cast<healthPoint>(playerControls["MaxHealth"].GetFloat()));
-			playerHealthComponent->SetMaxArmor(playerControls["MaxArmor"].GetFloat());
-			myJumpHeight = playerControls["MaxHealth"].GetFloat();
-			myDoubleJumpHeight = playerControls["MaxArmor"].GetFloat();
+			playerHealthComponent->SetMaxArmor(static_cast<healthPoint>(playerControls["MaxArmor"].GetFloat()));
 		}
 		playerHealthComponent->SetArmor(0);
 

@@ -10,7 +10,7 @@ static const float gravityAcceleration = 9.82f * 2.0f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
-	std::string errorMessage = playerControls.Parse("Json/Player/playerControls.json");
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
 	if (!errorMessage.empty())
 	{
 		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
