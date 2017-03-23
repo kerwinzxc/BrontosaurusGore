@@ -16,6 +16,11 @@ CKeyPickupComponent::~CKeyPickupComponent()
 {
 }
 
+const bool CKeyPickupComponent::GetShouldReset() const
+{
+	return false;
+}
+
 void CKeyPickupComponent::SetLockId(const lockID alockId)
 {
 	myLockId = alockId;
