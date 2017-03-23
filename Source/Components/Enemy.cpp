@@ -67,9 +67,9 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 			else if (WithinDetectionRange(distToPlayer))
 			{
 				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
-				SComponentQuestionData data;
-				data.myVector4f = CU::Vector4f(0.f, 0.f, movementAmount, aDeltaTime.GetSeconds());
-				if(GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+				//SComponentQuestionData data;
+				//data.myVector4f = CU::Vector4f(0.f, 0.f, movementAmount, aDeltaTime.GetSeconds());
+				//if(GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 					MoveForward(movementAmount);
 			}
 		}
