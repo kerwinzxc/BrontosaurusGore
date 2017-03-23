@@ -34,6 +34,7 @@
 #include "Components/HealthComponentManager.h"
 #include "DamageOnCollisionComponentManager.h"
 #include "Components/DoorManager.h"
+#include "../Components/CheckpoinComponenttManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -136,7 +137,7 @@ CPlayState::~CPlayState()
 
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
-
+	CCheckpoinComponentManager::DestoryInstance();
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
@@ -326,6 +327,7 @@ void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
 
+	CCheckpoinComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
 	CDoorManager::Create();

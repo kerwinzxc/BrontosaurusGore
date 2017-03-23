@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 class CCheckPointComponent;
 class CCheckpoinComponentManager
 {
@@ -14,7 +15,7 @@ private:
 
 private:
 	static CCheckpoinComponentManager* ourInstance;
-	std::map<unsigned char, CCheckPointComponent*> myCheckPointComponentList;
+	std::unordered_map<unsigned char, CCheckPointComponent*> myCheckPointComponentList;
 };
 
 inline CCheckPointComponent* CCheckpoinComponentManager::GetComponent(const unsigned char aID)
