@@ -12,6 +12,7 @@
 #include "../TShared/NetworkMessage_PickupHealth.h"
 #include "../TShared/NetworkMessage_PickupAmmo.h"
 #include "../TShared/Networkmessage_PickupArmor.h"
+#include "..\TShared\NetworkMessage_PickupKey.h"
 
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
@@ -34,6 +35,7 @@
 #include "../TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
+#include "../TShared/NetworkMessage_DoorMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -485,12 +487,24 @@ bool CServerMain::Update()
 			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
 			SendTo(pickup);
 		}
+		break;
 		case ePackageType::ePickupArmor:
 		{
 			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
 			SendTo(pickup);
 		}
 		break;
+		case ePackageType::ePickupKey:
+		{
+			CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
+			SendTo(pickup);
+		}
+		break;
+		case ePackageType::eDoorMessage:
+		{
+			CNetworkMessage_DoorMessage* doormessage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
+			SendTo(doormessage);
+		}
 		break;
 		case ePackageType::eZero:
 		case ePackageType::eSize:

@@ -191,6 +191,15 @@
     <ClCompile Include="HealthPickupComponent.cpp">
       <Filter>Pickup\Health</Filter>
     </ClCompile>
+    <ClCompile Include="DoorManager.cpp">
+      <Filter>Door</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyPickupComponent.cpp">
+      <Filter>Pickup\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorComponent.cpp">
+      <Filter>Door</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -434,6 +443,15 @@
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
     </ClInclude>
+    <ClInclude Include="DoorManager.h">
+      <Filter>Door</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPickupComponent.h">
+      <Filter>Pickup\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorComponent.h">
+      <Filter>Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -522,6 +540,12 @@
     </Filter>
     <Filter Include="Pickup\Manager">
       <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Door">
+      <UniqueIdentifier>{8a2cdf27-08c2-42c6-b058-efabb1a8145d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Key">
+      <UniqueIdentifier>{571e7376-89fa-4227-836a-d02a84a823f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

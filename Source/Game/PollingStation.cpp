@@ -8,6 +8,7 @@ CPollingStation::CPollingStation()
 {
 	assert(ourInstance == nullptr);
 	ourInstance = this;
+	myKeys.Init(1);
 }
 
 CPollingStation::~CPollingStation()
@@ -29,4 +30,19 @@ void CPollingStation::SetPlayerObject(CGameObject* aPlayerObject)
 CGameObject* CPollingStation::GetPlayerObject()
 {
 	return myPlayerObject;
+}
+
+void CPollingStation::AddKey(const short aKeyId)
+{
+	myKeys.Add(aKeyId);
+}
+
+void CPollingStation::ClearKeys()
+{
+	myKeys.RemoveAll();
+}
+
+const CU::GrowingArray<short>& CPollingStation::GetKeys() const
+{
+	return myKeys;
 }

@@ -15,10 +15,12 @@
 #include "NetworkMessage_PickupHealth.h"
 #include "NetWorkMessage_PickupAmmo.h"
 #include "Networkmessage_PickupArmor.h"
+#include "NetworkMessage_PickupKey.h"
 #include "NetworkMessage_EnemyPosition.h"
 #include "NetworkMessage_TakeDamage.h"
 #include "NetworkMessage_OKShoot.h"
 #include "NetworkMessage_TryToShoot.h"
+#include "NetworkMessage_DoorMessage.h"
 
 CMessageManager::CMessageManager()
 {
@@ -74,6 +76,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetWorkMessage_PickupAmmo>(aHeader);
 	case ePackageType::ePickupArmor:
 		return CreateMessage<CNetworkmessage_PickupArmor>(aHeader);
+	case ePackageType::ePickupKey:
+		return CreateMessage<CNetworkMessage_PickupKey>(aHeader);
 	case ePackageType::eEnemyPosition:
 		return CreateMessage<CNetworkMessage_EnemyPosition>(aHeader);
 	case ePackageType::eTakeDamage:
@@ -82,6 +86,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_TryToShoot>(aHeader);
 	case ePackageType::eOKShoot:
 		return CreateMessage<CNetworkMessage_OKShoot>(aHeader);
+	case ePackageType::eDoorMessage:
+		return CreateMessage<CNetworkMessage_DoorMessage>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 
