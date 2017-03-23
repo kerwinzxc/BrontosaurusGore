@@ -291,6 +291,7 @@ void CClient::Update()
 			CCheckPointComponent* checkpointComponent = CCheckpoinComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
 			checkpointComponent->SetAsNewCheckPointWithNetwork();
 		}
+		break;
 		case ePackageType::ePickupAmmo:
 		{
 			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
