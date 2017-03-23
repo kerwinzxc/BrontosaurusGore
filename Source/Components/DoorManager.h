@@ -13,7 +13,7 @@ public:
 
 	void Update(const CU::Time& aDeltaTime);
 
-	 CDoorComponent* CreateDoorComponent(const CU::Vector2f& aOpenDirection,const bool aIsLocked, const lockID aLockId);
+	 CDoorComponent* CreateDoorComponent(const CU::Vector2f& aOpenDirection,const bool aIsLocked, const lockID aLockId, const bool aIsClosed, const bool aShouldResetOnPlayerDeath);
 
 	 void OpenDoor(const unsigned char aNetworkID);
 	 void UnlockDoor(const unsigned char aNetworkID);

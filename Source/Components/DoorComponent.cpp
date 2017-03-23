@@ -5,11 +5,14 @@
 #include "..\ThreadedPostmaster\Postmaster.h"
 #include "..\ThreadedPostMaster\SendNetowrkMessageMessage.h"
 #include "..\TClient\ClientMessageManager.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 
 CDoorComponent::CDoorComponent()
 {
 	myIsClosed = true;
+	myShouldReset = true;
 	myIsLocked = false;
 	myLockId = -1;
 	myNetworkID = 0;
@@ -18,6 +21,7 @@ CDoorComponent::CDoorComponent()
 	myOpenDirection = CU::Vector2f::Zero;
 	myOriginPosition = CU::Vector2f::Zero;
 	myType = eComponentType::eDoor;
+	myResetToPosition = CU::Matrix44f::Identity;
 }
 
 
@@ -45,6 +49,11 @@ void CDoorComponent::SetIsClosed(const bool aIsClosed)
 	myIsClosed = aIsClosed;
 }
 
+void CDoorComponent::SetShouldReset(const bool aShouldReset)
+{
+	myShouldReset = aShouldReset;
+}
+
 void CDoorComponent::SetIsLocked(const bool aIsLocked)
 {
 	myIsLocked = aIsLocked;
@@ -53,6 +62,20 @@ void CDoorComponent::SetIsLocked(const bool aIsLocked)
 void CDoorComponent::SetLockId(const lockID aLockId)
 {
 	myLockId = aLockId;
+}
+
+void CDoorComponent::SnapShotDoorState()
+{
+	myResetToIsClosed = myIsClosed;
+	myResetToIsLocked = myIsLocked;
+	myResetToPosition = GetParent()->GetToWorldTransform();
+}
+
+void CDoorComponent::ResetToSnapShot()
+{
+	myIsClosed = myResetToIsClosed;
+	myIsLocked = myResetToIsLocked;
+	GetParent()->SetWorldTransformation(myResetToPosition);
 }
 
 void CDoorComponent::SetNetworkID(const unsigned char aNetworkID)
@@ -110,8 +133,15 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eCheckPointReset:
+		ResetToSnapShot();
+		break;
 	case eComponentMessageType::eAddComponent:
 			myOriginPosition = GetParent()->GetWorldPosition();
+			if (myShouldReset == true)
+			{
+				SnapShotDoorState();
+			}
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myGameObject != GetParent())
@@ -123,6 +153,11 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 				doorMessage->SetDoorAction(eDoorAction::eOpen);
 				doorMessage->SetID(myNetworkID);
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(doorMessage));
+				
+				if (myShouldReset == true)
+				{
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+				}
 				return;
 			}
 			for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetKeys().Size(); ++i)
@@ -140,6 +175,10 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 					opendoorMessage->SetDoorAction(eDoorAction::eOpen);
 					opendoorMessage->SetID(myNetworkID);
 					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(opendoorMessage));
+					if (myShouldReset == true)
+					{
+						Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+					}
 					break;
 				}
 			}
