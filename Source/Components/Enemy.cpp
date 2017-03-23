@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Enemy.h"
+
 #include "../TServer/ServerMessageManager.h"
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
@@ -7,7 +8,7 @@
 
 CU::GrowingArray<CGameObject*> Component::CEnemy::ourPlayerObjects;
 
-Component::CEnemy::CEnemy(unsigned int aId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacing(false)
+Component::CEnemy::CEnemy(unsigned int aId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
 {
 	myIsDead = false;
 	myServerId = aId;
@@ -51,31 +52,35 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 		const float distToPlayer = toPlayer.Length2();
 
 
-		if (distToPlayer < myDetectionRange2)
+		if (WithinDetectionRange(distToPlayer))
 		{
 			hasChanged = true;
-
-			GetParent()->Face(toPlayer);
-		}
-		if (myIsAttacing == false && distToPlayer < myStartAttackRange2)
-		{
-			myIsAttacing = true;
-		}
-		else if (myIsAttacing == true && distToPlayer > myStopAttackRange2)
-		{
-			myIsAttacing = false;
-		}
-		else if (myIsAttacing == false && distToPlayer < myDetectionRange2)
-		{
-			float movementAmount = mySpeed * aDeltaTime.GetSeconds();
-			MoveForward(movementAmount);
+			GetParent()->Face(toPlayer); //impl. turn rate?
 		}
 
-		if(myIsAttacing == true)
+
+		if (myIsAttacking == false)
 		{
+			if (WithinAttackRange(distToPlayer))
+				myIsAttacking = true;
+
+			else if (WithinDetectionRange(distToPlayer))
+			{
+				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
+				//SComponentQuestionData data;
+				//data.myVector4f = CU::Vector4f(0.f, 0.f, movementAmount, aDeltaTime.GetSeconds());
+				//if(GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+					MoveForward(movementAmount);
+			}
+		}
+
+		if(myIsAttacking == true)
+		{
+			if (OutsideAttackRange(distToPlayer))
+				myIsAttacking = false;
+
 			Attack();
 		}
-
 
 		if(hasChanged == true)
 			UpdateTransformation();

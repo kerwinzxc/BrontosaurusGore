@@ -28,6 +28,9 @@ struct SToWorldSpace
 {
 	CU::Matrix44f myWorldSpace;
 	CU::Matrix44f myWorldSpaceLastFrame;
+	CU::Vector4f myHighlightColor;
+	float myHighlightIntensivity;
+	float crap[3];
 };
 
 
@@ -81,6 +84,9 @@ struct SDeferredRenderModelParams
 {
 	CU::Matrix44f myTransform;
 	CU::Matrix44f myTransformLastFrame;
+	CU::Vector4f myHighlightColor;
+
+	float myHighlightIntensivity;
 
 	std::string aAnimationState;
 	std::string aNextAnimationState;

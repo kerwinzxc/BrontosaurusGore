@@ -71,6 +71,7 @@ void CGameObject::AddComponent(CComponent* aComponent)
 	myComponents.Add(aComponent);
 	SComponentMessageData data;
 	data.myComponentTypeAdded = aComponent->myType;
+	data.myComponent = aComponent;
 	Receive(eComponentMessageType::eAddComponent, data);
 }
 

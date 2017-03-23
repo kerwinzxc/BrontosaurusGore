@@ -72,10 +72,13 @@ public:
 	inline ModelId GetModelID();
 
 	CU::AABB GetModelBoundingBox();
-
+	void SetHighlight(const CU::Vector4f& aColor, float anIntensivity);
 private:
+
 	CU::Matrix44f myTransformation;
 	CU::Matrix44f myLastFrame;
+
+	CU::Vector4f myHighlightColor;
 
 	std::string myCurrentAnimation;
 	std::string myNextAnimation;

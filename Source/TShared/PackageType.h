@@ -26,6 +26,7 @@ enum class ePackageType: __int8
 	eDoorMessage,
 	eEnemyPosition,
 	eTakeDamage,
-	eSize,
-	eEnemyTransformaion
+	eEnemyTransformaion,
+	eSetCheckpointMessage,
+	eSize
 };

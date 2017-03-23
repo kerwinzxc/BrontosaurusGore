@@ -12,7 +12,9 @@
 #include "../TShared/NetworkMessage_PickupHealth.h"
 #include "../TShared/NetworkMessage_PickupAmmo.h"
 #include "../TShared/Networkmessage_PickupArmor.h"
-#include "..\TShared\NetworkMessage_PickupKey.h"
+#include "../TShared/NetworkMessage_PickupKey.h"
+#include "../TShared/NetworkMessage_SetCheckpointMessage.h"
+
 
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
@@ -503,6 +505,12 @@ bool CServerMain::Update()
 		case ePackageType::eDoorMessage:
 		{
 			CNetworkMessage_DoorMessage* doormessage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
+			SendTo(doormessage);
+		}
+		break;
+		case ePackageType::eSetCheckpointMessage:
+		{
+			CNetworkMessage_SetCheckpointMessage* doormessage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
 			SendTo(doormessage);
 		}
 		break;

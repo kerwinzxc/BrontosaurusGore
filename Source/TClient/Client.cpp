@@ -47,6 +47,7 @@
 #include "../TShared/NetWorkmessage_PickupArmor.h"
 #include "../TShared/Networkmessage_pickupkey.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
+#include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../Components/DoorManager.h"
 
 #include "../Components/PickupComponentManager.h"
@@ -56,6 +57,8 @@
 
 #include "../Components/HealthComponentManager.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
+#include "../Components/CheckpoinComponenttManager.h"
+#include "../Components/CheckPointComponent.h"
 
 #include "../Components/NetworkPlayerReciverComponent.h"
 
@@ -280,6 +283,13 @@ void CClient::Update()
 		{
 			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
 			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
+		}
+		break;
+		case ePackageType::eSetCheckpointMessage:
+		{
+			CNetworkMessage_SetCheckpointMessage* checkpointMEssage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
+			CCheckPointComponent* checkpointComponent = CCheckpoinComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
+			checkpointComponent->SetAsNewCheckPointWithNetwork();
 		}
 		break;
 		case ePackageType::ePickupAmmo:
