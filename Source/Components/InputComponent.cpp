@@ -41,6 +41,10 @@ CInputComponent::CInputComponent()
 	myControlMap[INTIFY(ePlayerControls::eNoclip)] = GetInputButton(CU::eKeys::BACKSLASH);
 
 	myControlMap[INTIFY(ePlayerControls::eDown)] = GetInputButton(CU::eKeys::LCONTROL);
+
+	myControlMap[INTIFY(ePlayerControls::eDecreseSpeed)] = GetInputButton(CU::eKeys::SLASH);
+
+	myControlMap[INTIFY(ePlayerControls::eIncreaseSpeed)] = GetInputButton(CU::eKeys::MINUS);
 }
 
 CInputComponent::~CInputComponent()

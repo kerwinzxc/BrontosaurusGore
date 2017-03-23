@@ -12,5 +12,8 @@ enum class ePlayerControls
 	eSecondaryWeapon,
 	eNoclip,
 	eDown,
+
+	eIncreaseSpeed,
+	eDecreseSpeed,
 	eLength,
 };

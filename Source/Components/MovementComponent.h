@@ -47,4 +47,5 @@ private:
 	bool myIsNotFalling;
 	MovementMode myMovementMode;
 	bool myNoclipProssed;
+	int mySpeedMultiplier;
 };

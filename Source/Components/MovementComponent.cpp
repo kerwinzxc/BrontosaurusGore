@@ -7,7 +7,7 @@
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false)
+CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1)
 {
 	CU::CJsonValue playerControls;
 	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
@@ -252,13 +252,24 @@ void CMovementComponent::FreecamMovement(const CU::Time& aDeltaTime)
 	{
 		velocity -= CU::Vector3f(0, 1, 0);
 	}
+	if (myKeysDown[static_cast<int>(ePlayerControls::eIncreaseSpeed)])
+	{
+		mySpeedMultiplier += 1;
+		CLAMP(mySpeedMultiplier, 1, 10);
+	}
+	if (myKeysDown[static_cast<int>(ePlayerControls::eDecreseSpeed)])
+	{
+		mySpeedMultiplier += 1;
+
+		CLAMP(mySpeedMultiplier, 1, 10);
+	}
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
-	data.myVector4f = velocity.Normalize() * rotation * aDeltaTime.GetSeconds() * myMaxSpeed;
+	data.myVector4f = velocity.Normalize() * rotation * aDeltaTime.GetSeconds() * myMaxSpeed * mySpeedMultiplier;
 	data.myVector4f.w = aDeltaTime.GetSeconds();
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)

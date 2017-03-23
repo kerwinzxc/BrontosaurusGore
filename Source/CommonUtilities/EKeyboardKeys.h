@@ -16,6 +16,7 @@ namespace CU
 		NINE = 0x0A,
 		ZERO = 0x0B,
 		MINUS = 0x0C /* - on main keyboard */,
+		PLUS = 0xBB,
 		EQUALS = 0x0D,
 		BACK = 0x0E /* backspace */,
 		TAB = 0x0F,
