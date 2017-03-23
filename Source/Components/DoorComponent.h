@@ -13,8 +13,12 @@ public:
 	void SetMoveSpeed(const float aMoveSpeed);
 	void SetMoveDistance(const float aDistance);
 	void SetIsClosed(const bool aIsClosed);
+	void SetShouldReset(const bool aShouldReset);
 	void SetIsLocked(const bool aIsLocked);
 	void SetLockId(const lockID aLockId);
+
+	void SnapShotDoorState();
+	void ResetToSnapShot();
 
 	void SetNetworkID(const unsigned char aNetworkID);
 
@@ -33,6 +37,7 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
+	CU::Matrix44f myResetToPosition;
 	CU::Vector2f myOriginPosition;
 	CU::Vector2f myOpenDirection;
 
@@ -43,7 +48,12 @@ private:
 
 	bool myIsClosed;
 	bool myIsLocked;
+	bool myShouldReset;
+
+	bool myResetToIsClosed;
+	bool myResetToIsLocked;
 
 	unsigned char myNetworkID;
+
 };
 

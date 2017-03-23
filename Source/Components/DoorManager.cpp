@@ -43,14 +43,15 @@ void CDoorManager::Update(const CU::Time & aDeltaTime)
 	}
 }
 
-CDoorComponent * CDoorManager::CreateDoorComponent(const CU::Vector2f & aOpenDirection, const bool aIsLocked,const lockID aLockId)
+CDoorComponent * CDoorManager::CreateDoorComponent(const CU::Vector2f & aOpenDirection, const bool aIsLocked,const lockID aLockId, const bool aIsClosed, const bool aShouldResetOnPlayerDeath)
 {
 	static int doorID = 0;
 	CDoorComponent* doorComponent = new CDoorComponent();
 	doorComponent->SetIsLocked(aIsLocked);
-	doorComponent->SetIsClosed(true);
+	doorComponent->SetIsClosed(aIsClosed);
 	doorComponent->SetLockId(aLockId);
 	doorComponent->SetNetworkID(doorID);
+	doorComponent->SetShouldReset(aShouldResetOnPlayerDeath);
 	COMPMGR.RegisterComponent(doorComponent);
 	myDoors.emplace(doorID++, doorComponent);
 	return doorComponent;
