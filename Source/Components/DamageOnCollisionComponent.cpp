@@ -26,6 +26,14 @@ void CDamageOnCollisionComponent::Receive(const eComponentMessageType aMessageTy
 			myElapsedCooldownTime = 0.0f;
 		}
 		break;
+	case eComponentMessageType::eOnTriggerEnter:
+		if (myElapsedCooldownTime > myDamageCooldown)
+		{
+			SComponentMessageData damageData;
+			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+			myElapsedCooldownTime = 0.0f;
+		}
+		break;
 	default:
 		break;
 	}
