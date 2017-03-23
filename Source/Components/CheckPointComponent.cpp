@@ -3,8 +3,12 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
 #include "../Game/PollingStation.h"
+#include "../TClient/ClientMessageManager.h"
+#include "../TShared/NetworkMessage_SetCheckpointMessage.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
-CCheckPointComponent::CCheckPointComponent()
+CCheckPointComponent::CCheckPointComponent(const unsigned char aId)
+	:myId(aId)
 {
 	myHaveBeenActivated = false;
 }
@@ -44,6 +48,15 @@ void CCheckPointComponent::Update(float aDeltaTime)
 }
 
 void CCheckPointComponent::SetAsNewCheckPoint()
+{
+	myHaveBeenActivated = true;
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition() + myRespawnPosition));
+	CNetworkMessage_SetCheckpointMessage* netWorksMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetCheckpointMessage>(ID_ALL);
+	netWorksMessage->SetId(myId);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netWorksMessage));
+}
+
+void CCheckPointComponent::SetAsNewCheckPointWithNetwork()
 {
 	myHaveBeenActivated = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition() + myRespawnPosition));

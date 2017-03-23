@@ -148,7 +148,6 @@
     <ClCompile Include="CheckPointComponent.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
-    <ClCompile Include="CheckPointSystem.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp">
       <Filter>Collider/Physics</Filter>
@@ -194,7 +193,6 @@
     <ClCompile Include="DamageOnCollisionComponent.cpp">
       <Filter>DamageOnCollisionComponent</Filter>
     </ClCompile>
-    <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
     <ClCompile Include="DoorManager.cpp">
       <Filter>DoorComponent</Filter>
     </ClCompile>
@@ -204,6 +202,13 @@
     <ClCompile Include="KeyPickupComponent.cpp">
       <Filter>Pickup\Key</Filter>
     </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckpoinComponenttManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -398,7 +403,6 @@
     <ClInclude Include="CheckPointComponent.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
-    <ClInclude Include="CheckPointSystem.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="SphereColliderComponent.h">
       <Filter>Collider/Physics</Filter>
@@ -450,7 +454,6 @@
     <ClInclude Include="DamageOnCollisionComponent.h">
       <Filter>DamageOnCollisionComponent</Filter>
     </ClInclude>
-    <ClInclude Include="DamageOnCollisionComponentManager.h" />
     <ClInclude Include="EnemyBlueprint.h">
       <Filter>Enemy</Filter>
     </ClInclude>
@@ -463,9 +466,16 @@
     <ClInclude Include="KeyPickupComponent.h">
       <Filter>Pickup\Key</Filter>
     </ClInclude>
-   <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
+    <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
       <Filter>DamageOnCollisionComponent</Filter>
     </ClInclude>
+    <ClInclude Include="CheckPointSystem.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageOnCollisionComponentManager.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckpoinComponenttManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
