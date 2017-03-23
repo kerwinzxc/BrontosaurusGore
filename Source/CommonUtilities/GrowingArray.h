@@ -370,9 +370,9 @@ namespace CU
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 
-		for (ComponentId i = 0; i < anArray.Size(); ++i)
+		for (ComponentId i = 0; i < aArray.Size(); ++i)
 		{
-			Add(anArray[i]);
+			Add(aArray[i]);
 		}
 	}
 
