@@ -17,6 +17,7 @@
 #include "../BrontosaurusEngine/Engine.h"
 #include "../CommonUtilities/ThreadPool.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 #include "ServerReadyMessage.h"
 #include "../CommonUtilities/ThreadNamer.h"
 
@@ -48,6 +49,7 @@
 #include "../TShared/Networkmessage_pickupkey.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
+#include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../Components/DoorManager.h"
 
 #include "../Components/PickupComponentManager.h"
@@ -371,6 +373,13 @@ void CClient::Update()
 			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
 
 			CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
+		}
+		break;
+		case ePackageType::eResetToCheckpoint:
+		{
+			CNetworkMessage_ResetToCheckpoint* reset = currentMessage->CastTo<CNetworkMessage_ResetToCheckpoint>();
+
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 		}
 		break;
 		case ePackageType::eZero:

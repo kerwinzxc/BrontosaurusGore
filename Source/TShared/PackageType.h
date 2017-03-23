@@ -28,5 +28,8 @@ enum class ePackageType: __int8
 	eTakeDamage,
 	eEnemyTransformaion,
 	eSetCheckpointMessage,
+	ePlayerDied,
+	ePlayerRespawned,
+	eResetToCheckpoint,
 	eSize
 };

@@ -160,8 +160,11 @@
     <ClInclude Include="NetworkMessage_PickupKey.h" />
     <ClInclude Include="NetworkMessage_Ping.h" />
     <ClInclude Include="NetworkMessage_PingResponse.h" />
+    <ClInclude Include="NetworkMessage_PlayerDied.h" />
     <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
+    <ClInclude Include="NetworkMessage_PlayerRespawned.h" />
     <ClInclude Include="NetworkMessage_Position.h" />
+    <ClInclude Include="NetworkMessage_ResetToCheckpoint.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
@@ -197,8 +200,11 @@
     <ClCompile Include="NetworkMessage_PickupKey.cpp" />
     <ClCompile Include="NetworkMessage_Ping.cpp" />
     <ClCompile Include="NetworkMessage_PingResponse.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerDied.cpp" />
     <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerRespawned.cpp" />
     <ClCompile Include="NetworkMessage_Position.cpp" />
+    <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />

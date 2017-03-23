@@ -54,9 +54,6 @@ void CInputComponent::Receive(const eComponentMessageType aMessageType, const SC
 	case eComponentMessageType::eObjectDone:
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition()));
 		break;
-	case eComponentMessageType::eDied:
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
-		break;
 	case eComponentMessageType::eCheckPointReset :
 		GetParent()->GetLocalTransform().SetPosition(aMessageData.myVector3f);
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());

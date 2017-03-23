@@ -135,6 +135,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
+	CParticleEmitterComponentManager::Destroy();
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpoinComponentManager::DestoryInstance();
@@ -331,6 +332,8 @@ void CPlayState::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
 	CDoorManager::Create();
+
+	CParticleEmitterComponentManager::Create();
 
 	myScene = new CScene();
 

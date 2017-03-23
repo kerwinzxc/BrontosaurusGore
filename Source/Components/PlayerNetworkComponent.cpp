@@ -5,6 +5,9 @@
 #include "../TShared/NetworkMessage_PlayerPositionMessage.h"
 #include "../TClient/ClientMessageManager.h"
 #include "../ThreadedPostmaster/PlayerPositionMessage.h"
+#include "../TShared/NetworkMessage_PlayerDied.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../tshared/NetworkMessage_PlayerRespawned.h"
 
 
 
@@ -39,6 +42,21 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 		}
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(transform, myID));
+	}
+	break;
+	case eComponentMessageType::eDied:
+	{
+		CNetworkMessage_PlayerDied* playerDied = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerDied>(ID_ALL);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(playerDied));
+	}
+	break;
+	case eComponentMessageType::eCheckPointReset:
+	{
+		CNetworkMessage_PlayerRespawned* playerRespawned = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerRespawned>(ID_ALL);
+
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(playerRespawned));
+		DL_PRINT("Back");
 	}
 	break;
 	default: break;

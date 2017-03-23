@@ -137,6 +137,9 @@
     <ClInclude Include="NetworkMessage_DoorMessage.h" />
     <ClInclude Include="NetworkMessage_PickupKey.h" />
     <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
+    <ClInclude Include="NetworkMessage_PlayerDied.h" />
+    <ClInclude Include="NetworkMessage_PlayerRespawned.h" />
+    <ClInclude Include="NetworkMessage_ResetToCheckpoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -201,5 +204,8 @@
     <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
     <ClCompile Include="NetworkMessage_PickupKey.cpp" />
     <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerDied.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerRespawned.cpp" />
+    <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp" />
   </ItemGroup>
 </Project>
