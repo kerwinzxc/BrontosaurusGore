@@ -16,7 +16,7 @@ int LoadDamageOnCollisionComponent(KLoader::SLoadedComponentData someData)
 		CDamageOnCollisionComponent* newDamageOnCollisionComponent = damageOnCollisionComponentManager->CreateAndRegisterComponent();
 		healthPoint loadedHealthValue = static_cast<healthPoint>(someData.myData.at("Damage").GetFloat());
 		newDamageOnCollisionComponent->SetDamage(loadedHealthValue);
-		float loadedDamageCooldownValue =(someData.myData.at("Cooldown").GetFloat());
+		float loadedDamageCooldownValue =(someData.myData.at("DamageInterval").GetFloat());
 		newDamageOnCollisionComponent->SetDamageCooldown(loadedDamageCooldownValue);
 		return newDamageOnCollisionComponent->GetId();
 	}
@@ -34,7 +34,7 @@ int LoadDamageOnCollisionComponentForServer(KLoader::SLoadedComponentData someDa
 		CDamageOnCollisionComponent* newDamageOnCollisionComponent = damageOnCollisionComponentManager->CreateAndRegisterComponent();
 		healthPoint loadedHealthValue = static_cast<healthPoint>(someData.myData.at("Damage").GetFloat());
 		newDamageOnCollisionComponent->SetDamage(loadedHealthValue);
-		float loadedDamageCooldownValue = (someData.myData.at("Cooldown").GetFloat());
+		float loadedDamageCooldownValue = (someData.myData.at("DamageInterval").GetFloat());
 		newDamageOnCollisionComponent->SetDamageCooldown(loadedDamageCooldownValue);
 		return newDamageOnCollisionComponent->GetId();
 	}

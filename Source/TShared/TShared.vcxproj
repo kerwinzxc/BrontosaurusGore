@@ -139,6 +139,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NetworkMessage_DoorMessage.h" />
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
     <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
     <ClInclude Include="NetworkMessage_OKShoot.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="NetworkMessage_ConectResponse.h" />
     <ClInclude Include="NetworkMessage_Disconected.h" />
     <ClInclude Include="NetworkMessage_LoadLevel.h" />
+    <ClInclude Include="NetworkMessage_PickupKey.h" />
     <ClInclude Include="NetworkMessage_Ping.h" />
     <ClInclude Include="NetworkMessage_PingResponse.h" />
     <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
     <ClCompile Include="NetworkMessage_OKShoot.cpp" />
@@ -190,6 +193,7 @@
     <ClCompile Include="NetworkMessage_ConectResponse.cpp" />
     <ClCompile Include="NetworkMessage_Disconected.cpp" />
     <ClCompile Include="NetworkMessage_LoadLevel.cpp" />
+    <ClCompile Include="NetworkMessage_PickupKey.cpp" />
     <ClCompile Include="NetworkMessage_Ping.cpp" />
     <ClCompile Include="NetworkMessage_PingResponse.cpp" />
     <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />

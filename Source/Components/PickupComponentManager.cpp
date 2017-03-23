@@ -3,7 +3,7 @@
 #include "HealthPickupComponent.h"
 #include "AmmoPickupComponent.h"
 #include "ArmorPickupComponent.h"
-
+#include "KeyPickupComponent.h"
 
 CPickupComponentManager* CPickupComponentManager::ourInstance = nullptr;
 
@@ -66,6 +66,17 @@ CArmorPickupComponent * CPickupComponentManager::CreateArmorPickupComponent(cons
 	return armorPickupComponent;
 }
 
+CKeyPickupComponent * CPickupComponentManager::CreateKeyPickupComponent(const short aKeyId)
+{
+	static int keyPickupId = 0;
+	CKeyPickupComponent* keyPickup = new CKeyPickupComponent();
+	keyPickup->SetLockId(aKeyId);
+	keyPickup->SetNetworkId(keyPickupId);
+	COMPMGR.RegisterComponent(keyPickup);
+	myKeyPickups.emplace(keyPickupId++, keyPickup);
+	return keyPickup;
+}
+
 CHealthPickupComponent * CPickupComponentManager::GethHealthPackComponent(const int aId)
 {
 	return myHealthPacks.at(aId);
@@ -81,6 +92,11 @@ CArmorPickupComponent * CPickupComponentManager::GetArmorPickupComponent(const i
 	return myArmorPacks.at(aId);
 }
 
+CKeyPickupComponent * CPickupComponentManager::GetKeyPickupComponent(const int aId)
+{
+	return myKeyPickups.at(aId);
+}
+
 void CPickupComponentManager::DeactivateHealthPack(const int aId)
 {
 	myHealthPacks.at(aId)->SetActive(false);
@@ -94,6 +110,11 @@ void CPickupComponentManager::DeactivateAmmoPack(const int aId)
 void CPickupComponentManager::DeactivateArmorPack(const int aId)
 {
 	myArmorPacks.at(aId)->SetActive(false);
+}
+
+void CPickupComponentManager::DeactivateKeyPickup(const int aId)
+{
+	myKeyPickups.at(aId)->SetActive(false);
 }
 
 CPickupComponentManager::CPickupComponentManager()

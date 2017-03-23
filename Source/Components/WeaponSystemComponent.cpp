@@ -64,6 +64,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 
 			shootMessage->SetDirection(aMessageData.myVector3f);
 			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+			shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Player);
 
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
 		}

@@ -71,8 +71,15 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadArmorComponent.h" />
-    <ClInclude Include="LoadDamageOnCollisionComponent.h">
-      <Filter>LoadThings\LoadDamageOnCollisionComponent</Filter>
+    <ClInclude Include="LoadDamageOnCollisionComponent.h" />
+    <ClInclude Include="LoadDoorComponent.h">
+      <Filter>LoadThings\LoadDoorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadKeyPickupComponent.h">
+      <Filter>LoadThings\LoadKeyPickupComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadHighlightComponent.h">
+      <Filter>LoadThings\LoadHighlightComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,8 +150,15 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadArmorComponent.cpp" />
-    <ClCompile Include="LoadDamageOnCollisionComponent.cpp">
-      <Filter>LoadThings\LoadDamageOnCollisionComponent</Filter>
+    <ClCompile Include="LoadDamageOnCollisionComponent.cpp" />
+    <ClCompile Include="LoadDoorComponent.cpp">
+      <Filter>LoadThings\LoadDoorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadKeyPickupComponent.cpp">
+      <Filter>LoadThings\LoadKeyPickupComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadHighlightComponent.cpp">
+      <Filter>LoadThings\LoadHighlightComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,8 +231,14 @@
     <Filter Include="LoadThings\LoadArmorPickupComponent">
       <UniqueIdentifier>{6bef8a7f-9f51-471d-894c-e19cde254bf7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LoadThings\LoadDamageOnCollisionComponent">
-      <UniqueIdentifier>{f12f10a7-f4a1-493e-8b44-c7018470721d}</UniqueIdentifier>
+    <Filter Include="LoadThings\LoadDoorComponent">
+      <UniqueIdentifier>{7bdcd003-9d32-48d1-9f38-5b1fa31ff97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadKeyPickupComponent">
+      <UniqueIdentifier>{e3aff76f-27e8-44eb-9764-67d2a867abe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadHighlightComponent">
+      <UniqueIdentifier>{c4fdf0d2-994a-48be-9599-b8a9dac8c980}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

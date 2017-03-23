@@ -45,8 +45,11 @@
 #include "../TShared/NetworkMessage_PickupHealth.h"
 #include "../TShared/NetWorkMessage_PickupAmmo.h"
 #include "../TShared/NetWorkmessage_PickupArmor.h"
+#include "../TShared/Networkmessage_pickupkey.h"
+#include "../TShared/NetworkMessage_DoorMessage.h"
+#include "../Components/DoorManager.h"
 
-#include "..\Components\PickupComponentManager.h"
+#include "../Components/PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
 #include "..\TShared\NetworkMessage_EnemyTransformation.h"
 #include "../Components/EnemyClientRepresentationManager.h"
@@ -55,6 +58,8 @@
 #include "../TShared/NetworkMessage_TakeDamage.h"
 
 #include "../Components/NetworkPlayerReciverComponent.h"
+
+#include "../Game/PollingStation.h"
 
 //temp!!! hoppas jag...
 #include "../CommonUtilities/JsonValue.h"
@@ -287,6 +292,32 @@ void CClient::Update()
 		{
 			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
 			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
+		}
+		break;
+		case ePackageType::ePickupKey:
+		{
+			CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
+			CPickupComponentManager::GetInstance()->DeactivateKeyPickup(pickup->GetNetWorkID());
+			CPollingStation::GetInstance()->AddKey(pickup->GetLockID());
+		}
+		break;
+		case ePackageType::eDoorMessage:
+		{
+			CNetworkMessage_DoorMessage* doorMesssage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
+			switch (doorMesssage->GetDoorAction())
+			{
+			case eDoorAction::eClose:
+				CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
+				break;
+			case eDoorAction::eOpen:
+				CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
+				break;
+			case eDoorAction::eUnlock:
+				CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
+				break;
+			default:
+				break;
+			}
 		}
 		break;
 		case ePackageType::eConnect:
