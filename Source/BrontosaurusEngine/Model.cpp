@@ -469,10 +469,13 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	SToWorldSpace updated;
 	updated.myWorldSpace = aParamObj.myTransform;
 	updated.myWorldSpaceLastFrame = aParamObj.myTransformLastFrame;
+	updated.myHighlightColor = aParamObj.myHighlightColor;
+	updated.myHighlightIntensivity = aParamObj.myHighlightIntensivity;
 	DEVICE_CONTEXT->Map(myCbuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
 	memcpy(mappedSubResource.pData, &updated, sizeof(SToWorldSpace));
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
+	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0')*/)

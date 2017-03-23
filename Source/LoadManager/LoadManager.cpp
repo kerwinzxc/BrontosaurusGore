@@ -27,6 +27,7 @@
 #include "LoadParticleEmitterComponent.h"
 #include "LoadCheckPointComponent.h"
 #include "LoadDamageOnCollisionComponent.h"
+#include "LoadHighlightComponent.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -87,6 +88,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("DamageOnCollisionComponent", LoadDamageOnCollisionComponent);
 	loader.RegisterComponentLoadFunction("DoorComponent", LoadDoorComponent);
 	loader.RegisterComponentLoadFunction("KeyPickupComponent", LoadKeyPickupComponent);
+	loader.RegisterComponentLoadFunction("HighlightComponent",LoadHighlightComponent);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);

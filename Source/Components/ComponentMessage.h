@@ -96,7 +96,12 @@ struct SComponentMessageData
 	union
 	{
 		void* myVoidPointer;
-		CComponent* myComponent;
+		struct
+		{
+			CComponent* myComponent;
+			eComponentType myComponentTypeAdded;
+		};
+		
 		CGameObject* myGameObject;
 		struct SComponentMessageCallback* myComponentMessageCallback;
 		ePlayerControls myPlayerControl;
@@ -110,7 +115,6 @@ struct SComponentMessageData
 		CU::Vector3f myVector3f;
 		CU::Vector4f myVector4f;
 
-		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
 
 		SAmmoData* myAmmoData;

@@ -175,6 +175,8 @@ void CModelInstance::RenderDeferred()
 	msg.myModelID = myModel;
 	msg.myRenderParams.myTransform = myTransformation;
 	msg.myRenderParams.myTransformLastFrame = myLastFrame;
+	msg.myRenderParams.myHighlightColor = myHighlightColor;
+	msg.myRenderParams.myHighlightIntensivity = myHighlightIntencity;
 	msg.myRenderParams.myRenderToDepth = false;
 	msg.myRenderParams.aHighlightIntencity = myHighlightIntencity;
 	if(myHasAnimations == true)
@@ -214,6 +216,8 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 		message = new SRenderModelDeferredMessage();
 		SRenderModelDeferredMessage* msg = reinterpret_cast<SRenderModelDeferredMessage*>(message);
 		msg->myModelID = myModel;
+		msg->myRenderParams.myHighlightColor = myHighlightColor;
+		msg->myRenderParams.myHighlightIntensivity = myHighlightIntencity;
 		msg->myRenderParams.myTransform = myTransformation;
 		msg->myRenderParams.myTransformLastFrame = myLastFrame;
 		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
@@ -268,6 +272,11 @@ CU::AABB CModelInstance::GetModelBoundingBox()
 	return box;
 }
 
+void CModelInstance::SetHighlight(const CU::Vector4f& aColor, float anIntensivity)
+{
+	myHighlightColor = aColor;
+	myHighlightIntencity = anIntensivity;
+}
 
 void CModelInstance::SetAnimation(const std::string& aAnimationKey)
 {
