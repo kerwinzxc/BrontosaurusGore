@@ -134,6 +134,9 @@
     <ClInclude Include="NetworkMessage_TryToShoot.h" />
     <ClInclude Include="NetworkMessage_OKShoot.h" />
     <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
+    <ClInclude Include="NetworkMessage_DoorMessage.h" />
+    <ClInclude Include="NetworkMessage_PickupKey.h" />
+    <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -195,5 +198,8 @@
     <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
     <ClCompile Include="NetworkMessage_OKShoot.cpp" />
     <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
+    <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
+    <ClCompile Include="NetworkMessage_PickupKey.cpp" />
+    <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
   </ItemGroup>
 </Project>

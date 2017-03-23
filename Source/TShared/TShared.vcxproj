@@ -163,6 +163,7 @@
     <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
+    <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
     <ClInclude Include="NetworkMessage_TakeDamage.h" />
     <ClInclude Include="NetworkMessage_TryToShoot.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
+    <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
     <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
     <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
