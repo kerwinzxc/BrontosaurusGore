@@ -48,4 +48,6 @@ private:
 	MovementMode myMovementMode;
 	bool myNoclipProssed;
 	int mySpeedMultiplier;
+	bool myIncrementPressed;
+	bool myDecrementPressed;
 };

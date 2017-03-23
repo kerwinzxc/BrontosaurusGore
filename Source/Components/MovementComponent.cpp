@@ -7,7 +7,7 @@
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1)
+CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false)
 {
 	CU::CJsonValue playerControls;
 	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
@@ -252,16 +252,26 @@ void CMovementComponent::FreecamMovement(const CU::Time& aDeltaTime)
 	{
 		velocity -= CU::Vector3f(0, 1, 0);
 	}
-	if (myKeysDown[static_cast<int>(ePlayerControls::eIncreaseSpeed)])
+	if (myKeysDown[static_cast<int>(ePlayerControls::eIncreaseSpeed)] && myIncrementPressed == false)
 	{
+		myIncrementPressed = true;
 		mySpeedMultiplier += 1;
 		CLAMP(mySpeedMultiplier, 1, 10);
 	}
-	if (myKeysDown[static_cast<int>(ePlayerControls::eDecreseSpeed)])
+	else if(myKeysDown[static_cast<int>(ePlayerControls::eIncreaseSpeed)] == false && myIncrementPressed == true)
 	{
-		mySpeedMultiplier += 1;
+		myIncrementPressed = false;
+	}
+	if (myKeysDown[static_cast<int>(ePlayerControls::eDecreseSpeed)] && myDecrementPressed == false)
+	{
+		myDecrementPressed = true;
+		mySpeedMultiplier -= 1;
 
 		CLAMP(mySpeedMultiplier, 1, 10);
+	}
+	else if(myKeysDown[static_cast<int>(ePlayerControls::eDecreseSpeed)] == false && myDecrementPressed == true)
+	{
+		myDecrementPressed = false;
 	}
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
