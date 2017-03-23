@@ -445,6 +445,9 @@
     <ClInclude Include="EnemyBlueprint.h">
       <Filter>Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

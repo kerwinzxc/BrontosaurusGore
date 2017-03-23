@@ -384,6 +384,7 @@
     <ClInclude Include="ComponentAnswer.h" />
     <ClInclude Include="ComponentMessageCallback.h" />
     <ClInclude Include="ComponentMessageTypeToLua.h" />
+    <ClInclude Include="DamageOnCollisionCollidedObjectData.h" />
     <ClInclude Include="DamageOnCollisionComponent.h" />
     <ClInclude Include="DamageOnCollisionComponentManager.h" />
     <ClInclude Include="Enemy.h" />

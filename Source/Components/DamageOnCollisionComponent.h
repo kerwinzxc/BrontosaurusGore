@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 #include "HealthPoint.h"
+
+struct SDamageOnCollisonCollidedObjectData;
 class CDamageOnCollisionComponent : public CComponent
 {
 public:
@@ -13,8 +15,15 @@ public:
 	inline void SetDamage(healthPoint aDamageAmount);
 	inline void SetDamageCooldown(float aDamageCooldownDuration);
 private:
+	void CreateEmptySlotForPassiveBuffer();
+	void DealDamage(unsigned short aIndex);
+	void AddToActiveList(CGameObject* aCollidedObject);
+	void RemoveFromActiveList(CGameObject* aNonCollidingObject);
+	unsigned short FindCollidedObjectData(CGameObject* aGameObject);
+private:
+	CU::GrowingArray<SDamageOnCollisonCollidedObjectData*> myActiveCollidedWithObjectsDataList;
+	CU::GrowingArray<SDamageOnCollisonCollidedObjectData*> myPassiveCollidedWithObjectsDataList;
 	float myDamageCooldown;
-	float myElapsedCooldownTime;
 	healthPoint myDamage;
 	
 };
