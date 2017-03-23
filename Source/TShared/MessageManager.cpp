@@ -22,6 +22,7 @@
 #include "NetworkMessage_OKShoot.h"
 #include "NetworkMessage_TryToShoot.h"
 #include "NetworkMessage_DoorMessage.h"
+#include "NetworkMessage_SetCheckpointMessage.h"
 
 CMessageManager::CMessageManager()
 {
@@ -91,6 +92,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_OKShoot>(aHeader);
 	case ePackageType::eDoorMessage:
 		return CreateMessage<CNetworkMessage_DoorMessage>(aHeader);
+	case ePackageType::eSetCheckpointMessage:
+		return CreateMessage<CNetworkMessage_SetCheckpointMessage>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 
