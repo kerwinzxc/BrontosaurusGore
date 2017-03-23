@@ -104,5 +104,7 @@ private:
 
 	bool myIsRunning;
 	bool myCanQuit;
+
+	
 };
 

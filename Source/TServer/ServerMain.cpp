@@ -38,6 +38,9 @@
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
+#include "../TShared/NetworkMessage_PlayerDied.h"
+#include "../TShared/NetworkMessage_PlayerRespawned.h"
+#include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -49,6 +52,7 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 
 	myIsRunning = false;
 	myCanQuit = false;
+	myAlivePlayers = 0;
 }
 
 CServerMain::~CServerMain()
@@ -376,6 +380,8 @@ bool CServerMain::Update()
 			header.mySenderID = clientId;
 			connectMessage->SetHeader(header);
 
+			myAlivePlayers++;
+
 			SendTo(connectMessage);
 		}
 		break;
@@ -512,6 +518,26 @@ bool CServerMain::Update()
 		{
 			CNetworkMessage_SetCheckpointMessage* doormessage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
 			SendTo(doormessage);
+		}
+		break;
+		case ePackageType::ePlayerDied:
+		{
+			CNetworkMessage_PlayerDied* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerDied>();
+
+			myAlivePlayers--;
+			if (myAlivePlayers <= 0)
+			{
+				CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
+
+				SendTo(reset);
+			}
+		}
+		break;
+		case ePackageType::ePlayerRespawned:
+		{
+			CNetworkMessage_PlayerRespawned* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerRespawned>();
+
+			myAlivePlayers++;
 		}
 		break;
 		case ePackageType::eZero:
