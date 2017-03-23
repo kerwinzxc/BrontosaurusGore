@@ -376,10 +376,10 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	SComponentMessageData addHandGunData;
 	SComponentMessageData giveAmmoData;
 
-	addHandGunData.myString = "Handgun";
+	addHandGunData.myString = "BFG";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	SAmmoReplenishData tempAmmoReplensihData;
-	tempAmmoReplensihData.ammoType = "Handgun";
+	tempAmmoReplensihData.ammoType = "BFG";
 	tempAmmoReplensihData.replenishAmount = 100;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
