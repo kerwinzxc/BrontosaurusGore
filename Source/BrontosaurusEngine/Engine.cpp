@@ -183,7 +183,6 @@ void CEngine::Start()
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
 
-	CParticleEmitterComponentManager::Create();
 	while (GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();
@@ -222,7 +221,6 @@ void CEngine::Start()
 		}
 		std::this_thread::yield();
 	}
-	CParticleEmitterComponentManager::Destroy();
 }
 
 bool CEngine::GetIsRunning()
