@@ -105,6 +105,6 @@ private:
 	bool myIsRunning;
 	bool myCanQuit;
 
-	
+	std::map<unsigned char, char> myAlivePlayers;
 };
 

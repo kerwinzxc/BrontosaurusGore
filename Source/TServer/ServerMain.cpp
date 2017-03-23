@@ -52,7 +52,7 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 
 	myIsRunning = false;
 	myCanQuit = false;
-	myAlivePlayers = 0;
+	
 }
 
 CServerMain::~CServerMain()
@@ -380,7 +380,7 @@ bool CServerMain::Update()
 			header.mySenderID = clientId;
 			connectMessage->SetHeader(header);
 
-			myAlivePlayers++;
+			myAlivePlayers.emplace(connectMessage->GetHeader().mySenderID, 1);
 
 			SendTo(connectMessage);
 		}
@@ -524,8 +524,8 @@ bool CServerMain::Update()
 		{
 			CNetworkMessage_PlayerDied* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerDied>();
 
-			myAlivePlayers--;
-			if (myAlivePlayers <= 0)
+			myAlivePlayers.erase(playerDied->GetHeader().mySenderID);
+			if (myAlivePlayers.size() <= 0)
 			{
 				CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
 
@@ -537,7 +537,7 @@ bool CServerMain::Update()
 		{
 			CNetworkMessage_PlayerRespawned* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerRespawned>();
 
-			myAlivePlayers++;
+			myAlivePlayers.emplace(playerDied->GetHeader().mySenderID,1);
 		}
 		break;
 		case ePackageType::eZero:
