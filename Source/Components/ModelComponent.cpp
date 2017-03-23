@@ -55,7 +55,8 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 			CreateAnimationComponent();
 		}
 		else if(aData.myComponentTypeAdded == eComponentType::eArmorPickup || 
-			aData.myComponentTypeAdded == eComponentType::eAmmoPickup)
+			aData.myComponentTypeAdded == eComponentType::eAmmoPickup || 
+			aData.myComponentTypeAdded == eComponentType::eHealthPickupComponent)
 		{
 			myModel.SetHighlight(CU::Vector4f(0, 1, 0, 1), .75f);
 		}

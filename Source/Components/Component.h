@@ -58,8 +58,9 @@ enum class eComponentType : unsigned char
 	eCharacterController,
 	eAnimationComponent,
 	eHighlightComponent,
+	eHealthPickupComponent,
 	eNone,
-	
+
 };
 
 class CComponent

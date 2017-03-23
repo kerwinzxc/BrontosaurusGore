@@ -7,7 +7,7 @@
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-CMovementComponent::CMovementComponent()
+CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false)
 {
 	CU::CJsonValue playerControls;
 	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
@@ -58,6 +58,43 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 }
 
 void CMovementComponent::Update(const CU::Time aDeltaTime)
+{
+#ifndef _RETAIL_BUILD
+	SwapMovementMode();
+	switch(myMovementMode)
+	{
+	case MovementMode::Default: 
+		DefaultMovement(aDeltaTime);
+		break;
+	case MovementMode::Freecam: 
+		FreecamMovement(aDeltaTime);
+		break;
+	default: break;
+	}
+#else
+	DefaultMovement(aDeltaTime);
+#endif
+
+	
+}
+
+void CMovementComponent::SwapMovementMode()
+{
+	if(myKeysDown[static_cast<int>(ePlayerControls::eNoclip)] == true && myNoclipProssed == false)
+	{
+		myNoclipProssed = true;
+
+		myMovementMode = static_cast<MovementMode>((1 + static_cast<int>(myMovementMode)
+		)
+		% static_cast<int>(MovementMode::Size));
+	}
+	else if(myKeysDown[static_cast<int>(ePlayerControls::eNoclip)] == false && myNoclipProssed == true)
+	{
+		myNoclipProssed = false;
+	}
+}
+
+void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 {
 	myVelocity.y = 0.0f;
 	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)] == true && myVelocity.x > -myMaxSpeed)
@@ -131,14 +168,14 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
-			if(myJumpForce < 0)
+			if (myJumpForce < 0)
 			{
 				myCanDoubleJump = true;
 				myJumpForce = 0.0f;
 			}
 		}
 	}
-	
+
 
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -150,7 +187,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		CU::Vector3f position = parentTransform.GetPosition();
 		parentTransform.SetPosition(data.myVector3f);
 		if (parentTransform.GetPosition().y < -100.0f)
 		{
@@ -171,8 +207,8 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		}
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
-	
-	if(myFrameLastPositionY == GetParent()->GetWorldPosition().y)
+
+	if (myFrameLastPositionY == GetParent()->GetWorldPosition().y)
 	{
 		myIsNotFalling = true;
 	}
@@ -182,6 +218,56 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	}
 
 	myFrameLastPositionY = GetParent()->GetWorldPosition().y;
+}
+
+void CMovementComponent::FreecamMovement(const CU::Time& aDeltaTime)
+{
+	CU::Vector3f velocity;
+
+	if (myKeysDown[static_cast<int>(ePlayerControls::eForward)])
+	{
+		velocity += CU::Vector3f(0,0,1);
+	}
+
+	if(myKeysDown[static_cast<int>(ePlayerControls::eBackward)])
+	{
+		velocity -= CU::Vector3f(0, 0, 1);
+	}
+
+	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)])
+	{
+		velocity += CU::Vector3f(1, 0, 0);
+	}
+
+	if (myKeysDown[static_cast<int>(ePlayerControls::eLeft)])
+	{
+		velocity -= CU::Vector3f(1, 0, 0);
+	}
+
+	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)])
+	{
+		velocity += CU::Vector3f(0, 1, 0);
+	}
+	if (myKeysDown[static_cast<int>(ePlayerControls::eDown)])
+	{
+		velocity -= CU::Vector3f(0, 1, 0);
+	}
+
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+	CU::Matrix44f rotation = parentTransform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
+
+	SComponentQuestionData data;
+	data.myVector4f = velocity.Normalize() * rotation * aDeltaTime.GetSeconds() * myMaxSpeed;
+	data.myVector4f.w = aDeltaTime.GetSeconds();
+
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		CU::Vector3f position = parentTransform.GetPosition();
+		parentTransform.SetPosition(data.myVector3f);
+	}
+
+	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
