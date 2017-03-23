@@ -463,6 +463,9 @@
     <ClInclude Include="KeyPickupComponent.h">
       <Filter>Pickup\Key</Filter>
     </ClInclude>
+   <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

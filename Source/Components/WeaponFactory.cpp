@@ -116,7 +116,7 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 			return;
 		}
 	}
-	DL_PRINT("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
+	DL_PRINT_WARNING("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
 	return;
 }
 
