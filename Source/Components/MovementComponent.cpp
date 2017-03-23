@@ -10,7 +10,7 @@ static const float gravityAcceleration = 9.82f * 2.0f;
 CMovementComponent::CMovementComponent()
 {
 	CU::CJsonValue playerControls;
-	std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
 	if (!errorMessage.empty())
 	{
 		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
@@ -29,6 +29,8 @@ CMovementComponent::CMovementComponent()
 	myMaxSpeed = playerControls["MaxSpeed"].GetFloat();
 	myJumpHeight = playerControls["JumpHeight"].GetFloat();
 	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
+	myFrameLastPositionY = -110000000.0f;
+	myIsNotFalling = false;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -169,8 +171,17 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		}
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
-
 	
+	if(myFrameLastPositionY == GetParent()->GetWorldPosition().y)
+	{
+		myIsNotFalling = true;
+	}
+	else
+	{
+		myIsNotFalling = false;
+	}
+
+	myFrameLastPositionY = GetParent()->GetWorldPosition().y;
 }
 
 void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
@@ -179,7 +190,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 
 	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
 	{
-		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN || myIsNotFalling == true)
 		{
 			ApplyJumpForce(myJumpHeight);
 		}

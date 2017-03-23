@@ -543,6 +543,7 @@ bool CServerMain::Update()
 		{
 			myGameServer->Update(deltaTime);
 		}
+		std::this_thread::yield();
 	}
 
 	myCanQuit = true;

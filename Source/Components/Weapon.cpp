@@ -51,7 +51,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
-			if (myWeaponData->shouldRayCast == true)
+			if (myWeaponData->projectileData->shouldRayCast == true)
 			{
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)

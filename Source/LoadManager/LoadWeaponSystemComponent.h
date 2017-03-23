@@ -7,3 +7,4 @@ namespace KLoader
 
 int LoadWeaponSystemComponent(KLoader::SLoadedComponentData someData);
 
+int LoadWeaponSystemServerComponent(KLoader::SLoadedComponentData someData);

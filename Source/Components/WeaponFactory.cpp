@@ -66,13 +66,13 @@ void CWeaponFactory::LoadWeapons()
 		newWeaponData->fireRate = levelsArray[i].at("FireRate").GetFloat();
 		newWeaponData->randomSpreadAngle = levelsArray[i].at("RandomSpreadAngle").GetInt();
 		newWeaponData->projectilesFiredPerShot = levelsArray[i].at("ProjectilesFiredPerShot").GetInt();
-		newWeaponData->shouldRayCast = levelsArray[i].at("ShouldRayCast").GetBool();
 
 		newProjectileData->projectileModelFilePath = levelsArray[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(levelsArray[i].at("Damage").GetFloat());
 		newProjectileData->movementSpeed = levelsArray[i].at("ProjectileMovementSpeed").GetFloat();
 		newProjectileData->maximumTravelRange = levelsArray[i].at("MaximumTravelRange").GetFloat();
 		newProjectileData->shouldExplodeOnImpact = levelsArray[i].at("ShouldProjectilesExplode").GetBool();
+		newProjectileData->shouldRayCast = levelsArray[i].at("ShouldRayCast").GetBool();
 
 		if(newProjectileData->shouldExplodeOnImpact == true)
 		{

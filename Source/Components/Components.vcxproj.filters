@@ -191,15 +191,10 @@
     <ClCompile Include="HealthPickupComponent.cpp">
       <Filter>Pickup\Health</Filter>
     </ClCompile>
-    <ClCompile Include="DoorManager.cpp">
-      <Filter>Door</Filter>
+    <ClCompile Include="DamageOnCollisionComponent.cpp">
+      <Filter>DamageOnCollisionComponent</Filter>
     </ClCompile>
-    <ClCompile Include="KeyPickupComponent.cpp">
-      <Filter>Pickup\Key</Filter>
-    </ClCompile>
-    <ClCompile Include="DoorComponent.cpp">
-      <Filter>Door</Filter>
-    </ClCompile>
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -443,14 +438,12 @@
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
     </ClInclude>
-    <ClInclude Include="DoorManager.h">
-      <Filter>Door</Filter>
+    <ClInclude Include="DamageOnCollisionComponent.h">
+      <Filter>DamageOnCollisionComponent</Filter>
     </ClInclude>
-    <ClInclude Include="KeyPickupComponent.h">
-      <Filter>Pickup\Key</Filter>
-    </ClInclude>
-    <ClInclude Include="DoorComponent.h">
-      <Filter>Door</Filter>
+    <ClInclude Include="DamageOnCollisionComponentManager.h" />
+    <ClInclude Include="EnemyBlueprint.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -541,11 +534,8 @@
     <Filter Include="Pickup\Manager">
       <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Door">
-      <UniqueIdentifier>{8a2cdf27-08c2-42c6-b058-efabb1a8145d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Key">
-      <UniqueIdentifier>{571e7376-89fa-4227-836a-d02a84a823f4}</UniqueIdentifier>
+    <Filter Include="DamageOnCollisionComponent">
+      <UniqueIdentifier>{b28664eb-e439-4cf8-ad8d-0140542edf4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

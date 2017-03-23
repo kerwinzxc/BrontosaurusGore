@@ -120,6 +120,7 @@ void CEngine::ThreadedRender()
 	while (myRenderer->GetIsRunning() == true)
 	{
 		Render();
+		std::this_thread::yield();
 	}
 
 
@@ -219,6 +220,7 @@ void CEngine::Start()
 		{
 			Render();
 		}
+		std::this_thread::yield();
 	}
 	CParticleEmitterComponentManager::Destroy();
 }

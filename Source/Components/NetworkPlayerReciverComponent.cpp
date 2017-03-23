@@ -5,7 +5,7 @@
 CNetworkPlayerReciverComponent::CNetworkPlayerReciverComponent()
 {
 	CU::CJsonValue playerControls;
-	std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
 	myInterpolationSpeed = playerControls["MaxSpeed"].GetFloat();
 }
 

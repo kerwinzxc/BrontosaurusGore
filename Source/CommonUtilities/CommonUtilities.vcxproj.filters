@@ -91,10 +91,7 @@
     <Filter Include="Input\Recieving">
       <UniqueIdentifier>{59267a83-3d43-4a17-9acd-7413750948d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Math\Quaternion">
-      <UniqueIdentifier>{2a2284d3-c86e-4af4-b2ae-2ee2b42ae0b0}</UniqueIdentifier>
-</Filter>    
-<Filter Include="Serializer">
+    <Filter Include="Serializer">
       <UniqueIdentifier>{9aefc103-3826-40d7-a80a-bf65ad18d20e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Colour">
@@ -404,9 +401,6 @@
     <ClInclude Include="MoveArray.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>Math\Quaternion</Filter>
-	</ClInclude>
     <ClInclude Include="Serializer.h">
       <Filter>Serializer</Filter>
     </ClInclude>
@@ -513,9 +507,6 @@
       <Filter>Input\Recieving</Filter>
     </ClCompile>
     <ClCompile Include="ConsolePrinter.cpp" />
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Math\Quaternion</Filter>
-</ClCompile>
     <ClCompile Include="Serializer.cpp">
       <Filter>Serializer</Filter>
     </ClCompile>

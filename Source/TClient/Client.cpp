@@ -51,6 +51,7 @@
 
 #include "../Components/PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
+#include "..\TShared\NetworkMessage_EnemyTransformation.h"
 #include "../Components/EnemyClientRepresentationManager.h"
 
 #include "../Components/HealthComponentManager.h"
@@ -251,13 +252,28 @@ void CClient::Update()
 		case ePackageType::eWeaponShoot:
 		{
 			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
-
 			SComponentMessageData data;
 			SComponentMessageData data2;
 			data2.myInt = shoot->GetWeaponIndex();
-			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
 			data.myVector3f = shoot->GetDirection();
-			myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+
+			switch (shoot->GetShooter())
+			{
+			case CNetworkMessage_WeaponShoot::Shooter::Player: 
+				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data); 
+				break;
+			case CNetworkMessage_WeaponShoot::Shooter::Enemy:
+				{
+					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
+					target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+					target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+				}
+				break;
+			default: break;
+			}
+			
+			
 		}
 		break;
 		case ePackageType::ePickupHealth:
@@ -327,11 +343,19 @@ void CClient::Update()
 		case ePackageType::eEnemyPosition:
 			{
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
-				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetInstance().GetRepresentation(message->GetId());
+				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.GetParent()->SetWorldPosition(message->GetPosition());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
+		case ePackageType::eEnemyTransformaion:
+			{
+				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
+				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
+				target.GetParent()->SetWorldTransformation(message->GetTransformation());
+				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+			}
+		break;
 		case ePackageType::eTakeDamage:
 		{
 			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
@@ -374,6 +398,8 @@ void CClient::Update()
 			myPlayerPositionUpdated = false;
 			positionWaitTime = 0;
 		}
+
+		std::this_thread::yield();
 	}
 
 	myCanQuit = true;
