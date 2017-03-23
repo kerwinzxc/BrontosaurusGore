@@ -4,6 +4,7 @@ cbuffer ConstantBuffer : register( b0 )
 {
 	float4x4 cameraSpaceInversed;
 	float4x4 projectionSpace;
+	float4 highlightColor;
 }
 
 cbuffer WorldSpaceBuffer : register(b1)

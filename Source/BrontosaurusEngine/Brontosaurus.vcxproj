@@ -384,6 +384,7 @@
     <ClInclude Include="C2DGUIRenderer.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="HighlightComponent.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="ParticleRenderer.h" />
     <ClInclude Include="SettingsSubscriber.h" />
@@ -464,6 +465,7 @@
     <ClCompile Include="C2DGUIRenderer.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="HighlightComponent.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="ParticleRenderer.cpp" />
     <ClCompile Include="SettingsSubscriber.cpp" />

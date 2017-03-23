@@ -6,6 +6,8 @@ public:
 	IPickupComponent();
 	~IPickupComponent();
 
+	virtual void ReInit();
+
 	void SetActive(const bool aFlag);
 	void SetNetworkId(const int aID);
 
@@ -13,6 +15,8 @@ public:
 	const int GetNetworkId() const;
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+
+	virtual const bool GetShouldReset() const;
 
 	virtual void DoMyEffect() = 0;
 protected:
