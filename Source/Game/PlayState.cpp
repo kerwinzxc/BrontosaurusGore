@@ -33,6 +33,7 @@
 #include "Components/ExplosionComponentManager.h"
 #include "Components/HealthComponentManager.h"
 #include "DamageOnCollisionComponentManager.h"
+#include "Components/DoorManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -132,6 +133,8 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionFactory);
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
+
+	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 
 	CComponentManager::DestroyInstance();
@@ -246,6 +249,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 
+	CDoorManager::GetInstance()->Update(aDeltaTime);
+
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	SComponentQuestionData healthData;
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
@@ -323,6 +328,7 @@ void CPlayState::CreateManagersAndFactories()
 
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
+	CDoorManager::Create();
 
 	myScene = new CScene();
 

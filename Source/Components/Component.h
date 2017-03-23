@@ -14,6 +14,7 @@ enum class eComponentQuestionType;
 enum class eComponentType : unsigned char
 {
 	eGameObject,
+	eDoor,
 	eModel,
 	eModelDebug,
 	eAmmoPickup,

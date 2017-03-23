@@ -387,6 +387,8 @@
     <ClInclude Include="DamageOnCollisionCollidedObjectData.h" />
     <ClInclude Include="DamageOnCollisionComponent.h" />
     <ClInclude Include="DamageOnCollisionComponentManager.h" />
+    <ClInclude Include="DoorComponent.h" />
+    <ClInclude Include="DoorManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBlueprint.h" />
     <ClInclude Include="EnemyClientRepresentation.h" />
@@ -402,6 +404,7 @@
     <ClInclude Include="HealthComponentManager.h" />
     <ClInclude Include="HealthPickupComponent.h" />
     <ClInclude Include="IPickupComponent.h" />
+    <ClInclude Include="KeyPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
@@ -467,6 +470,8 @@
     <ClCompile Include="ComponentMessageTypeToLua.cpp" />
     <ClCompile Include="DamageOnCollisionComponent.cpp" />
     <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
+    <ClCompile Include="DoorComponent.cpp" />
+    <ClCompile Include="DoorManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyClientRepresentation.cpp" />
     <ClCompile Include="EnemyClientRepresentationManager.cpp" />
@@ -480,6 +485,7 @@
     <ClCompile Include="HealthPickupComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
+    <ClCompile Include="KeyPickupComponent.cpp" />
     <ClCompile Include="MeshColliderComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />
