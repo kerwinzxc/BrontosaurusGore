@@ -41,6 +41,7 @@
 #include "../TShared/NetworkMessage_PlayerDied.h"
 #include "../TShared/NetworkMessage_PlayerRespawned.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
+#include "../TShared/NetworkMessage_RevivePlayer.h"
 #include "../Physics/PhysXHelper.h"
 
 std::thread* locLoadingThread = nullptr;
@@ -54,6 +55,18 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 	myIsRunning = false;
 	myCanQuit = false;
 	
+	CU::CJsonValue playerControls;
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
+	if (!errorMessage.empty())
+	{
+		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
+
+		myPlayerRespawnTime = 2.0f;
+	}
+	else
+	{
+		myPlayerRespawnTime = playerControls["RespawnTime"].GetFloat();
+	}
 }
 
 CServerMain::~CServerMain()
@@ -340,7 +353,16 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
-
+		for (auto deadPlayer : myDeadPlayers)
+		{
+			
+			myDeadPlayers.at(deadPlayer.first) -= deltaTime.GetSeconds();
+			if(deadPlayer.second <= 0)
+			{
+				CNetworkMessage_RevivePlayer* revivePlayerMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_RevivePlayer>(deadPlayer.first);
+				SendTo(revivePlayerMessage);
+			}
+		}
 
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
@@ -528,6 +550,7 @@ bool CServerMain::Update()
 				CNetworkMessage_PlayerDied* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerDied>();
 
 				myAlivePlayers.erase(playerDied->GetHeader().mySenderID);
+				myDeadPlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
 				if (myAlivePlayers.size() <= 0)
 				{
 					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
@@ -540,7 +563,8 @@ bool CServerMain::Update()
 			{
 				CNetworkMessage_PlayerRespawned* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerRespawned>();
 
-				myAlivePlayers.emplace(playerDied->GetHeader().mySenderID, 1);
+				myDeadPlayers.erase(playerDied->GetHeader().mySenderID);
+				myAlivePlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
 			}
 			break;
 			case ePackageType::eZero:

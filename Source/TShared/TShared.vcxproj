@@ -167,6 +167,7 @@
     <ClInclude Include="NetworkMessage_PlayerRespawned.h" />
     <ClInclude Include="NetworkMessage_Position.h" />
     <ClInclude Include="NetworkMessage_ResetToCheckpoint.h" />
+    <ClInclude Include="NetworkMessage_RevivePlayer.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="NetworkMessage_PlayerRespawned.cpp" />
     <ClCompile Include="NetworkMessage_Position.cpp" />
     <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp" />
+    <ClCompile Include="NetworkMessage_RevivePlayer.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
