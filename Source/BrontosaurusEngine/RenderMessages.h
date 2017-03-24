@@ -10,6 +10,7 @@
 #include "BufferStructs.h"
 #include "Lights.h"
 #include "ParticleEmitter.h"
+#include "CascadeBuffer.h"
 
 struct ID3D11RenderTargetView;
 
@@ -223,9 +224,10 @@ struct SSetShadowBuffer : SRenderMessage
 {
 	SSetShadowBuffer();
 
+	SCascadeBuffer cascadeBuffer;
 	CRenderPackage myShadowBuffer;
-	CU::Matrix44f myCameraTransformation;
-	CU::Matrix44f myCameraProjection;
+	//CU::Matrix44f myCameraTransformation;
+	//CU::Matrix44f myCameraProjection;
 };
 
 

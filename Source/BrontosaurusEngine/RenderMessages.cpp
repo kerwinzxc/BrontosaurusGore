@@ -106,7 +106,7 @@ SRenderFullscreenEffectMessage::SRenderFullscreenEffectMessage()
 SActivateRenderPackageMessage::SActivateRenderPackageMessage()
 	: SRenderMessage(eRenderMessageType::eActivateRenderPackage)
 {
-
+	useSecondPackage = false;
 }
 
 SRenderToIntermediate::SRenderToIntermediate()
