@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "DXFramework.h"
-#include "Engine.h"
 #include "PointLightInstance.h"
 #include "Lights.h"
 #include "Model.h"
@@ -30,6 +29,8 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
+#include "CascadeBuffer.h"
+
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
 CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
@@ -44,7 +45,9 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
-	CreateBuffer();
+
+	CreateOncePerFrameBuffer();
+	CreateShadowBuffer();
 
 	InitPackages();
 	CreateRasterizerStates();
@@ -405,7 +408,7 @@ void CRenderer::InitPackages()
 	}
 }
 
-void CRenderer::CreateBuffer()
+void CRenderer::CreateOncePerFrameBuffer()
 {
 	SOncePerFrameBuffer buffer;
 	buffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
@@ -422,6 +425,12 @@ void CRenderer::CreateBuffer()
 	buffer.fogEnd = 0.0f;
 
 	myOncePerFrameBuffer = BSR::CreateCBuffer<SOncePerFrameBuffer>(&buffer);
+}
+
+void CRenderer::CreateShadowBuffer()
+{
+	SCascadeBuffer buffer;
+	myShadowBuffer = BSR::CreateCBuffer<>(&buffer);
 }
 
 void CRenderer::UpdateBuffer()
@@ -453,32 +462,40 @@ void CRenderer::UpdateBuffer()
 
 }
 
-void CRenderer::UpdateBuffer(SSetShadowBuffer* msg) 
+//void CRenderer::UpdateBuffer(SSetShadowBuffer* msg) 
+//{
+//	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+//	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+//	SOncePerFrameBuffer updatedBuffer;
+//
+//	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
+//	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
+//	
+//	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = msg->myCameraTransformation;
+//	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = msg->myCameraProjection;
+//
+//	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
+//	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
+//	updatedBuffer.fogStart = 0.0f;
+//
+//	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
+//	updatedBuffer.fogEnd = 0.0f;
+//
+//	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+//	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
+//	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
+//	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
+//	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
+//	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
+//	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetDepthResource());
+//}
+
+void CRenderer::UpdateShadowBuffer(SSetShadowBuffer* msg)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
-	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	SOncePerFrameBuffer updatedBuffer;
+	BSR::UpdateCBuffer<SCascadeBuffer>(myShadowBuffer, &msg->cascadeBuffer);
 
-	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
-	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
-	
-	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = msg->myCameraTransformation;
-	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = msg->myCameraProjection;
-
-	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
-	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
-	updatedBuffer.fogStart = 0.0f;
-
-	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
-	updatedBuffer.fogEnd = 0.0f;
-
-	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
-	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
-	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetDepthResource());
+	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetResource());
+	DEVICE_CONTEXT->PSSetConstantBuffers(3, 1, &myShadowBuffer);
 }
 
 void CRenderer::CreateRasterizerStates()
@@ -764,6 +781,7 @@ void CRenderer::CreateSamplerStates()
 	HRESULT result;
 	ID3D11SamplerState* clampState = nullptr;
 	ID3D11SamplerState* wrapState = nullptr;
+	ID3D11SamplerState* pointState = nullptr;
 
 
 
@@ -782,19 +800,23 @@ void CRenderer::CreateSamplerStates()
 	samplerStateDesc.BorderColor[3] = 0;
 	samplerStateDesc.MinLOD = -D3D11_FLOAT32_MAX;
 	samplerStateDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
 	result = DEVICE->CreateSamplerState(&samplerStateDesc, &wrapState);
 	mySamplerStates[static_cast<int>(eSamplerState::eWrap)] = wrapState;
 
 	samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
-
 	result = DEVICE->CreateSamplerState(&samplerStateDesc, &clampState);
 	mySamplerStates[static_cast<int>(eSamplerState::eClamp)] = clampState;
 
-	mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)] = nullptr;
+
+	samplerStateDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	result = DEVICE->CreateSamplerState(&samplerStateDesc, &pointState);
+
+	mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)] = pointState;
 
 	CHECK_RESULT(result, "Failed to create SamplerState.");
 }
@@ -831,9 +853,15 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 	assert(aState->mySamplerState != eSamplerState::eSize);
 	//if (aState->mySamplerState == eSamplerState::eClamp0Wrap1)
 	{
-		ID3D11SamplerState* both[2] = { mySamplerStates[static_cast<int>(eSamplerState::eClamp)], mySamplerStates[static_cast<int>(eSamplerState::eWrap)] };
-		DEVICE_CONTEXT->VSSetSamplers(0, 2, both);
-		DEVICE_CONTEXT->PSSetSamplers(0, 2, both);
+		ID3D11SamplerState* troth[3] = 
+		{ 
+			mySamplerStates[static_cast<int>(eSamplerState::eClamp)], 
+			mySamplerStates[static_cast<int>(eSamplerState::eWrap)],
+			mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)]
+
+		};
+		DEVICE_CONTEXT->VSSetSamplers(0, 3, troth);
+		DEVICE_CONTEXT->PSSetSamplers(0, 3, troth);
 	}
 	//else
 	//{
@@ -916,10 +944,13 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myCamera = msg->myCamera;
 		UpdateBuffer();
 
-		ID3D11DeviceContext* context = DEVICE_CONTEXT;
-		float clearColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		context->ClearRenderTargetView(msg->CameraRenderPackage.GetRenderTargetView(), clearColour);
-		context->ClearDepthStencilView(msg->CameraRenderPackage.GetDepthStencilView(), D3D11_CLEAR_DEPTH, 1.f, 0);
+		//if (msg->RenderDepth == false)
+		{
+			ID3D11DeviceContext* context = DEVICE_CONTEXT;
+			float clearColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			context->ClearRenderTargetView(msg->CameraRenderPackage.GetRenderTargetView(), clearColour);
+			context->ClearDepthStencilView(msg->CameraRenderPackage.GetDepthStencilView(), D3D11_CLEAR_DEPTH, 1.f, 0);
+		}
 		msg->CameraRenderPackage.Activate();
 		
 		for (unsigned int i = 0; i < msg->CameraRenderQueue.Size(); ++i)
@@ -946,7 +977,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eSetShadowBuffer:
 	{
 		SSetShadowBuffer* msg = static_cast<SSetShadowBuffer*>(aRenderMesage);
-		UpdateBuffer(msg);
+		UpdateShadowBuffer(msg);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderModel:
