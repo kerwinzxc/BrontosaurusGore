@@ -139,9 +139,6 @@
     <ClCompile Include="MovementComponentManager.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
-    <ClCompile Include="CharcterControllerComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
     <ClCompile Include="RigidBodyComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
@@ -190,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="HealthPickupComponent.cpp">
       <Filter>Pickup\Health</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterControllerComponent.cpp">
+      <Filter>Collider/Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,9 +376,6 @@
     <ClInclude Include="MovementComponentManager.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
-    <ClInclude Include="CharcterControllerComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
@@ -433,6 +430,9 @@
     </ClInclude>
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterControllerComponent.h">
+      <Filter>Collider/Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

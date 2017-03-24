@@ -9,7 +9,7 @@
 #include "ProjectileBufferData.h"
 #include "ColliderComponentManager.h"
 #include "../Physics/PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "../Physics/CollisionLayers.h"
 #include "../Physics/Shape.h"
 

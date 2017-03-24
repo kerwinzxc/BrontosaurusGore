@@ -374,7 +374,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CapsuleColliderComponent.h" />
-    <ClInclude Include="CharcterControllerComponent.h" />
+    <ClInclude Include="CharacterControllerComponent.h" />
     <ClInclude Include="CheckPointComponent.h" />
     <ClInclude Include="CheckPointSystem.h" />
     <ClInclude Include="ColliderComponent.h" />
@@ -453,7 +453,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CapsuleColliderComponent.cpp" />
-    <ClCompile Include="CharcterControllerComponent.cpp" />
+    <ClCompile Include="CharacterControllerComponent.cpp" />
     <ClCompile Include="CheckPointComponent.cpp" />
     <ClCompile Include="CheckPointSystem.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />

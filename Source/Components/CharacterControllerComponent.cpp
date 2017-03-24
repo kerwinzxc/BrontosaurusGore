@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "..\Physics\PhysicsCharacterController.h"
 
 
-CCharcterControllerComponent::CCharcterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter)
+CCharacterControllerComponent::CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter)
 {
 	myCenter = aCenter;
 	myController = aController;
@@ -12,11 +12,11 @@ CCharcterControllerComponent::CCharcterControllerComponent(Physics::CPhysicsChar
 	SetUserData(this);
 }
 
-CCharcterControllerComponent::~CCharcterControllerComponent()
+CCharacterControllerComponent::~CCharacterControllerComponent()
 {
 }
 
-bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
+bool CCharacterControllerComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
 {
 	switch (aQuestionType)
 	{
@@ -39,7 +39,7 @@ bool CCharcterControllerComponent::Answer(const eComponentQuestionType aQuestion
 	return false;
 }
 
-void CCharcterControllerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
+void CCharacterControllerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -68,7 +68,7 @@ void CCharcterControllerComponent::Receive(const eComponentMessageType aMessageT
 
 }
 
-void CCharcterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
+void CCharacterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
@@ -78,7 +78,7 @@ void CCharcterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor
 
 }
 
-void CCharcterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
+void CCharacterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
@@ -87,7 +87,7 @@ void CCharcterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor*
 	DL_PRINT("TriggerExit");
 }
 
-void CCharcterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
+void CCharacterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
@@ -96,7 +96,7 @@ void CCharcterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackAct
 	DL_PRINT("ColEnter");
 }
 
-void CCharcterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
+void CCharacterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
