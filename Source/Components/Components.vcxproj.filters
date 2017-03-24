@@ -173,7 +173,6 @@
     <ClCompile Include="CheckPointSystem.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
-    <ClCompile Include="ExplosionComponentManager.cpp" />
     <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="IPickupComponent.cpp">
       <Filter>Pickup</Filter>
@@ -208,7 +207,12 @@
     <ClCompile Include="DamageOnCollisionComponentManager.cpp">
       <Filter>DamageOnCollisionComponent</Filter>
     </ClCompile>
-    <ClCompile Include="CheckpoinComponenttManager.cpp" />
+    <ClCompile Include="ExplosionComponentManager.cpp">
+      <Filter>Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckpointComponentManager.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -431,7 +435,6 @@
     <ClInclude Include="CheckPointSystem.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
-    <ClInclude Include="ExplosionComponentManager.h" />
     <ClInclude Include="ExplosionBufferData.h">
       <Filter>Explosion</Filter>
     </ClInclude>
@@ -475,7 +478,12 @@
     <ClInclude Include="DamageOnCollisionComponentManager.h">
       <Filter>DamageOnCollisionComponent</Filter>
     </ClInclude>
-    <ClInclude Include="CheckpoinComponenttManager.h" />
+    <ClInclude Include="ExplosionComponentManager.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckpointComponentManager.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

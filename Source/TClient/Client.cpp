@@ -59,7 +59,7 @@
 
 #include "../Components/HealthComponentManager.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
-#include "../Components/CheckpoinComponenttManager.h"
+#include "../Components/CheckpointComponentManager.h"
 #include "../Components/CheckPointComponent.h"
 
 #include "../Components/NetworkPlayerReciverComponent.h"
@@ -294,7 +294,7 @@ void CClient::Update()
 			case ePackageType::eSetCheckpointMessage:
 			{
 				CNetworkMessage_SetCheckpointMessage* checkpointMEssage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
-				CCheckPointComponent* checkpointComponent = CCheckpoinComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
+				CCheckPointComponent* checkpointComponent = CCheckpointComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
 				checkpointComponent->SetAsNewCheckPointWithNetwork();
 			}
 			break;

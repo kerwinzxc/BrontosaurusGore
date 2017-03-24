@@ -5,11 +5,11 @@
 #include "ComponentManager.h"
 #include "CheckPointComponent.h"
 #include "../Game/PlayState.h"
-#include "CheckpoinComponenttManager.h"
+#include "CheckpointComponentManager.h"
 
 int LoadCheckpointComponent(KLoader::SLoadedComponentData someData)
 {
-	CCheckPointComponent* newCheckPointComponent = CCheckpoinComponentManager::GetInstance()->CreateAndRegisterComponent();
+	CCheckPointComponent* newCheckPointComponent = CCheckpointComponentManager::GetInstance()->CreateAndRegisterComponent();
 	newCheckPointComponent->SetCheckPointPosition(someData.myData.at("SpawnPosition").GetVector3f());
 	return newCheckPointComponent->GetId();
 

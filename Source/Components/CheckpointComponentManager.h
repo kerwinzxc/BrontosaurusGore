@@ -1,24 +1,24 @@
 #pragma once
 #include <unordered_map>
 class CCheckPointComponent;
-class CCheckpoinComponentManager
+class CCheckpointComponentManager
 {
 public:
-	~CCheckpoinComponentManager();
+	~CCheckpointComponentManager();
 	CCheckPointComponent* CreateAndRegisterComponent();
 	static void CreateInstance();
-	static CCheckpoinComponentManager* GetInstance();
+	static CCheckpointComponentManager* GetInstance();
 	static void DestoryInstance();
 	inline CCheckPointComponent* GetComponent(const unsigned char aID);
 private:
-	CCheckpoinComponentManager();
+	CCheckpointComponentManager();
 
 private:
-	static CCheckpoinComponentManager* ourInstance;
+	static CCheckpointComponentManager* ourInstance;
 	std::unordered_map<unsigned char, CCheckPointComponent*> myCheckPointComponentList;
 };
 
-inline CCheckPointComponent* CCheckpoinComponentManager::GetComponent(const unsigned char aID)
+inline CCheckPointComponent* CCheckpointComponentManager::GetComponent(const unsigned char aID)
 {
 	return myCheckPointComponentList.at(aID);
 }
