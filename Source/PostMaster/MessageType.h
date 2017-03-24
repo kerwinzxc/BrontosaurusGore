@@ -11,6 +11,7 @@ enum class eMessageType
 	eConsoleCalledUpon,
 	eDroppedFile,
 	eChangeLevel,
+	eQuitGame,
 	eGameEventMessage,
 	eNetworkMessage,
 	ePrint,

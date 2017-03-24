@@ -19,6 +19,7 @@
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../PostMaster/ChangeLevel.h"
+#include "../PostMaster/QuitGame.h"
 #include "PollingStation.h"
 
 #define GLOBAL_LUA_FUNCTION_ERROR DL_MESSAGE_BOX
@@ -421,6 +422,12 @@ SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList)
 	RETURN_VOID();
 }
 
+SSlua::ArgumentList QuitGame(const SSlua::ArgumentList& /*aArgumentList*/)
+{
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CQuitGame());
+	return SSlua::ArgumentList();
+}
+
 SSlua::ArgumentList IsPlayer(const SSlua::ArgumentList& aArgumentList)
 {
 	SSlua::ArgumentList isPlayer(1);
@@ -455,14 +462,6 @@ SSlua::ArgumentList SetUserData(const SSlua::ArgumentList& aArgumentList)
 	else if (ScriptHelper::AssertArgumentList("SetUserData", { eSSType::STRING }, aArgumentList, false))
 	{
 	}
-
-	RETURN_VOID();
-}
-
-#include "../BrontosaurusEngine/Engine.h"
-SSlua::ArgumentList Quit(const SSlua::ArgumentList& aArgumentList)
-{
-	CEngine::GetInstance()->Shutdown();
 
 	RETURN_VOID();
 }

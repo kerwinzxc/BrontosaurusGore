@@ -362,6 +362,11 @@ void CScene::DeleteParticleEmitterInstance(const InstanceID anID)
 	
 	//static std::mutex lockHere;
 	//lockHere.lock();
+
+	if(anID > myParticleEmitters.Size())
+	{
+		return;
+	}
 	
 	CParticleEmitterInstance* emitter = myParticleEmitters[anID];
 	myParticleEmitters[anID] = nullptr;

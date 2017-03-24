@@ -54,6 +54,7 @@
     <ClCompile Include="PopCurrentState.cpp" />
     <ClCompile Include="PostMaster.cpp" />
     <ClCompile Include="PushState.cpp" />
+    <ClCompile Include="QuitGame.cpp" />
     <ClCompile Include="SendNetworkMessage.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -83,6 +84,7 @@
     <ClInclude Include="PopCurrentState.h" />
     <ClInclude Include="PostMaster.h" />
     <ClInclude Include="PushState.h" />
+    <ClInclude Include="QuitGame.h" />
     <ClInclude Include="SendNetworkMessage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Subscriber.h" />
