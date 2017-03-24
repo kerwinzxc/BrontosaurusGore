@@ -18,7 +18,7 @@ namespace Component
 		void Attack();
 		void Update(const CU::Time& aDeltaTime);
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
-
+		void ChangeWeapon(const unsigned int aIndex);
 	private:
 		CU::Vector3f ClosestPlayerPosition();
 		void UpdateTransformation();
@@ -31,6 +31,7 @@ namespace Component
 	protected:
 		static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 		unsigned int myServerId;
+		unsigned int myActiveWeaponIndex;
 
 		float mySpeed;
 		float myDetectionRange2;

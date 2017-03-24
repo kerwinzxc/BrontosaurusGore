@@ -12,6 +12,7 @@ Component::CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), m
 {
 	myIsDead = false;
 	myServerId = aId;
+	myActiveWeaponIndex = 0;
 }
 
 Component::CEnemy::~CEnemy()
@@ -83,7 +84,9 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 		}
 
 		if(hasChanged == true)
+		{
 			UpdateTransformation();
+		}
 	}
 }
 
@@ -126,4 +129,12 @@ CU::Vector3f Component::CEnemy::ClosestPlayerPosition()
 	}
 	
 	return playerPos;
+}
+
+void Component::CEnemy::ChangeWeapon(const unsigned int aIndex)
+{
+	myActiveWeaponIndex = aIndex;
+	SComponentMessageData changeWeaponData;
+	changeWeaponData.myInt = myActiveWeaponIndex;
+	GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
 }
