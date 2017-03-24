@@ -59,6 +59,11 @@ namespace Physics
 
 	CPhysics* CFoundation::CreatePhysics()
 	{
+		if (myPhysics)
+		{
+			DL_ASSERT("Physics already created, cannot have two instances of physics.");
+		}
+
 
 		bool recordMemoryAllocations = false;
 #ifdef _DEBUG
@@ -69,8 +74,8 @@ namespace Physics
 		PX_ERRORCHECK(physics != nullptr, "PxCreatePhysics failed!\n");
 
 
-		myPhysics.Add(new CPhysics(physics));
-		return myPhysics.GetLast();
+		myPhysics = new CPhysics(physics);
+		return myPhysics;
 	}
 
 	void CFoundation::InitializeFoundation()
@@ -119,13 +124,13 @@ namespace Physics
 
 	CFoundation::CFoundation()
 	{
+		myPhysics = nullptr;
 		myFoundation = nullptr;
 		myPvd = nullptr;
 		myCooking = nullptr;
 		myPhysXAllocatorCallback = nullptr;
 		myPhysXErrorHandlerCallback = nullptr;
 
-		myPhysics.Init(2);
 		InitializeFoundation();
 		InitializePVD();
 		InitializeCooking();
@@ -133,7 +138,7 @@ namespace Physics
 
 	CFoundation::~CFoundation()
 	{
-		myPhysics.DeleteAll();
+		SAFE_DELETE(myPhysics);
 
 		myPvd->disconnect();
 		myPvd->getTransport()->release();
