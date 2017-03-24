@@ -386,6 +386,11 @@ void CClient::Update()
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 			}
 			break;
+			case ePackageType::eRevivePlayer:
+			{
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
+			}
+			break;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
 			default: break;

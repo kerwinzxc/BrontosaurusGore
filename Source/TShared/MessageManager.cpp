@@ -26,6 +26,7 @@
 #include "NetworkMessage_PlayerDied.h"
 #include "NetworkMessage_PlayerRespawned.h"
 #include "NetworkMessage_ResetToCheckpoint.h"
+#include "NetworkMessage_RevivePlayer.h"
 
 CMessageManager::CMessageManager()
 {
@@ -103,6 +104,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_PlayerDied>(aHeader);
 	case ePackageType::eResetToCheckpoint:
 		return CreateMessage<CNetworkMessage_ResetToCheckpoint>(aHeader);
+	case ePackageType::eRevivePlayer:
+		return CreateMessage<CNetworkMessage_RevivePlayer>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

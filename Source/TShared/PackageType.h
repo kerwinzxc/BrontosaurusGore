@@ -31,5 +31,6 @@ enum class ePackageType: __int8
 	ePlayerDied,
 	ePlayerRespawned,
 	eResetToCheckpoint,
+	eRevivePlayer,
 	eSize
 };
