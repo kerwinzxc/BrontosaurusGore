@@ -56,6 +56,7 @@
     <ClCompile Include="SendNetworkMessage.cpp">
       <Filter>Events\SendNetworkMessage</Filter>
     </ClCompile>
+    <ClCompile Include="QuitGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Subscriber.h">
@@ -200,6 +201,9 @@
     </ClInclude>
     <ClInclude Include="PopCurrentState.h" />
     <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="PopCurrentState.h" />
+    <ClInclude Include="PostMaster.h" />
+    <ClInclude Include="QuitGame.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Events">
