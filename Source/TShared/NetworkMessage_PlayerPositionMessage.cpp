@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "NetworkMessage_PlayerPositionMessage.h"
+#include "../Physics/Physics.h"
+#include "../Physics/PhysXHelper.h"
 
 
 CNetworkMessage_PlayerPositionMessage::CNetworkMessage_PlayerPositionMessage()
@@ -19,7 +21,9 @@ ePackageType CNetworkMessage_PlayerPositionMessage::GetPackageType() const
 
 const CU::Matrix44f& CNetworkMessage_PlayerPositionMessage::GetTransformation()
 {
-	return myTransform;
+	CU::Matrix44f transform = Physics::QuatToMatrix(myRotation);
+	transform.SetPosition(myPosition);
+	return transform;
 }
 
 const unsigned CNetworkMessage_PlayerPositionMessage::GetID()
@@ -29,13 +33,10 @@ const unsigned CNetworkMessage_PlayerPositionMessage::GetID()
 
 void CNetworkMessage_PlayerPositionMessage::SetTransformation(const CU::Matrix44f& aTransform)
 {
-	myTransform = aTransform;
+	myRotation = Physics::MatrixToQuat(aTransform);
+	myPosition = aTransform.GetPosition();
 }
 
-void CNetworkMessage_PlayerPositionMessage::SetPosition(const CU::Vector3f & aPosition)
-{
-	//myPosition = aPosition;
-}
 
 void CNetworkMessage_PlayerPositionMessage::SetID(const unsigned aClientID)
 {
@@ -44,7 +45,8 @@ void CNetworkMessage_PlayerPositionMessage::SetID(const unsigned aClientID)
 
 void CNetworkMessage_PlayerPositionMessage::DoSerialize(StreamType & aStream)
 {
-	serialize(myTransform, aStream);
+	serialize(myRotation, aStream);
+	serialize(myPosition, aStream);
 	serialize(myID, aStream);
 }
 
@@ -52,7 +54,8 @@ void CNetworkMessage_PlayerPositionMessage::DoDeserialize(StreamType & aStream)
 {
 	if (aStream.size() > 0)
 	{
-		myTransform = deserialize<CU::Matrix44f>(aStream);
+		myRotation = deserialize<physx::PxQuat>(aStream);
+		myPosition = deserialize < CU::Vector3f > (aStream);
 		myID = deserialize<unsigned>(aStream);
 	}
 }

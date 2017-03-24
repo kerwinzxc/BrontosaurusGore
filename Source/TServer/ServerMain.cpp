@@ -41,6 +41,7 @@
 #include "../TShared/NetworkMessage_PlayerDied.h"
 #include "../TShared/NetworkMessage_PlayerRespawned.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
+#include "Physics/PhysXHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -411,6 +412,7 @@ bool CServerMain::Update()
 				const unsigned ID = positionMessage->GetID();
 
 				CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
+				
 				gameObject->SetWorldTransformation(positionMessage->GetTransformation());
 
 				SendTo(positionMessage);
