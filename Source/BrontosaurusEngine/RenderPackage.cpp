@@ -27,7 +27,8 @@ CRenderPackage::~CRenderPackage()
 void CRenderPackage::Init(const CU::Vector2ui & aSize, ID3D11Texture2D * aTexture, DXGI_FORMAT aFormat)
 {
 	HRESULT result;
-	
+	mySize = aSize;
+
 	myViewport = new D3D11_VIEWPORT;
 	myViewport->TopLeftX = 0.f;
 	myViewport->TopLeftY = 0.f;
@@ -106,6 +107,15 @@ ID3D11DepthStencilView*& CRenderPackage::GetDepthStencilView()
 ID3D11Texture2D *& CRenderPackage::GetTexture()
 {
 	return myTexture;
+}
+
+//Normalized you turd
+void CRenderPackage::SetViewport(const CU::Vector4f& aRect)
+{
+	myViewport->TopLeftX = mySize.x * aRect.x;
+	myViewport->TopLeftY = mySize.y * aRect.y;
+	myViewport->Width	 = mySize.x * aRect.z;
+	myViewport->Height	 = mySize.y * aRect.w;
 }
 
 void CRenderPackage::UpdateTexture(ID3D11Texture2D * aTexture)
