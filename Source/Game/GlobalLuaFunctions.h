@@ -22,5 +22,4 @@ SSlua::ArgumentList ChangeLevel(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList QuitGame(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList IsPlayer(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList SetUserData(const SSlua::ArgumentList& aArgumentList);
-SSlua::ArgumentList Quit(const SSlua::ArgumentList& aArgumentList);
 SSlua::ArgumentList LuaAssert(const SSlua::ArgumentList& aArgumentList);
