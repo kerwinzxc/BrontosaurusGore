@@ -80,7 +80,7 @@ namespace Physics
 		myCallback = aCallbacker;
 	}
 
-	void CPhysicsCharacterController::SetCollisionFlags(const char& flags)
+	void CPhysicsCharacterController::SetCollisionFlags(const uint8_t flags)
 	{
 		myCollisionFlags = 0;
 		if (flags & physx::PxControllerCollisionFlag::eCOLLISION_SIDES)

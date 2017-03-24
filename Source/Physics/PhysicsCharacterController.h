@@ -51,7 +51,7 @@ namespace Physics
 		inline const EActorType GetType() const override { return EActorType::eController; };
 
 	private:
-		void SetCollisionFlags(const char& flags);
+		void SetCollisionFlags(const uint8_t flags);
 
 	private:
 
