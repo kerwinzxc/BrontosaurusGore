@@ -154,185 +154,187 @@ void CClient::Update()
 		myTimerManager.UpdateTimers();
 		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
 		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime();
-		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
+		
 		positionWaitTime += deltaTime;
 		myServerPingTime += deltaTime;
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
-		switch ((currentMessage->GetHeader().myPackageType))
+		while (currentMessage->GetHeader().myPackageType != ePackageType::eZero)
 		{
-		case ePackageType::eConnectResponse:
-			if (myState == eClientState::CONECTING)
+			switch ((currentMessage->GetHeader().myPackageType))
 			{
-				CNetworkMessage_ConectResponse* conectResponseMessage = currentMessage->CastTo<CNetworkMessage_ConectResponse>();
-				myId = conectResponseMessage->myClientId;
-				myState = eClientState::CONECTED;
+			case ePackageType::eConnectResponse:
+				if (myState == eClientState::CONECTING)
+				{
+					CNetworkMessage_ConectResponse* conectResponseMessage = currentMessage->CastTo<CNetworkMessage_ConectResponse>();
+					myId = conectResponseMessage->myClientId;
+					myState = eClientState::CONECTED;
 
-				std::cout << "Conected to server got id:" << myId << std::endl;
-				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
-			}
-			break;
-		case ePackageType::ePing:
-			if (myState == eClientState::CONECTED)
-			{
-				//DL_PRINT("CLIENT:Ping");
-
-				CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
-				myNetworkWrapper.Send(newMessage, myServerIp.c_str(), SERVER_PORT);
-			}
-			break;
-		case ePackageType::ePingResponse:
-		{
-			//DL_PRINT("CLIENT:PingRespons");
-			myRoundTripTime = myServerPingTime.GetMilliseconds();
-			myServerPingTime = 0;
-			myServerIsPinged = false;
-		}
-		break;
-		case ePackageType::eChat:
-		{
-			CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
-			std::cout << chatMessage->myChatMessage << std::endl;
-		}
-		break;
-		case ePackageType::eServerReady:
-		{
-			CNetworkMessage_ServerReady* serverReady = currentMessage->CastTo<CNetworkMessage_ServerReady>();
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage(serverReady->GetNumberOfPlayers()));
-		}
-		break;
-		case ePackageType::ePlayerPosition:
-		{
-			CNetworkMessage_PlayerPositionMessage* playerPosition = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
-
-			const unsigned ID = playerPosition->GetID();
-
-			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
-
-			/*CU::CJsonValue playerControls;
-			std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
-			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
-
-			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-			myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
-
-			//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-
-			/*CU::CJsonValue playerControls;
-			std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
-
-			myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
-
-
-			myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-		}
-		break;
-		case ePackageType::eSpawnOtherPlayer:
-		{
-			CNetworkMessage_SpawnOtherPlayer* spawnPlayer = currentMessage->CastTo<CNetworkMessage_SpawnOtherPlayer>();
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSpawnOtherPlayerMessage(spawnPlayer->GetPlayerID()));
-		}
-		break;
-		case ePackageType::ePosition:
-		{
-			CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
-			//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
-
-			CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
-			//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
-			comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
-			//CU::Vector3f temp2 = comp->GetParent()->GetWorldPosition();
-			comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-
-		}
-		break;
-		case ePackageType::eLoadLevel:
-		{
-			CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-			
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
-		}
-		break;
-		case ePackageType::eWeaponShoot:
-		{
-			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
-			SComponentMessageData data;
-			SComponentMessageData data2;
-			data2.myInt = shoot->GetWeaponIndex();
-			data.myVector3f = shoot->GetDirection();
-
-			switch (shoot->GetShooter())
-			{
-			case CNetworkMessage_WeaponShoot::Shooter::Player: 
-				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
-				myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data); 
+					std::cout << "Conected to server got id:" << myId << std::endl;
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectedMessage(myId));
+				}
 				break;
-			case CNetworkMessage_WeaponShoot::Shooter::Enemy:
+			case ePackageType::ePing:
+				if (myState == eClientState::CONECTED)
+				{
+					//DL_PRINT("CLIENT:Ping");
+
+					CNetworkMessage_PingResponse* newMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>("__Server");
+					myNetworkWrapper.Send(newMessage, myServerIp.c_str(), SERVER_PORT);
+				}
+				break;
+			case ePackageType::ePingResponse:
+			{
+				//DL_PRINT("CLIENT:PingRespons");
+				myRoundTripTime = myServerPingTime.GetMilliseconds();
+				myServerPingTime = 0;
+				myServerIsPinged = false;
+			}
+			break;
+			case ePackageType::eChat:
+			{
+				CNetworkMessage_ChatMessage *chatMessage = currentMessage->CastTo<CNetworkMessage_ChatMessage>();
+				std::cout << chatMessage->myChatMessage << std::endl;
+			}
+			break;
+			case ePackageType::eServerReady:
+			{
+				CNetworkMessage_ServerReady* serverReady = currentMessage->CastTo<CNetworkMessage_ServerReady>();
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage(serverReady->GetNumberOfPlayers()));
+			}
+			break;
+			case ePackageType::ePlayerPosition:
+			{
+				CNetworkMessage_PlayerPositionMessage* playerPosition = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+
+				const unsigned ID = playerPosition->GetID();
+
+				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+
+				/*CU::CJsonValue playerControls;
+				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
+
+				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+				myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+
+				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+
+				/*CU::CJsonValue playerControls;
+				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+
+				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+
+
+				myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+			}
+			break;
+			case ePackageType::eSpawnOtherPlayer:
+			{
+				CNetworkMessage_SpawnOtherPlayer* spawnPlayer = currentMessage->CastTo<CNetworkMessage_SpawnOtherPlayer>();
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSpawnOtherPlayerMessage(spawnPlayer->GetPlayerID()));
+			}
+			break;
+			case ePackageType::ePosition:
+			{
+				CNetworkMessage_Position *positionMessage = currentMessage->CastTo<CNetworkMessage_Position>();
+				//std::cout << "Got position message with ID: " << positionMessage->GetID() << " and position: X:" << positionMessage->GetPosition().x << " Y:" << positionMessage->GetPosition().y << " Z:" << positionMessage->GetPosition().z << std::endl;
+
+				CNetworkComponent* comp = CNetworkComponentManager::GetInstance()->GetComponent(positionMessage->GetID());
+				//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
+				comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
+				//CU::Vector3f temp2 = comp->GetParent()->GetWorldPosition();
+				comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
+			}
+			break;
+			case ePackageType::eLoadLevel:
+			{
+				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
+			}
+			break;
+			case ePackageType::eWeaponShoot:
+			{
+				CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+				SComponentMessageData data;
+				SComponentMessageData data2;
+				data2.myInt = shoot->GetWeaponIndex();
+				data.myVector3f = shoot->GetDirection();
+
+				switch (shoot->GetShooter())
+				{
+				case CNetworkMessage_WeaponShoot::Shooter::Player:
+					myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+					myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					break;
+				case CNetworkMessage_WeaponShoot::Shooter::Enemy:
 				{
 					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
 					target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
 					target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
 				}
 				break;
-			default: break;
+				default: break;
+				}
+
+
 			}
-			
-			
-		}
-		break;
-		case ePackageType::ePickupHealth:
-		{
-			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
-			CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
-		}
-		break;
-		case ePackageType::eSetCheckpointMessage:
-		{
-			CNetworkMessage_SetCheckpointMessage* checkpointMEssage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
-			CCheckPointComponent* checkpointComponent = CCheckpoinComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
-			checkpointComponent->SetAsNewCheckPointWithNetwork();
-		}
-		break;
-		case ePackageType::ePickupAmmo:
-		{
-			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
-			CPickupComponentManager::GetInstance()->DeactivateAmmoPack(pickup->GetID());
-		}
-		break;
-		case ePackageType::ePickupArmor:
-		{
-			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
-			CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
-		}
-		break;
-		case ePackageType::ePickupKey:
-		{
-			CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
-			CPickupComponentManager::GetInstance()->DeactivateKeyPickup(pickup->GetNetWorkID());
-			CPollingStation::GetInstance()->AddKey(pickup->GetLockID());
-		}
-		break;
-		case ePackageType::eDoorMessage:
-		{
-			CNetworkMessage_DoorMessage* doorMesssage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
-			switch (doorMesssage->GetDoorAction())
+			break;
+			case ePackageType::ePickupHealth:
 			{
-			case eDoorAction::eClose:
-				CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
-				break;
-			case eDoorAction::eOpen:
-				CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
-				break;
-			case eDoorAction::eUnlock:
-				CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
-				break;
-			default:
-				break;
+				CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
+				CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 			}
-		}
-		break;
-		case ePackageType::eConnect:
+			break;
+			case ePackageType::eSetCheckpointMessage:
+			{
+				CNetworkMessage_SetCheckpointMessage* checkpointMEssage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
+				CCheckPointComponent* checkpointComponent = CCheckpoinComponentManager::GetInstance()->GetComponent(checkpointMEssage->GetId());
+				checkpointComponent->SetAsNewCheckPointWithNetwork();
+			}
+			break;
+			case ePackageType::ePickupAmmo:
+			{
+				CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
+				CPickupComponentManager::GetInstance()->DeactivateAmmoPack(pickup->GetID());
+			}
+			break;
+			case ePackageType::ePickupArmor:
+			{
+				CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+				CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
+			}
+			break;
+			case ePackageType::ePickupKey:
+			{
+				CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
+				CPickupComponentManager::GetInstance()->DeactivateKeyPickup(pickup->GetNetWorkID());
+				CPollingStation::GetInstance()->AddKey(pickup->GetLockID());
+			}
+			break;
+			case ePackageType::eDoorMessage:
+			{
+				CNetworkMessage_DoorMessage* doorMesssage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
+				switch (doorMesssage->GetDoorAction())
+				{
+				case eDoorAction::eClose:
+					CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
+					break;
+				case eDoorAction::eOpen:
+					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
+					break;
+				case eDoorAction::eUnlock:
+					CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+			case ePackageType::eConnect:
 			{
 				CNetworkMessage_Connect* conectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
 				std::wstring string;
@@ -342,7 +344,7 @@ void CClient::Update()
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
 			}
 			break;
-		case ePackageType::eDisconected:
+			case ePackageType::eDisconected:
 			{
 				CNetworkMessage_Disconected* disconectedMessage = currentMessage->CastTo<CNetworkMessage_Disconected>();
 				std::wstring string;
@@ -352,7 +354,7 @@ void CClient::Update()
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
 			}
 			break;
-		case ePackageType::eEnemyPosition:
+			case ePackageType::eEnemyPosition:
 			{
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
@@ -360,32 +362,37 @@ void CClient::Update()
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
-		case ePackageType::eEnemyTransformaion:
+			case ePackageType::eEnemyTransformaion:
 			{
 				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.GetParent()->SetWorldTransformation(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
-		break;
-		case ePackageType::eTakeDamage:
-		{
-			CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+			break;
+			case ePackageType::eTakeDamage:
+			{
+				CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
 
-			CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
-		}
-		break;
-		case ePackageType::eResetToCheckpoint:
-		{
-			CNetworkMessage_ResetToCheckpoint* reset = currentMessage->CastTo<CNetworkMessage_ResetToCheckpoint>();
+				CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
+			}
+			break;
+			case ePackageType::eResetToCheckpoint:
+			{
+				CNetworkMessage_ResetToCheckpoint* reset = currentMessage->CastTo<CNetworkMessage_ResetToCheckpoint>();
 
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
+			}
+			break;
+			case ePackageType::eZero:
+			case ePackageType::eSize:
+			default: break;
+			}
+			currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 		}
-		break;
-		case ePackageType::eZero:
-		case ePackageType::eSize:
-		default: break;
-		}
+
+		UpdatePing(myTimerManager.GetTimer(myMainTimer).GetDeltaTime());
+		
 
 
 		if (currentTime > 1.f)

@@ -54,7 +54,7 @@ private:
 
 	bool myIsRunning;
 	bool myInGame;
-	bool myIsLoaded;
+	std::atomic_bool myIsLoaded;
 
 	float myTime;
 	CEnemyComponentManager* myEnemyComponentManager;
