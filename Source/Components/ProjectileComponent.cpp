@@ -81,6 +81,7 @@ void CProjectileComponent::Deactivate()
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-	//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
-
+#ifndef _DEBUG
+	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+#endif
 }
