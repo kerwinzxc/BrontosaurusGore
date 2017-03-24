@@ -219,26 +219,37 @@ void CWeaponSystemComponent::Update(float aDelta)
 
 void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)
 {
-	if (aMessageData.myPlayerControl == ePlayerControls::ePrimaryWeapon)
+	switch (aMessageData.myPlayerControl)
 	{
-		myIsShooting = true;
-	}
-	else if(aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon1)
+	case ePlayerControls::ePrimaryWeapon :
+		{
+			myIsShooting = true;
+			break;
+		}
+	case ePlayerControls::eChangeWeapon1:
 	{
 		ChangeWeapon(0);
+		break;
 	}
-	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon2)
+	case ePlayerControls::eChangeWeapon2:
 	{
 		ChangeWeapon(1);
+		break;
 	}
-	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon3)
+	case ePlayerControls::eChangeWeapon3:
 	{
 		ChangeWeapon(2);
+		break;
 	}
-	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon4)
+	case ePlayerControls::eChangeWeapon4:
 	{
 		ChangeWeapon(3);
+		break;
 	}
+	default:
+		break;
+	}
+
 }
 
 void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMessageData)
