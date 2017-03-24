@@ -160,6 +160,10 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		}
 		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
 	}
+	if (GetParent()->GetLocalTransform().GetPosition().y < -100.0f)
+	{
+		myJumpForce = 0.0f;
+	}
 	myVelocity.y += myJumpForce;
 
 	SComponentQuestionData groundeddata;
