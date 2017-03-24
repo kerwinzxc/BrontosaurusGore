@@ -14,6 +14,7 @@ class CModelInstance;
 class CPointLightInstance;
 class CParticleEmitterInstance;
 class CFireEmitterInstance;
+class CCascadeShadowMap;
 
 namespace CU
 {
@@ -75,6 +76,8 @@ public:
 	
 private:
 	//Inget bör vara pekare sen.
+	CCascadeShadowMap* myShadowMap;
+
 	CU::GrowingArray<CModelInstance*, InstanceID> myModels;
 	CU::Stack<InstanceID, InstanceID> myFreeModels;
 
