@@ -82,6 +82,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
 	loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereCollider);
 	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleCollider);
+	loader.RegisterComponentLoadFunction("MeshCollider", LoadMeshCollider);
 	loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBody);
 	loader.RegisterComponentLoadFunction("CharacterController", LoadCharacterController);
 	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);

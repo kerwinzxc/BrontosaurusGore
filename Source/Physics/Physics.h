@@ -6,6 +6,8 @@ namespace physx
 	class PxMaterial;
 	class PxGeometry;
 	class PxControllerManager;
+	class PxTriangleMesh;
+	class PxConvexMesh;
 }
 
 namespace Physics
@@ -14,6 +16,7 @@ namespace Physics
 	class CPhysicsActor;
 	class CPhysicsCharacterController;
 	class CShape;
+	class CCollection;
 	class CSimulationEventCallback;
 	struct SCharacterControllerInitParams;
 
@@ -50,6 +53,9 @@ namespace Physics
 
 	private:
 		CShape* CreateShape(physx::PxGeometry& aGeometry, const SMaterialData & aMaterialData);
+		CShape* CreateShape(physx::PxTriangleMesh& aMesh, const SMaterialData & aMaterialData);
+
+		CShape* CreateShape(physx::PxConvexMesh& aMesh, const SMaterialData & aMaterialData);
 
 	private:
 		physx::PxPhysics* myPxPhysics;

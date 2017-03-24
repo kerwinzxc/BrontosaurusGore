@@ -30,7 +30,7 @@ namespace Physics
 		static CFoundation* GetInstance();
 
 		CPhysics* CreatePhysics();
-
+		physx::PxCooking& GetCooking();
 	private:
 
 		void InitializeFoundation();
