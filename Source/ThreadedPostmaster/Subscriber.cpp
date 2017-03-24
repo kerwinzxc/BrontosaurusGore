@@ -107,6 +107,11 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CChangeLevel& aChangeLevel
 	return eMessageReturn::eContinue;
 }
 
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CQuitGame& aQuitGameMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
 eMessageReturn Postmaster::ISubscriber::DoEvent(const CNetworkDebugInfo& aDebugInfo)
 {
 	return eMessageReturn::eContinue;
@@ -138,6 +143,11 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CCreateExplosionMessage & 
 }
 
 eMessageReturn Postmaster::ISubscriber::DoEvent(const CDeactivateExplosionMessage & aDeactivateExplosionMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aRevivePlayerMessage)
 {
 	return eMessageReturn::eContinue;
 }

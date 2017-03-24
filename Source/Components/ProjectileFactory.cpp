@@ -89,6 +89,7 @@ void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComp
 void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 {
 	CGameObject* newProjectileObject = myGameObjectManagerPointer->CreateGameObject();
+	newProjectileObject->GetLocalTransform().Scale(CU::Vector3f(0.1, 0.1, 0.1));
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	newProjectileObject->AddComponent(tempProjectileComponent);
 	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());

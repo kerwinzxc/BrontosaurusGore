@@ -51,7 +51,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
-			if (myWeaponData->shouldRayCast == true)
+			if (myWeaponData->projectileData->shouldRayCast == true)
 			{
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
@@ -73,7 +73,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 					CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
 					SComponentMessageData damageData;
-					damageData.myInt = 1000;
+					damageData.myInt = myWeaponData->projectileData->damage;
 					gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
 					//Do massive Domage!!
 				}

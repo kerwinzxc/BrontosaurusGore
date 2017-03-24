@@ -33,6 +33,7 @@ class CDeferredRenderer
 		CRenderPackage normal;
 		CRenderPackage RMAO;
 		CRenderPackage emissive;
+		CRenderPackage highLight;
 	};
 
 	struct SCameraStruct
@@ -50,6 +51,7 @@ public:
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, const CU::Matrix44f & aProjectionInverse);
+
 	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
@@ -65,6 +67,7 @@ private:
 	void RenderPointLight(SRenderMessage* aRenderMessage, CFullScreenHelper& aFullscreenHelper);
 
 	void RenderSpotLight(SRenderMessage* aRenderMessage, CFullScreenHelper& aFullscreenHelper);
+	void DoHighlight(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 
 	void ActivateIntermediate();
 	void ActivateSSAO();
@@ -106,6 +109,7 @@ private:
 		eAO,
 		eSSAO,
 		eIntermediate,
+		eHighlight,
 	} myRenderMode;
 	CU::InputWrapper* myInputWrapper;
 	void HandleInput();

@@ -381,10 +381,10 @@
   <ItemGroup>
     <ClInclude Include="Allignment.h" />
     <ClInclude Include="AnimationController.h" />
-    <ClInclude Include="CascadeBuffer.h" />
-    <ClInclude Include="CascadeShadowMap.h" />
+    <ClInclude Include="C2DGUIRenderer.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="HighlightComponent.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="ParticleRenderer.h" />
     <ClInclude Include="SettingsSubscriber.h" />
@@ -462,9 +462,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp" />
-    <ClCompile Include="CascadeShadowMap.cpp" />
+    <ClCompile Include="C2DGUIRenderer.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="HighlightComponent.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="ParticleRenderer.cpp" />
     <ClCompile Include="SettingsSubscriber.cpp" />
@@ -545,6 +546,9 @@
     <ProjectReference Include="..\FontEngine\FontEngine.vcxproj">
       <Project>{f9f6b9b2-70ed-419e-b66f-e4214036a7dc}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

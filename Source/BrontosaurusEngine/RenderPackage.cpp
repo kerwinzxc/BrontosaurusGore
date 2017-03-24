@@ -51,6 +51,18 @@ void CRenderPackage::Init(const CU::Vector2ui & aSize, ID3D11Texture2D * aTextur
 	FRAMEWORK->CreateDepthStencil(static_cast<unsigned int>(myViewport->Width), static_cast<unsigned int>(myViewport->Height), myDepth, myDepthResource );
 }
 
+void CRenderPackage::ReInit(const CU::Vector2ui& aSize, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat)
+{
+	SAFE_RELEASE(myTexture);
+	SAFE_RELEASE(myResource);
+	SAFE_RELEASE(myTarget);
+	SAFE_RELEASE(myDepth);
+	SAFE_RELEASE(myDepthResource);
+	SAFE_DELETE(myViewport);
+
+	Init(aSize, aTexture, aFormat);
+}
+
 void CRenderPackage::Clear()
 {
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;

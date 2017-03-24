@@ -12,6 +12,9 @@
 #include "../TShared/NetworkMessage_PickupHealth.h"
 #include "../TShared/NetworkMessage_PickupAmmo.h"
 #include "../TShared/Networkmessage_PickupArmor.h"
+#include "../TShared/NetworkMessage_PickupKey.h"
+#include "../TShared/NetworkMessage_SetCheckpointMessage.h"
+
 
 #include "GameServer.h"
 #include "../TShared/NetworkMessage_LoadLevel.h"
@@ -34,6 +37,12 @@
 #include "../TShared/NetworkMessage_Disconected.h"
 #include "../CommonUtilities/StringHelper.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
+#include "../TShared/NetworkMessage_DoorMessage.h"
+#include "../TShared/NetworkMessage_PlayerDied.h"
+#include "../TShared/NetworkMessage_PlayerRespawned.h"
+#include "../TShared/NetworkMessage_ResetToCheckpoint.h"
+#include "../TShared/NetworkMessage_RevivePlayer.h"
+#include "../Physics/PhysXHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -45,6 +54,19 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 
 	myIsRunning = false;
 	myCanQuit = false;
+	
+	CU::CJsonValue playerControls;
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
+	if (!errorMessage.empty())
+	{
+		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
+
+		myPlayerRespawnTime = 2.0f;
+	}
+	else
+	{
+		myPlayerRespawnTime = playerControls["RespawnTime"].GetFloat();
+	}
 }
 
 CServerMain::~CServerMain()
@@ -331,7 +353,16 @@ bool CServerMain::Update()
 
 		const CU::Time deltaTime = myTimerManager.GetTimer(myTimerHandle).GetDeltaTime();
 
-
+		for (auto deadPlayer : myDeadPlayers)
+		{
+			
+			myDeadPlayers.at(deadPlayer.first) -= deltaTime.GetSeconds();
+			if(deadPlayer.second <= 0)
+			{
+				CNetworkMessage_RevivePlayer* revivePlayerMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_RevivePlayer>(deadPlayer.first);
+				SendTo(revivePlayerMessage);
+			}
+		}
 
 		UpdateImportantMessages(myTimerManager.GetTimer(myTimerHandle).GetDeltaTime().GetSeconds());
 
@@ -340,165 +371,215 @@ bool CServerMain::Update()
 
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(&currentSenderIp, &currentSenderPort);
 
-		if (currentMessage->IsImportant() && static_cast<ePackageType>(currentMessage->GetHeader().myPackageType) != ePackageType::eImportantResponse)
+		while (currentMessage->GetHeader().myPackageType != ePackageType::eZero)
 		{
-			CImportantNetworkMessage* importantNetworkMessage = static_cast<CImportantNetworkMessage*>(currentMessage);
-			importantNetworkMessage->UnpackMessage();
-
-			SNetworkPackageHeader header;
-			header.myTargetID = currentMessage->GetHeader().mySenderID;
-			header.mySenderID = ID_SERVER;
-			header.myPackageType = (ePackageType::eImportantResponse);
-			header.myTimeStamp = static_cast<int>(GetCurrentTime());
-
-			CImportantNetworkMessage* ResponseMessage = myMessageManager->CreateMessage<CImportantNetworkMessage>(header);
-			SendTo(ResponseMessage);
-		}
-
-		switch (static_cast<ePackageType>(currentMessage->GetHeader().myPackageType))
-		{
-		case ePackageType::eConnect:
-		{
-			std::string temp;
-			temp += "Conect request recieved from IP ";
-			temp += currentSenderIp;
-			DL_PRINT(temp.c_str());
-
-			CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
-			ClientID clientId = ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
-
-			SNetworkPackageHeader header = connectMessage->GetHeader();
-			header.myTargetID = ID_ALL_BUT_ME;
-			header.mySenderID = clientId;
-			connectMessage->SetHeader(header);
-
-			SendTo(connectMessage);
-		}
-		break;
-		case ePackageType::ePing:
-		{
-			CNetworkMessage_PingResponse* pingResponse = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>(currentMessage->GetHeader().mySenderID);
-			SendTo(pingResponse);
-		}
-		break;
-		case ePackageType::ePingResponse:
-		{
-			//DL_PRINT("SERVER:PingRespons");
-			RecievePingResponse(currentMessage->GetHeader());
-		}
-		break;
-		case ePackageType::eChat:
-		{
-			HandleChatMessage(currentMessage->CastTo<CNetworkMessage_ChatMessage>());
-		}
-		break;
-		case ePackageType::ePlayerPosition:
-		{
-			if (myServerState == eServerState::eInGame && myGameServer->IsLoaded())
+			if (currentMessage->IsImportant() && static_cast<ePackageType>(currentMessage->GetHeader().myPackageType) != ePackageType::eImportantResponse)
 			{
-				CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+				CImportantNetworkMessage* importantNetworkMessage = static_cast<CImportantNetworkMessage*>(currentMessage);
+				importantNetworkMessage->UnpackMessage();
 
-				const unsigned ID = positionMessage->GetID();
+				SNetworkPackageHeader header;
+				header.myTargetID = currentMessage->GetHeader().mySenderID;
+				header.mySenderID = ID_SERVER;
+				header.myPackageType = (ePackageType::eImportantResponse);
+				header.myTimeStamp = static_cast<int>(GetCurrentTime());
 
-				CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
-				gameObject->SetWorldTransformation(positionMessage->GetTransformation());
-
-				SendTo(positionMessage);
+				CImportantNetworkMessage* ResponseMessage = myMessageManager->CreateMessage<CImportantNetworkMessage>(header);
+				SendTo(ResponseMessage);
 			}
-		}
-		break;
-		case ePackageType::ePosition:
-		{
-			CNetworkMessage_Position* position = currentMessage->CastTo<CNetworkMessage_Position>();
 
-			std::string positionString;
-			positionString += "Position: ";
-			positionString += " X: ";
-			positionString += position->GetPosition().x;
-			positionString += " Y: ";
-			positionString += position->GetPosition().y;
-			positionString += " Z: ";
-			positionString += position->GetPosition().z;
+			switch (static_cast<ePackageType>(currentMessage->GetHeader().myPackageType))
+			{
+			case ePackageType::eConnect:
+			{
+				std::string temp;
+				temp += "Conect request recieved from IP ";
+				temp += currentSenderIp;
+				DL_PRINT(temp.c_str());
 
-			DL_PRINT(positionString.c_str());
+				CNetworkMessage_Connect* connectMessage = currentMessage->CastTo<CNetworkMessage_Connect>();
+				ClientID clientId = ConnectClient(connectMessage->GetHeader(), connectMessage->myClientName, currentSenderIp, currentSenderPort);
 
-			SendTo(currentMessage);
-		}
-		break;
-		case ePackageType::eWeaponShoot:
-		{
-			CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+				SNetworkPackageHeader header = connectMessage->GetHeader();
+				header.myTargetID = ID_ALL_BUT_ME;
+				header.mySenderID = clientId;
+				connectMessage->SetHeader(header);
 
-			SendTo(shoot);
-		}
-		break;
-		case ePackageType::eImportantResponse:
-			RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
+				myAlivePlayers.emplace(connectMessage->GetHeader().mySenderID, 1);
+
+				SendTo(connectMessage);
+			}
 			break;
-		case ePackageType::eLoadLevel:
-			if (myServerState == eServerState::eInGame)
+			case ePackageType::ePing:
 			{
-				myGameServer->ReInit();
-				myServerState = eServerState::eWaitingForClients;
+				CNetworkMessage_PingResponse* pingResponse = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PingResponse>(currentMessage->GetHeader().mySenderID);
+				SendTo(pingResponse);
 			}
-			if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
+			break;
+			case ePackageType::ePingResponse:
 			{
-				for (auto& client : myClients)
+				//DL_PRINT("SERVER:PingRespons");
+				RecievePingResponse(currentMessage->GetHeader());
+			}
+			break;
+			case ePackageType::eChat:
+			{
+				HandleChatMessage(currentMessage->CastTo<CNetworkMessage_ChatMessage>());
+			}
+			break;
+			case ePackageType::ePlayerPosition:
+			{
+				if (myServerState == eServerState::eInGame && myGameServer->IsLoaded())
 				{
-					client.second.IsReady = false;
-					client.second.myComponent = nullptr;
+					CNetworkMessage_PlayerPositionMessage* positionMessage = currentMessage->CastTo<CNetworkMessage_PlayerPositionMessage>();
+
+					const unsigned ID = positionMessage->GetID();
+
+					CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
+					gameObject->SetWorldTransformation(positionMessage->GetTransformation());
+
+					SendTo(positionMessage);
 				}
-				myServerState = eServerState::eLoadingLevel;
-				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-				locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
-
-
-				SendTo(loadLevelMessage);
-
 			}
 			break;
-		case ePackageType::eClientReady:
-			if (myServerState == eServerState::eLoadingLevel)
+			case ePackageType::ePosition:
 			{
-				myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
+				CNetworkMessage_Position* position = currentMessage->CastTo<CNetworkMessage_Position>();
+
+				std::string positionString;
+				positionString += "Position: ";
+				positionString += " X: ";
+				positionString += position->GetPosition().x;
+				positionString += " Y: ";
+				positionString += position->GetPosition().y;
+				positionString += " Z: ";
+				positionString += position->GetPosition().z;
+
+				DL_PRINT(positionString.c_str());
+
+				SendTo(currentMessage);
 			}
 			break;
-		case ePackageType::eDisconected:
-		{
-			DisconectClient(currentMessage->GetHeader().mySenderID);
-		}
-		break;
-		case ePackageType::eTakeDamage:
-		{
-			CNetworkMessage_TakeDamage* damage = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
-			SendTo(damage);
-		}
-		break;
-		case ePackageType::ePickupHealth:
-		{
-			CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
-			SendTo(pickup);
-		}
-		break;
-		case ePackageType::ePickupAmmo:
-		{
-			CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
-			SendTo(pickup);
-		}
-		case ePackageType::ePickupArmor:
-		{
-			CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
-			SendTo(pickup);
-		}
-		break;
-		break;
-		case ePackageType::eZero:
-		case ePackageType::eSize:
-		default: break;
+			case ePackageType::eWeaponShoot:
+			{
+				CNetworkMessage_WeaponShoot* shoot = currentMessage->CastTo<CNetworkMessage_WeaponShoot>();
+
+				SendTo(shoot);
+			}
+			break;
+			case ePackageType::eImportantResponse:
+				RecieveImportantResponse(currentMessage->CastTo<CImportantNetworkMessage>());
+				break;
+			case ePackageType::eLoadLevel:
+				if (myServerState == eServerState::eInGame)
+				{
+					myGameServer->ReInit();
+					myServerState = eServerState::eWaitingForClients;
+				}
+				if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
+				{
+					for (auto& client : myClients)
+					{
+						client.second.IsReady = false;
+						client.second.myComponent = nullptr;
+					}
+					myServerState = eServerState::eLoadingLevel;
+					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
+
+
+					SendTo(loadLevelMessage);
+
+				}
+				break;
+			case ePackageType::eClientReady:
+				if (myServerState == eServerState::eLoadingLevel)
+				{
+					myClients.at(currentMessage->GetHeader().mySenderID).IsReady = true;
+				}
+				break;
+			case ePackageType::eDisconected:
+			{
+				DisconectClient(currentMessage->GetHeader().mySenderID);
+			}
+			break;
+			case ePackageType::eTakeDamage:
+			{
+				CNetworkMessage_TakeDamage* damage = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+				SendTo(damage);
+			}
+			break;
+			case ePackageType::ePickupHealth:
+			{
+				CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
+				SendTo(pickup);
+			}
+			break;
+			case ePackageType::ePickupAmmo:
+			{
+				CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
+				SendTo(pickup);
+			}
+			break;
+			case ePackageType::ePickupArmor:
+			{
+				CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+				SendTo(pickup);
+			}
+			break;
+			case ePackageType::ePickupKey:
+			{
+				CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
+				SendTo(pickup);
+			}
+			break;
+			case ePackageType::eDoorMessage:
+			{
+				CNetworkMessage_DoorMessage* doormessage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
+				SendTo(doormessage);
+			}
+			break;
+			case ePackageType::eSetCheckpointMessage:
+			{
+				CNetworkMessage_SetCheckpointMessage* doormessage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
+				SendTo(doormessage);
+			}
+			break;
+			case ePackageType::ePlayerDied:
+			{
+				CNetworkMessage_PlayerDied* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerDied>();
+
+				myAlivePlayers.erase(playerDied->GetHeader().mySenderID);
+				myDeadPlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
+				if (myAlivePlayers.size() <= 0)
+				{
+					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
+
+					SendTo(reset);
+				}
+			}
+			break;
+			case ePackageType::ePlayerRespawned:
+			{
+				CNetworkMessage_PlayerRespawned* playerDied = currentMessage->CastTo<CNetworkMessage_PlayerRespawned>();
+
+				myDeadPlayers.erase(playerDied->GetHeader().mySenderID);
+				myAlivePlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
+			}
+			break;
+			case ePackageType::eZero:
+			case ePackageType::eSize:
+			default: break;
+			}
+
+			delete currentSenderIp;
+			delete currentSenderPort;
+
+			currentMessage = myNetworkWrapper.Recieve(&currentSenderIp, &currentSenderPort);
 		}
 
-		delete currentSenderIp;
-		delete currentSenderPort;
+		
+
 
 		if (currentTime > 1.f)
 		{
@@ -529,6 +610,7 @@ bool CServerMain::Update()
 		{
 			myGameServer->Update(deltaTime);
 		}
+		std::this_thread::yield();
 	}
 
 	myCanQuit = true;

@@ -55,6 +55,7 @@ private:
 
 	bool  myIsActive;
 	bool myIsVisible;
+	float myLifetime;
 };
 
 inline void CParticleEmitterInstance::SetPosition(CU::Vector3f aPosition)

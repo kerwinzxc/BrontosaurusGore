@@ -21,6 +21,12 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	{
 	case eComponentMessageType::eOnCollisionEnter:
 	{
+		if(myData->shouldRayCast == false)
+		{
+			SComponentMessageData damageData;
+			damageData.myInt = myData->damage;
+			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
@@ -75,6 +81,6 @@ void CProjectileComponent::Deactivate()
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+	//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 
 }

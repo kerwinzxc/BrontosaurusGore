@@ -65,6 +65,7 @@ enum class eComponentMessageType
 	eAddNewAmmoType,
 	eWeaponFactoryGiveWeaponToWeaponSystem,
 	eGiveAmmo,
+	eRemoveAmmo,
 	//eSetDirectionForShooting,
 	eChangeWeapon,
 	eTakeDamage,
@@ -83,6 +84,8 @@ enum class eComponentMessageType
 	eActivate,
 	eDeactivate,
 	eNetworkDoDamage,
+	eActivateEmitter,
+	eServerShoot,
 	eLength,
 };
 
@@ -93,7 +96,12 @@ struct SComponentMessageData
 	union
 	{
 		void* myVoidPointer;
-		CComponent* myComponent;
+		struct
+		{
+			CComponent* myComponent;
+			eComponentType myComponentTypeAdded;
+		};
+		
 		CGameObject* myGameObject;
 		struct SComponentMessageCallback* myComponentMessageCallback;
 		ePlayerControls myPlayerControl;
@@ -105,14 +113,14 @@ struct SComponentMessageData
 		float myFloat;
 		CU::Vector2f myVector2f;
 		CU::Vector3f myVector3f;
+		CU::Vector4f myVector4f;
 
-		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
 
 		SAmmoData* myAmmoData;
 		SAmmoCheckData* myAmmoCheckData;
 		SAmmoReplenishData* myAmmoReplenishData;
-		SExplosionData* myExplosionData;
+		const SExplosionData* myExplosionData;
 		CWeapon* myWeapon;
 	};
 };

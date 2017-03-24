@@ -13,12 +13,14 @@ public:
 	~CWeaponSystemComponent();
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
+	bool WeaponIndexValid() const;
 	void Update(float aDelta);
 	void GiveWeapon(const char* aWeaponName);
 	void AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData);
 private:
 	void HandleKeyPressed(const SComponentMessageData& aMessageData);
 	void HandleKeyReleased(const SComponentMessageData& aMessageData);
+	void ChangeWeapon(unsigned int aIndex);
 
 	CU::GrowingArray<CWeapon*> myWeapons;
 	CU::GrowingArray<SAmmoData*> myTemporaryAmmoDataList;
@@ -26,5 +28,6 @@ private:
 	CTextInstance* myActiveWeaponAmmoLeftText;
 	unsigned short myActiveWeaponIndex;
 	bool myIsShooting;
+	bool myIsActive;
 };
 

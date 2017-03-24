@@ -75,7 +75,7 @@ namespace CU
 
 		CJsonValue at(const int aIndex) const;
 		CJsonValue at(const std::string& aKey) const;
-
+		bool CheckKeys(CU::GrowingArray<std::string> someKeys) const;
 	private:
 		CJsonValue(const picojson::value* aValuePointer);
 

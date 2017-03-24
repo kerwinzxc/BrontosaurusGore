@@ -2,6 +2,8 @@
 #include "NetworkMessage.h"
 #include "../CommonUtilities/vector3.h"
 #include "../CommonUtilities/matrix44.h"
+#include "../Physics/Include/pxShared/foundation/PxQuat.h"
+
 class CNetworkMessage_PlayerPositionMessage : public CNetworkMessage
 {
 public:
@@ -13,16 +15,14 @@ public:
 	//const CU::Vector3f& GetPosition();
 	const unsigned GetID();
 	void SetTransformation(const CU::Matrix44f& aTransform);
-	void SetPosition(const CU::Vector3f& aPosition);
 	void SetID(const unsigned aClientID);
-
 private:
 
 	virtual void DoSerialize(StreamType& aStream);
 	virtual void DoDeserialize(StreamType& aStream);
 
 	unsigned myID;
-	CU::Matrix44f myTransform;
-
+	physx::PxQuat myRotation;
+	CU::Vector3f myPosition;
 };
 

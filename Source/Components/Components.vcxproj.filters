@@ -139,13 +139,15 @@
     <ClCompile Include="MovementComponentManager.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
+    <ClCompile Include="CharcterControllerComponent.cpp">
+      <Filter>Collider/Physics</Filter>
+    </ClCompile>
     <ClCompile Include="RigidBodyComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
     <ClCompile Include="CheckPointComponent.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
-    <ClCompile Include="CheckPointSystem.cpp" />
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp">
       <Filter>Collider/Physics</Filter>
@@ -171,7 +173,6 @@
     <ClCompile Include="CheckPointSystem.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
-    <ClCompile Include="ExplosionComponentManager.cpp" />
     <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="IPickupComponent.cpp">
       <Filter>Pickup</Filter>
@@ -188,8 +189,29 @@
     <ClCompile Include="HealthPickupComponent.cpp">
       <Filter>Pickup\Health</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterControllerComponent.cpp">
-      <Filter>Collider/Physics</Filter>
+    <ClCompile Include="DamageOnCollisionComponent.cpp">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorManager.cpp">
+      <Filter>DoorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorComponent.cpp">
+      <Filter>DoorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyPickupComponent.cpp">
+      <Filter>Pickup\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPointSystem.cpp">
+      <Filter>CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosionComponentManager.cpp">
+      <Filter>Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckpointComponentManager.cpp">
+      <Filter>CheckPoint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,13 +398,15 @@
     <ClInclude Include="MovementComponentManager.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
+    <ClInclude Include="CharcterControllerComponent.h">
+      <Filter>Collider/Physics</Filter>
+    </ClInclude>
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
     <ClInclude Include="CheckPointComponent.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
-    <ClInclude Include="CheckPointSystem.h" />
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="SphereColliderComponent.h">
       <Filter>Collider/Physics</Filter>
@@ -411,7 +435,6 @@
     <ClInclude Include="CheckPointSystem.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
-    <ClInclude Include="ExplosionComponentManager.h" />
     <ClInclude Include="ExplosionBufferData.h">
       <Filter>Explosion</Filter>
     </ClInclude>
@@ -431,8 +454,35 @@
     <ClInclude Include="HealthPickupComponent.h">
       <Filter>Pickup\Health</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterControllerComponent.h">
-      <Filter>Collider/Physics</Filter>
+    <ClInclude Include="DamageOnCollisionComponent.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBlueprint.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorManager.h">
+      <Filter>DoorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorComponent.h">
+      <Filter>DoorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPickupComponent.h">
+      <Filter>Pickup\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPointSystem.h">
+      <Filter>CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageOnCollisionComponentManager.h">
+      <Filter>DamageOnCollisionComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionComponentManager.h">
+      <Filter>Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckpointComponentManager.h">
+      <Filter>CheckPoint</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -522,6 +572,15 @@
     </Filter>
     <Filter Include="Pickup\Manager">
       <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DamageOnCollisionComponent">
+      <UniqueIdentifier>{b28664eb-e439-4cf8-ad8d-0140542edf4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DoorComponent">
+      <UniqueIdentifier>{ddc514dd-0122-4909-8440-37b48a84ee96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Key">
+      <UniqueIdentifier>{d8fbd349-113f-4812-b49f-8860ba36c689}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

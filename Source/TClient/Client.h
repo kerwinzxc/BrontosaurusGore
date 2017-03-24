@@ -38,6 +38,7 @@ public:
 	eMessageReturn DoEvent(const CSetClientIDMessage& aMessage) override;
 	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
 	eMessageReturn DoEvent(const COtherPlayerSpawned& aMassage)override;
+	eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage) override;
 private:
 
 	//CChat myChat;

@@ -101,7 +101,7 @@ void CColliderComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerEnter, data);
+	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerEnter, data);
 }
 
 void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
@@ -109,7 +109,7 @@ void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerExit, data);
+	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerExit, data);
 }
 
 void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
@@ -117,7 +117,7 @@ void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionEnter, data);
+	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionEnter, data);
 
 }
 
@@ -126,5 +126,5 @@ void CColliderComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 	void* compPtr = aOther->GetCallbackData()->GetUserData();
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionExit, data);
+	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionExit, data);
 }

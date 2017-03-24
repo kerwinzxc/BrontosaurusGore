@@ -27,7 +27,6 @@ CTempLobbyState::CTempLobbyState(StateStack & aStateStack) : State(aStateStack, 
 , myBlinkeyTimer(0)
 , myBlinkeyState(false)
 , myIsPlayer(false)
-, myStateStatus(eStateStatus::eKeep)
 {
 }
 
@@ -191,7 +190,7 @@ void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 		Back();
 		break;
 	case CU::eKeys::ESCAPE:
-		myStateStatus = eStateStatus::ePop;
+		SetStateStatus(eStateStatus::ePop);
 		break;
 	default: break;
 	}
@@ -368,7 +367,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 		}
 	}
 
-	return myStateStatus;
+	return myStatus;
 }
 
 void CTempLobbyState::Render()

@@ -44,9 +44,6 @@
     <Filter Include="Streaks">
       <UniqueIdentifier>{6cbcd24e-e312-4d34-ab7a-c5354fe70489}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{7c401d84-94f5-420a-ace6-9f10c874bfef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DebugInfoDrawer">
       <UniqueIdentifier>{f377173c-e223-411d-954f-7f439f309cd8}</UniqueIdentifier>
     </Filter>
@@ -70,6 +67,12 @@
     </Filter>
     <Filter Include="Cubemap">
       <UniqueIdentifier>{e071643c-a279-4239-a850-dedb49cbef52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Highlight">
+      <UniqueIdentifier>{9bbe51f8-3f6a-4a80-9007-7bbc7764e75a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{7c401d84-94f5-420a-ace6-9f10c874bfef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -275,8 +278,12 @@
     <ClInclude Include="ParticleRenderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="CascadeShadowMap.h" />
-    <ClInclude Include="CascadeBuffer.h" />
+    <ClInclude Include="C2DGUIRenderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="HighlightComponent.h">
+      <Filter>Highlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -429,7 +436,12 @@
     <ClCompile Include="ParticleRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="CascadeShadowMap.cpp" />
+    <ClCompile Include="C2DGUIRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="HighlightComponent.cpp">
+      <Filter>Highlight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -444,5 +456,8 @@
     <Image Include="..\..\Bin\Sprites\launcher\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

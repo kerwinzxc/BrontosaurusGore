@@ -32,6 +32,7 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* CLDShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/cubicLensDistortion.fx", ShaderType);
 	ID3D11PixelShader* colorGrading = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/colorGrading.fx", ShaderType);
 
+	ID3D11PixelShader* overlay = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/overlay.fx", ShaderType);
 	//Jag är en kommentar också Deferred;
 
 	ID3D11PixelShader* deferredAmbient = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_ambient.fx", ShaderType);
@@ -47,6 +48,7 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* aaShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/antiAliasing.fx", ShaderType);
 
 	ID3D11PixelShader* metaSurfaceShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaSurface.fx", ShaderType);
+	ID3D11PixelShader* alphaBlendShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/alphaBlend.fx", ShaderType);
 
 	myEffects[static_cast<int>(eEffectType::eCopy)]						= new CEffect(vertexShader, cpyShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyR)]					= new CEffect(vertexShader, cpyShaderR, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -76,6 +78,8 @@ CFullScreenHelper::CFullScreenHelper()
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMetaSurface)]				= new CEffect(lShvertexShader, metaSurfaceShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eOverlay)] = new CEffect(lShvertexShader, overlay, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eAlphaBlend)] = new CEffect(lShvertexShader, alphaBlendShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CreateQuad();
 }

@@ -11,6 +11,8 @@
 #include "Lights.h"
 #include "ParticleEmitter.h"
 #include "CascadeBuffer.h"
+#include "Colour.h"
+#include "../GUI/GUIElement.h"
 
 struct ID3D11RenderTargetView;
 
@@ -80,6 +82,9 @@ struct SRenderMessage
 		eRenderDirectionalLight,
 		eRenderPointLight,
 		eRenderSpotLight,
+		eRenderBar,
+		eCreateGuiElement,
+		eRenderToGui,
 	};
 
 	SRenderMessage(const eRenderMessageType aRenderMessageType);
@@ -321,4 +326,32 @@ struct SRenderLineBuffer : SRenderMessage
 {
 	SRenderLineBuffer(const CU::GrowingArray<char, unsigned int, false>& aLineBuffer);
 	CU::GrowingArray<char, unsigned int, false> myLineBuffer;
+};
+
+struct SRenderBarMessage : SRenderMessage
+{
+	SRenderBarMessage(): SRenderMessage(eRenderMessageType::eRenderBar), myCurrentLevel(0) {}
+
+	CU::Vector4f myRect;
+	CU::Colour myFullColour;
+	CU::Colour myEmptyColour;
+	CU::Colour myBackgroundColour;
+	float myCurrentLevel;
+};
+
+struct SCreateOrClearGuiElement : SRenderMessage
+{
+	SCreateOrClearGuiElement(const std::wstring& anElementName, const SGUIElement& aGUIElement, const CU::Vector2ui aPixelSize);
+
+	const std::wstring myElementName;
+	const SGUIElement myGuiElement;
+	const CU::Vector2ui myPixelSize;
+};
+
+struct SRenderToGUI : SRenderMessage
+{
+	SRenderToGUI(const std::wstring& anElementName, SRenderMessage * const aRenderMessage);
+
+	const std::wstring myElementName;
+	SRenderMessage* myRenderMessage;
 };

@@ -43,6 +43,8 @@ public:
 		eAA,
 		eMetaSurface,
 		eSSAO,
+		eOverlay,
+		eAlphaBlend,
 		eSize,
 	};
 

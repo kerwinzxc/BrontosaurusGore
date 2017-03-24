@@ -26,6 +26,8 @@ public:
 	CRenderPackage();
 	~CRenderPackage();
 	void Init(const CU::Vector2ui& aSize, ID3D11Texture2D* aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT_R8G8B8A8_UNORM);
+	void ReInit(const CU::Vector2ui& aSize, ID3D11Texture2D* aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT_R8G8B8A8_UNORM);
+
 	void Clear();
 	void Activate();
 	void Activate(CRenderPackage & aRenderPackage);

@@ -46,11 +46,8 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 	currentMatrix.SetPosition({ positionX, positionY, positionZ });
 	
-
-	const CU::Matrix33f mRotationY = CU::Matrix33f::CreateRotateAroundY(rotationY);
-	const CU::Matrix33f mRotationX = CU::Matrix33f::CreateRotateAroundX(-rotationX) * mRotationY;
-	const CU::Matrix33f mRotationZ = CU::Matrix33f::CreateRotateAroundZ(rotationZ) * mRotationX;
-	currentMatrix.SetRotation(mRotationZ);
+	const CU::Vector3f rotation(rotationX, rotationY, rotationZ);
+	currentMatrix.SetEulerRotation(rotation);
 
 	currentMatrix.Scale({ scaleX, scaleY, scaleZ });
 

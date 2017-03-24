@@ -89,11 +89,12 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 	SMeshColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
 	data.material = someData.myData.at("material").GetVector3f("xyz");
-	data.center = someData.myData.at("center").GetVector3f("xyz");
+	//data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
-	data.myPath = someData.myData.at("path").GetString().c_str();
+	//data.myPath = someData.myData.at("meshPath").GetString().c_str();
+	data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
 	CColliderComponent* component = CreateComponent(data);
 	return component->GetId();

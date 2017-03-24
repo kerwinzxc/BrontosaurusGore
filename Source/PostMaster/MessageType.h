@@ -11,6 +11,7 @@ enum class eMessageType
 	eConsoleCalledUpon,
 	eDroppedFile,
 	eChangeLevel,
+	eQuitGame,
 	eGameEventMessage,
 	eNetworkMessage,
 	ePrint,
@@ -20,6 +21,7 @@ enum class eMessageType
 	eResetToCheckPointMessage,
 	eCreateExplosionMessage,
 	eDeactivateExplosion,
+	eRevivePlayer,
 	eLength,
 };
 

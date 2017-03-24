@@ -68,6 +68,7 @@ namespace CU
 		inline void RemoveAtIndex(const SizeType aIndex);
 		inline void RemoveCyclic(const ObjectType& aObject);
 		inline void RemoveCyclicAtIndex(const SizeType aIndex);
+		inline void RemoveChunk(void* aChunkPointer, const SizeType aByteSize);
 
 		inline void Delete(const ObjectType& aObject);
 		inline void DeleteAtIndex(const SizeType aIndex);
@@ -369,9 +370,9 @@ namespace CU
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 
-		for (ComponentId i = 0; i < anArray.Size(); ++i)
+		for (ComponentId i = 0; i < aArray.Size(); ++i)
 		{
-			Add(anArray[i]);
+			Add(aArray[i]);
 		}
 	}
 
@@ -516,6 +517,23 @@ namespace CU
 		--mySize;
 	}
 
+	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
+	inline void GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::RemoveChunk(void* aChunkPointer, const SizeType aByteSize)
+	{
+		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
+		static_assert(!USE_SAFE_MODE || IsPod<ObjectType>::Result, "Should not add chunk to non-pod array");
+
+		const SizeType numberOfRemoves = aByteSize / sizeof(ObjectType);
+
+		if (myCapacity - numberOfRemoves < 0)
+		{
+			assert(!"Trying to remove more than there is to remove");
+			return;
+		}
+
+		memcpy(aChunkPointer, myArray + mySize - aByteSize, aByteSize);
+		mySize -= numberOfRemoves;
+	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
 	inline SizeType GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Find(const ObjectType& aObject) const

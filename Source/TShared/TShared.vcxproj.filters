@@ -131,6 +131,16 @@
     <ClInclude Include="NetworkMessage_TakeDamage.h" />
     <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
     <ClInclude Include="Networkmessage_PickupArmor.h" />
+    <ClInclude Include="NetworkMessage_TryToShoot.h" />
+    <ClInclude Include="NetworkMessage_OKShoot.h" />
+    <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
+    <ClInclude Include="NetworkMessage_DoorMessage.h" />
+    <ClInclude Include="NetworkMessage_PickupKey.h" />
+    <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
+    <ClInclude Include="NetworkMessage_PlayerDied.h" />
+    <ClInclude Include="NetworkMessage_PlayerRespawned.h" />
+    <ClInclude Include="NetworkMessage_ResetToCheckpoint.h" />
+    <ClInclude Include="NetworkMessage_RevivePlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -189,5 +199,15 @@
     <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
     <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
     <ClCompile Include="Networkmessage_PickupArmor.cpp" />
+    <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
+    <ClCompile Include="NetworkMessage_OKShoot.cpp" />
+    <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
+    <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
+    <ClCompile Include="NetworkMessage_PickupKey.cpp" />
+    <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerDied.cpp" />
+    <ClCompile Include="NetworkMessage_PlayerRespawned.cpp" />
+    <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp" />
+    <ClCompile Include="NetworkMessage_RevivePlayer.cpp" />
   </ItemGroup>
 </Project>

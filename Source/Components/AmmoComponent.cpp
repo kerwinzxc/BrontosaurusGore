@@ -16,6 +16,11 @@ CAmmoComponent::~CAmmoComponent()
 {
 }
 
+bool CAmmoComponent::AmmoIndexValid() const
+{
+	return mySelectedAmmoType != -1 && mySelectedAmmoType < myGeneralAmmoDataList.Size();
+}
+
 void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
@@ -45,19 +50,24 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 		newGeneralAmmoData->currentAmmoAmount = 0;
 		newGeneralAmmoData->ammoTypeData = aMessageData.myAmmoData;
 		myGeneralAmmoDataList.Add(newGeneralAmmoData);
+		mySelectedAmmoType = myGeneralAmmoDataList.Size() - 1;
 		break;
 	}
 	case eComponentMessageType::eGiveAmmo:
 	{
-		ChangeSelectedAmmoType(aMessageData.myAmmoReplenishData->ammoType);
-		if(myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
+		if(AmmoIndexValid() == true)
 		{
-			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
+			ChangeSelectedAmmoType(aMessageData.myAmmoReplenishData->ammoType.c_str());
+			if (myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount > myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo)
+			{
+				myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
+			}
+			else
+			{
+				myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount;
+			}
 		}
-		else
-		{
-			myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount += aMessageData.myAmmoReplenishData->replenishAmount;
-		}
+		
 		break;
 	}
 	default:

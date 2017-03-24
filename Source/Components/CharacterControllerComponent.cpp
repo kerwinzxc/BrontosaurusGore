@@ -62,6 +62,7 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 		myController->SetPosition(aMessageData.myVector3f);
 		break;
 	}
+
 	default:
 		break;
 	}
@@ -70,39 +71,46 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 
 void CCharacterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerEnter, data);
-	DL_PRINT("TriggerEnter");
 
+		void* compPtr = aOther->GetCallbackData()->GetUserData();
+		SComponentMessageData data;
+		data.myComponent = static_cast<CComponent*>(compPtr);
+		GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerEnter, data);
+		DL_PRINT("TriggerEnter");
+	
 }
 
 void CCharacterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnTriggerExit, data);
-	DL_PRINT("TriggerExit");
+
+		void* compPtr = aOther->GetCallbackData()->GetUserData();
+		SComponentMessageData data;
+		data.myComponent = static_cast<CComponent*>(compPtr);
+		GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerExit, data);
+		DL_PRINT("TriggerExit");
+	
+	
 }
 
 void CCharacterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionEnter, data);
-	DL_PRINT("ColEnter");
+
+		void* compPtr = aOther->GetCallbackData()->GetUserData();
+		SComponentMessageData data;
+		data.myComponent = static_cast<CComponent*>(compPtr);
+		GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionEnter, data);
+		DL_PRINT("ColEnter");
+	
 }
 
 void CCharacterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyOnlyComponents(eComponentMessageType::eOnCollisionExit, data);
-	DL_PRINT("ColExit");
 
+		void* compPtr = aOther->GetCallbackData()->GetUserData();
+		SComponentMessageData data;
+		data.myComponent = static_cast<CComponent*>(compPtr);
+		GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionExit, data);
+		DL_PRINT("ColExit");
+	
 }
 

@@ -4,6 +4,7 @@
 #include <atomic>
 #include "../Components/EnemyComponentManager.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../GUI/HUD.h"
 
 namespace CU
 {
@@ -41,6 +42,8 @@ class CCheckPointSystem;
 class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
+class CTextInstance;
+class CDamageOnCollisionComponentManager;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -70,6 +73,7 @@ public:
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CEnemyComponentManager* GetEnemyComponentManager();
 	inline CScriptComponentManager* GetScriptComponentManager();
+	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager();
 
 	inline bool IsLoaded() const;
 
@@ -86,6 +90,7 @@ private:
 
 	CColliderComponentManager* myColliderComponentManager;
 
+	CHUD myHUD;
 
 	CGameObjectManager* myGameObjectManager;
 	CScene* myScene;
@@ -103,6 +108,7 @@ private:
 	CScriptComponentManager* myScriptComponentManager;
 	CExplosionFactory* myExplosionFactory;
 	CExplosionComponentManager* myExplosionComponentManager;
+	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;
@@ -111,6 +117,10 @@ private:
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+
+	//Super temp ta bort när guit börjar ta form
+	CTextInstance* myPlayerHealthText;
+	CTextInstance* myPlayerArmorText;
 
 };
 
@@ -147,4 +157,9 @@ inline CEnemyComponentManager* CPlayState::GetEnemyComponentManager()
 inline CScriptComponentManager* CPlayState::GetScriptComponentManager()
 {
 	return myScriptComponentManager;
+}
+
+inline CDamageOnCollisionComponentManager* CPlayState::GetDamageOnCollisionComponentManager()
+{
+	return myDamageOnCollisionComponentManager;
 }

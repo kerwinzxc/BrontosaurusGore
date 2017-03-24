@@ -2,10 +2,10 @@
 #include "NetworkPlayerReciverComponent.h"
 #include "../CommonUtilities/JsonValue.h"
 
-CNetworkPlayerReciverComponent::CNetworkPlayerReciverComponent()
+CNetworkPlayerReciverComponent::CNetworkPlayerReciverComponent(): myPlayerId(0)
 {
 	CU::CJsonValue playerControls;
-	std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
 	myInterpolationSpeed = playerControls["MaxSpeed"].GetFloat();
 }
 

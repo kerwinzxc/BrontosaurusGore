@@ -10,11 +10,15 @@ public:
 
 	static CPollingStation* GetInstance();
 
-	void SetPlayerObject(const CGameObject* aPlayerObject);
-	const CGameObject* GetPlayerObject();
+	void SetPlayerObject(CGameObject* aPlayerObject);
+	CGameObject* GetPlayerObject();
 
+	void AddKey(const short aKeyId);
+	void ClearKeys();
+	const CU::GrowingArray<short>& GetKeys() const;
 private:
-	const CGameObject* myPlayerObject;
+	CGameObject* myPlayerObject;
+	CU::GrowingArray<short> myKeys;
 
 	static CPollingStation* ourInstance;
 };

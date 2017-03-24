@@ -343,14 +343,19 @@
   <ItemGroup>
     <ClInclude Include="LoadAmmoComponent.h" />
     <ClInclude Include="LoadAmmoPickupComponent.h" />
+    <ClInclude Include="LoadArmorComponent.h" />
     <ClInclude Include="LoadCamera.h" />
     <ClInclude Include="LoadCheckPointComponent.h" />
     <ClInclude Include="LoadCollider.h" />
+    <ClInclude Include="LoadDamageOnCollisionComponent.h" />
+    <ClInclude Include="LoadDoorComponent.h" />
     <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadHealthComponent.h" />
     <ClInclude Include="LoadHealthPackComponent.h" />
+    <ClInclude Include="LoadHighlightComponent.h" />
     <ClInclude Include="LoadInputComponent.h" />
+    <ClInclude Include="LoadKeyPickupComponent.h" />
     <ClInclude Include="LoadManager.h" />
     <ClInclude Include="LoadModel.h" />
     <ClInclude Include="LoadMovementComponent.h" />
@@ -370,14 +375,19 @@
   <ItemGroup>
     <ClCompile Include="LoadAmmoComponent.cpp" />
     <ClCompile Include="LoadAmmoPickupComponent.cpp" />
+    <ClCompile Include="LoadArmorComponent.cpp" />
     <ClCompile Include="LoadCamera.cpp" />
     <ClCompile Include="LoadCheckPointComponent.cpp" />
     <ClCompile Include="LoadCollider.cpp" />
+    <ClCompile Include="LoadDamageOnCollisionComponent.cpp" />
+    <ClCompile Include="LoadDoorComponent.cpp" />
     <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadHealthComponent.cpp" />
     <ClCompile Include="LoadHealthPackComponent.cpp" />
+    <ClCompile Include="LoadHighlightComponent.cpp" />
     <ClCompile Include="LoadInputComponent.cpp" />
+    <ClCompile Include="LoadKeyPickupComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
     <ClCompile Include="LoadModel.cpp" />
     <ClCompile Include="LoadMovementComponent.cpp" />

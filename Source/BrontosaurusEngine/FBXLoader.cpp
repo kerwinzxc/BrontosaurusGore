@@ -337,7 +337,7 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 {
 	if (does_file_exist(aFilePath) == false)
 	{
-		DL_MESSAGE_BOX("fbx file not found: %s", aFilePath);
+		//DL_MESSAGE_BOX("fbx file not found: %s", aFilePath);
 		return false;
 	}
 
@@ -454,8 +454,8 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 {
 	if (does_file_exist(aFilePath) == false)
 	{
-		RESOURCES_LOG("fbx file not found: %s", aFilePath);
-		DL_PRINT_WARNING("fbx file not found: %s", aFilePath);
+		//RESOURCES_LOG("fbx file not found: %s", aFilePath);
+		//DL_PRINT_WARNING("fbx file not found: %s", aFilePath);
 		return false;
 	}
 
@@ -595,11 +595,11 @@ void CFBXLoader::LoadMeshChildren(aiNode* aNode, CU::GrowingArray<aiNode*>& aNod
 		std::string nodeName = aNode->mName.C_Str();
 		if (nodeName.find(animationIdentifier) != std::string::npos)
 		{
-			continue;
+			//continue;
 		}
 		if (nodeName.find(animationIdentifier2) != std::string::npos)
 		{
-			continue;
+			//continue;
 		}
 		LoadMeshChildren(child, aNodesOut);
 	}

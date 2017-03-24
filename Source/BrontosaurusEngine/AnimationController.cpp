@@ -2,6 +2,35 @@
 
 #include "AnimationController.h"
 
+#include "../CommonUtilities/SerializerSaver.h"
+#include "../CommonUtilities/SerializerLoader.h"
+
+class CAnimationSerializerSaver : public CU::CSerilizerSaver
+{
+public:
+	void Cerealize(CU::Matrix44f& aMatrix44f) override
+	{
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myRightVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myUpVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myForwardVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myPosition);
+	}
+
+};
+
+class CAnimationSerializerLoader : public CU::CSerializerLoader
+{
+public:
+	void Cerealize(CU::Matrix44f& aMatrix44f) override
+	{
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myRightVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myUpVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myForwardVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myPosition);
+	}
+};
+
+
 void TransformMatrix(mat4& out,const aiMatrix4x4& in){// there is some type of alignment issue with my mat4 and the aimatrix4x4 class, so the copy must be manually
 	out.m11=in.a1;
 	out.m12=in.a2;
@@ -27,7 +56,7 @@ void TransformMatrix(mat4& out,const aiMatrix4x4& in){// there is some type of a
 // Constructor on a given animation. 
 CAnimEvaluator::CAnimEvaluator( const aiAnimation* pAnim) {
 	PlayAnimationForward = true;
-	mLastTime = 0.0;
+	mLastTime = 0.0f;
 	TicksPerSecond = static_cast<float>(pAnim->mTicksPerSecond != 0.0f ? pAnim->mTicksPerSecond : 100.0f);
 	Duration = static_cast<float>(pAnim->mDuration);
 	Name = pAnim->mName.data;
@@ -197,6 +226,208 @@ void CSceneAnimator::Release(){// this should clean everything up
 	Animations.clear();// clear all animations
 	delete Skeleton;// This node will delete all children recursivly
 	Skeleton = NULL;// make sure to zero it out
+}
+
+bool CSceneAnimator::CarlSave(const std::string& aFilePath)
+{
+	CU::CSerilizerSaver saver(131072); //we probably need about 100 kB here
+
+	if (Skeleton)
+	{
+		CarlSaveRecursive(*Skeleton, saver);
+	}
+
+
+
+	assert(Animations.size() == 1 && "Carl fucked this up");
+
+	CAnimEvaluator& evaluator = Animations[0];
+	saver.Cerealize(evaluator.Name);
+	saver.Cerealize(evaluator.TicksPerSecond);
+	saver.Cerealize(evaluator.Duration);
+
+	unsigned int channelCount = static_cast<unsigned int>(evaluator.Channels.size());
+	saver.Cerealize(channelCount);
+	for (CAnimationChannel& channel : evaluator.Channels)
+	{
+		saver.Cerealize(channel.Name);
+
+		unsigned int positionKeyCount = static_cast<unsigned int>(channel.mPositionKeys.size());
+		saver.Cerealize(positionKeyCount);
+		for (unsigned int i = 0; i < positionKeyCount; ++i)
+		{
+			saver.Cerealize(channel.mPositionKeys[i].mTime);
+			CU::Vector3f value(channel.mPositionKeys[i].mValue.x, channel.mPositionKeys[i].mValue.y, channel.mPositionKeys[i].mValue.z);
+			saver.Cerealize(value);
+		}
+
+		unsigned int rotationKeyCount = static_cast<unsigned int>(channel.mRotationKeys.size());
+		saver.Cerealize(rotationKeyCount);
+		for (unsigned int i = 0; i < rotationKeyCount; ++i)
+		{
+			saver.Cerealize(channel.mRotationKeys[i].mTime);
+			CU::Vector4f value(channel.mRotationKeys[i].mValue.x, channel.mRotationKeys[i].mValue.y, channel.mRotationKeys[i].mValue.z, channel.mRotationKeys[i].mValue.w);
+			saver.Cerealize(value);
+		}
+
+		unsigned int scalingKeyCount = static_cast<unsigned int>(channel.mScalingKeys.size());
+		saver.Cerealize(scalingKeyCount);
+		for (unsigned int i = 0; i < scalingKeyCount; ++i)
+		{
+			saver.Cerealize(channel.mScalingKeys[i].mTime);
+			CU::Vector3f value(channel.mScalingKeys[i].mValue.x, channel.mScalingKeys[i].mValue.y, channel.mScalingKeys[i].mValue.z);
+			saver.Cerealize(value);
+		}
+	}
+
+	unsigned int transformCount = static_cast<unsigned int>(evaluator.Transforms.size());
+	saver.Cerealize(transformCount);
+	for (unsigned int i = 0; i < transformCount; ++i)
+	{
+		unsigned int transformCountCount = static_cast<unsigned int>(evaluator.Transforms[i].size());
+		saver.Cerealize(transformCountCount);
+		for (unsigned int j = 0; j < transformCountCount; ++j)
+		{
+			saver.Cerealize(evaluator.Transforms[i][j]);
+		}
+	}
+
+	saver.WriteFile(saver.GetBuffer(), aFilePath);
+
+	return true;
+}
+
+bool CSceneAnimator::CarlSaveRecursive(CBone& aChild, CU::CSerilizerSaver& aSaver)
+{
+	aSaver.Cerealize(aChild.Name);
+	aSaver.Cerealize(aChild.Offset);
+	aSaver.Cerealize(aChild.LocalTransform);
+	aSaver.Cerealize(aChild.GlobalTransform);
+	//aSaver.Cerealize(aChild.OriginalLocalTransform);
+	unsigned int childCount = static_cast<unsigned int>(aChild.Children.size());
+	aSaver.Cerealize(childCount);
+
+	for (CBone* child : aChild.Children)
+	{
+		if (child)
+		{
+			CarlSaveRecursive(*child, aSaver);
+		}
+	}
+
+	return true;
+}
+
+bool CSceneAnimator::CarlLoad(const std::string& aFilePath)
+{
+	CU::CSerializerLoader loader(CU::ISerializer::ReadFile(aFilePath));
+
+	Skeleton = new CBone();
+	CarlLoadRecursive(*Skeleton, loader);
+
+	Animations.resize(1);
+	CAnimEvaluator& evaluator = Animations[0];
+	loader.Cerealize(evaluator.Name);
+	loader.Cerealize(evaluator.TicksPerSecond);
+	loader.Cerealize(evaluator.Duration);
+
+	evaluator.mLastTime = 0.f;
+	AnimationNameToId[evaluator.Name] = 0;
+
+	unsigned int channelCount = 0;// static_cast<unsigned int>(evaluator.Channels.size());
+	loader.Cerealize(channelCount);
+	if (channelCount <= 0)
+	{
+		SAFE_DELETE(Skeleton);
+		return false;
+	}
+
+	evaluator.Channels.resize(channelCount);
+	for (CAnimationChannel& channel : evaluator.Channels)
+	{
+		loader.Cerealize(channel.Name);
+
+		unsigned int positionKeyCount = 0;// static_cast<unsigned int>(channel.mPositionKeys.size());
+		loader.Cerealize(positionKeyCount);
+		channel.mPositionKeys.resize(positionKeyCount);
+		for (unsigned int i = 0; i < positionKeyCount; ++i)
+		{
+			loader.Cerealize(channel.mPositionKeys[i].mTime);
+			CU::Vector3f value;
+			loader.Cerealize(value);
+			channel.mPositionKeys[i].mValue.Set(value.x, value.y, value.z);
+		}
+
+		unsigned int rotationKeyCount = 0;// static_cast<unsigned int>(channel.mRotationKeys.size());
+		loader.Cerealize(rotationKeyCount);
+		channel.mRotationKeys.resize(rotationKeyCount);
+		for (unsigned int i = 0; i < rotationKeyCount; ++i)
+		{
+			loader.Cerealize(channel.mRotationKeys[i].mTime);
+			CU::Vector4f value;// (channel.mRotationKeys[i].mValue.x, channel.mRotationKeys[i].mValue.y, channel.mRotationKeys[i].mValue.z, channel.mRotationKeys[i].mValue.w);
+			loader.Cerealize(value);
+			channel.mRotationKeys[i].mValue = aiQuaternion(value.x, value.y, value.z, value.w);
+		}
+
+		unsigned int scalingKeyCount = 0;// static_cast<unsigned int>(channel.mScalingKeys.size());
+		loader.Cerealize(scalingKeyCount);
+		channel.mScalingKeys.resize(scalingKeyCount);
+		for (unsigned int i = 0; i < scalingKeyCount; ++i)
+		{
+			loader.Cerealize(channel.mScalingKeys[i].mTime);
+			CU::Vector3f value;// (channel.mScalingKeys[i].mValue.x, channel.mScalingKeys[i].mValue.y, channel.mScalingKeys[i].mValue.z);
+			loader.Cerealize(value);
+			channel.mScalingKeys[i].mValue.Set(value.x, value.y, value.z);
+		}
+	}
+
+	unsigned int transformCount = 0;// static_cast<unsigned int>(evaluator.Transforms.size());
+	loader.Cerealize(transformCount);
+	evaluator.Transforms.resize(transformCount);
+	for (unsigned int i = 0; i < transformCount; ++i)
+	{
+		unsigned int transformCountCount = 0;// static_cast<unsigned int>(evaluator.Transforms[i].size());
+		loader.Cerealize(transformCountCount);
+		evaluator.Transforms[i].resize(transformCountCount);
+		for (unsigned int j = 0; j < transformCountCount; ++j)
+		{
+			loader.Cerealize(evaluator.Transforms[i][j]);
+		}
+	}
+
+	evaluator.PlayAnimationForward = true;
+	evaluator.mLastPositions.resize(channelCount, std::make_tuple(0, 0, 0));
+
+	CurrentAnimIndex = 0;
+
+	return true;
+}
+
+bool CSceneAnimator::CarlLoadRecursive(CBone& aChild, CU::CSerializerLoader& aLoader)
+{
+	aLoader.Cerealize(aChild.Name);
+	aLoader.Cerealize(aChild.Offset);
+	aLoader.Cerealize(aChild.LocalTransform);
+	aLoader.Cerealize(aChild.GlobalTransform);
+	//aLoader.Cerealize(aChild.OriginalLocalTransform);
+	aChild.OriginalLocalTransform = aChild.LocalTransform;
+
+	BonesByName[aChild.Name] = &aChild;// use the name as a key
+
+	unsigned int childCount = 0;
+	aLoader.Cerealize(childCount);
+	if (childCount > 0)
+	{
+		aChild.Children.resize(childCount);
+		for (size_t i = 0; i < childCount; ++i)
+		{
+			aChild.Children[i] = new CBone();
+			aChild.Children[i]->Parent = &aChild;
+			CarlLoadRecursive(*aChild.Children[i], aLoader);
+		}
+	}
+
+	return true;
 }
 
 // this will build the skeleton based on the scene passed to it and CLEAR EVERYTHING

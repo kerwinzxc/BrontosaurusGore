@@ -16,14 +16,24 @@ CParticleEmitterComponent::~CParticleEmitterComponent()
 }
 
 void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
-{	
+{
+	if (!GetParent())
+	{
+		return;
+	}
 	myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
 	myParticleInstance->Update(aDeltaTime);
 }
 
 void CParticleEmitterComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
-
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eActivateEmitter:
+		Activate();
+		break;
+	default: break;
+	}
 }
 
 void CParticleEmitterComponent::Destroy()

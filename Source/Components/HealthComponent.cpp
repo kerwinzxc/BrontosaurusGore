@@ -85,6 +85,27 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 		break;
 	}
 }
+bool CHealthComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eGetHealth:
+		aQuestionData.myInt = myCurrentHealth;
+		break;
+	case eComponentQuestionType::eGetMaxHealth:
+		aQuestionData.myInt = myMaxHeath;
+		break;
+	case eComponentQuestionType::eGetArmor:
+		aQuestionData.myInt = myArmor;
+		break;
+	case eComponentQuestionType::eGetMaxArmor:
+		aQuestionData.myInt = myMaxArmor;
+		break;
+	default:
+		break;
+	}
+	return false;
+}
 void CHealthComponent::Destroy()
 {
 

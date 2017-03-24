@@ -78,6 +78,11 @@ namespace Physics
 		return myPhysics;
 	}
 
+	physx::PxCooking& CFoundation::GetCooking()
+	{
+		return *myCooking;
+	}
+
 	void CFoundation::InitializeFoundation()
 	{
 		PHYSICS_LOG("Initializing PhysX\n");

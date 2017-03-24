@@ -1,59 +1,67 @@
 #pragma once
 #include "Component.h"
+#include "EnemyBlueprint.h"
+
+class CGameObject;
 
 namespace Component
 {
 	class CEnemy : public CComponent
 	{
 	public:
-		CEnemy(unsigned int anId);
+		CEnemy(unsigned int aId);
 		~CEnemy();
-		void SetHealth(const unsigned aHealth);
-		void SetSpeed(const float aSpeed);
-		void SetDetectionRange(const float aDetactionRange);
-		void SetStartAttackRange(const float aStartAttackRange);
-		void SetStopAttackRange(const float aStopAttackRange);
 
-		void Move(const CU::Vector3f& aDispl);
+		inline void SetEnemyData(const SEnemyBlueprint& aData);
+		static void SetPlayerObject(CGameObject* aPlayerObj);
+
+		void Attack();
 		void Update(const CU::Time& aDeltaTime);
-
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
-		static void SetPlayer(CGameObject* playerObject);
-	protected:
+	private:
 		CU::Vector3f ClosestPlayerPosition();
-		static CU::GrowingArray<CGameObject*> myPlayerObject;
-		unsigned myHealth;
+		void UpdateTransformation();
+		void MoveForward(const float aMovAmount);
+
+		inline bool WithinDetectionRange(const float aDist);
+		inline bool WithinAttackRange(const float aDist);
+		inline bool OutsideAttackRange(const float aDist);
+
+	protected:
+		static CU::GrowingArray<CGameObject*> ourPlayerObjects;
+		unsigned int myServerId;
+
+		unsigned int myHealth;
 		float mySpeed;
 		float myDetectionRange2;
 		float myStartAttackRange2;
 		float myStopAttackRange2;
+
 		bool myIsDead;
-		unsigned myServerId;
+		bool myIsAttacking;
 	};
 }
 
-inline void Component::CEnemy::SetHealth(const unsigned aHealth)
+inline void Component::CEnemy::SetEnemyData(const SEnemyBlueprint& aData)
 {
-	myHealth = aHealth;
+	mySpeed = aData.speed;
+	myDetectionRange2 = aData.detectionRange * aData.detectionRange;
+	myStartAttackRange2 = aData.startAttackRange * aData.startAttackRange;
+	myStopAttackRange2 = aData.stopAttackRange * aData.stopAttackRange;
 }
 
-inline void Component::CEnemy::SetSpeed(const float aSpeed)
+inline bool  Component::CEnemy::WithinDetectionRange(const float aDist)
 {
-	mySpeed = aSpeed *100 ;
+	return aDist < myDetectionRange2;
 }
 
-inline void Component::CEnemy::SetDetectionRange(const float aDetactionRange)
+inline bool  Component::CEnemy::WithinAttackRange(const float aDist)
 {
-	myDetectionRange2 = aDetactionRange * aDetactionRange;
+	return aDist < myStartAttackRange2;
 }
 
-inline void Component::CEnemy::SetStartAttackRange(const float aStartAttackRange)
+inline bool  Component::CEnemy::OutsideAttackRange(const float aDist)
 {
-	myStartAttackRange2 = aStartAttackRange  * aStartAttackRange;
-}
-
-inline void Component::CEnemy::SetStopAttackRange(const float aStopAttackRange)
-{
-	myStopAttackRange2 = aStopAttackRange * aStopAttackRange;
+	return aDist > myStopAttackRange2;
 }

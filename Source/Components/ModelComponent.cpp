@@ -3,6 +3,7 @@
 #include "AnimationComponent.h"
 
 #include "../BrontosaurusEngine/ModelInstance.h"
+#include "HighlightComponent.h"
 
 CModelComponent::CModelComponent(CModelInstance& aModel)
 	: myModel(aModel)
@@ -49,8 +50,22 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	switch (aType)
 	{
 	case eComponentMessageType::eAddComponent:
-		//if (aData.myComponentTypeAdded != eComponentType::eModel) break;
-		//CreateAnimationComponent();
+		if (aData.myComponentTypeAdded == eComponentType::eModel)
+		{
+			CreateAnimationComponent();
+		}
+		else if(aData.myComponentTypeAdded == eComponentType::eArmorPickup || 
+			aData.myComponentTypeAdded == eComponentType::eAmmoPickup || 
+			aData.myComponentTypeAdded == eComponentType::eHealthPickupComponent)
+		{
+			myModel.SetHighlight(CU::Vector4f(0, 1, 0, 1), .75f);
+		}
+		else if(aData.myComponentTypeAdded == eComponentType::eHighlightComponent)
+		{
+			CHighlightComponent* component = static_cast<CHighlightComponent*>(aData.myComponent);
+
+			myModel.SetHighlight(component->GetColor(), component->GetIntensity());
+		}
 	case eComponentMessageType::eMoving:
 		myModel.SetTransformation(GetToWorldTransform());
 		break;

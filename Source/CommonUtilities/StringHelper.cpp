@@ -39,6 +39,18 @@ namespace CU
 		return aStringToClean;
 	}
 
+	std::string& FindAndReplace(std::string& aStringToClean, const std::string& aSubStringToErase, const std::string& aSubStringToReplaceWith)
+	{
+		size_t pos = aStringToClean.find(aSubStringToErase);
+		if (pos != std::string::npos)
+		{
+			aStringToClean.erase(pos, aSubStringToErase.size());
+			aStringToClean.insert(pos, aSubStringToReplaceWith);
+		}
+
+		return aStringToClean;
+	}
+
 	std::string& ToLowerCase(std::string& aString)
 	{
 		std::transform(aString.begin(), aString.end(), aString.begin(), ::tolower);

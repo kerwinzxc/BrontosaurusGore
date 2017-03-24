@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "IPickupComponent.h"
 #include "PollingStation.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 IPickupComponent::IPickupComponent()
 {
@@ -12,13 +14,20 @@ IPickupComponent::~IPickupComponent()
 {
 }
 
+void IPickupComponent::ReInit()
+{
+	SetActive(true);
+}
+
 void IPickupComponent::SetActive(const bool aFlag)
 {
-	myHasBeenPickedUp = aFlag;
-
-	SComponentMessageData data;
-	data.myBool = aFlag;
-	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+	myHasBeenPickedUp = !aFlag;
+	if (GetParent() != nullptr)
+	{
+		SComponentMessageData data;
+		data.myBool = aFlag;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+	}
 }
 
 void IPickupComponent::SetNetworkId(const int aID)
@@ -42,12 +51,25 @@ void IPickupComponent::Receive(const eComponentMessageType aMessageType, const S
 			{
 				IPickupComponent::DoMyEffect();
 				DoMyEffect();
+				if (GetShouldReset() == true)
+				{
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+				}
 			}
 		}
+		break;
+
+	case eComponentMessageType::eCheckPointReset:
+		ReInit();
 		break;
 	default:
 		break;
 	}
+}
+
+const bool IPickupComponent::GetShouldReset() const
+{
+	return true;
 }
 
 const bool IPickupComponent::GetIsActive() const
