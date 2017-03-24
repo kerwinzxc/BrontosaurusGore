@@ -21,6 +21,7 @@ enum class eMessageType
 	eResetToCheckPointMessage,
 	eCreateExplosionMessage,
 	eDeactivateExplosion,
+	eRevivePlayer,
 	eLength,
 };
 

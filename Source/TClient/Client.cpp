@@ -63,6 +63,7 @@
 #include "../Components/CheckPointComponent.h"
 
 #include "../Components/NetworkPlayerReciverComponent.h"
+#include "../ThreadedPostmaster/RevivePlayerMessage.h"
 
 #include "../Game/PollingStation.h"
 
@@ -388,7 +389,7 @@ void CClient::Update()
 			break;
 			case ePackageType::eRevivePlayer:
 			{
-				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CRevivePlayerMessage());
 			}
 			break;
 			case ePackageType::eZero:

@@ -28,6 +28,7 @@ class CSetAsNewCheckPointMessage;
 class CResetToCheckPointMessage;
 class CCreateExplosionMessage;
 class CDeactivateExplosionMessage;
+class CRevivePlayerMessage;
 
 namespace Postmaster
 {
@@ -68,5 +69,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CResetToCheckPointMessage & aResetToCheckPointMessage);
 		virtual eMessageReturn DoEvent(const CCreateExplosionMessage & aCreateExplosionMessage);
 		virtual eMessageReturn DoEvent(const CDeactivateExplosionMessage & aDeactivateExplosionMessage);
+		virtual eMessageReturn DoEvent(const CRevivePlayerMessage & aRevivePlayerMessage);
 	};
 }

@@ -3,12 +3,14 @@
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
+#include "PollingStation.h"
 
 CCheckPointSystem::CCheckPointSystem()
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddToCheckPointRespawn);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eRevivePlayer);
 	myObjectsToReset.Init(50);
 }
 
@@ -45,5 +47,13 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
 	}
 	myObjectsToReset.RemoveAll();
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CCheckPointSystem::DoEvent(const CRevivePlayerMessage& aRevivePlayerMessage)
+{
+	SComponentMessageData respawnData;
+	respawnData.myVector3f = myRespawnPlayerPosition;
+	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
 	return eMessageReturn::eContinue;
 }

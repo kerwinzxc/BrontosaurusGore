@@ -146,3 +146,8 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CDeactivateExplosionMessag
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aRevivePlayerMessage)
+{
+	return eMessageReturn::eContinue;
+}

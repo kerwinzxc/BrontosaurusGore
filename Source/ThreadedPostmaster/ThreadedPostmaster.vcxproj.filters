@@ -80,6 +80,9 @@
     <Filter Include="Message\DeactivateExplosion">
       <UniqueIdentifier>{d373eb8f-6798-4d50-8329-bbd1593ba2a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message\RevivePlayer">
+      <UniqueIdentifier>{022e27d4-a8b4-41a1-b506-100d8c355f09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Postmaster.cpp">
@@ -136,6 +139,7 @@
     <ClCompile Include="DeactivateExplosionMessage.cpp">
       <Filter>Message\DeactivateExplosion</Filter>
     </ClCompile>
+    <ClCompile Include="RevivePlayerMessage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -201,5 +205,6 @@
     <ClInclude Include="DeactivateExplosionMessage.h">
       <Filter>Message\DeactivateExplosion</Filter>
     </ClInclude>
+    <ClInclude Include="RevivePlayerMessage.h" />
   </ItemGroup>
 </Project>
