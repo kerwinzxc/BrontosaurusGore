@@ -9,6 +9,7 @@ namespace CU
 	Camera::Camera()
 	//	: Camera(0.f, 0.f, 0.f, 0.f, 0.f)
 	{
+		myFOV = 0.0f;
 	}
 
 	Camera::Camera(
@@ -39,6 +40,7 @@ namespace CU
 		myTransformation = Matrix44f::Identity;
 		myFar = aFar;
 		myNear = aNear;
+		myFOV = aFov;
 
 		myWidth = aProjectionWidth;
 		myHeight = aProjectionHeight;
@@ -92,6 +94,13 @@ namespace CU
 
 		myWidth = aProjectionWidth;
 		myHeight = aProjectionHeight;
+	}
+
+	void Camera::ReInit(const CU::Matrix44f& aProjection, const CU::Matrix44f& aTransformation)
+	{
+		myProjection = aProjection;
+		myTransformation = aTransformation;
+		myProjectionInverse = aProjection.GetInverted();
 	}
 
 	Matrix44f Camera::GetInverse() const
