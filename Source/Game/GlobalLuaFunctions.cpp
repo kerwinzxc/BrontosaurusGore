@@ -466,6 +466,14 @@ SSlua::ArgumentList SetUserData(const SSlua::ArgumentList& aArgumentList)
 	RETURN_VOID();
 }
 
+#include "../BrontosaurusEngine/Engine.h"
+SSlua::ArgumentList Quit(const SSlua::ArgumentList& aArgumentList)
+{
+	CEngine::GetInstance()->Shutdown();
+
+	RETURN_VOID();
+}
+
 SSlua::ArgumentList LuaAssert(const SSlua::ArgumentList& aArgumentList)
 {
 	std::string errorMessage;

@@ -10,6 +10,7 @@ CHealthPickupComponent::CHealthPickupComponent()
 {
 	myRestoreAmount = 0;
 	myHasBeenPickedUp = false;
+	myType = eComponentType::eHealthPickupComponent;
 }
 
 

@@ -422,8 +422,8 @@ void CDeferredRenderer::DoHighlight(CFullScreenHelper& aFullscreenHelper, CRende
 	myGbuffer.highLight.Activate();
 
 	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eGaussianBlurHorizontal, &myGbuffer.highLight);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eGaussianBlurVertical, &myGbuffer.highLight);
-*/
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eGaussianBlurVertical, &myGbuffer.highLight);*/
+
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eOverlay;

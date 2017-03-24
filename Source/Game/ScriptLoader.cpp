@@ -26,6 +26,7 @@ void ScriptLoader::RegisterLuaFunctions(SSlua::LuaWrapper& aLuaWrapper)
 	aLuaWrapper.RegisterFunction(IsPlayer, "IsPlayer", "Takes a component id as argument, returns true if it is the player, false if it is not", true);
 	aLuaWrapper.RegisterFunction(LuaAssert, "Assert", "Arguments: bool, string (order doesn't matter). If bool is false, crashes the game and shows error message.\nDoes not crash in retail. If only string is provided, it crashes", false);
 	aLuaWrapper.RegisterFunction(SetUserData, "SetUserData", "First argument (string): the key you want to set, second argument (any type): the value to set it to", false);
+	aLuaWrapper.RegisterFunction(Quit, "QuitGame", "First argument (string): the key you want to set, second argument (any type): the value to set it to", false);
 
 	aLuaWrapper.DoString("data = {}; data[0] = {}");
 

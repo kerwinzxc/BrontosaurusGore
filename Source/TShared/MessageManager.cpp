@@ -23,6 +23,9 @@
 #include "NetworkMessage_TryToShoot.h"
 #include "NetworkMessage_DoorMessage.h"
 #include "NetworkMessage_SetCheckpointMessage.h"
+#include "NetworkMessage_PlayerDied.h"
+#include "NetworkMessage_PlayerRespawned.h"
+#include "NetworkMessage_ResetToCheckpoint.h"
 
 CMessageManager::CMessageManager()
 {
@@ -94,6 +97,12 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_DoorMessage>(aHeader);
 	case ePackageType::eSetCheckpointMessage:
 		return CreateMessage<CNetworkMessage_SetCheckpointMessage>(aHeader);
+	case ePackageType::ePlayerRespawned:
+		return CreateMessage<CNetworkMessage_PlayerRespawned>(aHeader);
+	case ePackageType::ePlayerDied:
+		return CreateMessage<CNetworkMessage_PlayerDied>(aHeader);
+	case ePackageType::eResetToCheckpoint:
+		return CreateMessage<CNetworkMessage_ResetToCheckpoint>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

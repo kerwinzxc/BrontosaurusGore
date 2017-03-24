@@ -7,6 +7,7 @@
 #include "..\TClient\ClientMessageManager.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../Game/PollingStation.h"
 
 
 CDoorComponent::CDoorComponent()
@@ -144,7 +145,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 			}
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
-		if (aMessageData.myGameObject != GetParent())
+		if (aMessageData.myGameObject == CPollingStation::GetInstance()->GetPlayerObject())
 		{
 			if (myIsLocked == false)
 			{
