@@ -381,6 +381,8 @@
   <ItemGroup>
     <ClInclude Include="Allignment.h" />
     <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="CascadeBuffer.h" />
+    <ClInclude Include="CascadeShadowMap.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="LightModel.h" />
@@ -460,6 +462,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="CascadeShadowMap.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="LightModel.cpp" />
@@ -542,9 +545,6 @@
     <ProjectReference Include="..\FontEngine\FontEngine.vcxproj">
       <Project>{f9f6b9b2-70ed-419e-b66f-e4214036a7dc}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

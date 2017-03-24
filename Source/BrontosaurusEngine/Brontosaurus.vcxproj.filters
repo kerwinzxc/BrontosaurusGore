@@ -275,6 +275,8 @@
     <ClInclude Include="ParticleRenderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="CascadeShadowMap.h" />
+    <ClInclude Include="CascadeBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -427,6 +429,7 @@
     <ClCompile Include="ParticleRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="CascadeShadowMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -441,8 +444,5 @@
     <Image Include="..\..\Bin\Sprites\launcher\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
