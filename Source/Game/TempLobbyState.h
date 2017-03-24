@@ -49,7 +49,7 @@ private:
 	CTextInstance myTextINstance;
 	
 	eLobbyState myLobbyState;
-	eStateStatus myStateStatus;
+	//eStateStatus myStateStatus;
 
 	unsigned char myCurrentLine;
 
