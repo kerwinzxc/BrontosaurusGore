@@ -19,6 +19,7 @@ class CLoaderMesh;
 class CSceneAnimator;
 class CModelInstance;
 class CModelLoader;
+class CPointLightInstance;
 
 namespace Lights
 {
@@ -31,9 +32,6 @@ namespace CU
 	class Camera;
 }
 
-
-class CPointLightInstance;
-
 struct SLodData
 {
 	SLodData() { myLodLevel = myIndexCount = myVertexCount = 0; myVertexBuffer = myIndexBuffer = nullptr; }
@@ -44,11 +42,8 @@ struct SLodData
 									  
 	int myLodLevel;		
 	unsigned int myVertexCount;		  
-	unsigned int myIndexCount;		  
-
-
+	unsigned int myIndexCount;
 };
-
 
 class CModel
 {
@@ -63,9 +58,6 @@ public:
 		ePixel,
 		eLength
 	};
-
-
-
 
 	CModel();
 	CModel(const CModel& aCopy);
@@ -151,7 +143,6 @@ private:
 	ID3D11Buffer* myBoneBuffer;
 
 	static const unsigned int ourMaxBoneBufferSize = 32u * sizeof(CU::Matrix44f);
-
 	const struct aiScene* myScene;
 
 	std::atomic_bool myIsInitialized;
