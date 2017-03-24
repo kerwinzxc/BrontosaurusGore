@@ -21,7 +21,7 @@ public:
 	inline CRenderPackage& GetRenderPackage();
 	inline bool GetIsShadowCamera() const;
 
-
+	void SetViewport(const CU::Vector4f& aRect);
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void Render();
 
