@@ -78,7 +78,7 @@
 #include "ColliderComponentManager.h"
 #include "BoxColliderComponent.h"
 #include "Physics/PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "../Components/ParticleEmitterComponentManager.h"
 #include "EnemyClientRepresentationManager.h"
 
@@ -186,7 +186,8 @@ void CPlayState::Load()
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
-	
+
+
 	myWeaponFactory->LoadWeapons();
 
 
@@ -443,7 +444,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
 		controllerDesc.halfHeight = 1.0f;
-		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		controllerDesc.slopeLimit = 45.0f;
+		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
 		playerHealthComponent->SetMaxHealth(10);
