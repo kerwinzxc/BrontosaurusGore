@@ -8,7 +8,7 @@
 #include <GameObject.h>
 #include "RigidBodyComponent.h"
 #include "Physics\PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 
 CGameObject* GetCurrentObject()
 {
@@ -127,7 +127,7 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 	
-	CCharcterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
 	return component->GetId();
 }
 
