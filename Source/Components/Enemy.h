@@ -32,7 +32,6 @@ namespace Component
 		static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 		unsigned int myServerId;
 
-		unsigned int myHealth;
 		float mySpeed;
 		float myDetectionRange2;
 		float myStartAttackRange2;

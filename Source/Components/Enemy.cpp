@@ -8,7 +8,7 @@
 
 CU::GrowingArray<CGameObject*> Component::CEnemy::ourPlayerObjects;
 
-Component::CEnemy::CEnemy(unsigned int aId): myHealth(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
+Component::CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
 {
 	myIsDead = false;
 	myServerId = aId;
