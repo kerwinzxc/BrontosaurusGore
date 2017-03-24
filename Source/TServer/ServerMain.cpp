@@ -41,7 +41,7 @@
 #include "../TShared/NetworkMessage_PlayerDied.h"
 #include "../TShared/NetworkMessage_PlayerRespawned.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
-#include "Physics/PhysXHelper.h"
+#include "../Physics/PhysXHelper.h"
 
 std::thread* locLoadingThread = nullptr;
 
