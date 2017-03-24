@@ -73,6 +73,7 @@
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 	CClientMessageManager::CreateInstance(*this);
 
 	myIsRunning = false;
@@ -251,6 +252,7 @@ void CClient::Update()
 			break;
 			case ePackageType::eLoadLevel:
 			{
+				myNetworkRecieverComonents.clear();
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
 
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
@@ -498,4 +500,10 @@ eMessageReturn CClient::DoEvent(const COtherPlayerSpawned& aMassage)
 {
 	myNetworkRecieverComonents[aMassage.GetComponent()->GetPlayerID()] = aMassage.GetComponent();
 	return eMessageReturn::eStop;
+}
+
+eMessageReturn CClient::DoEvent(const CChangeLevel& aChangeLevelMessage)
+{
+	myNetworkRecieverComonents.clear();
+	return eMessageReturn::eContinue;
 }
