@@ -150,7 +150,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eSelectWeapon:
 	{
-		myActiveWeaponIndex = aMessageData.myInt;
+		ChangeWeapon(aMessageData.myInt);
 		break;
 	}
 	case eComponentMessageType::eDied:
@@ -223,6 +223,22 @@ void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMess
 	{
 		myIsShooting = true;
 	}
+	else if(aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon1)
+	{
+		ChangeWeapon(0);
+	}
+	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon2)
+	{
+		ChangeWeapon(1);
+	}
+	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon3)
+	{
+		ChangeWeapon(2);
+	}
+	else if (aMessageData.myPlayerControl == ePlayerControls::eChangeWeapon4)
+	{
+		ChangeWeapon(3);
+	}
 }
 
 void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMessageData)
@@ -242,4 +258,18 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 {
 	myWeapons.Add(aWeapon);
 	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
+}
+
+void CWeaponSystemComponent::ChangeWeapon(unsigned int aIndex)
+{
+	if(aIndex >= 0 && aIndex < myWeapons.Size())
+	{
+		if (myIsActive == true)
+		{
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
+			myActiveWeaponIndex = aIndex;
+			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+
+		}
+	}
 }

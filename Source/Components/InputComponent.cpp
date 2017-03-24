@@ -45,6 +45,10 @@ CInputComponent::CInputComponent()
 	myControlMap[INTIFY(ePlayerControls::eDecreseSpeed)] = GetInputButton(CU::eKeys::SLASH);
 
 	myControlMap[INTIFY(ePlayerControls::eIncreaseSpeed)] = GetInputButton(CU::eKeys::MINUS);
+	myControlMap[INTIFY(ePlayerControls::eChangeWeapon1)] = GetInputButton(CU::eKeys::ONE);
+	myControlMap[INTIFY(ePlayerControls::eChangeWeapon2)] = GetInputButton(CU::eKeys::TWO);
+	myControlMap[INTIFY(ePlayerControls::eChangeWeapon3)] = GetInputButton(CU::eKeys::THREE);
+	myControlMap[INTIFY(ePlayerControls::eChangeWeapon4)] = GetInputButton(CU::eKeys::FOUR);
 }
 
 CInputComponent::~CInputComponent()
