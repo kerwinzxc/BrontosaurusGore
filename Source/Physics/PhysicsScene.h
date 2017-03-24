@@ -1,4 +1,5 @@
 #pragma once
+#include "Collection.h"
 
 namespace physx
 {

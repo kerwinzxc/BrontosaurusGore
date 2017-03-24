@@ -12,6 +12,7 @@
 #include "..\Physics\PhysicsCharacterController.h"
 #include "CharcterControllerComponent.h"
 #include "..\Physics\CollisionLayers.h"
+#include "../Physics/Collection.h"
 
 
 CColliderComponentManager::CColliderComponentManager()

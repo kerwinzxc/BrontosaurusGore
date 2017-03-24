@@ -1088,6 +1088,9 @@
       <Filter>stdafx</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsCallbackActor.h" />
+    <ClInclude Include="Collection.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1123,6 +1126,7 @@
     <ClCompile Include="CharacterControllerManager.cpp" />
     <ClCompile Include="IPhysicsCallback.cpp" />
     <ClCompile Include="SimulationEventCallback.cpp" />
+    <ClCompile Include="Collection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl">
