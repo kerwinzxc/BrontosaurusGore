@@ -13,6 +13,8 @@ Component::CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), m
 	myIsDead = false;
 	myServerId = aId;
 	myActiveWeaponIndex = 0;
+	myNetworkPositionUpdateCoolDown = 1.0f / 60.0f;
+	myElapsedWaitingToSendMessageTime = 0.0f;
 }
 
 Component::CEnemy::~CEnemy()
@@ -21,12 +23,16 @@ Component::CEnemy::~CEnemy()
 
 void Component::CEnemy::UpdateTransformation()
 {
-	const CU::Matrix44f tranformation = GetParent()->GetLocalTransform();
-	CNetworkMessage_EnemyTransformation* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_EnemyTransformation>(ID_ALL_BUT_ME);
-	message->SetId(myServerId);
-	message->SetTransformation(tranformation);
+	if(myElapsedWaitingToSendMessageTime >= myNetworkPositionUpdateCoolDown)
+	{
+		const CU::Matrix44f tranformation = GetParent()->GetLocalTransform();
+		CNetworkMessage_EnemyTransformation* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_EnemyTransformation>(ID_ALL_BUT_ME);
+		message->SetId(myServerId);
+		message->SetTransformation(tranformation);
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+		myElapsedWaitingToSendMessageTime = 0.0f;
+	}
 }
 
 void Component::CEnemy::MoveForward(const float aMovAmount)
@@ -42,8 +48,9 @@ void Component::CEnemy::Attack()
 	GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 }
 
-void Component::CEnemy::Update(const CU::Time& aDeltaTime)
+void Component::CEnemy::Update(const float aDeltaTime)
 {
+	myElapsedWaitingToSendMessageTime += aDeltaTime;
 	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 	if (myIsDead == false)
 	{
@@ -76,15 +83,15 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 				rotation.myForwardVector.y = 0.f;
 
 				SComponentQuestionData data;
-				data.myVector4f = CU::Vector3f(0.0f, 0.0f, mySpeed) * rotation * aDeltaTime.GetSeconds();
-				data.myVector4f.w = aDeltaTime.GetSeconds();
+				data.myVector4f = CU::Vector3f(0.0f, 0.0f, mySpeed) * rotation * aDeltaTime;
+				data.myVector4f.w = aDeltaTime;
 
 				if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 				{
 					//parentTransform.SetPosition(data.myVector3f);
 					NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 				}
-				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime.GetSeconds());
+				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime);
 			}
 		}
 

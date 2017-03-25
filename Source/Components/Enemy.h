@@ -16,7 +16,7 @@ namespace Component
 		static void SetPlayerObject(CGameObject* aPlayerObj);
 
 		void Attack();
-		void Update(const CU::Time& aDeltaTime);
+		void Update(const float aDeltaTime);
 		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 		void ChangeWeapon(const unsigned int aIndex);
 	private:
@@ -37,6 +37,8 @@ namespace Component
 		float myDetectionRange2;
 		float myStartAttackRange2;
 		float myStopAttackRange2;
+		float myNetworkPositionUpdateCoolDown;
+		float myElapsedWaitingToSendMessageTime;
 
 		bool myIsDead;
 		bool myIsAttacking;
