@@ -44,3 +44,19 @@ CEnemyClientRepresentationManager::CEnemyClientRepresentationManager()
 CEnemyClientRepresentationManager::~CEnemyClientRepresentationManager()
 {
 }
+
+void CEnemyClientRepresentationManager::Update(const CU::Time& aDeltaTime)
+{
+	for (auto enemyRepresentation : myRepresentations)
+	{
+		myRepresentations.at(enemyRepresentation.first)->Update(aDeltaTime.GetSeconds());
+	}
+}
+
+void CEnemyClientRepresentationManager::Init()
+{
+	for (auto enemyRepresentation : myRepresentations)
+	{
+		myRepresentations.at(enemyRepresentation.first)->Init();
+	}
+}

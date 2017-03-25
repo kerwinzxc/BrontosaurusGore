@@ -229,6 +229,7 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	CEnemyClientRepresentationManager::GetInstance().Init();
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	myPlayerHealthText = new CTextInstance();
 	myPlayerHealthText->Init();
@@ -250,6 +251,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
+	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
 
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
