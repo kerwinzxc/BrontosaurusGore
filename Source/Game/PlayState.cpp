@@ -243,7 +243,7 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponentManager->Update(aDeltaTime);
-	myEnemyComponentManager->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime.GetSeconds());
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());

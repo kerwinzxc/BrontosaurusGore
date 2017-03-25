@@ -159,7 +159,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	const float updateFrequecy = 0.016f * 1000;
 	if(myTime > updateFrequecy)
 	{
-		myEnemyComponentManager->Update(aDeltaTime);
+		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() * updateFrequecy);
 		myTime = 0;
 	}
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)

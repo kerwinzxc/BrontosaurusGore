@@ -21,7 +21,7 @@ public:
 	//};
 	explicit CEnemyComponentManager();
 
-	void Update(const CU::Time& aDeltaTime);
+	void Update(const float aDeltaTime);
 
 	Component::CEnemy* CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
 	CComponent* CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);

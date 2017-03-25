@@ -7,7 +7,7 @@ CEnemyComponentManager::CEnemyComponentManager()
 	myEnemies.Init(10);
 }
 
-void CEnemyComponentManager::Update(const CU::Time& aDeltaTime)
+void CEnemyComponentManager::Update(const float aDeltaTime)
 {
 	for(unsigned int i = 0; i < myEnemies.Size(); ++i)
 	{
