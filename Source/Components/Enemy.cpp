@@ -44,6 +44,7 @@ void Component::CEnemy::Attack()
 
 void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 {
+	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 	if (myIsDead == false)
 	{
 		bool hasChanged = false;
@@ -52,33 +53,48 @@ void Component::CEnemy::Update(const CU::Time& aDeltaTime)
 		const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 		const float distToPlayer = toPlayer.Length2();
 
-
-		if (WithinDetectionRange(distToPlayer))
+		myStartAttackRange2 = 0.0f;
+		if (WithinDetectionRange(distToPlayer) == true)
 		{
 			hasChanged = true;
+			CU::Vector3f lookatPosition = toPlayer;
+			lookatPosition.y = GetParent()->GetWorldPosition().y;
 			GetParent()->Face(toPlayer); //impl. turn rate?
 		}
 
 
 		if (myIsAttacking == false)
 		{
-			if (WithinAttackRange(distToPlayer))
-				myIsAttacking = true;
-
-			else if (WithinDetectionRange(distToPlayer))
+			if (WithinAttackRange(distToPlayer) == true)
 			{
-				float movementAmount = mySpeed * aDeltaTime.GetSeconds();
-				//SComponentQuestionData data;
-				//data.myVector4f = CU::Vector4f(0.f, 0.f, movementAmount, aDeltaTime.GetSeconds());
-				//if(GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-					MoveForward(movementAmount);
+				myIsAttacking = true;
+			}
+			else if (WithinDetectionRange(distToPlayer) == true)
+			{
+				CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+				CU::Matrix44f rotation = parentTransform.GetRotation();
+				rotation.myForwardVector.y = 0.f;
+
+				SComponentQuestionData data;
+				data.myVector4f = CU::Vector3f(0.0f, 0.0f, mySpeed) * rotation * aDeltaTime.GetSeconds();
+				data.myVector4f.w = aDeltaTime.GetSeconds();
+
+				if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+				{
+					//parentTransform.SetPosition(data.myVector3f);
+					NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+				}
+				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime.GetSeconds());
 			}
 		}
 
 		if(myIsAttacking == true)
 		{
-			if (OutsideAttackRange(distToPlayer))
+			if (OutsideAttackRange(distToPlayer) == true)
+			{
 				myIsAttacking = false;
+
+			}
 
 			Attack();
 		}
@@ -103,7 +119,10 @@ void Component::CEnemy::Receive(const eComponentMessageType aMessageType, const 
 void Component::CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
 {
 	if (ourPlayerObjects.IsInitialized() == false)
+	{
 		ourPlayerObjects.Init(4);
+	
+	}
 	ourPlayerObjects.Add(aPlayerObj);
 }
 
