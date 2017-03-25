@@ -10,21 +10,21 @@ public:
 	CEnemy(unsigned int aId);
 	~CEnemy();
 
-	inline void SetEnemyData(const SEnemyBlueprint& aData);
+	virtual inline void SetEnemyData(const SEnemyBlueprint& aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
 
-	void Attack();
+	virtual void Attack();
 	void Update(const float aDeltaTime);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
-	void ChangeWeapon(const unsigned int aIndex);
-private:
-	CU::Vector3f ClosestPlayerPosition();
-	void UpdateTransformation();
-	void MoveForward(const float aMovAmount);
+	virtual	void ChangeWeapon(const unsigned int aIndex);
+protected:
+	virtual	CU::Vector3f ClosestPlayerPosition();
+	virtual void UpdateTransformation();
+	virtual	void MoveForward(const float aMovAmount);
 
-	inline bool WithinDetectionRange(const float aDist);
-	inline bool WithinAttackRange(const float aDist);
-	inline bool OutsideAttackRange(const float aDist);
+	virtual inline bool WithinDetectionRange(const float aDist);
+	virtual inline bool WithinAttackRange(const float aDist);
+	virtual inline bool OutsideAttackRange(const float aDist);
 
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
