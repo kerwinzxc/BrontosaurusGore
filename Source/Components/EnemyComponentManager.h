@@ -3,10 +3,8 @@
 class CScene;
 class CComponent;
 
-namespace Component
-{
-	class CEnemy;
-}
+class CEnemy;
+
 
 class CEnemyComponentManager
 {
@@ -23,13 +21,13 @@ public:
 
 	void Update(const float aDeltaTime);
 
-	Component::CEnemy* CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
+	CEnemy* CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
 	CComponent* CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
-	void DeleteComponent(Component::CEnemy* anEnemy);
+	void DeleteComponent(CEnemy* anEnemy);
 
 	~CEnemyComponentManager();
 protected:
-	CU::GrowingArray<Component::CEnemy*> myEnemies;
+	CU::GrowingArray<CEnemy*> myEnemies;
 
 };
 

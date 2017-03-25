@@ -539,7 +539,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		//bluePrint.startAttackRange = 0;
 		//bluePrint.stopAttackRange = 0;
 		//bluePrint.speed = 0;
-		//Component::CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
+		//CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
 		//enemyObject->AddComponent(enemyEnemy);
 		//enemyObject->SetWorldPosition(CU::Vector3f(-5, -33, -13));
 

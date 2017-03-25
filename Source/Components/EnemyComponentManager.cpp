@@ -15,9 +15,9 @@ void CEnemyComponentManager::Update(const float aDeltaTime)
 	}
 }
 
-Component::CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
+CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
 {
-	Component::CEnemy* enemy = new Component::CEnemy(anId);
+	CEnemy* enemy = new CEnemy(anId);
 	enemy->SetEnemyData(anEnemyBlueprint);
 
 	myEnemies.Add(enemy);
@@ -32,7 +32,7 @@ CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprin
 	return CreateComponent(anEnemyBlueprint,anId);
 }
 
-void CEnemyComponentManager::DeleteComponent(Component::CEnemy* anEnemy)
+void CEnemyComponentManager::DeleteComponent(CEnemy* anEnemy)
 {
 	myEnemies.DeleteCyclic(anEnemy);
 }

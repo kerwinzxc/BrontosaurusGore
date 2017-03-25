@@ -6,9 +6,9 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
-CU::GrowingArray<CGameObject*> Component::CEnemy::ourPlayerObjects;
+CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
-Component::CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
+CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
 {
 	myIsDead = false;
 	myServerId = aId;
@@ -17,11 +17,11 @@ Component::CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), m
 	myElapsedWaitingToSendMessageTime = 0.0f;
 }
 
-Component::CEnemy::~CEnemy()
+CEnemy::~CEnemy()
 {
 }
 
-void Component::CEnemy::UpdateTransformation()
+void CEnemy::UpdateTransformation()
 {
 	if(myElapsedWaitingToSendMessageTime >= myNetworkPositionUpdateCoolDown)
 	{
@@ -35,12 +35,12 @@ void Component::CEnemy::UpdateTransformation()
 	}
 }
 
-void Component::CEnemy::MoveForward(const float aMovAmount)
+void CEnemy::MoveForward(const float aMovAmount)
 {
 	GetParent()->GetLocalTransform().Move({0.f, 0.f, aMovAmount});
 }
 
-void Component::CEnemy::Attack()
+void CEnemy::Attack()
 {
 	SComponentMessageData messageData;
 	messageData.myVector3f = GetParent()->GetWorldPosition();
@@ -48,7 +48,7 @@ void Component::CEnemy::Attack()
 	GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 }
 
-void Component::CEnemy::Update(const float aDeltaTime)
+void CEnemy::Update(const float aDeltaTime)
 {
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
 	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
@@ -113,7 +113,7 @@ void Component::CEnemy::Update(const float aDeltaTime)
 	}
 }
 
-void Component::CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
@@ -123,7 +123,7 @@ void Component::CEnemy::Receive(const eComponentMessageType aMessageType, const 
 	}
 }
 
-void Component::CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
+void CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
 {
 	if (ourPlayerObjects.IsInitialized() == false)
 	{
@@ -133,7 +133,7 @@ void Component::CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
 	ourPlayerObjects.Add(aPlayerObj);
 }
 
-CU::Vector3f Component::CEnemy::ClosestPlayerPosition()
+CU::Vector3f CEnemy::ClosestPlayerPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
 	
@@ -157,7 +157,7 @@ CU::Vector3f Component::CEnemy::ClosestPlayerPosition()
 	return playerPos;
 }
 
-void Component::CEnemy::ChangeWeapon(const unsigned int aIndex)
+void CEnemy::ChangeWeapon(const unsigned int aIndex)
 {
 	myActiveWeaponIndex = aIndex;
 	SComponentMessageData changeWeaponData;
