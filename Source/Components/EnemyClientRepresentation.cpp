@@ -5,7 +5,7 @@
 CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId) : myComponentId(anId)
 {
 	myPositionInterpolationSpeed = 3.1;
-	myRotationInterpolationSpeed = 3.1f;
+	myRotationInterpolationSpeed = 7.1f;
 }
 
 
