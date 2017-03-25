@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "ImpController.h"
 #include "EnemyBlueprint.h"
+#include "../Physics/PhysicsCharacterController.h"
 
-
+static const float gravityAcceleration = 9.82f * 2.0f;
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
 {
 	myState = eImpState::eIdle;
 	myJumpHeight = 0.0f;
 	myShouldGoMeleeRadius2 = 0.0f;
+	myIsJumping = false;
 }
 
 
@@ -18,33 +20,64 @@ CImpController::~CImpController()
 
 void CImpController::Update(const float aDeltaTime)
 {
+	CU::Vector3f velocity;
+	velocity.y = myJumpForce;
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
 	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
 	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 	const float distToPlayer = toPlayer.Length2();
-	DL_PRINT("distPlayer %f", distToPlayer);
+	UpdateTransformation();
+
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	{
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		{
+			if (myJumpForce < 0)
+			{
+				myJumpForce = 0.0f;
+			}
+		}
+	}
+	if(myIsJumping == true)
+	{
+		myJumpForce -= gravityAcceleration * aDeltaTime;
+		if (myJumpForce <= -sqrtf((gravityAcceleration)* myJumpHeight * 2))
+		{
+			DL_PRINT("stopping jump");
+			myIsJumping = false;
+			myJumpForce = 0.0f;
+		}
+	}
+
+
 	if(myIsDead == false)
 	{
 		if (myStartAttackRange2 > distToPlayer)
 		{
-			DL_PRINT("attacking?");
 			myState = eImpState::eUseMeleeAttack;
+		
 		}
 		else if (myShouldGoMeleeRadius2 > distToPlayer)
 		{
-			DL_PRINT("Walking forward");
 			myState = eImpState::eWalkIntoMeleeRange;
+		
+			if(toPlayer.y > 1.0f && myIsJumping == false)
+			{	
+				myState = eImpState::eJump;
+			}
 		}
 		else if (myDetectionRange2 > distToPlayer)
 		{
-			DL_PRINT("using ranged attack");
 			myState = eImpState::eUseRangedAttack;
+		
 		}
 		else
 		{
-			DL_PRINT("idling");
 			myState = eImpState::eIdle;
+		
 		}
 	}
 	switch (myState)
@@ -58,35 +91,49 @@ void CImpController::Update(const float aDeltaTime)
 		CU::Vector3f lookatPosition = closestPlayerPos;
 		lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 		GetParent()->LookAt(lookatPosition); //impl. turn rate?
-		CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-		CU::Matrix44f rotation = parentTransform.GetRotation();
-		rotation.myForwardVector.y = 0.f;
-
-		SComponentQuestionData data;
-		data.myVector4f = CU::Vector3f(0.0f, 0.0f, mySpeed) * rotation * aDeltaTime;
-		data.myVector4f.w = aDeltaTime;
-
-		if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-		{
-			//parentTransform.SetPosition(data.myVector3f);
-			NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-		}
-		GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime);  // Remove this when character cotroll
-
-		UpdateTransformation();
+		velocity.z = mySpeed;
 	}
 		break;
 	case eImpState::eUseMeleeAttack:
+		if(myActiveWeaponIndex != 0)
+		{
+			SComponentMessageData changeWeaponData;
+			changeWeaponData.myInt = 0;
+			GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
+		}
+		Attack();
 		break;
 	case eImpState::eUseRangedAttack:
+		if (myActiveWeaponIndex != 1)
+		{
+			SComponentMessageData changeWeaponData;
+			changeWeaponData.myInt = 1;
+			GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
+		}
+		Attack();
 		break;
 	case eImpState::eJump:
+		ApplyJumpForce(myJumpHeight);
 		break;
 	case eImpState::eDead:
 		break;
 	default:
 		break;
 	}
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+	CU::Matrix44f rotation = parentTransform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
+
+	SComponentQuestionData data;
+	data.myVector4f = velocity * rotation * aDeltaTime;
+	data.myVector4f.w = aDeltaTime;
+
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		//parentTransform.SetPosition(data.myVector3f);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
+	GetParent()->Move(velocity * aDeltaTime);  // Remove this when character cotroll
 }
 
 void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
@@ -106,5 +153,26 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		myIsDead = true;
 		break;
 	}
+	}
+}
+
+void CImpController::ApplyJumpForce(float aJumpHeight)
+{
+	myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+	myIsJumping = true;
+	DL_PRINT("Jump!! %f", myJumpForce);
+
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	{
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		{
+		}
+		else
+		{
+			myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+			
+		}
 	}
 }

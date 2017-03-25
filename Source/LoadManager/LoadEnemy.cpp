@@ -25,9 +25,10 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 
-	blueprint.startAttackRange = 0.0f;
+	blueprint.startAttackRange = 3.0f;
 	blueprint.jumpHeight = 3.0f;
-	blueprint.goMeleeRadius = 100.0f;
+	blueprint.goMeleeRadius = 6.0f;
+	blueprint.detectionRange = 9.0f;
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
 	

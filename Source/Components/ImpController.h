@@ -18,10 +18,15 @@ public:
 	void Update(const float aDeltaTime) override;
 	virtual void SetEnemyData(const SEnemyBlueprint* aData);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
+
+	void ApplyJumpForce(float aJumpHeight);
 private:
 	float myJumpHeight;
 	float myShouldGoMeleeRadius2;
+	float myJumpForce;
 	eImpState myState;
+	char myControllerConstraints;
 
+	bool myIsJumping;
 };
 
