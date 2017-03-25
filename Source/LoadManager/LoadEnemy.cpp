@@ -19,13 +19,17 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 
 		return NULL_COMPONENT;
 	}
-	SEnemyBlueprint blueprint;
+	SImpBlueprint blueprint;
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eDefault);
+	blueprint.startAttackRange = 0.0f;
+	blueprint.jumpHeight = 3.0f;
+	blueprint.goMeleeRadius = 100.0f;
+
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
 	
 	return component->GetId();
 }

@@ -8,7 +8,7 @@ class CGameObject;
 class CEnemy : public CComponent
 {
 public:
-	CEnemy(unsigned int aId);
+	CEnemy(unsigned int aId, eEnemyTypes aType);
 	~CEnemy();
 
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
@@ -19,7 +19,7 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 protected:
-	virtual	CU::Vector3f ClosestPlayerPosition();
+	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformation();
 	virtual	void MoveForward(const float aMovAmount);
 
@@ -39,6 +39,7 @@ protected:
 	float myNetworkPositionUpdateCoolDown;
 	float myElapsedWaitingToSendMessageTime;
 
+	eEnemyTypes myType;
 	bool myIsDead;
 	bool myIsAttacking;
 };
@@ -65,3 +66,4 @@ inline bool  CEnemy::OutsideAttackRange(const float aDist)
 {
 	return aDist > myStopAttackRange2;
 }
+

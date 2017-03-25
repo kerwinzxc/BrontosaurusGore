@@ -8,13 +8,14 @@
 
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
-CEnemy::CEnemy(unsigned int aId): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
+CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
 {
 	myIsDead = false;
 	myServerId = aId;
 	myActiveWeaponIndex = 0;
 	myNetworkPositionUpdateCoolDown = 1.0f / 60.0f;
 	myElapsedWaitingToSendMessageTime = 0.0f;
+	myType = aType;
 }
 
 CEnemy::~CEnemy()
@@ -51,7 +52,6 @@ void CEnemy::Attack()
 void CEnemy::Update(const float aDeltaTime)
 {
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 	if (myIsDead == false)
 	{
 		bool hasChanged = false;
@@ -91,7 +91,8 @@ void CEnemy::Update(const float aDeltaTime)
 					//parentTransform.SetPosition(data.myVector3f);
 					NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 				}
-				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime);
+
+				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime); // Remove this when character cotroll
 			}
 		}
 

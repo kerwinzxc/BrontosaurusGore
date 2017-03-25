@@ -10,7 +10,7 @@ struct SEnemyBlueprint
 
 struct SImpBlueprint : public SEnemyBlueprint
 {
-	float myGoMeleeRadius;
-	float myJumpHeight;
+	float goMeleeRadius;
+	float jumpHeight;
 
 };

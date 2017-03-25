@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EnemyComponentManager.h"
 #include "Enemy.h"
+#include "ImpController.h"
 
 CEnemyComponentManager::CEnemyComponentManager()
 {
@@ -21,7 +22,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	{
 	case eEnemyTypes::eDefault:
 	{
-		CEnemy* enemy = new CEnemy(anId);
+		CEnemy* enemy = new CEnemy(anId, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
@@ -34,7 +35,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	}
 	case eEnemyTypes::eImp:
 	{
-		CEnemy* enemy = new CEnemy(anId);
+		CImpController* enemy = new CImpController(anId, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
