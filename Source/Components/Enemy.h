@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "EnemyBlueprint.h"
+#include "EnemyTypes.h"
 
 class CGameObject;
 
@@ -10,11 +11,11 @@ public:
 	CEnemy(unsigned int aId);
 	~CEnemy();
 
-	virtual inline void SetEnemyData(const SEnemyBlueprint& aData);
+	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
 
 	virtual void Attack();
-	void Update(const float aDeltaTime);
+	virtual void Update(const float aDeltaTime);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 protected:
@@ -42,12 +43,12 @@ protected:
 	bool myIsAttacking;
 };
 
-inline void CEnemy::SetEnemyData(const SEnemyBlueprint& aData)
+inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 {
-	mySpeed = aData.speed;
-	myDetectionRange2 = aData.detectionRange * aData.detectionRange;
-	myStartAttackRange2 = aData.startAttackRange * aData.startAttackRange;
-	myStopAttackRange2 = aData.stopAttackRange * aData.stopAttackRange;
+	mySpeed = aData->speed;
+	myDetectionRange2 = aData->detectionRange * aData->detectionRange;
+	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
+	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
 }
 
 inline bool  CEnemy::WithinDetectionRange(const float aDist)

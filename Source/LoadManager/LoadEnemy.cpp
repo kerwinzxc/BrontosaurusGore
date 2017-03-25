@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "EnemyClientRepresentation.h"
 #include "EnemyClientRepresentationManager.h"
+#include "ImpController.h"
 
 int LoadEnemy(KLoader::SLoadedComponentData someData)
 {
@@ -24,7 +25,7 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(blueprint, ID++);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eDefault);
 	
 	return component->GetId();
 }

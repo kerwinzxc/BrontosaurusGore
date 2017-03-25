@@ -15,21 +15,51 @@ void CEnemyComponentManager::Update(const float aDeltaTime)
 	}
 }
 
-CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
+CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType)
 {
-	CEnemy* enemy = new CEnemy(anId);
-	enemy->SetEnemyData(anEnemyBlueprint);
+	switch (aType)
+	{
+	case eEnemyTypes::eDefault:
+	{
+		CEnemy* enemy = new CEnemy(anId);
+		enemy->SetEnemyData(anEnemyBlueprint);
 
-	myEnemies.Add(enemy);
+		myEnemies.Add(enemy);
 
-	CComponentManager::GetInstance().RegisterComponent(enemy);
+		CComponentManager::GetInstance().RegisterComponent(enemy);
 
-	return enemy;
+		return enemy;
+		break;
+
+	}
+	case eEnemyTypes::eImp:
+	{
+		CEnemy* enemy = new CEnemy(anId);
+		enemy->SetEnemyData(anEnemyBlueprint);
+
+		myEnemies.Add(enemy);
+
+		CComponentManager::GetInstance().RegisterComponent(enemy);
+
+		return enemy;
+		break;
+	
+	}
+	case eEnemyTypes::eRevenant:
+		break;
+	case eEnemyTypes::ePinky:
+		break;
+	default:
+		break;
+	}
+
+	DL_ASSERT("invalid type sent to enemycomponentManger");
+	return nullptr;
 }
 
-CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId)
+CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType)
 {
-	return CreateComponent(anEnemyBlueprint,anId);
+	return CreateComponent(anEnemyBlueprint,anId, aType);
 }
 
 void CEnemyComponentManager::DeleteComponent(CEnemy* anEnemy)

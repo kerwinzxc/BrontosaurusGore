@@ -395,6 +395,7 @@
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="ExplosionBufferData.h" />
     <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="ExplosionComponentManager.h" />
@@ -404,6 +405,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthComponentManager.h" />
     <ClInclude Include="HealthPickupComponent.h" />
+    <ClInclude Include="ImpController.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="KeyPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
@@ -485,6 +487,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="HealthPickupComponent.cpp" />
+    <ClCompile Include="ImpController.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="KeyPickupComponent.cpp" />

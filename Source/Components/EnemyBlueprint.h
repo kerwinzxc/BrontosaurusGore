@@ -7,3 +7,10 @@ struct SEnemyBlueprint
 	float startAttackRange;
 	float stopAttackRange;
 };
+
+struct SImpBlueprint : public SEnemyBlueprint
+{
+	float myGoMeleeRadius;
+	float myJumpHeight;
+
+};

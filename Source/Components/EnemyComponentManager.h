@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyBlueprint.h"
+#include "EnemyTypes.h"
 class CScene;
 class CComponent;
 
@@ -21,8 +22,8 @@ public:
 
 	void Update(const float aDeltaTime);
 
-	CEnemy* CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
-	CComponent* CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
+	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
+	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
 	void DeleteComponent(CEnemy* anEnemy);
 
 	~CEnemyComponentManager();
