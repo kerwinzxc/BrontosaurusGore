@@ -64,9 +64,9 @@ void Component::CEnemy::Update(const float aDeltaTime)
 		if (WithinDetectionRange(distToPlayer) == true)
 		{
 			hasChanged = true;
-			CU::Vector3f lookatPosition = toPlayer;
-			lookatPosition.y = GetParent()->GetWorldPosition().y;
-			GetParent()->Face(toPlayer); //impl. turn rate?
+			CU::Vector3f lookatPosition = closestPlayerPos;
+			lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
+			GetParent()->LookAt(lookatPosition); //impl. turn rate?
 		}
 
 
