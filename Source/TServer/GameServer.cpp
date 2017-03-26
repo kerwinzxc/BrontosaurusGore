@@ -109,6 +109,7 @@ void CGameServer::Load(const int aLevelIndex)
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	myEnemyComponentManager->Init(myWeaponSystemManager, myColliderComponentManager);
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 void CGameServer::ReInit()

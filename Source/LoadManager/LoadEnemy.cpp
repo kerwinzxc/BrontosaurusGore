@@ -18,7 +18,7 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 
 		return NULL_COMPONENT;
 	}
-	SPinkyBlueprint blueprint;
+	SImpBlueprint blueprint;
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
@@ -31,14 +31,11 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	blueprint.detectionRange = 9.0f;*/
 
 	blueprint.startAttackRange = 3.0f;
-	blueprint.chargeDamage = 600.0f;
-	blueprint.windupChargeTime = 1.0f;
-	blueprint.chargeSpeed = 40.54;
-	blueprint.chargeCooldown = 1.0f;
+	blueprint.jumpHeight = 3.0f;
 	blueprint.shouldGoMeleeRadius = 6.0f;
 	blueprint.detectionRange = 9.0f;
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::ePinky);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
 	
 	return component->GetId();
 }

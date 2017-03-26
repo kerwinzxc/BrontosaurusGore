@@ -19,6 +19,7 @@ CImpController::~CImpController()
 
 void CImpController::Update(const float aDeltaTime)
 {
+	DL_PRINT("Jumpforce %f", myJumpForce);
 	CU::Vector3f velocity;
 	velocity.y = myJumpForce;
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
@@ -28,16 +29,12 @@ void CImpController::Update(const float aDeltaTime)
 	const float distToPlayer = toPlayer.Length2();
 	UpdateTransformation();
 
-	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	if(CheckIfInAir() == false)
 	{
-		myControllerConstraints = groundeddata.myChar;
-		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		if (myJumpForce < 0)
 		{
-			if (myJumpForce < 0)
-			{
-				myJumpForce = 0.0f;
-			}
+			myJumpForce = 0.0f;
+			myIsJumping = false;
 		}
 	}
 	if(myIsJumping == true)
@@ -109,18 +106,15 @@ void CImpController::Update(const float aDeltaTime)
 	}
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
 	data.myVector4f = velocity * rotation * aDeltaTime;
 	data.myVector4f.w = aDeltaTime;
-
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		//parentTransform.SetPosition(data.myVector3f);
+		parentTransform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
-	GetParent()->Move(velocity * aDeltaTime);  // Remove this when character cotroll
 }
 
 void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
@@ -144,30 +138,24 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 
 void CImpController::ApplyJumpForce(float aJumpHeight)
 {
-	myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-	myIsJumping = true;
-	DL_PRINT("Jump!! %f", myJumpForce);
+	if(myIsJumping == false) 
+	{
+		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+		myIsJumping = true;
+	}
+}
 
+bool  CImpController::CheckIfInAir()
+{
 	SComponentQuestionData groundeddata;
 	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
 	{
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
+			DL_PRINT("Not in air !!!");
+			return false;
 		}
-		else
-		{
-			myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-			
-		}
-	}
-}
-
-bool  CImpController::CheckIfInAir()
-{
-	if (myJumpForce <= -sqrtf((gravityAcceleration)* myJumpHeight * 2))
-	{
-		return false;
 	}
 	return true;
 }

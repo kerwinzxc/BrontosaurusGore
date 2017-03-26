@@ -120,6 +120,7 @@ void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentMa
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = myEnemies[i]->GetParent()->GetLocalTransform().GetPosition();
 		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		switch (myEnemies[i]->GetEnemyType())
 		{
 		case eEnemyTypes::eImp:
