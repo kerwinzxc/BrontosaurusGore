@@ -37,16 +37,14 @@ void CImpController::Update(const float aDeltaTime)
 			myIsJumping = false;
 		}
 	}
-	if(myIsJumping == true)
+	myJumpForce -= gravityAcceleration * aDeltaTime;
+	if (CheckIfInAir() == false)
 	{
-		myJumpForce -= gravityAcceleration * aDeltaTime;
-		if (CheckIfInAir() == false)
-		{
-			DL_PRINT("stopping jump");
-			myIsJumping = false;
-			myJumpForce = 0.0f;
-		}
+		DL_PRINT("stopping jump");
+		myIsJumping = false;
+		myJumpForce = 0.0f;
 	}
+	
 
 
 	if(myIsDead == false)
