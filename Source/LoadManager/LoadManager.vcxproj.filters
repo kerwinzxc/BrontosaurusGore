@@ -88,6 +88,7 @@
     <ClInclude Include="LoadImp.h">
       <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
     </ClInclude>
+    <ClInclude Include="LoadRevenant.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -174,6 +175,7 @@
     <ClCompile Include="LoadImp.cpp">
       <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
     </ClCompile>
+    <ClCompile Include="LoadRevenant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">

@@ -4,7 +4,6 @@
 #include "Component.h"
 #include "EnemyClientRepresentation.h"
 #include "EnemyClientRepresentationManager.h"
-#include "ImpController.h"
 
 int LoadEnemy(KLoader::SLoadedComponentData someData)
 {

@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "LoadImp.h"
-#include "EnemyComponentManager.h"
+#include "LoadRevenant.h"
 
-int LoadImp(KLoader::SLoadedComponentData someData)
+
+int LoadRevenant(KLoader::SLoadedComponentData someData)
 {
 	static unsigned int ID = 0;
 
@@ -15,15 +15,16 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 
 		return NULL_COMPONENT;
 	}
-	SImpBlueprint blueprint;
+	SRevenantBlueprint blueprint;
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 	blueprint.shouldGoMeleeRadius = someData.myData.at("goingMeleeRange").GetFloat();
-	blueprint.jumpHeight = someData.myData.at("jumpHeight").GetFloat();
+	blueprint.flightHeight = someData.myData.at("flightHeight").GetFloat();
+	blueprint.hoverTime = someData.myData.at("hoverDuration").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eRevenant);
 
 	return component->GetId();
 }
