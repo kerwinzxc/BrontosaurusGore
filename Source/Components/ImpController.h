@@ -16,13 +16,12 @@ public:
 	~CImpController();
 
 	void Update(const float aDeltaTime) override;
-	virtual void SetEnemyData(const SEnemyBlueprint* aData);
+	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 
 	void ApplyJumpForce(float aJumpHeight);
 private:
 	float myJumpHeight;
-	float myShouldGoMeleeRadius2;
 	float myJumpForce;
 	eImpState myState;
 	char myControllerConstraints;

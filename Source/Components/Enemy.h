@@ -36,6 +36,7 @@ protected:
 	float myDetectionRange2;
 	float myStartAttackRange2;
 	float myStopAttackRange2;
+	float myShouldGoMeleeRadius2;
 	float myNetworkPositionUpdateCoolDown;
 	float myElapsedWaitingToSendMessageTime;
 
@@ -50,6 +51,7 @@ inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 	myDetectionRange2 = aData->detectionRange * aData->detectionRange;
 	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
 	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
+	myShouldGoMeleeRadius2 = aData->shouldGoMeleeRadius *  aData->shouldGoMeleeRadius;
 }
 
 inline bool  CEnemy::WithinDetectionRange(const float aDist)

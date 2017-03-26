@@ -9,7 +9,6 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 {
 	myState = eImpState::eIdle;
 	myJumpHeight = 0.0f;
-	myShouldGoMeleeRadius2 = 0.0f;
 	myIsJumping = false;
 }
 
@@ -140,7 +139,6 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 {
 	const SImpBlueprint* impData = static_cast<const SImpBlueprint*>(aData);
 	myJumpHeight = impData->jumpHeight;
-	myShouldGoMeleeRadius2 = impData->goMeleeRadius * impData->goMeleeRadius;
 	CEnemy::SetEnemyData(aData);
 }
 
