@@ -92,6 +92,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("HighlightComponent",LoadHighlightComponent);
 	loader.RegisterComponentLoadFunction("ImpController", ClientLoadEnemy);
 	loader.RegisterComponentLoadFunction("RevenantController", ClientLoadEnemy);
+	loader.RegisterComponentLoadFunction("PinkyController", ClientLoadEnemy);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);

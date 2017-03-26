@@ -364,6 +364,7 @@
     <ClInclude Include="LoadObject.h" />
     <ClInclude Include="LoadColliderComponent.h" />
     <ClInclude Include="LoadParticleEmitterComponent.h" />
+    <ClInclude Include="LoadPinky.h" />
     <ClInclude Include="LoadPointLightComponent.h" />
     <ClInclude Include="LoadRevenant.h" />
     <ClInclude Include="LoadScriptComponent.h" />
@@ -398,6 +399,7 @@
     <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="LoadColliderComponent.cpp" />
     <ClCompile Include="LoadParticleEmitterComponent.cpp" />
+    <ClCompile Include="LoadPinky.cpp" />
     <ClCompile Include="LoadPointLightComponent.cpp" />
     <ClCompile Include="LoadRevenant.cpp" />
     <ClCompile Include="LoadScriptComponent.cpp" />
