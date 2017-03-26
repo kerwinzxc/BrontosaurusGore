@@ -19,6 +19,7 @@ public:
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 
+	bool CheckIfInAir();
 	void ApplyJumpForce(float aJumpHeight);
 private:
 	float myJumpHeight;

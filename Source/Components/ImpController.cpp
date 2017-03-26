@@ -43,7 +43,7 @@ void CImpController::Update(const float aDeltaTime)
 	if(myIsJumping == true)
 	{
 		myJumpForce -= gravityAcceleration * aDeltaTime;
-		if (myJumpForce <= -sqrtf((gravityAcceleration)* myJumpHeight * 2))
+		if (CheckIfInAir() == false)
 		{
 			DL_PRINT("stopping jump");
 			myIsJumping = false;
@@ -173,4 +173,13 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 			
 		}
 	}
+}
+
+bool  CImpController::CheckIfInAir()
+{
+	if (myJumpForce <= -sqrtf((gravityAcceleration)* myJumpHeight * 2))
+	{
+		return false;
+	}
+	return true;
 }
