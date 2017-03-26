@@ -21,6 +21,7 @@ public:
 private:
 	CU::Vector3f myChargeTowardsPosition;
 	float myWindupChargeTime;
+	float myChargeSpeed;
 	healthPoint myChargeDamage;
 };
 

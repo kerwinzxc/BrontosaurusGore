@@ -16,5 +16,6 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	const SPinkyBlueprint* pinkyData = static_cast<const SPinkyBlueprint*>(aData);
 	myWindupChargeTime = pinkyData->windupChargeTime;
 	myChargeDamage = pinkyData->chargeDamage;
+	myChargeSpeed = pinkyData->chargeSpeed;
 	CEnemy::SetEnemyData(aData);
 }

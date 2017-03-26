@@ -23,5 +23,6 @@ struct SRevenantBlueprint : public SEnemyBlueprint
 struct SPinkyBlueprint : public SEnemyBlueprint
 {
 	float windupChargeTime;
+	float chargeSpeed;
 	healthPoint chargeDamage;
 };
