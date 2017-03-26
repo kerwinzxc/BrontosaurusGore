@@ -108,6 +108,7 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+	myEnemyComponentManager->Init(myWeaponSystemManager, myColliderComponentManager);
 }
 
 void CGameServer::ReInit()
@@ -162,6 +163,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
+	
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
 	{
 		myColliderComponentManager->Update();

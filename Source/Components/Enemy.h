@@ -18,6 +18,7 @@ public:
 	virtual void Update(const float aDeltaTime);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
+	inline eEnemyTypes GetEnemyType();
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformation();
@@ -70,3 +71,7 @@ inline bool  CEnemy::OutsideAttackRange(const float aDist)
 	return aDist > myStopAttackRange2;
 }
 
+inline eEnemyTypes CEnemy::GetEnemyType()
+{
+	return myType;
+}

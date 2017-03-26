@@ -5,7 +5,8 @@ class CScene;
 class CComponent;
 
 class CEnemy;
-
+class CWeaponSystemManager;
+class CColliderComponentManager;
 
 class CEnemyComponentManager
 {
@@ -25,7 +26,7 @@ public:
 	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
 	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
 	void DeleteComponent(CEnemy* anEnemy);
-
+	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer, CColliderComponentManager* aColiderComponentManagerPointer);
 	~CEnemyComponentManager();
 protected:
 	CU::GrowingArray<CEnemy*> myEnemies;
