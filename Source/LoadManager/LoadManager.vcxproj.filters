@@ -85,6 +85,9 @@
     <ClInclude Include="LoadEnemy.h">
       <Filter>LoadThings\LoadEnemy</Filter>
     </ClInclude>
+    <ClInclude Include="LoadImp.h">
+      <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="LoadEnemy.cpp">
       <Filter>LoadThings\LoadEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadImp.cpp">
+      <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +262,12 @@
     </Filter>
     <Filter Include="LoadThings\LoadEnemy\LoadImp">
       <UniqueIdentifier>{f2244979-99b2-4509-bfd0-0e92e6003504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy\LoadRevenant">
+      <UniqueIdentifier>{c7d9d42b-2ae9-4a15-9895-01e3df317975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy\LoadPinky">
+      <UniqueIdentifier>{7b1ddefc-6b47-4ff4-8dc6-225ab08420d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
