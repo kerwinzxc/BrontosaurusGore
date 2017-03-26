@@ -19,18 +19,19 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 
 		return NULL_COMPONENT;
 	}
-	SImpBlueprint blueprint;
+	SRevenantBlueprint blueprint;
 	blueprint.speed = someData.myData.at("speed").GetFloat();
 	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
 
 	blueprint.startAttackRange = 3.0f;
-	blueprint.jumpHeight = 3.0f;
-	blueprint.goMeleeRadius = 6.0f;
+	blueprint.flightHeight = 6.0f;
+	blueprint.flyingTime = 3.0f;
+	blueprint.shouldGoMeleeRadius = 6.0f;
 	blueprint.detectionRange = 9.0f;
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eRevenant);
 	
 	return component->GetId();
 }

@@ -2,7 +2,8 @@
 #include "EnemyComponentManager.h"
 #include "Enemy.h"
 #include "ImpController.h"
-
+#include "RevenantController.h"
+#include "PinkyController.h"
 CEnemyComponentManager::CEnemyComponentManager()
 {
 	myEnemies.Init(10);
@@ -47,9 +48,30 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	
 	}
 	case eEnemyTypes::eRevenant:
+	{
+		CRevenantController* enemy = new CRevenantController(anId, aType);
+		enemy->SetEnemyData(anEnemyBlueprint);
+
+		myEnemies.Add(enemy);
+
+		CComponentManager::GetInstance().RegisterComponent(enemy);
+
+		return enemy;
 		break;
+
+	}
 	case eEnemyTypes::ePinky:
+	{
+		CPinkyController* enemy = new CPinkyController(anId, aType);
+		enemy->SetEnemyData(anEnemyBlueprint);
+
+		myEnemies.Add(enemy);
+
+		CComponentManager::GetInstance().RegisterComponent(enemy);
+
+		return enemy;
 		break;
+	}
 	default:
 		break;
 	}
