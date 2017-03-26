@@ -6,9 +6,9 @@ enum class ePinkyState
 	eIdle,
 	eWindupCharge,
 	eCharge,
-	eTurnTowardsPlayer,
-	eDoMeleeAttack,
-	eWalkToPlayer,
+	eChargeCooldown,
+	eUseMeleeAttack,
+	eWalkIntoMeleeRange,
 	eDead
 };
 class CPinkyController : public CEnemy
@@ -18,10 +18,17 @@ public:
 	~CPinkyController();
 
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
+	void Update(const float aDeltaTime) override;
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 private:
-	CU::Vector3f myChargeTowardsPosition;
 	float myWindupChargeTime;
+	float myElapsedWindupTime;
 	float myChargeSpeed;
+	float myGravityForce;
+	float myChargeCooldown;
+	float myElapsedChargeCooldownTime;
+	ePinkyState myState;
+	bool myIsCharging;
 	healthPoint myChargeDamage;
 };
 
