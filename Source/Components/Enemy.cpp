@@ -168,3 +168,10 @@ void CEnemy::ChangeWeapon(const unsigned int aIndex)
 		GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
 	}
 }
+
+void CEnemy::LookAtPlayer()
+{
+	CU::Vector3f lookatPosition = ClosestPlayerPosition();
+	lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
+	GetParent()->LookAt(lookatPosition);
+}

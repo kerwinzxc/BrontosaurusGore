@@ -26,7 +26,7 @@ protected:
 	virtual inline bool WithinDetectionRange(const float aDist);
 	virtual inline bool WithinAttackRange(const float aDist);
 	virtual inline bool OutsideAttackRange(const float aDist);
-
+	void LookAtPlayer();
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 	unsigned int myServerId;
