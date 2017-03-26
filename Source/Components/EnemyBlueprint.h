@@ -17,7 +17,7 @@ struct SImpBlueprint : public SEnemyBlueprint
 struct SRevenantBlueprint : public SEnemyBlueprint
 {
 	float flightHeight;
-	float flyingTime;
+	float hoverTime;
 };
 
 struct SPinkyBlueprint : public SEnemyBlueprint

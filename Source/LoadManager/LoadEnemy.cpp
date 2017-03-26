@@ -27,7 +27,7 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 
 	blueprint.startAttackRange = 3.0f;
 	blueprint.flightHeight = 6.0f;
-	blueprint.flyingTime = 3.0f;
+	blueprint.hoverTime = 3.0f;
 	blueprint.shouldGoMeleeRadius = 6.0f;
 	blueprint.detectionRange = 9.0f;
 

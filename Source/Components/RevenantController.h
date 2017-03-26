@@ -7,6 +7,7 @@ enum class eRevenantState
 	eUseMeleeAttack,
 	eUseRangedAttack,
 	eFlyAscend,
+	eFlyDescend,
 	eFlyHover,
 	eDead
 };
@@ -17,10 +18,20 @@ public:
 	~CRevenantController();
 
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
+	void Update(const float aDeltaTime) override;
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 
 private:
+	void ApplyFlyForce(float aJumpHeight);
+	bool CheckIfInAir();
+private:
 	float myFlightHeight;
-	float myFlyingTime;
+	float myHoverTime;
 	float myStartedFlightHeight;
+	float myFlightForce;
+	float myElapsedHoverTime;
+	eRevenantState myState;
+
+	bool myIsflying;
 };
 
