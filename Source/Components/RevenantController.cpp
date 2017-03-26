@@ -35,16 +35,16 @@ void CRevenantController::Update(const float aDeltaTime)
 	const float distToPlayer = toPlayer.Length2();
 	UpdateTransformation();
 
-	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	if(myIsflying == false)
 	{
-		myControllerConstraints = groundeddata.myChar;
-		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		myFlightForce -= gravityAcceleration * aDeltaTime;
+	}
+
+	if(CheckIfInAir() == false)
+	{
+		if (myFlightForce < 0)
 		{
-			if (myFlightForce < 0)
-			{
-				myFlightForce = 0.0f;
-			}
+			myFlightForce = 0.0f;
 		}
 	}
 
@@ -162,29 +162,23 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 
 void  CRevenantController::ApplyFlyForce(float aJumpHeight)
 {
-	myFlightForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-	myIsflying = true;
+	if(CheckIfInAir() == false)
+	{
+		myIsflying = true;
+		myFlightForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+	}
+}
 
+bool  CRevenantController::CheckIfInAir()
+{
 	SComponentQuestionData groundeddata;
 	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
 	{
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
+			return false;
 		}
-		else
-		{
-			myFlightForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-
-		}
-	}
-}
-
-bool  CRevenantController::CheckIfInAir()
-{
-	if (myFlightForce <= -sqrtf((gravityAcceleration)* myFlightHeight * 2))
-	{
-		return false;
 	}
 	return true;
 }
