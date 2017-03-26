@@ -94,21 +94,11 @@ void CImpController::Update(const float aDeltaTime)
 	}
 		break;
 	case eImpState::eUseMeleeAttack:
-		if(myActiveWeaponIndex != 0)
-		{
-			SComponentMessageData changeWeaponData;
-			changeWeaponData.myInt = 0;
-			GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
-		}
+		ChangeWeapon(0);
 		Attack();
 		break;
 	case eImpState::eUseRangedAttack:
-		if (myActiveWeaponIndex != 1)
-		{
-			SComponentMessageData changeWeaponData;
-			changeWeaponData.myInt = 1;
-			GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
-		}
+		ChangeWeapon(1);
 		Attack();
 		break;
 	case eImpState::eJump:

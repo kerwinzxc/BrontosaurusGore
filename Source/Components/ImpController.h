@@ -25,7 +25,6 @@ private:
 	float myJumpHeight;
 	float myJumpForce;
 	eImpState myState;
-	char myControllerConstraints;
 
 	bool myIsJumping;
 };

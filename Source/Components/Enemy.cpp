@@ -160,8 +160,11 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 
 void CEnemy::ChangeWeapon(const unsigned int aIndex)
 {
-	myActiveWeaponIndex = aIndex;
-	SComponentMessageData changeWeaponData;
-	changeWeaponData.myInt = myActiveWeaponIndex;
-	GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
+	if(myActiveWeaponIndex != aIndex)
+	{
+		myActiveWeaponIndex = aIndex;
+		SComponentMessageData changeWeaponData;
+		changeWeaponData.myInt = myActiveWeaponIndex;
+		GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, changeWeaponData);
+	}
 }

@@ -43,6 +43,7 @@ protected:
 	eEnemyTypes myType;
 	bool myIsDead;
 	bool myIsAttacking;
+	char myControllerConstraints;
 };
 
 inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
