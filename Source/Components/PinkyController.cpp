@@ -2,6 +2,8 @@
 #include "PinkyController.h"
 #include "../Physics/PhysicsCharacterController.h"
 
+static const float gravityAcceleration = 9.82f * 2.0f;
+
 CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	:CEnemy(aId, aType)
 {
@@ -32,7 +34,7 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 void CPinkyController::Update(const float aDeltaTime)
 {
 	CU::Vector3f velocity;
-	//velocity.y = myGravityForce; add this again later when you have character controller :);
+	velocity.y = -gravityAcceleration * aDeltaTime;
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
 	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
@@ -130,10 +132,9 @@ void CPinkyController::Update(const float aDeltaTime)
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		//parentTransform.SetPosition(data.myVector3f);
+		parentTransform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
-	GetParent()->Move(velocity * aDeltaTime);  // Remove this when character cotroll
 }
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)

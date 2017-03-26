@@ -142,10 +142,9 @@ void CRevenantController::Update(const float aDeltaTime)
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		//parentTransform.SetPosition(data.myVector3f);
+		parentTransform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
-	GetParent()->Move(velocity * aDeltaTime);  // Remove this when character cotroll
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
