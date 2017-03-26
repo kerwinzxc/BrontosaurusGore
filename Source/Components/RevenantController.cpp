@@ -81,9 +81,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eWalkIntoMeleeRange:
 	{
-		CU::Vector3f lookatPosition = closestPlayerPos;
-		lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
-		GetParent()->LookAt(lookatPosition); //impl. turn rate?
+		LookAtPlayer(); //impl. turn rate?
 		velocity.z = mySpeed;
 	}
 	break;
@@ -108,11 +106,13 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eFlyHover:
 	{
 		myElapsedHoverTime += aDeltaTime;
+		LookAtPlayer();
+		ChangeWeapon(2);
+		Attack();
 		if(myElapsedHoverTime >= myHoverTime)
 		{
 			myElapsedHoverTime = 0.0f;
 			myState = eRevenantState::eFlyDescend;
-			ChangeWeapon(2);
 		}
 		break;
 	}

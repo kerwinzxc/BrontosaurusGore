@@ -87,9 +87,7 @@ void CImpController::Update(const float aDeltaTime)
 	}
 	case eImpState::eWalkIntoMeleeRange:
 	{
-		CU::Vector3f lookatPosition = closestPlayerPos;
-		lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
-		GetParent()->LookAt(lookatPosition); //impl. turn rate?
+		LookAtPlayer();
 		velocity.z = mySpeed;
 	}
 		break;
