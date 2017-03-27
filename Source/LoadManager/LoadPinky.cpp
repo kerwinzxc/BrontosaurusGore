@@ -16,15 +16,15 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 		return NULL_COMPONENT;
 	}
 	SPinkyBlueprint blueprint;
-	blueprint.speed = someData.myData.at("speed").GetFloat();
-	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
-	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
-	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
-	blueprint.shouldGoMeleeRadius = someData.myData.at("goingMeleeRange").GetFloat();
-	blueprint.chargeCooldown = someData.myData.at("chargeCooldown").GetFloat();
-	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("chargeCooldown").GetFloat());
-	blueprint.chargeSpeed = someData.myData.at("chargeSpeed").GetFloat();
-	blueprint.windupChargeTime = someData.myData.at("windupChargeDuration").GetFloat();
+	blueprint.speed = someData.myData.at("Speed").GetFloat();
+	blueprint.detectionRange = someData.myData.at("DetectionRange").GetFloat();
+	blueprint.startAttackRange = someData.myData.at("StartAttackRange").GetFloat();
+	blueprint.stopAttackRange = someData.myData.at("StopAttackRange").GetFloat();
+	blueprint.shouldGoMeleeRadius = someData.myData.at("GoingMeleeRange").GetFloat();
+	blueprint.chargeCooldown = someData.myData.at("GoingMeleeRange").GetFloat();
+	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
+	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();
+	blueprint.windupChargeTime = someData.myData.at("WindUpChargeDuration").GetFloat();
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::ePinky);
 
