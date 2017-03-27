@@ -505,6 +505,9 @@
     <ClInclude Include="PinkyController.h">
       <Filter>Enemy\Pinky</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponSoundData.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

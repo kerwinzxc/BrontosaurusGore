@@ -37,13 +37,19 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
 #endif
 
 
+void InitAudio();
+
 void Init(int argc, char* argv[])
 {
 	
 
 	Postmaster::Threaded::CPostmaster::Create();
 	CommandLineManager::CreateInstance(argc, argv);
+
+	
+
 	DL_Debug::Debug::CreateInstance();
+	InitAudio();
 	PostMaster::CreateInstance();
 
 	{
@@ -113,6 +119,7 @@ void Init(int argc, char* argv[])
 		CEngine::GetInstance()->Start();
 	}
 
+	Audio::CAudioInterface::Destroy();
 	CEngine::DestroyInstance();
 	PostMaster::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();
@@ -129,4 +136,27 @@ unsigned int DebugDrawerFlags()
 #else //NDEBUG || _RETAIL_BUILD
 	return 0;
 #endif // _DEBUG
+}
+
+void WWiseErrorCallback(const char* anError)
+{
+	std::string errorText = "WWise error: ";
+	errorText += anError;
+	DL_ASSERT(errorText.c_str());
+}
+
+void InitAudio()
+{
+	Audio::CAudioInterface::CreateInstance();
+
+	Audio::CAudioInterface::GetInstance()->SetErrorCallBack(WWiseErrorCallback);
+	bool result;
+
+	std::string bankPath = "Audio/Init.bnk";
+
+	result = Audio::CAudioInterface::GetInstance()->Init(bankPath.c_str());
+
+	bankPath = "Audio/Feedback.bnk";
+	result = Audio::CAudioInterface::GetInstance()->LoadBank(bankPath.c_str());
+
 }

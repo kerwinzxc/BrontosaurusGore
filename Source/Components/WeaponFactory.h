@@ -1,4 +1,10 @@
 #pragma once
+#include "WeaponSoundData.h"
+
+namespace CU {
+	class CJsonValue;
+}
+
 struct SWeaponData;
 struct SAmmoData;
 class CWeapon;
@@ -24,6 +30,7 @@ public:
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
 	void MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon);
 private:
+	SWeaponSoundData GetSoundData(CU::CJsonValue aSoundData);
 	CU::GrowingArray<SWeaponData*> myWeaponDataList;
 	CU::GrowingArray<SAmmoData*> myAmmoDataList;
 	CU::GrowingArray<CWeapon*> myWeaponList;

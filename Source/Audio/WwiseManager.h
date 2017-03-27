@@ -13,6 +13,7 @@
 #include "AK\Plugin\AllPluginsRegistrationHelpers.h"			// Plug-ins
 #include "AK\Comm\AkCommunication.h"							// Plug-ins
 #include "SoundEngine\Win32\AkFilePackageLowLevelIOBlocking.h"
+#include <string>
 
 class CWwiseManager
 {
@@ -39,6 +40,12 @@ public:
 	void UnregisterAllGameObjects();
 
 private:
+	struct ErrorData
+	{
+		std::string path;
+	};
+	bool ErrorHandling(AKRESULT aResult, const ::CWwiseManager::ErrorData& aErrorData);
+
 	void TermWwise();
 	bool InitWwise(AkMemSettings &in_memSettings, AkStreamMgrSettings &in_stmSettings, AkDeviceSettings &in_deviceSettings, AkInitSettings &in_initSettings, AkPlatformInitSettings &in_platformInitSettings, AkMusicSettings &in_musicInit, AkOSChar* in_szErrorBuffer, unsigned int in_unErrorBufferCharCount);
 	void CallError(const char* aError);

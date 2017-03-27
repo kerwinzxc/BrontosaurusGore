@@ -8,6 +8,7 @@
 #include "../Physics/PhysicsScene.h"
 #include "../Physics/PhysicsActor.h"
 #include "../Physics/PhysicsActorDynamic.h"
+#include "../Audio/AudioInterface.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene)
 {
@@ -16,6 +17,7 @@ CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene
 	myUser = nullptr;
 	myWeaponObject = nullptr;
 	myPhysicsScene = aPhysicsScene;
+	
 }
 
 
@@ -96,6 +98,8 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					shootPosition = localWeaponMatrix.GetPosition();
 				
 				}
+
+				PlaySound(SoundEvent::Fire);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
@@ -158,12 +162,35 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				shootPosition = localWeaponMatrix.GetPosition();
 
 			}
+
+			PlaySound(SoundEvent::Fire);
 			CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 			myElapsedFireTimer = 0.0f;
 
 		}
 	}
 }
+
+void CWeapon::PlaySound(SoundEvent aSoundEvent)
+{
+	std::string eventId;
+
+	switch (aSoundEvent)
+	{
+	case SoundEvent::Fire: 
+		eventId = myWeaponData->soundData.fire;
+		break;
+	case SoundEvent::Reload: 
+		eventId = myWeaponData->soundData.reload;
+		break;
+	default: break;
+	}
+	if(eventId.empty() == false)
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str());
+	}
+}
+
 
 CU::Vector3f CWeapon::RandomizedDirection(const CU::Vector3f& aDirection)
 {
