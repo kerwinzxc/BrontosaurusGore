@@ -8,7 +8,7 @@
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false)
+CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false), myIsWalking(false)
 {
 	CU::CJsonValue playerControls;
 	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
@@ -32,6 +32,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
 	myFrameLastPositionY = -110000000.0f;
 	myIsNotFalling = false;
+
+	myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
 }
 
 CMovementComponent::~CMovementComponent()
@@ -103,17 +105,29 @@ bool CMovementComponent::IsWalking() const
 		myKeysDown[static_cast<int>(ePlayerControls::eBackward)] && !myKeysDown[static_cast<int>(ePlayerControls::eForward)];
 }
 
-void CMovementComponent::PlayWalkSound() const
+void CMovementComponent::UpdateSoundState()
 {
-	if(IsWalking())
+	if(myIsWalking == false && IsWalking() == true)
 	{
-		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep");
+		myIsWalking = true;
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep", myAudioId);
+	}
+	else if(myIsWalking == true && IsWalking() == false)
+	{
+		myIsWalking = false;
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep_Stop", myAudioId);
+	}
+
+	if(myIsWalking == true)
+	{
+		const CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transformation.GetPosition(), transformation.myForwardVector);
 	}
 }
 
 void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 {
-	PlayWalkSound();
+	UpdateSoundState();
 
 	myVelocity.y = 0.0f;
 	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)] == true && myVelocity.x > -myMaxSpeed)
