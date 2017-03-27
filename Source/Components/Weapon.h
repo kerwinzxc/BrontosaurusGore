@@ -1,5 +1,6 @@
 
 #pragma once
+#include "../Audio/AudioInterface.h"
 struct SWeaponData;
 class CGameObject;
 
@@ -25,15 +26,22 @@ public:
 
 	void CosmeticShoot(const CU::Vector3f& aDirection); // Alex
 private:
+	enum class SoundEvent
+	{
+		Fire,
+		Reload
+	};
+	void PlaySound(SoundEvent aSoundEvent);
+
 	CU::Vector3f RandomizedDirection(const CU::Vector3f& aDirection);
 private:
-
+	
 	SWeaponData* myWeaponData;
 	CGameObject* myUser;
 	CGameObject* myWeaponObject;
 	Physics::CPhysicsScene* myPhysicsScene;
 	float myElapsedFireTimer;
-
+	Audio::GameObjectID myAudioId;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)

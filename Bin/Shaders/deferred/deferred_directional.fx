@@ -1,6 +1,7 @@
 #include <..\Fullscreen\structs.fx>
 #include <..\oncePerFrame.fx>
 
+#define NUM_CASCADES 4
 
 //**********************************************//
 //					TEXTURES					//
@@ -19,8 +20,10 @@ Texture2D shadowBuffer          : register(t8);
 //					SAMPLERS					//
 //**********************************************//
 
-SamplerState SamplerClamp       : register(s0);
+SamplerState samplerClamp       : register(s0);
 SamplerState samplerWrap        : register(s1);
+SamplerState samplerClampPoint	: register(s2);
+
 
 //**********************************************//
 //					C-BUFFER					//
@@ -46,7 +49,20 @@ cbuffer directionalLight        : register(b2)
 	} directionalLight;
 }
 
+cbuffer ShadowBufferData		: register(b3)
+{
+	struct Cascade
+	{
+		float4x4 projection;
+		float4x4 invTransform;
+		float4 rect;
+	} cascades[NUM_CASCADES];
 
+	float4 cascadeEnds;//[NUM_CASCADES + 1];
+	float cascadeFar;
+
+	float3 shadowGarbage;
+}
 
 //**********************************************//
 //					G-BUFFER					//
@@ -121,12 +137,23 @@ float Visibility(float3 lightDirection, float3 normal, float roughness, float3 c
 
 float3 Normal(float2 uv)
 {
-	float3 normal = deferred_normal.Sample(samplerWrap, uv).xyz;
+	float3 normal = deferred_normal.Sample(samplerClampPoint, uv).xyz;
 	normal = (normal * 2.0f);
 	normal -= float3(1.0f, 1.0f, 1.0f);
 	return normal;
 }
 
+float3 CameraSpace(float2 uv, float depth)
+{
+	float4 cameraPosition = (float4) 0;
+	cameraPosition.xy = (uv * 2.0f);
+	cameraPosition.xy -= float2(1.0f, 1.0f); // transforms to -1 to 1
+	cameraPosition.y *= -1.0f; // flip y for wth!
+	cameraPosition.z = depth;
+	cameraPosition.w = 1.0f;
+	cameraPosition = mul(projectionInverse, cameraPosition);
+	return cameraPosition.xyz;
+}
 
 float3 WorldPosition(float2 uv, float depth)
 {
@@ -151,36 +178,97 @@ float3 CameraPosition(float4x4 aCameraSpace)
 	return cameraPosition.xyz;
 }
 
-float ShadowBuffer(float3 worldPosition)
+uint GetCascadeIndex(float aDepth)
+{
+	uint cascadeIndex = 0;
+	[unroll]
+	for (uint i = 0; i < NUM_CASCADES - 1; ++i)
+	{
+		if (aDepth > cascadeEnds[i])
+		{
+			if (aDepth < cascadeEnds[i + 1])
+			{
+				cascadeIndex = i;
+			}
+		}
+	}
+	if (aDepth > cascadeEnds[NUM_CASCADES - 1])
+	{
+		cascadeIndex = NUM_CASCADES - 1;
+	}
+	return cascadeIndex;
+}
+
+
+float2 GetShadowMapUV(uint cascadeIndex, float2 cascadeProjectionCoords)
+{
+	float2 texCoord = (float2) 0.0f;
+	texCoord.x = cascadeProjectionCoords.x * 0.5f + 0.5f;
+	texCoord.y = cascadeProjectionCoords.y * -0.5f + 0.5f;
+	texCoord.x *= cascades[cascadeIndex].rect.z - cascades[cascadeIndex].rect.x;
+	texCoord.x += cascades[cascadeIndex].rect.x;
+	texCoord.y *= cascades[cascadeIndex].rect.w - cascades[cascadeIndex].rect.y;
+	texCoord.y += cascades[cascadeIndex].rect.y;
+	return texCoord;
+}
+
+float4 GetCascadeProjectionSpacePosition(uint cascadeIndex, float3 worldPosition)
+{
+	float4 pixelCascadePos = float4(worldPosition, 1.0f);
+	pixelCascadePos = mul(cascades[cascadeIndex].invTransform, pixelCascadePos);
+	pixelCascadePos = mul(cascades[cascadeIndex].projection, pixelCascadePos);
+	pixelCascadePos /= pixelCascadePos.w;
+	return pixelCascadePos;
+}
+
+
+
+
+
+float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 {
 	float output = 1.0f;
-	float4 shadowCamPosition = float4(worldPosition, 1.0f);
+	float2 texCoord;
+	uint cascadeIndex1 = GetCascadeIndex(depth);
+	uint cascadeIndex2 = cascadeIndex1;
 
-	shadowCamPosition = mul(shadowCamInverse, shadowCamPosition);
-	shadowCamPosition = mul(shadowCamProjection, shadowCamPosition);
-	shadowCamPosition /= shadowCamPosition.w;
+	float4 pixelPosCascade = GetCascadeProjectionSpacePosition(cascadeIndex1, worldPosition);
+	texCoord = GetShadowMapUV(cascadeIndex1, pixelPosCascade.xy);
+	float shadowMapDepth = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
 
-	float2 texCord;
-	texCord.x = shadowCamPosition.x * 0.5f + 0.5f;
-	texCord.y = shadowCamPosition.y * -0.5f + 0.5f;
-	float shadowCamDepth = shadowBuffer.Sample(samplerWrap, texCord).x;
+	float4 pixelPosCascade2 = pixelPosCascade;
+	float shadowMapDepth2 = shadowMapDepth;
+	
+	float normalizedDepth = 0.0f;
 
-	if (shadowCamDepth < shadowCamPosition.z - 0.001f && shadowCamDepth != 0.f)
+	if (cascadeIndex2 + 1 < NUM_CASCADES + 1)
+	{
+		cascadeIndex2 += 1;
+		normalizedDepth = depth;
+		normalizedDepth /= cascadeEnds[cascadeIndex2].x - cascadeEnds[cascadeIndex1];
+		normalizedDepth = 1.0f - normalizedDepth;
+	}
+	
+	if(normalizedDepth > 0.9f)
+	{
+		pixelPosCascade2 = GetCascadeProjectionSpacePosition(cascadeIndex2, worldPosition);
+		texCoord = GetShadowMapUV(cascadeIndex2, pixelPosCascade2.xy);
+		shadowMapDepth2 = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
+	}
+
+	float shadowDepth = lerp(shadowMapDepth, shadowMapDepth2, normalizedDepth);
+	float pixelShadowDepth = lerp(pixelPosCascade.z, pixelPosCascade2.z, normalizedDepth);
+
+	float3 normal = deferred_normal.SampleLevel(samplerClampPoint, uv, 0).xyz;
+	float bias = dot(directionalLight.direction, normal);
+	//bias = 1.0f - bias;
+	bias = clamp(bias , 0.0075, 0.03);
+
+	if (shadowMapDepth < pixelPosCascade.z - bias && shadowDepth != 0.f)
 	{
 		output = 0.0f;
 	}
-	if (directionalLight.shadowIndex == -1)
-	{
-		output = 1.0f;
-	}
-	if (texCord.x < 0.0f || texCord.x > 1.0f)
-	{
-		output = 1.0f;
-	}
-	if (texCord.y < 0.0f || texCord.y > 1.0f)
-	{
-		output = 1.0f;
-	}
+	
 	return output;
 }
 
@@ -189,16 +277,15 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	Output output;
 	
 	float2 uv = inputPixel.tex;
-	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
+	float1 depth = deferred_depth.Sample(samplerClampPoint, uv).x;
 
-	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
+	float4 fullAlbedo = deferred_diffuse.Sample(samplerClampPoint, uv).rgba;
 
-	// if (depth >= DEPTH_BIAS)
-	// {
-	// 	output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	// 	return output;
-	// }
-
+	//if (depth >= DEPTH_BIAS)
+	//{
+	//	output.color = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	//	return output;
+	//}
 
 	float3 albedo = fullAlbedo.rgb;
 	float3 worldPosition = WorldPosition(uv, depth);
@@ -206,7 +293,7 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 	float3 normal = Normal(uv);
 
-	float4 RMAO = deferred_RMAO.Sample(samplerWrap, uv);
+	float4 RMAO = deferred_RMAO.Sample(samplerClampPoint, uv);
 	float3 metalness = RMAO.yyy;
 
 	float3 metalnessAlbedo = albedo - (albedo * metalness);
@@ -244,11 +331,65 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 visibility = Visibility(directionalLight.direction, normal, roughness, cameraPosition, worldPosition).xxx;
 	float3 directionSpecularity = lightColor * lambert * dirrfresnel * distribution * visibility;
 
+	
+	float1 pixelCamDepth = length(worldPosition - cameraPosition);
 
-	float shadow = ShadowBuffer(worldPosition);
+	float shadow = ShadowBuffer(worldPosition, pixelCamDepth, uv);
+	//shadow += ShadowBuffer(worldPosition, cascadeIndex + 1);
+	//shadow = saturate(shadow);
 
 	float3 finalColor = (directionDiffuse + directionSpecularity);
 	finalColor *= directionalLight.intensity * shadow;
 	output.color = float4(finalColor, fullAlbedo.a);
+	//output.color = float4(shadow.xxx, fullAlbedo.a);
+
+
+	//static const float4 depthColors[4] =
+	//{
+	//	float4(1.0f, 0.0f, 0.0f, 1.0f),
+	//	float4(0.0f, 1.0f, 0.0f, 1.0f),
+	//	float4(0.0f, 0.0f, 1.0f, 1.0f),
+	//	float4(1.0f, 1.0f, 0.0f, 1.0f)
+	//};
+	
+	//uint cascadeIndex = 3;
+	//[unroll]
+	//for (uint i = 0; i < NUM_CASCADES - 1; ++i)
+	//{
+	//	if (pixelCamDepth > cascadeEnds[i])
+	//	{
+	//		if (pixelCamDepth < cascadeEnds[i + 1])
+	//		{
+	//			cascadeIndex = i;
+	//		}
+	//	}
+	//}
+	//if (pixelCamDepth > cascadeEnds[NUM_CASCADES - 1])
+	//{
+	//	cascadeIndex = NUM_CASCADES - 1;
+	//}
+	
+	//output.color *= depthColors[cascadeIndex];
+
+	//float2 texCord = uv;
+	//cascadeIndex = 2;
+	//texCord.x *= cascades[cascadeIndex].rect.z - cascades[cascadeIndex].rect.x;
+	//texCord.x += cascades[cascadeIndex].rect.x;
+	//texCord.y *= cascades[cascadeIndex].rect.w - cascades[cascadeIndex].rect.y;
+	//texCord.y += cascades[cascadeIndex].rect.y;
+	//output.color.rgb = shadowBuffer.Sample(samplerWrap, texCord).xyz;
+	//output.color.a = 1.0f;
+
+
+
+
+	//float4 shadowCamPosition = float4(worldPosition, 1.0f);
+	//shadowCamPosition = mul(cascades[0].invTransform, shadowCamPosition);
+	//shadowCamPosition = mul(cascades[0].projection, shadowCamPosition);
+	//shadowCamPosition /= shadowCamPosition.w;
+
+	//output.color.rgb = normalize(abs(shadowCamPosition)).xyz;
+
+	//output.color = float4(shadow, 0.0f, 0.0f, 1.0f);
 	return output;
 }
