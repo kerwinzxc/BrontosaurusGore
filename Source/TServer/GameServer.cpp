@@ -169,7 +169,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
-	myDamageOnCollisionComponentManager->Update(aDeltaTime);
+	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
 
 	return true;
 }
