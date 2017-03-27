@@ -39,7 +39,6 @@ void CImpController::Update(const float aDeltaTime)
 	myJumpForce -= gravityAcceleration * aDeltaTime;
 	if (CheckIfInAir() == false)
 	{
-		DL_PRINT("stopping jump");
 		myIsJumping = false;
 		myJumpForce = 0.0f;
 	}
@@ -150,7 +149,6 @@ bool  CImpController::CheckIfInAir()
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
-			DL_PRINT("Not in air !!!");
 			return false;
 		}
 	}
