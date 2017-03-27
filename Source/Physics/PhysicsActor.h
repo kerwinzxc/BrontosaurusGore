@@ -19,6 +19,7 @@ namespace Physics
 		virtual ~CPhysicsActor();
 
 		void SetIsActive(const bool aIsActive);
+		bool GetIsActive();
 		void SetUseGravity(const bool aUseGravity);
 
 		
