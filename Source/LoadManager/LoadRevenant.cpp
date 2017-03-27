@@ -4,8 +4,6 @@
 
 int LoadRevenant(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int ID = 0;
-
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
@@ -24,7 +22,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	blueprint.flightHeight = someData.myData.at("FlightHeight").GetFloat();
 	blueprint.hoverTime = someData.myData.at("HoverDuration").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eRevenant);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eRevenant);
 
 	return component->GetId();
 }
