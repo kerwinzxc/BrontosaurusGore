@@ -148,7 +148,6 @@ bool  CImpController::CheckIfInAir()
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
-			DL_PRINT("Not in air !!!");
 			return false;
 		}
 	}

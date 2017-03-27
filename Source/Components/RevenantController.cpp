@@ -122,7 +122,6 @@ void CRevenantController::Update(const float aDeltaTime)
 		if(CheckIfInAir() == false)
 		{
 			myIsflying = false;
-			DL_PRINT("Stopping flight!!!");
 			myFlightForce = 0.0f;
 		}
 		break;

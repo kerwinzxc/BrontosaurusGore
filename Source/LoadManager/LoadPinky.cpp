@@ -4,8 +4,6 @@
 
 int LoadPinky(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int ID = 0;
-
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
@@ -36,7 +34,7 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();
 	blueprint.windupChargeTime = someData.myData.at("WindUpChargeDuration").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::ePinky);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::ePinky);
 
 	return component->GetId();
 }

@@ -7,7 +7,7 @@ public:
 	static void Create();
 	static void Destroy();
 	static CEnemyClientRepresentationManager& GetInstance();
-	CEnemyClientRepresentation& CreateAndRegister(unsigned int anId);
+	CEnemyClientRepresentation& CreateAndRegister();
 	CEnemyClientRepresentation& GetRepresentation(unsigned int aId);
 	void Update(const CU::Time& aDeltaTime);
 	void Init(CWeaponSystemManager* aWeaponSystemManagerPointer);
