@@ -103,7 +103,7 @@ CEnemyComponentManager::~CEnemyComponentManager()
 {
 }
 
-void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer, CColliderComponentManager* aColiderComponentManagerPointer)
+void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer)
 {
 	SComponentMessageData addWeaponData;
 
@@ -114,7 +114,6 @@ void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentMa
 		controllerDesc.minMoveDistance = 0.00001f;
 		controllerDesc.halfHeight = 1.0f;
 
-		myEnemies[i]->GetParent()->AddComponent(aColiderComponentManagerPointer->CreateCharacterControllerComponent(controllerDesc));
 		myEnemies[i]->GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.5f, 0.0f));
 		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		SComponentMessageData controllerPositionData;
