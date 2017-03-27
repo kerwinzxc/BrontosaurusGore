@@ -22,6 +22,9 @@ public:
 	bool CheckIfInAir();
 	void ApplyJumpForce(float aJumpHeight);
 private:
+	inline bool ShouldJumpAfterPlayer(float aHeightDiff);
+	void UpdateJumpForces(const float aDeltaTime);
+
 	float myJumpHeight;
 	float myJumpForce;
 	eImpState myState;
@@ -29,3 +32,7 @@ private:
 	bool myIsJumping;
 };
 
+inline bool CImpController::ShouldJumpAfterPlayer(float aHeightDiff)
+{
+	return (aHeightDiff > 1.0f) && (myIsJumping == false);
+}
