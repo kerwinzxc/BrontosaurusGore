@@ -16,6 +16,8 @@ public:
 	void Update(const CU::Time aDeltaTime);
 private:
 	void SwapMovementMode();
+	bool IsWalking() const;
+	void PlayWalkSound() const;
 	void DefaultMovement(const CU::Time& aTime);
 	void FreecamMovement(const CU::Time& aTime);
 	void KeyPressed(const ePlayerControls aPlayerControl);

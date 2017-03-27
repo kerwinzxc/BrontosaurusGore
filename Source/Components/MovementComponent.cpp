@@ -4,6 +4,7 @@
 #include "../CommonUtilities/JsonValue.h"
 #include "../PostMaster/SendNetworkMessage.h"
 #include "../TShared/NetworkMessage_Position.h"
+#include "../Audio/AudioInterface.h"
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
@@ -94,8 +95,26 @@ void CMovementComponent::SwapMovementMode()
 	}
 }
 
+bool CMovementComponent::IsWalking() const
+{
+	return myKeysDown[static_cast<int>(ePlayerControls::eRight) ] && !myKeysDown[static_cast<int>(ePlayerControls::eLeft)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eLeft)] && !myKeysDown[static_cast<int>(ePlayerControls::eRight)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eForward)] && !myKeysDown[static_cast<int>(ePlayerControls::eBackward)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eBackward)] && !myKeysDown[static_cast<int>(ePlayerControls::eForward)];
+}
+
+void CMovementComponent::PlayWalkSound() const
+{
+	if(IsWalking())
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep");
+	}
+}
+
 void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 {
+	PlayWalkSound();
+
 	myVelocity.y = 0.0f;
 	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)] == true && myVelocity.x > -myMaxSpeed)
 	{
