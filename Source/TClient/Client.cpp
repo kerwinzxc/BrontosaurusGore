@@ -372,7 +372,7 @@ void CClient::Update()
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-				DL_PRINT("Enemy network trans message");
+				
 			}
 			break;
 			case ePackageType::eTakeDamage:

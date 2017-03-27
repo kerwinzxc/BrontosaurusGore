@@ -19,7 +19,6 @@ CImpController::~CImpController()
 
 void CImpController::Update(const float aDeltaTime)
 {
-	DL_PRINT("Jumpforce %f", myJumpForce);
 	CU::Vector3f velocity;
 	velocity.y = myJumpForce;
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
