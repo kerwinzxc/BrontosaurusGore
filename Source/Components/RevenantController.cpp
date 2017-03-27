@@ -55,7 +55,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			myState = eRevenantState::eUseMeleeAttack;
 		}
-		else if (myShouldGoMeleeRadius2 > distToPlayer)
+		else if (myWalkToMeleeRange2 > distToPlayer)
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
 		}

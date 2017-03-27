@@ -62,7 +62,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		{
 			myState = ePinkyState::eUseMeleeAttack;
 		}
-		else if (myShouldGoMeleeRadius2 > distToPlayer)
+		else if (myWalkToMeleeRange2 > distToPlayer)
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
