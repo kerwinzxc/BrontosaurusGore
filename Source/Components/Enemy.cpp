@@ -72,11 +72,11 @@ void CEnemy::Update(const float aDeltaTime)
 
 		if (myIsAttacking == false)
 		{
-			if (WithinAttackRange(distToPlayer) == true)
+			if (WithinAttackRange(distToPlayer))
 			{
 				myIsAttacking = true;
 			}
-			else if (WithinDetectionRange(distToPlayer) == true)
+			else if (WithinDetectionRange(distToPlayer))
 			{
 				CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 				CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -98,7 +98,7 @@ void CEnemy::Update(const float aDeltaTime)
 
 		if(myIsAttacking == true)
 		{
-			if (OutsideAttackRange(distToPlayer) == true)
+			if (OutsideAttackRange(distToPlayer))
 			{
 				myIsAttacking = false;
 

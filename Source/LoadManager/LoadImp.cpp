@@ -18,7 +18,17 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	blueprint.detectionRange = someData.myData.at("DetectionRange").GetFloat();
 	blueprint.startAttackRange = someData.myData.at("StartAttackRange").GetFloat();
 	blueprint.stopAttackRange = someData.myData.at("StopAttackRange").GetFloat();
-	blueprint.shouldGoMeleeRadius = someData.myData.at("GoingMeleeRange").GetFloat();
+
+	if (someData.myData.HasKey("GoingMeleeRange") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.walkToMeleeRange = someData.myData.at("GoingMeleeRange").GetFloat();
+	}
+	else
+	{
+		blueprint.walkToMeleeRange = someData.myData.at("WalkToMeleeRange").GetFloat();
+	}
+
 	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eImp);

@@ -3,6 +3,7 @@
 #include "PlayerControls.h"
 #include "../CommonUtilities/BitSet.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../Audio/AudioInterface.h"
 
 class CMovementComponent : public CComponent
 {
@@ -16,6 +17,8 @@ public:
 	void Update(const CU::Time aDeltaTime);
 private:
 	void SwapMovementMode();
+	bool IsWalking() const;
+	void UpdateSoundState();
 	void DefaultMovement(const CU::Time& aTime);
 	void FreecamMovement(const CU::Time& aTime);
 	void KeyPressed(const ePlayerControls aPlayerControl);
@@ -50,4 +53,6 @@ private:
 	int mySpeedMultiplier;
 	bool myIncrementPressed;
 	bool myDecrementPressed;
+	bool myIsWalking;
+	Audio::GameObjectID myAudioId;
 };

@@ -6,7 +6,7 @@ struct SEnemyBlueprint
 	float detectionRange;
 	float startAttackRange;
 	float stopAttackRange;
-	float shouldGoMeleeRadius;
+	float walkToMeleeRange;
 };
 
 struct SImpBlueprint : public SEnemyBlueprint
