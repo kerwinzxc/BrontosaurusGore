@@ -4,8 +4,6 @@
 
 int LoadImp(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int ID = 0;
-
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
@@ -23,7 +21,7 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	blueprint.shouldGoMeleeRadius = someData.myData.at("GoingMeleeRange").GetFloat();
 	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eImp);
 
 	return component->GetId();
 }

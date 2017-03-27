@@ -26,13 +26,15 @@ void CEnemyComponentManager::Update(const float aDeltaTime)
 	}
 }
 
-CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType)
+CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType)
 {
+
+	static unsigned short ID = 0;
 	switch (aType)
 	{
 	case eEnemyTypes::eDefault:
 	{
-		CEnemy* enemy = new CEnemy(anId, aType);
+		CEnemy* enemy = new CEnemy(ID++, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
@@ -45,7 +47,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	}
 	case eEnemyTypes::eImp:
 	{
-		CImpController* enemy = new CImpController(anId, aType);
+		CImpController* enemy = new CImpController(ID++, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
@@ -58,7 +60,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	}
 	case eEnemyTypes::eRevenant:
 	{
-		CRevenantController* enemy = new CRevenantController(anId, aType);
+		CRevenantController* enemy = new CRevenantController(ID++, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
@@ -71,7 +73,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	}
 	case eEnemyTypes::ePinky:
 	{
-		CPinkyController* enemy = new CPinkyController(anId, aType);
+		CPinkyController* enemy = new CPinkyController(ID++, aType);
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
@@ -89,9 +91,9 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	return nullptr;
 }
 
-CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType)
+CComponent* CEnemyComponentManager::CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType)
 {
-	return CreateComponent(anEnemyBlueprint,anId, aType);
+	return CreateComponent(anEnemyBlueprint, aType);
 }
 
 void CEnemyComponentManager::DeleteComponent(CEnemy* anEnemy)

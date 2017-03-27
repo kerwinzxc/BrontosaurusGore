@@ -11,11 +11,14 @@ CEnemyClientRepresentationManager& CEnemyClientRepresentationManager::GetInstanc
 	return *ourInstance;
 }
 
-CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister(unsigned int anId)
+CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister()
 {
-	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(anId);
-	myRepresentations[anId] = rep;
+	static unsigned short ID = 0;
+
+	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ID);
+	myRepresentations[ID] = rep;
 	CComponentManager::GetInstance().RegisterComponent(rep);
+	ID++;
 	return *rep;
 }
 
