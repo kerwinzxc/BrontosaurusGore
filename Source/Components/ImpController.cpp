@@ -52,6 +52,8 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eIdle;
 		}
+
+
 	}
 	switch (myState)
 	{
