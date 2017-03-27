@@ -27,7 +27,7 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	/*blueprint.startAttackRange = 3.0f;
 	blueprint.flightHeight = 6.0f;
 	blueprint.hoverTime = 3.0f;
-	blueprint.shouldGoMeleeRadius = 6.0f;
+	blueprint.walkToMeleeRange = 6.0f;
 	blueprint.detectionRange = 9.0f;*/
 
 	blueprint.startAttackRange = 3.0f;
@@ -35,7 +35,7 @@ int LoadEnemy(KLoader::SLoadedComponentData someData)
 	blueprint.chargeSpeed = 4.0f;
 	blueprint.chargeDamage = 400.0f;
 	blueprint.windupChargeTime = 1.0f;
-	blueprint.shouldGoMeleeRadius = 6.0f;
+	blueprint.walkToMeleeRange = 6.0f;
 	blueprint.detectionRange = 9.0f;
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::ePinky);
