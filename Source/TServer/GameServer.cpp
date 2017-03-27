@@ -108,6 +108,8 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+	myEnemyComponentManager->Init(myWeaponSystemManager, myColliderComponentManager);
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 void CGameServer::ReInit()
@@ -159,9 +161,10 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	const float updateFrequecy = 0.016f * 1000;
 	if(myTime > updateFrequecy)
 	{
-		myEnemyComponentManager->Update(aDeltaTime);
+		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
+	
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
 	{
 		myColliderComponentManager->Update();
@@ -184,7 +187,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 
-	Component::CEnemy::SetPlayerObject(gameObject);
+	CEnemy::SetPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }

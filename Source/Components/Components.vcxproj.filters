@@ -213,6 +213,15 @@
     <ClCompile Include="CheckpointComponentManager.cpp">
       <Filter>CheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="ImpController.cpp">
+      <Filter>Enemy\Imp</Filter>
+    </ClCompile>
+    <ClCompile Include="RevenantController.cpp">
+      <Filter>Enemy\Revenant</Filter>
+    </ClCompile>
+    <ClCompile Include="PinkyController.cpp">
+      <Filter>Enemy\Pinky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -484,6 +493,18 @@
     <ClInclude Include="CheckpointComponentManager.h">
       <Filter>CheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="ImpController.h">
+      <Filter>Enemy\Imp</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTypes.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="RevenantController.h">
+      <Filter>Enemy\Revenant</Filter>
+    </ClInclude>
+    <ClInclude Include="PinkyController.h">
+      <Filter>Enemy\Pinky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -581,6 +602,15 @@
     </Filter>
     <Filter Include="Pickup\Key">
       <UniqueIdentifier>{d8fbd349-113f-4812-b49f-8860ba36c689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\Imp">
+      <UniqueIdentifier>{c084fdb2-c38e-40ba-b307-e697e857494a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\Revenant">
+      <UniqueIdentifier>{5fd0bb5d-05c6-460c-a235-bc8bec273324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\Pinky">
+      <UniqueIdentifier>{59f4680f-f023-4ada-a222-586706da19ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

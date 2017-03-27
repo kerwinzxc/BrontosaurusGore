@@ -362,7 +362,7 @@ void CClient::Update()
 			{
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
-				target.GetParent()->SetWorldPosition(message->GetPosition());
+				target.GetParent()->SetWorldPosition(message->GetPosition()); // doesn't get sent anymore :/
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
@@ -370,8 +370,9 @@ void CClient::Update()
 			{
 				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
-				target.GetParent()->SetWorldTransformation(message->GetTransformation());
+				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				DL_PRINT("Enemy network trans message");
 			}
 			break;
 			case ePackageType::eTakeDamage:
