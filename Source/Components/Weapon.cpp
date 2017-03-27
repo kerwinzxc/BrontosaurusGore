@@ -10,14 +10,17 @@
 #include "../Physics/PhysicsActorDynamic.h"
 #include "../Audio/AudioInterface.h"
 
-CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene)
+CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
 	myElapsedFireTimer = 0.0f;
 	myWeaponData = aWeaponData;
 	myUser = nullptr;
 	myWeaponObject = nullptr;
 	myPhysicsScene = aPhysicsScene;
-	
+	if (Audio::CAudioInterface::GetInstance() != nullptr)
+	{
+		myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
+	}
 }
 
 
@@ -187,6 +190,12 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent)
 	}
 	if(eventId.empty() == false)
 	{
+		if(myAudioId != 0)
+		{
+			const CU::Matrix44f transform = myUser->GetToWorldTransform();
+			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition(), transform.myForwardVector);
+		}
+
 		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str());
 	}
 }

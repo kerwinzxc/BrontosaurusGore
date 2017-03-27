@@ -1,5 +1,6 @@
 #pragma once
 #include "WeaponSoundData.h"
+#include "../Audio/AudioInterface.h"
 
 namespace CU {
 	class CJsonValue;

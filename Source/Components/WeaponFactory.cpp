@@ -12,13 +12,15 @@
 #include "GameObjectManager.h"
 #include "ExplosionData.h"
 
-CWeaponFactory::CWeaponFactory()
+CWeaponFactory::CWeaponFactory(): myPhysicsScene(nullptr)
 {
 	myWeaponDataList.Init(10);
 	myAmmoDataList.Init(10);
 	myWeaponList.Init(200);
 	myGameObjectManagerPointer = nullptr;
 	myModelComponentManagerPointer = nullptr;
+
+	
 }
 
 
@@ -94,7 +96,7 @@ void CWeaponFactory::LoadWeapons()
 		}
 		else
 		{
-			DL_PRINT_WARNING("Weapon %s doesn't define sound feedback.", weaponName);
+			DL_PRINT_WARNING("Weapon \"%s\" doesn't define sound feedback.", weaponName.c_str());
 		}
 
 		newAmmoData->maxAmmo = levelsArray[i].at("MaxAmmoAmount").GetInt();
