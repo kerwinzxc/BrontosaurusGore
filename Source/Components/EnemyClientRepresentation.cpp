@@ -6,6 +6,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId) : myCo
 {
 	myPositionInterpolationSpeed = 3.1;
 	myRotationInterpolationSpeed = 7.1f;
+	myType = eEnemyTypes::eDefault;
 }
 
 

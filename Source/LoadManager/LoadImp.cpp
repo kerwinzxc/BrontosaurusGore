@@ -4,8 +4,6 @@
 
 int LoadImp(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int ID = 0;
-
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
@@ -16,14 +14,14 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 		return NULL_COMPONENT;
 	}
 	SImpBlueprint blueprint;
-	blueprint.speed = someData.myData.at("speed").GetFloat();
-	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
-	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
-	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
-	blueprint.shouldGoMeleeRadius = someData.myData.at("goingMeleeRange").GetFloat();
-	blueprint.jumpHeight = someData.myData.at("jumpHeight").GetFloat();
+	blueprint.speed = someData.myData.at("Speed").GetFloat();
+	blueprint.detectionRange = someData.myData.at("DetectionRange").GetFloat();
+	blueprint.startAttackRange = someData.myData.at("StartAttackRange").GetFloat();
+	blueprint.stopAttackRange = someData.myData.at("StopAttackRange").GetFloat();
+	blueprint.shouldGoMeleeRadius = someData.myData.at("GoingMeleeRange").GetFloat();
+	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eImp);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eImp);
 
 	return component->GetId();
 }

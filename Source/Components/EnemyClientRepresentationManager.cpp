@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "EnemyClientRepresentationManager.h"
+#include "WeaponSystemManager.h"
+#include "WeaponSystemComponent.h"
 
 CEnemyClientRepresentationManager* CEnemyClientRepresentationManager::ourInstance = nullptr;
 
@@ -9,11 +11,14 @@ CEnemyClientRepresentationManager& CEnemyClientRepresentationManager::GetInstanc
 	return *ourInstance;
 }
 
-CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister(unsigned int anId)
+CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister()
 {
-	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(anId);
-	myRepresentations[anId] = rep;
+	static unsigned short ID = 0;
+
+	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ID);
+	myRepresentations[ID] = rep;
 	CComponentManager::GetInstance().RegisterComponent(rep);
+	ID++;
 	return *rep;
 }
 
@@ -53,10 +58,41 @@ void CEnemyClientRepresentationManager::Update(const CU::Time& aDeltaTime)
 	}
 }
 
-void CEnemyClientRepresentationManager::Init()
+void CEnemyClientRepresentationManager::Init(CWeaponSystemManager* aWeaponSystemManagerPointer)
 {
+	SComponentMessageData addWeaponData;
 	for (auto enemyRepresentation : myRepresentations)
 	{
 		myRepresentations.at(enemyRepresentation.first)->Init();
+		myRepresentations.at(enemyRepresentation.first)->GetParent()->AddComponent(aWeaponSystemManagerPointer->CreateAndRegisterComponent());
+		switch (myRepresentations.at(enemyRepresentation.first)->GetEnemyType())
+		{
+		case eEnemyTypes::eImp:
+		{
+			addWeaponData.myString = "ImpMeleeAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			addWeaponData.myString = "ImpRangedAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			break;
+		}
+		case eEnemyTypes::eRevenant:
+		{
+			addWeaponData.myString = "RevenantRangedAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			addWeaponData.myString = "RevenantFlyingRangedAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			addWeaponData.myString = "RevenantMeleeAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			break;
+		}
+		case eEnemyTypes::ePinky:
+		{
+			addWeaponData.myString = "PinkyMeleeAttack";
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }

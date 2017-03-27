@@ -4,8 +4,6 @@
 
 int LoadRevenant(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int ID = 0;
-
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CEnemyComponentManager* enemyComponentManager = loadManager.GetCurrentGameServer().GetEnemyComponentManager();
@@ -16,15 +14,15 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 		return NULL_COMPONENT;
 	}
 	SRevenantBlueprint blueprint;
-	blueprint.speed = someData.myData.at("speed").GetFloat();
-	blueprint.detectionRange = someData.myData.at("detactionRange").GetFloat();
-	blueprint.startAttackRange = someData.myData.at("startAttackRange").GetFloat();
-	blueprint.stopAttackRange = someData.myData.at("stopAttackRange").GetFloat();
-	blueprint.shouldGoMeleeRadius = someData.myData.at("goingMeleeRange").GetFloat();
-	blueprint.flightHeight = someData.myData.at("flightHeight").GetFloat();
-	blueprint.hoverTime = someData.myData.at("hoverDuration").GetFloat();
+	blueprint.speed = someData.myData.at("Speed").GetFloat();
+	blueprint.detectionRange = someData.myData.at("DetectionRange").GetFloat();
+	blueprint.startAttackRange = someData.myData.at("StartAttackRange").GetFloat();
+	blueprint.stopAttackRange = someData.myData.at("StopAttackRange").GetFloat();
+	blueprint.shouldGoMeleeRadius = someData.myData.at("GoingMeleeRange").GetFloat();
+	blueprint.flightHeight = someData.myData.at("FlightHeight").GetFloat();
+	blueprint.hoverTime = someData.myData.at("HoverDuration").GetFloat();
 
-	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, ID++, eEnemyTypes::eRevenant);
+	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eRevenant);
 
 	return component->GetId();
 }
