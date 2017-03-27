@@ -165,7 +165,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 		myTime = 0;
 	}
 	
-	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
 		myColliderComponentManager->Update();
 	}

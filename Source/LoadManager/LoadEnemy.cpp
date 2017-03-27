@@ -53,3 +53,36 @@ int ClientLoadEnemy(KLoader::SLoadedComponentData someData)
 
 	return rep.GetId();
 }
+
+int ClientLoadImp(KLoader::SLoadedComponentData someData)
+{
+	//client sidan
+
+	static unsigned int ID = 0;
+
+	CEnemyClientRepresentation& rep = CEnemyClientRepresentationManager::GetInstance().CreateAndRegister(ID++);
+	rep.SetEnemyType(eEnemyTypes::eImp);
+	return rep.GetId();
+}
+
+int ClientLoadRevenant(KLoader::SLoadedComponentData someData)
+{
+	//client sidan
+
+	static unsigned int ID = 0;
+
+	CEnemyClientRepresentation& rep = CEnemyClientRepresentationManager::GetInstance().CreateAndRegister(ID++);
+	rep.SetEnemyType(eEnemyTypes::eRevenant);
+	return rep.GetId();
+}
+
+int ClientLoadPinky(KLoader::SLoadedComponentData someData)
+{
+	//client sidan
+
+	static unsigned int ID = 0;
+
+	CEnemyClientRepresentation& rep = CEnemyClientRepresentationManager::GetInstance().CreateAndRegister(ID++);
+	rep.SetEnemyType(eEnemyTypes::ePinky);
+	return rep.GetId();
+}
