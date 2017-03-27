@@ -29,7 +29,6 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 		blueprint.walkToMeleeRange = someData.myData.at("WalkToMeleeRange").GetFloat();
 	}
 
-	blueprint.chargeCooldown = someData.myData.at("GoingMeleeRange").GetFloat();
 	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
 	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();
 	blueprint.windupChargeTime = someData.myData.at("WindUpChargeDuration").GetFloat();

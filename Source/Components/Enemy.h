@@ -22,7 +22,8 @@ public:
 
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
-	virtual void UpdateTransformation();
+	virtual void UpdateTransformationNetworked();
+	virtual void UpdateTransformationLocal(CU::Vector3f aVelocity, const float aDeltaTime);
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange(const float aDist);
