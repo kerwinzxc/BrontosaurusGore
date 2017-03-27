@@ -220,6 +220,7 @@ void CClient::Update()
 
 				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 				myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
 				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 
