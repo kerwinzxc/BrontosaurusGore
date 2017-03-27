@@ -1,59 +1,77 @@
 #pragma once
 #include "Component.h"
+#include "EnemyBlueprint.h"
+#include "EnemyTypes.h"
 
-namespace Component
+class CGameObject;
+
+class CEnemy : public CComponent
 {
-	class CEnemy : public CComponent
-	{
-	public:
-		CEnemy(unsigned int anId);
-		~CEnemy();
-		void SetHealth(const unsigned aHealth);
-		void SetSpeed(const float aSpeed);
-		void SetDetectionRange(const float aDetactionRange);
-		void SetStartAttackRange(const float aStartAttackRange);
-		void SetStopAttackRange(const float aStopAttackRange);
+public:
+	CEnemy(unsigned int aId, eEnemyTypes aType);
+	~CEnemy();
 
-		void Move(const CU::Vector3f& aDispl);
-		void Update(const CU::Time& aDeltaTime);
+	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
+	static void SetPlayerObject(CGameObject* aPlayerObj);
 
-		void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	virtual void Attack();
+	virtual void Update(const float aDeltaTime);
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	virtual	void ChangeWeapon(const unsigned int aIndex);
+	inline eEnemyTypes GetEnemyType();
+protected:
+	virtual CU::Vector3f ClosestPlayerPosition();
+	virtual void UpdateTransformation();
+	virtual	void MoveForward(const float aMovAmount);
 
-		static void SetPlayer(CGameObject* playerObject);
-	protected:
-		CU::Vector3f ClosestPlayerPosition();
-		static CU::GrowingArray<CGameObject*> myPlayerObject;
-		unsigned myHealth;
-		float mySpeed;
-		float myDetectionRange2;
-		float myStartAttackRange2;
-		float myStopAttackRange2;
-		bool myIsDead;
-		unsigned myServerId;
-	};
+	virtual inline bool WithinDetectionRange(const float aDist);
+	virtual inline bool WithinAttackRange(const float aDist);
+	virtual inline bool OutsideAttackRange(const float aDist);
+	void LookAtPlayer();
+protected:
+	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
+	unsigned int myServerId;
+	unsigned int myActiveWeaponIndex;
+
+	float mySpeed;
+	float myDetectionRange2;
+	float myStartAttackRange2;
+	float myStopAttackRange2;
+	float myShouldGoMeleeRadius2;
+	float myNetworkPositionUpdateCoolDown;
+	float myElapsedWaitingToSendMessageTime;
+
+	eEnemyTypes myType;
+	bool myIsDead;
+	bool myIsAttacking;
+	char myControllerConstraints;
+};
+
+inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
+{
+	mySpeed = aData->speed;
+	myDetectionRange2 = aData->detectionRange * aData->detectionRange;
+	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
+	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
+	myShouldGoMeleeRadius2 = aData->shouldGoMeleeRadius *  aData->shouldGoMeleeRadius;
 }
 
-inline void Component::CEnemy::SetHealth(const unsigned aHealth)
+inline bool  CEnemy::WithinDetectionRange(const float aDist)
 {
-	myHealth = aHealth;
+	return aDist < myDetectionRange2;
 }
 
-inline void Component::CEnemy::SetSpeed(const float aSpeed)
+inline bool  CEnemy::WithinAttackRange(const float aDist)
 {
-	mySpeed = aSpeed *100 ;
+	return aDist < myStartAttackRange2;
 }
 
-inline void Component::CEnemy::SetDetectionRange(const float aDetactionRange)
+inline bool  CEnemy::OutsideAttackRange(const float aDist)
 {
-	myDetectionRange2 = aDetactionRange * aDetactionRange;
+	return aDist > myStopAttackRange2;
 }
 
-inline void Component::CEnemy::SetStartAttackRange(const float aStartAttackRange)
+inline eEnemyTypes CEnemy::GetEnemyType()
 {
-	myStartAttackRange2 = aStartAttackRange  * aStartAttackRange;
-}
-
-inline void Component::CEnemy::SetStopAttackRange(const float aStopAttackRange)
-{
-	myStopAttackRange2 = aStopAttackRange * aStopAttackRange;
+	return myType;
 }

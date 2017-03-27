@@ -37,6 +37,7 @@ public:
 	inline const std::string& GetName() const;
 	void Move(const CU::Vector3f& aDispl);
 	void Face(const CU::Vector3f& aDirection);
+	void LookAt(const CU::Vector3f& aDirection);
 private:
 	void Destroy() override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData &aMessageData) override;

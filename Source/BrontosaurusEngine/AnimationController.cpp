@@ -2,6 +2,35 @@
 
 #include "AnimationController.h"
 
+#include "../CommonUtilities/SerializerSaver.h"
+#include "../CommonUtilities/SerializerLoader.h"
+
+class CAnimationSerializerSaver : public CU::CSerilizerSaver
+{
+public:
+	void Cerealize(CU::Matrix44f& aMatrix44f) override
+	{
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myRightVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myUpVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myForwardVector);
+		CU::CSerilizerSaver::Cerealize(aMatrix44f.myPosition);
+	}
+
+};
+
+class CAnimationSerializerLoader : public CU::CSerializerLoader
+{
+public:
+	void Cerealize(CU::Matrix44f& aMatrix44f) override
+	{
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myRightVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myUpVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myForwardVector);
+		CU::CSerializerLoader::Cerealize(aMatrix44f.myPosition);
+	}
+};
+
+
 void TransformMatrix(mat4& out,const aiMatrix4x4& in){// there is some type of alignment issue with my mat4 and the aimatrix4x4 class, so the copy must be manually
 	out.m11=in.a1;
 	out.m12=in.a2;
@@ -199,8 +228,6 @@ void CSceneAnimator::Release(){// this should clean everything up
 	Skeleton = NULL;// make sure to zero it out
 }
 
-#include "../CommonUtilities/SerializerSaver.h"
-
 bool CSceneAnimator::CarlSave(const std::string& aFilePath)
 {
 	CU::CSerilizerSaver saver(131072); //we probably need about 100 kB here
@@ -291,7 +318,6 @@ bool CSceneAnimator::CarlSaveRecursive(CBone& aChild, CU::CSerilizerSaver& aSave
 	return true;
 }
 
-#include "../CommonUtilities/SerializerLoader.h"
 bool CSceneAnimator::CarlLoad(const std::string& aFilePath)
 {
 	CU::CSerializerLoader loader(CU::ISerializer::ReadFile(aFilePath));

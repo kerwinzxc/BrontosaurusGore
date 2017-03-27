@@ -32,6 +32,9 @@
 #include "Components/ExplosionFactory.h"
 #include "Components/ExplosionComponentManager.h"
 #include "Components/HealthComponentManager.h"
+#include "DamageOnCollisionComponentManager.h"
+#include "Components/DoorManager.h"
+#include "../Components/CheckpointComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -67,6 +70,7 @@
 #include "ThreadedPostmaster/OtherPlayerSpawned.h"
 #include "HealthComponent.h"
 #include "CheckPointComponent.h"
+#include "Enemy.h"
 //
 
 
@@ -110,7 +114,6 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	myPhysics = nullptr;
 	myColliderComponentManager = nullptr;
 	myCheckPointSystem = nullptr;
-
 	new CPollingStation();
 }
 
@@ -130,8 +133,12 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myScriptComponentManager);
 	SAFE_DELETE(myExplosionFactory);
 	SAFE_DELETE(myExplosionComponentManager);
-	CNetworkComponentManager::Destroy();
+	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
+	CParticleEmitterComponentManager::Destroy();
+	CDoorManager::Destroy();
+	CNetworkComponentManager::Destroy();
+	CCheckpointComponentManager::DestoryInstance();
 	CComponentManager::DestroyInstance();
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
@@ -224,6 +231,7 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	CEnemyClientRepresentationManager::GetInstance().Init(myWeaponSystemManager);
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	myPlayerHealthText = new CTextInstance();
 	myPlayerHealthText->Init();
@@ -237,13 +245,17 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponentManager->Update(aDeltaTime);
-	myEnemyComponentManager->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime.GetSeconds());
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
 	myAmmoComponentManager->Update(aDeltaTime);
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
+	myDamageOnCollisionComponentManager->Update(aDeltaTime);
+	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
+
+	CDoorManager::GetInstance()->Update(aDeltaTime);
 
 	myHUD.Update(aDeltaTime);
 
@@ -325,8 +337,12 @@ void CPlayState::CreateManagersAndFactories()
 {
 	CComponentManager::CreateInstance();
 
+	CCheckpointComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
+	CDoorManager::Create();
+
+	CParticleEmitterComponentManager::Create();
 
 	myScene = new CScene();
 
@@ -349,6 +365,7 @@ void CPlayState::CreateManagersAndFactories()
 	myProjectileComponentManager = new CProjectileComponentManager();
 	myProjectileFactory = new CProjectileFactory(myProjectileComponentManager);
 	myProjectileFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
@@ -373,15 +390,15 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	SComponentMessageData addHandGunData;
 	SComponentMessageData giveAmmoData;
 
-	addHandGunData.myString = "Handgun";
+	addHandGunData.myString = "BFG";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	SAmmoReplenishData tempAmmoReplensihData;
-	tempAmmoReplensihData.ammoType = "Handgun";
+	tempAmmoReplensihData.ammoType = "BFG";
 	tempAmmoReplensihData.replenishAmount = 100;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	/*addHandGunData.myString = "Shotgun";
+	addHandGunData.myString = "Shotgun";
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
 	tempAmmoReplensihData.ammoType = "Shotgun";
 	tempAmmoReplensihData.replenishAmount = 100;
@@ -393,7 +410,14 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	tempAmmoReplensihData.ammoType = "PlasmaRifle";
 	tempAmmoReplensihData.replenishAmount = 1000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);*/
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+	addHandGunData.myString = "MeleeWeapon";
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	tempAmmoReplensihData.ammoType = "MeleeWeapon";
+	tempAmmoReplensihData.replenishAmount = 1000000;
+	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 	otherPlayer->AddComponent(model);
 	otherPlayer->AddComponent(playerReciver);
@@ -510,17 +534,23 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->AddComponent(playerHealthComponent);
 
 
-		//Component::CEnemy::SetPlayer(playerObject);
+		
 
-		/*	CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
-			CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
-			enemyObject->AddComponent(enemyModelComponent);
-			CHealthComponent* enemyHealthComponent = new CHealthComponent();
-			enemyHealthComponent->SetMaxHealth(1);
-			enemyHealthComponent->SetHealth(1);
-			enemyObject->AddComponent(enemyHealthComponent);
+		//CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
+		//CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+		//enemyObject->AddComponent(enemyModelComponent);
+		//
+		//CEnemyComponentManager::EnemyBlueprint bluePrint;
+		//bluePrint.health = 10;
+		//bluePrint.detactionRange = 1000000;
+		//bluePrint.startAttackRange = 0;
+		//bluePrint.stopAttackRange = 0;
+		//bluePrint.speed = 0;
+		//CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
+		//enemyObject->AddComponent(enemyEnemy);
+		//enemyObject->SetWorldPosition(CU::Vector3f(-5, -33, -13));
 
-			SSphereColliderData sphereColliderData;
+			/*SSphereColliderData sphereColliderData;
 			sphereColliderData.IsTrigger = false;
 			sphereColliderData.myRadius = 0.5f;
 			CColliderComponent* enemySphereColiider = myColliderComponentManager->CreateComponent(&sphereColliderData);
@@ -530,6 +560,6 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->AddComponent(enemyRespanwsPlayerLol);
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
-		/**/
+		
 	}
 }

@@ -85,6 +85,7 @@ enum class eComponentMessageType
 	eDeactivate,
 	eNetworkDoDamage,
 	eActivateEmitter,
+	eServerShoot,
 	eLength,
 };
 
@@ -95,7 +96,12 @@ struct SComponentMessageData
 	union
 	{
 		void* myVoidPointer;
-		CComponent* myComponent;
+		struct
+		{
+			CComponent* myComponent;
+			eComponentType myComponentTypeAdded;
+		};
+		
 		CGameObject* myGameObject;
 		struct SComponentMessageCallback* myComponentMessageCallback;
 		ePlayerControls myPlayerControl;
@@ -107,8 +113,8 @@ struct SComponentMessageData
 		float myFloat;
 		CU::Vector2f myVector2f;
 		CU::Vector3f myVector3f;
+		CU::Vector4f myVector4f;
 
-		eComponentType myComponentTypeAdded;
 		ICollider* myCollider;
 
 		SAmmoData* myAmmoData;

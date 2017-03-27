@@ -16,7 +16,11 @@ CParticleEmitterComponent::~CParticleEmitterComponent()
 }
 
 void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
-{	
+{
+	if (!GetParent())
+	{
+		return;
+	}
 	myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
 	myParticleInstance->Update(aDeltaTime);
 }

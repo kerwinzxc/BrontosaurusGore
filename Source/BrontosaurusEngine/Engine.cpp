@@ -120,6 +120,7 @@ void CEngine::ThreadedRender()
 	while (myRenderer->GetIsRunning() == true)
 	{
 		Render();
+		std::this_thread::yield();
 	}
 
 
@@ -182,7 +183,6 @@ void CEngine::Start()
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
 
-	CParticleEmitterComponentManager::Create();
 	while (GetIsRunning())
 	{
 		myTimerManager->UpdateTimers();
@@ -219,8 +219,8 @@ void CEngine::Start()
 		{
 			Render();
 		}
+		std::this_thread::yield();
 	}
-	CParticleEmitterComponentManager::Destroy();
 }
 
 bool CEngine::GetIsRunning()

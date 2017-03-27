@@ -21,6 +21,7 @@ StateStack::StateStack()
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eStateStackMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eConsoleCalledUpon);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eQuitGame);
 
 }
 
@@ -93,6 +94,16 @@ eMessageReturn StateStack::DoEvent(const CChangeLevel& aChangeLevelMessage)
 	SwapState(aChangeLevelMessage.CreateLoadState(*this));
 	
 	return eMessageReturn::eStop;
+}
+
+eMessageReturn StateStack::DoEvent(const CQuitGame& aQuitGameMessage)
+{
+	for (State* state : myStates)
+	{
+		state->SetStateStatus(eStateStatus::ePop);
+	}
+
+	return eMessageReturn::eContinue;
 }
 
 const eStateStatus StateStack::UpdateState(const CU::Time& aDeltaTime)

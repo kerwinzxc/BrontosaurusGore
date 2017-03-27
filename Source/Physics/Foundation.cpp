@@ -73,6 +73,11 @@ namespace Physics
 		return myPhysics.GetLast();
 	}
 
+	physx::PxCooking& CFoundation::GetCooking()
+	{
+		return *myCooking;
+	}
+
 	void CFoundation::InitializeFoundation()
 	{
 		PHYSICS_LOG("Initializing PhysX\n");

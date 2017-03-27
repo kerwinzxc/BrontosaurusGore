@@ -17,7 +17,7 @@
 #include "PhysicsActorDynamic.h"
 #include "PhysicsActorStatic.h"
 #include "SimulationEventCallback.h"
-#include "CollisionLayers.h"
+#include "Collection.h"
 
 namespace Physics
 {
@@ -148,9 +148,73 @@ namespace Physics
 
 	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData)
 	{
-		DL_ASSERT("Mesh colliders not implemented yet.");
-		PxTriangleMeshDesc desc;
-		return nullptr;
+		
+
+		PxDefaultFileInputData inputData(aPath);
+		PxSerializationRegistry* registry = PxSerialization::createSerializationRegistry(PxGetPhysics());
+		PxCollection* collection = PxSerialization::createCollectionFromXml(inputData,
+			Physics::CFoundation::GetInstance()->GetCooking(), *registry);
+
+		CShape* shape = nullptr;
+
+		const PxU32 size = collection->getNbObjects();
+		for (PxU32 i = 0; i < size && shape == nullptr; ++i)
+		{
+			PxBase* obj = &collection->getObject(i);
+			//if (!obj->is<PxActor>())
+				//continue;
+
+			const PxConcreteType::Enum type = static_cast<PxConcreteType::Enum>(obj->getConcreteType());
+			const int x = 0;
+			switch (type)
+			{
+			case PxConcreteType::eUNDEFINED: break;
+			case PxConcreteType::eHEIGHTFIELD: break;
+			case PxConcreteType::eCONVEX_MESH:
+				{
+
+					PxConvexMesh* mesh = static_cast<PxConvexMesh*>(obj);
+
+					shape = CreateShape(*mesh, aMaterialData);
+				}
+				break;
+			case PxConcreteType::eTRIANGLE_MESH_BVH33: 
+			{
+				PxTriangleMesh* mesh = static_cast<PxTriangleMesh*>(obj);
+				
+				shape = CreateShape(*mesh, aMaterialData);
+			}
+			case PxConcreteType::eTRIANGLE_MESH_BVH34: 
+			{
+				PxTriangleMesh* mesh = static_cast<PxTriangleMesh*>(obj);
+
+				shape = CreateShape(*mesh, aMaterialData);
+			}
+				break;
+			case PxConcreteType::eCLOTH_FABRIC: break;
+			case PxConcreteType::eRIGID_DYNAMIC: break;
+			case PxConcreteType::eRIGID_STATIC: break;
+			case PxConcreteType::eSHAPE:
+				
+				break;
+			case PxConcreteType::eMATERIAL: break;
+			case PxConcreteType::eCONSTRAINT: break;
+			case PxConcreteType::eCLOTH: break;
+			case PxConcreteType::ePARTICLE_SYSTEM: break;
+			case PxConcreteType::ePARTICLE_FLUID: break;
+			case PxConcreteType::eAGGREGATE: break;
+			case PxConcreteType::eARTICULATION: break;
+			case PxConcreteType::eARTICULATION_LINK: break;
+			case PxConcreteType::eARTICULATION_JOINT: break;
+			case PxConcreteType::ePRUNING_STRUCTURE: break;
+			case PxConcreteType::ePHYSX_CORE_COUNT: break;
+			case PxConcreteType::eFIRST_PHYSX_EXTENSION: break;
+			case PxConcreteType::eFIRST_VEHICLE_EXTENSION: break;
+			case PxConcreteType::eFIRST_USER_EXTENSION: break;
+			default: break;
+			}
+		}
+		return shape;
 	}
 
 	CShape* CPhysics::CreateShape(PxGeometry& aGeometry, const SMaterialData & aMaterialData)
@@ -161,6 +225,23 @@ namespace Physics
 		return new CShape(shape);
 	}
 
+	CShape* CPhysics::CreateShape(physx::PxTriangleMesh& aMesh, const SMaterialData & aMaterialData)
+	{
+		PxMaterial* material = CreateMaterial(aMaterialData);
+
+		PxTriangleMeshGeometry* meshGeometry = new PxTriangleMeshGeometry(&aMesh);
+		PxShape* shape = myPxPhysics->createShape(*meshGeometry,*material);
+		return new CShape(shape);
+	}
+
+	CShape* CPhysics::CreateShape(physx::PxConvexMesh& aMesh, const SMaterialData& aMaterialData)
+	{
+		PxMaterial* material = CreateMaterial(aMaterialData);
+
+		PxConvexMeshGeometry* meshGeometry = new PxConvexMeshGeometry(&aMesh);
+		PxShape* shape = myPxPhysics->createShape(*meshGeometry, *material);
+		return new CShape(shape);
+	}
 
 	PxMaterial* CPhysics::CreateMaterial(const SMaterialData & aMaterialData)
 	{

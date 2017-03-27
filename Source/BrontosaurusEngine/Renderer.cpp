@@ -695,6 +695,34 @@ void CRenderer::CreateBlendStates()
 		CHECK_RESULT(result, "Failed to create mul-Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eMulBlend)] = blendState;
 	}
+	{
+		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
+		
+		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+
+		//THIS ONE MAKES EVERYTHING WEIRD AF:
+		//blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		//blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		//blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+		//blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		//blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		//blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		//blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		//blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+
+		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
+		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eOverlay)] = blendState;
+	}
 }
 
 void CRenderer::CreateDepthStencilStates()

@@ -96,13 +96,17 @@ private:
 	ClientID currentFreeId;
 
 	std::map<ClientID, CU::Time> myPendingPings;
+	std::map<unsigned char, float> myAlivePlayers;
+	std::map<unsigned char, float> myDeadPlayers;
 	CMessageManager* myMessageManager;
 
 	eServerState myServerState;
 
 	CGameServer* myGameServer;
 
+	float myPlayerRespawnTime;
 	bool myIsRunning;
 	bool myCanQuit;
+
 };
 

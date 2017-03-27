@@ -300,7 +300,6 @@ inline T deserialize(StreamType::const_iterator& begin, const StreamType::const_
 template <class T>
 inline T deserialize(StreamType& res) 
 {
-
 	StreamType::const_iterator it = res.begin();
 	T returnVal  = deserialize<T>(it, res.end());
 	res.erase(res.begin(), res.begin() + get_size(returnVal));

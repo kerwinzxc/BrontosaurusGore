@@ -15,6 +15,7 @@
 #include "../Components/AmmoComponentManager.h"
 #include "../Components/WeaponSystemManager.h"
 #include "../Components/WeaponFactory.h"
+#include "../Components/DamageOnCollisionComponentManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -107,6 +108,8 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+	myEnemyComponentManager->Init(myWeaponSystemManager);
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 void CGameServer::ReInit()
@@ -127,6 +130,7 @@ void CGameServer::CreateManagersAndFactories()
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
+	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 
 	myColliderComponentManager = new CColliderComponentManager();
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
@@ -146,6 +150,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myWeaponSystemManager);
 	SAFE_DELETE(myEnemyComponentManager);
+	SAFE_DELETE(myDamageOnCollisionComponentManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
@@ -156,13 +161,15 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	const float updateFrequecy = 0.016f * 1000;
 	if(myTime > updateFrequecy)
 	{
-		myEnemyComponentManager->Update(aDeltaTime);
+		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
-	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	
+	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
 		myColliderComponentManager->Update();
 	}
+	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
 
 	return true;
 }
@@ -180,7 +187,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 
-	Component::CEnemy::SetPlayer(gameObject);
+	CEnemy::SetPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }
@@ -188,4 +195,9 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 CEnemyComponentManager* CGameServer::GetEnemyComponentManager()
 {
 	return myEnemyComponentManager;
+}
+
+CWeaponSystemManager* CGameServer::GetCWeaponSystemManager()
+{
+	return myWeaponSystemManager;
 }

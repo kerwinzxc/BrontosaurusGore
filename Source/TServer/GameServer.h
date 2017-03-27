@@ -35,13 +35,16 @@ public:
 	bool IsLoaded() const;
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
+	CWeaponSystemManager* GetCWeaponSystemManager();
+inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
+inline CColliderComponentManager* GetColliderComponentManager();
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
 	CWeaponFactory* myWeaponFactory;
 	CMovementComponentManager* myMovementComponentManager;
-
+	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
@@ -52,7 +55,7 @@ private:
 
 	bool myIsRunning;
 	bool myInGame;
-	bool myIsLoaded;
+	std::atomic_bool myIsLoaded;
 
 	float myTime;
 	CEnemyComponentManager* myEnemyComponentManager;
@@ -64,4 +67,14 @@ private:
 CMovementComponentManager* CGameServer::GetMovementComponentManager()
 {
 	return myMovementComponentManager;
+}
+
+inline CDamageOnCollisionComponentManager* CGameServer::GetDamageOnCollisionComponentManager() const
+{
+	return myDamageOnCollisionComponentManager;
+}
+
+inline CColliderComponentManager* CGameServer::GetColliderComponentManager()
+{
+	return myColliderComponentManager;
 }

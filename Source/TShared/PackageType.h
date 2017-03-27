@@ -22,7 +22,15 @@ enum class ePackageType: __int8
 	ePickupHealth,
 	ePickupAmmo,
 	ePickupArmor,
+	ePickupKey,
+	eDoorMessage,
 	eEnemyPosition,
 	eTakeDamage,
-	eSize,
+	eEnemyTransformaion,
+	eSetCheckpointMessage,
+	ePlayerDied,
+	ePlayerRespawned,
+	eResetToCheckpoint,
+	eRevivePlayer,
+	eSize
 };

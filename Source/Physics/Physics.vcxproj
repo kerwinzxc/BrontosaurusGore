@@ -366,6 +366,7 @@
     <ClInclude Include="ApexRenderResourceManager.h" />
     <ClInclude Include="ApexResourceCallback.h" />
     <ClInclude Include="CharacterControllerManager.h" />
+    <ClInclude Include="Collection.h" />
     <ClInclude Include="CollisionLayers.h" />
     <ClInclude Include="Foundation.h" />
     <ClInclude Include="Include\apex_1.4\Actor.h" />
@@ -709,6 +710,7 @@
     <ClCompile Include="ApexRenderResourceManager.cpp" />
     <ClCompile Include="ApexResourceCallback.cpp" />
     <ClCompile Include="CharacterControllerManager.cpp" />
+    <ClCompile Include="Collection.cpp" />
     <ClCompile Include="Foundation.cpp" />
     <ClCompile Include="IPhysicsCallback.cpp" />
     <ClCompile Include="Physics.cpp" />

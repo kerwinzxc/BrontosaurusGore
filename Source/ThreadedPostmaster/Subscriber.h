@@ -20,6 +20,7 @@ class CPlayerPositionMessage;
 class CSpawnOtherPlayerMessage;
 class COtherPlayerSpawned;
 class CChangeLevel;
+class CQuitGame;
 class CNetworkDebugInfo;
 class CGameEventMessage;
 class CAddToCheckPointResetList;
@@ -27,6 +28,7 @@ class CSetAsNewCheckPointMessage;
 class CResetToCheckPointMessage;
 class CCreateExplosionMessage;
 class CDeactivateExplosionMessage;
+class CRevivePlayerMessage;
 
 namespace Postmaster
 {
@@ -59,6 +61,7 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CSpawnOtherPlayerMessage& aSpawnOtherPlayerMessage);
 		virtual eMessageReturn DoEvent(const COtherPlayerSpawned& aOtherPlayerSpawnedMessage);
 		virtual eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage);
+		virtual eMessageReturn DoEvent(const CQuitGame& aQuitGameMessage);
 		virtual eMessageReturn DoEvent(const CNetworkDebugInfo& aDebugInfo);
 		virtual eMessageReturn DoEvent(const CGameEventMessage & aGameEventMessageMessage);
 		virtual eMessageReturn DoEvent(const CAddToCheckPointResetList & aAddToCheckPointResetListMessage);
@@ -66,5 +69,6 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CResetToCheckPointMessage & aResetToCheckPointMessage);
 		virtual eMessageReturn DoEvent(const CCreateExplosionMessage & aCreateExplosionMessage);
 		virtual eMessageReturn DoEvent(const CDeactivateExplosionMessage & aDeactivateExplosionMessage);
+		virtual eMessageReturn DoEvent(const CRevivePlayerMessage & aRevivePlayerMessage);
 	};
 }

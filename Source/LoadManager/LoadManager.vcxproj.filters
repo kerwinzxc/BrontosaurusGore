@@ -38,7 +38,6 @@
       <Filter>LoadThings\LoadCamera</Filter>
     </ClInclude>
     <ClInclude Include="ServerLoadManager.h" />
-    <ClInclude Include="LoadEnemy.h" />
     <ClInclude Include="LoadNetworkComponent.h">
       <Filter>LoadThings\LoadNetworkComponent</Filter>
     </ClInclude>
@@ -71,6 +70,30 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadArmorComponent.h" />
+    <ClInclude Include="LoadDoorComponent.h">
+      <Filter>LoadThings\LoadDoorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadKeyPickupComponent.h">
+      <Filter>LoadThings\LoadKeyPickupComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadHighlightComponent.h">
+      <Filter>LoadThings\LoadHighlightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadDamageOnCollisionComponent.h">
+      <Filter>LoadThings\LoadDamageOnCollisionsComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadEnemy.h">
+      <Filter>LoadThings\LoadEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadImp.h">
+      <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadRevenant.h">
+      <Filter>LoadThings\LoadEnemy\LoadRevenant</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPinky.h">
+      <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -107,7 +130,6 @@
       <Filter>LoadThings\LoadCamera</Filter>
     </ClCompile>
     <ClCompile Include="ServerLoadManager.cpp" />
-    <ClCompile Include="LoadEnemy.cpp" />
     <ClCompile Include="LoadNetworkComponent.cpp">
       <Filter>LoadThings\LoadNetworkComponent</Filter>
     </ClCompile>
@@ -140,6 +162,30 @@
       <Filter>LoadThings\LoadCheckPointComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadArmorComponent.cpp" />
+    <ClCompile Include="LoadDoorComponent.cpp">
+      <Filter>LoadThings\LoadDoorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadKeyPickupComponent.cpp">
+      <Filter>LoadThings\LoadKeyPickupComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadHighlightComponent.cpp">
+      <Filter>LoadThings\LoadHighlightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadDamageOnCollisionComponent.cpp">
+      <Filter>LoadThings\LoadDamageOnCollisionsComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadEnemy.cpp">
+      <Filter>LoadThings\LoadEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadImp.cpp">
+      <Filter>LoadThings\LoadEnemy\LoadImp</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadRevenant.cpp">
+      <Filter>LoadThings\LoadEnemy\LoadRevenant</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPinky.cpp">
+      <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -210,6 +256,30 @@
     </Filter>
     <Filter Include="LoadThings\LoadArmorPickupComponent">
       <UniqueIdentifier>{6bef8a7f-9f51-471d-894c-e19cde254bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadDoorComponent">
+      <UniqueIdentifier>{7bdcd003-9d32-48d1-9f38-5b1fa31ff97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadKeyPickupComponent">
+      <UniqueIdentifier>{e3aff76f-27e8-44eb-9764-67d2a867abe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadHighlightComponent">
+      <UniqueIdentifier>{c4fdf0d2-994a-48be-9599-b8a9dac8c980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadDamageOnCollisionsComponent">
+      <UniqueIdentifier>{f379301b-a81d-4831-a910-72ecf0872697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy">
+      <UniqueIdentifier>{f1afbc62-8752-49af-88fd-d4dd44efd735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy\LoadImp">
+      <UniqueIdentifier>{f2244979-99b2-4509-bfd0-0e92e6003504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy\LoadRevenant">
+      <UniqueIdentifier>{c7d9d42b-2ae9-4a15-9895-01e3df317975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemy\LoadPinky">
+      <UniqueIdentifier>{7b1ddefc-6b47-4ff4-8dc6-225ab08420d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
