@@ -208,6 +208,8 @@ void CPlayState::Load()
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
 	
+	myHUD.LoadHUD();
+
 	myIsLoaded = true;
 	
 	// Get time to load the level:
@@ -243,6 +245,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
 
+	myHUD.Update(aDeltaTime);
+
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	SComponentQuestionData healthData;
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
@@ -269,6 +273,9 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+
+	myHUD.Render();
+
 	myPlayerHealthText->Render();
 	myPlayerArmorText->Render();
 }

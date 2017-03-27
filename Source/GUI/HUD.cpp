@@ -4,9 +4,11 @@
 #include "BrontosaurusEngine/SpriteInstance.h"
 #include "BrontosaurusEngine/Engine.h"
 #include "BrontosaurusEngine/Renderer.h"
+#include "CommonUtilities.h"
+#include "BarInstance.h"
 
 
-CHUD::CHUD(): myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myWeaponSprite(nullptr), myCrosshairSprite(nullptr)
+CHUD::CHUD() : myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myWeaponSprite(nullptr), myCrosshairSprite(nullptr), testValue(0.f)
 {
 }
 
@@ -28,12 +30,12 @@ void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
 {
 	const std::string backgroundPath = aJsonValue.at("background").GetString();
 	myHealthAndArmorSprite = new CSpriteInstance(backgroundPath.c_str(), CU::Vector2f(1.f, 1.f));
-	
+	myHealthBar = new CBarInstance(CU::Colour(0, 1, 0, 1), CU::Vector4f(1, 0, 0, 1), CU::Vector4f(0, 0, 1, 1));
 }
 
 void CHUD::Update(CU::Time aDeltaTime)
 {
-
+	myHealthBar->SetLevel(MAX(myHealthBar->GetLevel() - 0.01, 0));
 }
 
 void CHUD::Render() const
@@ -45,5 +47,5 @@ void CHUD::Render() const
 
 	RENDERER.AddRenderMessage(new SCreateOrClearGuiElement(L"TestElement", tempElement, CU::Vector2ui(256, 64)));
 
-	myHealthAndArmorSprite->RenderToGUI(L"TestElement");
+	myHealthBar->RenderToGUI(L"TestElement");
 }

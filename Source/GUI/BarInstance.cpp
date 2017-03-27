@@ -5,18 +5,17 @@
 #include "BrontosaurusEngine/Renderer.h"
 
 
-CBarInstance::CBarInstance(const CU::Colour &aFullColour, const CU::Vector4f& aRect): myCurrentLevel(1), myFullColour(aFullColour), myRect(aRect), myInterpolationData(nullptr)
+CBarInstance::CBarInstance(const CU::Colour &aFullColour, const CU::Vector4f& aRect): myCurrentLevel(1), myFullColour(aFullColour), myEmptyColour(aFullColour), myRect(aRect)
 {
 }
 
-CBarInstance::CBarInstance(const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect, const eBarInterMode aInterMode):
+CBarInstance::CBarInstance(const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect):
 	myCurrentLevel(1),
 	myRect(aRect),
 	myFullColour(aFullColour),
-	myInterpolationData(new SBarInterpolationData)
+	myEmptyColour(anEmptyColour)
 {
-	myInterpolationData->myEmptyColour = anEmptyColour;
-	myInterpolationData->myInterMode = aInterMode;
+	
 }
 
 CBarInstance::~CBarInstance()
@@ -34,20 +33,33 @@ void CBarInstance::Render() const
 	renderBarMessage->myBackgroundColour = myBackgroundColour;
 	renderBarMessage->myCurrentLevel = myCurrentLevel;
 	renderBarMessage->myRect = myRect;
-
-	if (myInterpolationData != nullptr)
-	{
-		renderBarMessage->myEmptyColour = myInterpolationData->myEmptyColour;
-	}
-	else
-	{
-		renderBarMessage->myEmptyColour = myFullColour;
-	}
+	renderBarMessage->myEmptyColour = myEmptyColour;
 
 	RENDERER.AddRenderMessage(renderBarMessage);
+}
+
+void CBarInstance::RenderToGUI(const std::wstring& aStr) const
+{
+	SRenderBarMessage *renderBarMessage = new SRenderBarMessage;
+	renderBarMessage->myFullColour = myFullColour;
+	renderBarMessage->myBackgroundColour = myBackgroundColour;
+	renderBarMessage->myCurrentLevel = myCurrentLevel;
+	renderBarMessage->myRect = myRect;
+	renderBarMessage->myEmptyColour = myEmptyColour;
+
+	SRenderToGUI * renderToGuiMessage = new SRenderToGUI(aStr, renderBarMessage);
+	RENDERER.AddRenderMessage(renderToGuiMessage);
+}
+
+float CBarInstance::GetLevel() const
+{
+	return myCurrentLevel;
 }
 
 void CBarInstance::SetLevel(const float aLevel)
 {
 	myCurrentLevel = aLevel;
 }
+
+
+

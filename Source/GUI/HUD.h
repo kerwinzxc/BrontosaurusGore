@@ -44,5 +44,8 @@ private:
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
+
+	//test
+	float testValue;
 };
 

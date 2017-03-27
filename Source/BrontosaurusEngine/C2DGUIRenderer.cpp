@@ -4,7 +4,24 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "FullScreenHelper.h"
 #include "Renderer.h"
+#include "ConstBufferTemplate.h"
+#include "EModelBluePrint.h"
+#include "ShaderManager.h"
 
+struct SBarVSData
+{
+	CU::Vector2f position;
+	CU::Vector2f size;
+};
+
+struct SBarPSData
+{
+	CU::Colour fullColour;
+	CU::Colour emptyColour;
+	CU::Colour backgroundColour;
+	float myState;
+	CU::Vector3f TRASH;
+};
 
 C2DGUIRenderer::C2DGUIRenderer()
 {
@@ -12,11 +29,63 @@ C2DGUIRenderer::C2DGUIRenderer()
 	myRenderQueus.Init(1);
 
 	myCurrentPackage = &myInputPackage;
+
+	myBarData.myIsInited = false;
+	myBarData.myVSConstBuffer = nullptr;
+	myBarData.myPSConstBuffer = nullptr;
+	myBarData.myVertexBuffer = nullptr;
 }
 
 
 C2DGUIRenderer::~C2DGUIRenderer()
 {
+}
+
+void C2DGUIRenderer::InitBars()
+{
+	CU::Vector4f vertices[7] =
+	{
+		CU::Vector4f(0.0f, 0.0f, -0.50f, 1.0f),
+		CU::Vector4f(0.0f, 0.0f, -0.50f, 1.0f),
+		CU::Vector4f(0.0f, 1.0f, -0.50f, 1.0f),
+		CU::Vector4f(1.0f, 1.0f, -0.50f, 1.0f),
+		CU::Vector4f(0.0f, 0.0f, -0.50f, 1.0f),
+		CU::Vector4f(1.0f, 1.0f, -0.50f, 1.0f),
+		CU::Vector4f(1.0f, 0.0f, -0.50f, 1.0f)
+		//topLeft, botLeft, botRight, botRight, topRight, topLeft
+	};
+
+	// VERTEX BUFFER
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexBufferDesc.ByteWidth = sizeof(vertices);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexData = {};
+	vertexData.pSysMem = vertices;
+	HRESULT result = FRAMEWORK->GetDevice()->CreateBuffer(&vertexBufferDesc, &vertexData, &myBarData.myVertexBuffer);
+	CHECK_RESULT(result, "Failed to create vertexbuffer.");
+
+	//Create VSConstantBuffer
+	SBarVSData vSBufferType;
+	myBarData.myVSConstBuffer = BSR::CreateCBuffer<SBarVSData>(&vSBufferType);
+
+	//Create PSConstentBuffer
+	SBarPSData pSBuffertype;
+	myBarData.myPSConstBuffer = BSR::CreateCBuffer(&pSBuffertype);
+
+	//Effect
+	unsigned int shadeBlueprint = EModelBluePrint_Bar;
+
+	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/bar_shader.fx", shadeBlueprint);
+	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/bar_shader.fx", shadeBlueprint);
+	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/bar_shader.fx", shadeBlueprint);
+
+	myBarData.myEffect = new CEffect(vertexShader, pixelShader, nullptr, inputLayout, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	myBarData.myIsInited = true;
 }
 
 void C2DGUIRenderer::CreateOrClearEvent(const std::wstring anElementName, const CU::Vector2ui& aPixelSize, const SGUIElement& aGuiElement)
@@ -119,7 +188,7 @@ void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFu
 		}
 		else
 		{
-			screenSpacePosition.y = currentGuiElement.myScreenRect.y;	
+			screenSpacePosition.y = currentGuiElement.myScreenRect.y;
 		}
 
 		screenSpacePosition.x -= screenSize.x * currentGuiElement.myOrigin.x;
@@ -168,4 +237,52 @@ CRenderPackage& C2DGUIRenderer::GetCurrentPackage()
 CRenderPackage& C2DGUIRenderer::GetInputPackage()
 {
 	return myInputPackage;
+}
+
+void C2DGUIRenderer::RenderBar(const SRenderBarMessage* const aRenderMessage)
+{
+	if (myBarData.myIsInited == false)
+	{
+		InitBars();
+	}
+
+
+	myBarData.myEffect->Activate();
+
+	ID3D11DeviceContext& context = *CEngine::GetInstance()->GetFramework()->GetDeviceContext();
+
+	//VertexShader Constant buffer
+	CU::Vector4f rect = aRenderMessage->myRect;
+
+	SBarVSData barVsData;
+	barVsData.position = CU::Vector2f(rect.x, rect.y);
+	barVsData.size = CU::Vector2f(rect.z, rect.w);
+
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource = {};
+
+	context.Map(myBarData.myVSConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+	memcpy(mappedSubresource.pData, &barVsData, sizeof(SBarVSData));
+	context.Unmap(myBarData.myVSConstBuffer, 0);
+
+	context.VSSetConstantBuffers(1, 1, &myBarData.myVSConstBuffer);
+
+	//PixelShader constant buffer
+	SBarPSData barPsData;
+	barPsData.myState = aRenderMessage->myCurrentLevel;
+	barPsData.backgroundColour = aRenderMessage->myBackgroundColour;
+	barPsData.fullColour = aRenderMessage->myFullColour;
+	barPsData.emptyColour = aRenderMessage->myEmptyColour;
+
+	mappedSubresource = {};
+
+	context.Map(myBarData.myPSConstBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+	memcpy(mappedSubresource.pData, &barPsData, sizeof(barPsData));
+	context.Unmap(myBarData.myPSConstBuffer, 0);
+
+	context.PSSetConstantBuffers(2, 1, &myBarData.myPSConstBuffer);
+
+	UINT stride = sizeof(CU::Vector4f);
+	UINT offset = 0;
+	FRAMEWORK->GetDeviceContext()->IASetVertexBuffers(0, 1, &myBarData.myVertexBuffer, &stride, &offset);
+	FRAMEWORK->GetDeviceContext()->Draw(6, 1);
 }

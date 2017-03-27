@@ -1168,9 +1168,20 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderToGUI* renderToGuiMessage = static_cast<SRenderToGUI*>(aRenderMesage);
 		myGUIRenderer.RenderToGUI(renderToGuiMessage->myElementName, renderToGuiMessage->myRenderMessage);
-		//renderToGuiMessage->myRenderMessage = nullptr;
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eRenderBar:
+	{
+		SRenderBarMessage* msg = static_cast<SRenderBarMessage*>(aRenderMesage);
+		myGUIRenderer.GetCurrentPackage().Activate();
+
+		myGUIRenderer.RenderBar(msg);
+
+		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		else renderTo->Activate();
+		break;
+	}
+	default: break;
 	}
 }
 
