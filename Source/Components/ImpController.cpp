@@ -27,7 +27,7 @@ void CImpController::Update(const float aDeltaTime)
 	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 	const float distToPlayer = toPlayer.Length2();
 
-	UpdateTransformation();
+	UpdateTransformationNetworked();
 	UpdateJumpForces(aDeltaTime);
 
 	if(myIsDead == false)
@@ -82,17 +82,7 @@ void CImpController::Update(const float aDeltaTime)
 		break;
 	}
 
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
-
-	SComponentQuestionData data;
-	data.myVector4f = velocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		parentTransform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	}
+	UpdateTransformationLocal(velocity, aDeltaTime);
 }
 
 void CImpController::UpdateJumpForces(const float aDeltaTime)
@@ -108,9 +98,8 @@ void CImpController::UpdateJumpForces(const float aDeltaTime)
 	myJumpForce -= gravityAcceleration * aDeltaTime;
 	if (CheckIfInAir() == false)
 	{
-		DL_PRINT("stopping jump");
-		myIsJumping = false;
 		myJumpForce = 0.0f;
+		myIsJumping = false;
 	}
 }
 

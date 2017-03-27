@@ -33,7 +33,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
 	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 	const float distToPlayer = toPlayer.Length2();
-	UpdateTransformation();
+	UpdateTransformationNetworked();
 
 	if(myIsflying == false)
 	{
@@ -131,7 +131,9 @@ void CRevenantController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+
+	UpdateTransformationLocal(velocity, aDeltaTime);
+	/*CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
@@ -143,7 +145,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		parentTransform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	}
+	}*/
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
