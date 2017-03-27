@@ -229,7 +229,7 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
-	CEnemyClientRepresentationManager::GetInstance().Init();
+	CEnemyClientRepresentationManager::GetInstance().Init(myWeaponSystemManager);
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	myPlayerHealthText = new CTextInstance();
 	myPlayerHealthText->Init();

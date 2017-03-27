@@ -26,7 +26,7 @@ public:
 	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
 	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
 	void DeleteComponent(CEnemy* anEnemy);
-	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer, CColliderComponentManager* aColiderComponentManagerPointer);
+	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer);
 	~CEnemyComponentManager();
 protected:
 	CU::GrowingArray<CEnemy*> myEnemies;
