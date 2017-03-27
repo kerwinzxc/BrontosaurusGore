@@ -196,7 +196,7 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent)
 			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition(), transform.myForwardVector);
 		}
 
-		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str());
+		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str(),myAudioId);
 	}
 }
 
