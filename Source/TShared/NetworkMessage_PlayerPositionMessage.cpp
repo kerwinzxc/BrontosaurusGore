@@ -52,7 +52,7 @@ void CNetworkMessage_PlayerPositionMessage::DoSerialize(StreamType & aStream)
 
 void CNetworkMessage_PlayerPositionMessage::DoDeserialize(StreamType & aStream)
 {
-	if (aStream.size() > 0)
+	if (aStream.size() == (sizeof(physx::PxQuat) + sizeof(CU::Vector3f) + sizeof(unsigned)))
 	{
 		myRotation = deserialize<physx::PxQuat>(aStream);
 		myPosition = deserialize < CU::Vector3f > (aStream);

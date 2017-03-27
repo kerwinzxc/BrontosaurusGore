@@ -28,6 +28,18 @@ void Postmaster::Threaded::CPostOffice::HandleMessages()
 	HandleNarrowcastMessages();
 }
 
+void Postmaster::Threaded::CPostOffice::Broadcast(Message::IMessage* aMessage)
+{
+	if (aMessage != nullptr)
+	{
+		const std::array<std::vector<ISubscriber*>, 1>::value_type& subscribers = mySubscribers[static_cast<unsigned>(aMessage->GetType())];
+		for (int i = 0; i < subscribers.size(); ++i)
+		{
+			aMessage->DoEvent(*subscribers[i]);
+		}
+		delete aMessage;
+	}
+}
 
 
 void Postmaster::Threaded::CPostOffice::Unsubscribe(ISubscriber* aSubscriber)

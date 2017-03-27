@@ -12,13 +12,15 @@
 #include "GameObjectManager.h"
 #include "ExplosionData.h"
 
-CWeaponFactory::CWeaponFactory()
+CWeaponFactory::CWeaponFactory(): myPhysicsScene(nullptr)
 {
 	myWeaponDataList.Init(10);
 	myAmmoDataList.Init(10);
 	myWeaponList.Init(200);
 	myGameObjectManagerPointer = nullptr;
 	myModelComponentManagerPointer = nullptr;
+
+	
 }
 
 
@@ -74,7 +76,7 @@ void CWeaponFactory::LoadWeapons()
 		newProjectileData->shouldExplodeOnImpact = levelsArray[i].at("ShouldProjectilesExplode").GetBool();
 		newProjectileData->shouldRayCast = levelsArray[i].at("ShouldRayCast").GetBool();
 
-		if(newProjectileData->shouldExplodeOnImpact == true)
+		if (newProjectileData->shouldExplodeOnImpact == true)
 		{
 			SExplosionData* newExplosionData = new SExplosionData();
 			newExplosionData->radius = levelsArray[i].at("ExplosionRange").GetFloat();
@@ -85,6 +87,16 @@ void CWeaponFactory::LoadWeapons()
 		else
 		{
 			newProjectileData->explosionData = nullptr;
+		}
+
+		if (levelsArray[i].HasKey("Sounds") == true)
+		{
+
+			newWeaponData->soundData = GetSoundData(levelsArray[i].at("Sounds"));
+		}
+		else
+		{
+			DL_PRINT_WARNING("Weapon \"%s\" doesn't define sound feedback.", weaponName.c_str());
 		}
 
 		newAmmoData->maxAmmo = levelsArray[i].at("MaxAmmoAmount").GetInt();
@@ -157,4 +169,13 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
 		aWeapon->SetModelVisibility(false);
 	}
+}
+
+SWeaponSoundData CWeaponFactory::GetSoundData(CU::CJsonValue aSoundData)
+{
+	SWeaponSoundData soundData;
+	soundData.fire = aSoundData.at("Fire").GetString();
+	soundData.reload = aSoundData.at("Reload").GetString();
+
+	return soundData;
 }

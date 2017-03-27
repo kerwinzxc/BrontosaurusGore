@@ -22,7 +22,7 @@ CEnemy::~CEnemy()
 {
 }
 
-void CEnemy::UpdateTransformation()
+void CEnemy::UpdateTransformationNetworked()
 {
 	if(myElapsedWaitingToSendMessageTime >= myNetworkPositionUpdateCoolDown)
 	{
@@ -31,8 +31,24 @@ void CEnemy::UpdateTransformation()
 		message->SetId(myServerId);
 		message->SetTransformation(tranformation);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
+	}
+}
+
+void CEnemy::UpdateTransformationLocal(CU::Vector3f aVelocity, const float aDeltaTime)
+{
+	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
+	CU::Matrix44f rotation = parentTransform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
+
+	SComponentQuestionData data;
+	data.myVector4f = aVelocity * rotation * aDeltaTime;
+	data.myVector4f.w = aDeltaTime;
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		parentTransform.SetPosition(data.myVector3f);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 }
 
@@ -72,11 +88,11 @@ void CEnemy::Update(const float aDeltaTime)
 
 		if (myIsAttacking == false)
 		{
-			if (WithinAttackRange(distToPlayer) == true)
+			if (WithinAttackRange(distToPlayer))
 			{
 				myIsAttacking = true;
 			}
-			else if (WithinDetectionRange(distToPlayer) == true)
+			else if (WithinDetectionRange(distToPlayer))
 			{
 				CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 				CU::Matrix44f rotation = parentTransform.GetRotation();
@@ -98,10 +114,9 @@ void CEnemy::Update(const float aDeltaTime)
 
 		if(myIsAttacking == true)
 		{
-			if (OutsideAttackRange(distToPlayer) == true)
+			if (OutsideAttackRange(distToPlayer))
 			{
 				myIsAttacking = false;
-
 			}
 
 			Attack();
@@ -109,7 +124,7 @@ void CEnemy::Update(const float aDeltaTime)
 
 		if(hasChanged == true)
 		{
-			UpdateTransformation();
+			UpdateTransformationNetworked();
 		}
 	}
 }

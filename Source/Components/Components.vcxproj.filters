@@ -514,6 +514,9 @@
       <Filter>EnemySpawner</Filter>
     </ClInclude>
     <ClInclude Include="SpawnerManager.h" />
+    <ClInclude Include="WeaponSoundData.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">

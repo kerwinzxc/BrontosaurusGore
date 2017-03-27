@@ -617,9 +617,10 @@ bool CServerMain::Update()
 
 	return false;
 }
-
+#include "../TShared/NetworkMessage_EnemyTransformation.h"
 eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
 {
+
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
 
 	/*CNetworkMessage* temp = aSendNetowrkMessageMessage.UnpackHolder();
@@ -630,7 +631,6 @@ eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetow
 		int y = position->GetPosition().y;
 		int z = position->GetPosition().z;
 	}*/
-
 	return eMessageReturn::eContinue;
 }
 

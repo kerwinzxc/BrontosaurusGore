@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CameraComponent.h"
 #include "../CommonUtilities/Camera.h"
+#include "../Audio/AudioInterface.h"
 
 CCameraComponent::CCameraComponent()
 	: myCamera(nullptr)
@@ -32,7 +33,9 @@ void CCameraComponent::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eMoving:
 		if (myUnlocked == false)
 		{
-			myCamera->SetTransformation(GetParent()->GetToWorldTransform());
+			const CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+			myCamera->SetTransformation(transformation);
+			Audio::CAudioInterface::GetInstance()->SetListenerPosition(transformation);
 		}
 		break;
 	case eComponentMessageType::ePitch:
