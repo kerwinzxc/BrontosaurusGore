@@ -387,6 +387,7 @@ void CWwiseManager::SetListenerPosition(const AkListenerPosition & aListenerPosi
 void CWwiseManager::SetGameObjectPosition(const AkGameObjectID aGameObjectID, const AkSoundPosition & aSoundPosition)
 {
 	AK::SoundEngine::SetPosition(aGameObjectID, aSoundPosition);
+	
 }
 
 void CWwiseManager::RegisterGameObject(const AkGameObjectID aGameObjectID)
