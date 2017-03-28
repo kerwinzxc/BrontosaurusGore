@@ -1,10 +1,9 @@
 #pragma once
-#include "../BrontosaurusEngine/ModelShapes.h"
 #include "../CommonUtilities/matrix44.h"
-#include "../CommonUtilities/AABB.h"
 #include "../CommonUtilities/VectorOnStack.h"
-
+#include "../CommonUtilities/Sphere.h"
 #include <map>
+
 
 namespace CU
 {
@@ -31,18 +30,11 @@ public:
 	friend class CModelComponent;
 
 public:
+	CModelInstance(const char* aModelPath);
 	~CModelInstance();
 
-	CModelInstance(const char* aModelPath);
-	CModelInstance(const char* aModelPath, const CU::Matrix44f& aTransformation);
-
-	CModelInstance(const SShape aShape);
-	CModelInstance(const SShape aShape, const CU::Matrix44f& aTransformation);
-
-	CModelInstance(ModelId aModel, const CU::Matrix44f& aTransformation);
-
-public:
 	bool ShouldRender();
+	CU::Sphere GetModelBoundingSphere();
 	inline const CU::Matrix44f& GetTransformation() const;
 	inline const CU::Matrix44f& GetLastFrameTransformation() const;
 	void SetVisibility(const bool aFlag);
@@ -71,8 +63,7 @@ public:
 	
 	inline ModelId GetModelID();
 
-	CU::AABB GetModelBoundingBox();
-	void SetHighlight(const CU::Vector4f& aColor, float anIntensivity);
+	void SetHighlight(const CU::Vector4f& aColor, float anIntensivit);
 private:
 
 	CU::Matrix44f myTransformation;
