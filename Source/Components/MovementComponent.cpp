@@ -107,27 +107,12 @@ bool CMovementComponent::IsWalking() const
 
 void CMovementComponent::UpdateSoundState()
 {
-	if(myIsWalking == false && IsWalking() == true)
-	{
-		myIsWalking = true;
-		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep", myAudioId);
-	}
-	else if(myIsWalking == true && IsWalking() == false)
-	{
-		myIsWalking = false;
-		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep_Stop", myAudioId);
-	}
-
-	if (myIsWalking == true && myJumpForce != 0.0f)
-	{
-		myIsWalking = false;
-		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep_Stop", myAudioId);
-	}
-
-	if(myIsWalking == true)
+	if(IsWalking() == true)
 	{
 		const CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
 		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transformation.GetPosition(), transformation.myForwardVector);
+
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep", myAudioId);
 	}
 }
 

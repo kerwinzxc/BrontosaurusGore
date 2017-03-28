@@ -102,7 +102,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				
 				}
 
-				PlaySound(SoundEvent::Fire);
+				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
@@ -112,6 +112,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 }
 void CWeapon::Update(float aDeltaTime)
 {
+	if (myAudioId != 0)
+	{
+		const CU::Matrix44f transform = myUser->GetToWorldTransform();
+		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition() + mySoundDirection, mySoundDirection);
+	}
 	if(myElapsedFireTimer < myWeaponData->fireRate)
 	{
 		myElapsedFireTimer += aDeltaTime;
@@ -166,7 +171,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 
 			}
 
-			PlaySound(SoundEvent::Fire);
+			PlaySound(SoundEvent::Fire, aDirection);
 			CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 			myElapsedFireTimer = 0.0f;
 
@@ -174,8 +179,9 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 	}
 }
 
-void CWeapon::PlaySound(SoundEvent aSoundEvent)
+void CWeapon::PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection)
 {
+	mySoundDirection = aDirection;
 	std::string eventId;
 
 	switch (aSoundEvent)
@@ -190,11 +196,7 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent)
 	}
 	if(eventId.empty() == false)
 	{
-		if(myAudioId != 0)
-		{
-			const CU::Matrix44f transform = myUser->GetToWorldTransform();
-			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition() + transform.myForwardVector, transform.myForwardVector);
-		}
+		
 
 		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str(),myAudioId);
 	}

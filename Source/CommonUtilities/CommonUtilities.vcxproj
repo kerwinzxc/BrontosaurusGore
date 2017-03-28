@@ -481,6 +481,7 @@
     <ClInclude Include="vector3.h" />
     <ClInclude Include="vector4.h" />
     <ClInclude Include="VectorOnStack.h" />
+    <ClInclude Include="WindowsHelper.h" />
     <ClInclude Include="Work.h" />
     <ClInclude Include="Worker.h" />
     <ClInclude Include="XInputWrapper.h" />
@@ -531,6 +532,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="Tween.cpp" />
+    <ClCompile Include="WindowsHelper.cpp" />
     <ClCompile Include="Work.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="XInputWrapper.cpp" />
