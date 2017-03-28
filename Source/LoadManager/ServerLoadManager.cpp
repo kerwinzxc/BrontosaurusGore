@@ -11,6 +11,7 @@
 #include "LoadPinky.h"
 #include "LoadCollider.h"
 #include "LoadHealthComponent.h"
+#include "LoadSpawner.h"
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
 
@@ -62,6 +63,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("RevenantController", LoadRevenant);
 	loader.RegisterComponentLoadFunction("PinkyController", LoadPinky);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxColliderServer);
+	loader.RegisterComponentLoadFunction("SpawnerComponent", LoadSpawnerComponent);
 	//loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereColliderServer);
 	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleColliderServer);
 	loader.RegisterComponentLoadFunction("MeshCollider", LoadMeshColliderServer);

@@ -158,17 +158,19 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 }
 void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
+	static const std::string Directory("Models/Animations/");
 	std::string modelName = aPath;
-	if (modelName.find("Shotgun") != std::string::npos)
-	{
-		int br = 0;
-	}
+	DL_PRINT("modelName: %s", modelName.c_str());
 	modelName -= std::string(".fbx");
 	CU::FindAndReplace(modelName, "Meshes", "Animations");
-	modelName += std::string("@");
+	DL_PRINT("modelName - .fbx: %s", modelName.c_str());
+	modelName.insert(Directory.length(), "ANI");
+	DL_PRINT("modelName, insert ani: %s", modelName.c_str());
+	DL_PRINT("modelName, replace meshes: %s", modelName.c_str());
+	modelName += std::string("_");
 
 	const ModelId animationCount = 3;
-	const std::string animationNames[animationCount] = { ("idle"), ("walk"), ("shot") };
+	const std::string animationNames[animationCount] = { ("idle01"), ("walk01"), ("shot01") };
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
@@ -176,7 +178,7 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 	if (mdl != nullptr && /*scene->HasAnimations()*/mdl->HasBones())
 	{
 		mdl->myBindposeSceneAnimator = new CSceneAnimator();
-		mdl->myBindposeSceneAnimator->Init(scene); // shuld do it?
+		mdl->myBindposeSceneAnimator->Init(scene);
 
 		mdl->mySceneAnimators.clear();
 		CFBXLoader loader;

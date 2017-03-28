@@ -438,6 +438,7 @@ bool CServerMain::Update()
 
 					CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
 					gameObject->SetWorldTransformation(positionMessage->GetTransformation());
+					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
 				}

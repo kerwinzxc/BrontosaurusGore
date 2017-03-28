@@ -222,6 +222,13 @@
     <ClCompile Include="PinkyController.cpp">
       <Filter>Enemy\Pinky</Filter>
     </ClCompile>
+    <ClCompile Include="Spawner.cpp">
+      <Filter>EnemySpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnerManager.cpp" />
+<ClCompile Include="ServerPlayerNetworkComponent.cpp">
+      <Filter>ServerPlayerNetwork</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -505,8 +512,16 @@
     <ClInclude Include="PinkyController.h">
       <Filter>Enemy\Pinky</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Spawner.h">
+      <Filter>EnemySpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="WeaponSoundData.h">
       <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPlayerNetworkComponent.h">
+      <Filter>ServerPlayerNetwork</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -615,5 +630,11 @@
     <Filter Include="Enemy\Pinky">
       <UniqueIdentifier>{59f4680f-f023-4ada-a222-586706da19ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EnemySpawner">
+      <UniqueIdentifier>{42593922-70a4-4327-90bb-ac184219853f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Components.rc" />
   </ItemGroup>
 </Project>

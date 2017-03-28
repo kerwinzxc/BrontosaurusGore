@@ -27,16 +27,18 @@ CHealthComponentManager * CHealthComponentManager::GetInstance()
 	return ourInstance;
 }
 
-CHealthComponent * CHealthComponentManager::CreateAndRegisterComponent(unsigned int aID)
+CHealthComponent * CHealthComponentManager::CreateAndRegisterComponent()
 {
-	CHealthComponent* health = new CHealthComponent(aID);
+	static unsigned short ID = 0;
+
+	CHealthComponent* health = new CHealthComponent(ID);
 
 	CComponentManager::GetInstance().RegisterComponent(health);
-	if (myHealthComponents.emplace(aID, health).second == false)
+	if (myHealthComponents.emplace(ID, health).second == false)
 	{
 		DL_ASSERT("Tried to insert at a already existing ID");
 	}
-	
+	ID++;
 
 	return health;
 }
