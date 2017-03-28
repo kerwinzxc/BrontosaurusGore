@@ -31,8 +31,6 @@ cbuffer WorldSpaceBuffer : register(b1)
 	float4x4 worldSpace;
 	float4x4 lastWorldSpace;
 	float4 highlightColor;
-	float highlightIntensivity;
-	float3 crap;
 }
 
 //**********************************************//
@@ -101,7 +99,7 @@ float4 GetHighlight(PosNormBinormTanTex_InputPixel input, float3 normal)
 
 	const float fresnelValue = abs(dot(NormalFromTexture(normal),cameraDirWorld));
 
-	const float lol = fresnelValue / highlightIntensivity;
+	const float lol = fresnelValue / highlightColor.a;
 	const float alphaValue = saturate(1 - lol * lol * lol);
 
 	
@@ -112,7 +110,7 @@ float4 GetHighlight(PosNormBinormTanTex_InputPixel input, float3 normal)
 	// 	HighLight.a = 1.f;
 	// }
 
-	return float4(HighLight,alphaValue * highlightColor.a);
+	return float4(HighLight, alphaValue * highlightColor.a);
 }
 
 float3 NormalFromTexture(float3 normal)

@@ -256,10 +256,8 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 		shadowMapDepth2 = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
 	}
 
-
 	float shadowDepth = lerp(shadowMapDepth, shadowMapDepth2, normalizedDepth);
 	float pixelShadowDepth = lerp(pixelPosCascade.z, pixelPosCascade2.z, normalizedDepth);
-
 
 	float3 normal = deferred_normal.SampleLevel(samplerClampPoint, uv, 0).xyz;
 	float bias = dot(directionalLight.direction, normal);
