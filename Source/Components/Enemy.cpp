@@ -60,7 +60,9 @@ void CEnemy::MoveForward(const float aMovAmount)
 void CEnemy::Attack()
 {
 	SComponentMessageData messageData;
-	messageData.myVector3f = GetParent()->GetWorldPosition();
+	CU::Vector3f direction = ClosestPlayerPosition() - GetParent()->GetWorldPosition();
+	direction.Normalize();
+	messageData.myVector3f = direction;
 	messageData.myVector4f.w = myServerId;
 	GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 }

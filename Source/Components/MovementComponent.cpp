@@ -118,6 +118,12 @@ void CMovementComponent::UpdateSoundState()
 		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep_Stop", myAudioId);
 	}
 
+	if (myIsWalking == true && myJumpForce != 0.0f)
+	{
+		myIsWalking = false;
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep_Stop", myAudioId);
+	}
+
 	if(myIsWalking == true)
 	{
 		const CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
