@@ -86,7 +86,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	break;
 	case eRevenantState::eUseMeleeAttack:
-		ChangeWeapon(3);
+		ChangeWeapon(2);
 		Attack();
 		break;
 	case eRevenantState::eUseRangedAttack:
@@ -107,7 +107,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		myElapsedHoverTime += aDeltaTime;
 		LookAtPlayer();
-		ChangeWeapon(2);
+		ChangeWeapon(1);
 		Attack();
 		if(myElapsedHoverTime >= myHoverTime)
 		{
