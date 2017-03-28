@@ -31,7 +31,7 @@ private:
 		Fire,
 		Reload
 	};
-	void PlaySound(SoundEvent aSoundEvent);
+	void PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection);
 
 	CU::Vector3f RandomizedDirection(const CU::Vector3f& aDirection);
 private:
@@ -42,6 +42,7 @@ private:
 	Physics::CPhysicsScene* myPhysicsScene;
 	float myElapsedFireTimer;
 	Audio::GameObjectID myAudioId;
+	CU::Vector3f mySoundDirection;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)
