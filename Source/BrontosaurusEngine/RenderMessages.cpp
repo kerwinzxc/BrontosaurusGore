@@ -205,3 +205,9 @@ SRenderToGUI::SRenderToGUI(const std::wstring& anElementName, SRenderMessage* co
 	myRenderMessage(aRenderMessage)
 {
 }
+
+SRenderModelInstancedMessage::SRenderModelInstancedMessage()
+	: SRenderMessage(eRenderMessageType::eRenderModelInstanced)
+{
+
+}
