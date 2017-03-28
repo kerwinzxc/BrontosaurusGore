@@ -193,7 +193,7 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent)
 		if(myAudioId != 0)
 		{
 			const CU::Matrix44f transform = myUser->GetToWorldTransform();
-			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition(), transform.myForwardVector);
+			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition() + transform.myForwardVector, transform.myForwardVector);
 		}
 
 		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str(),myAudioId);

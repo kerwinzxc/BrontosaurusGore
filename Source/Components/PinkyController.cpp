@@ -15,6 +15,7 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myElapsedChargeCooldownTime = 0.0f;
 	myElapsedWindupTime = 0.0f;
 	myIsCharging = false;
+	myGravityForce = 0.0f;
 }
 
 
@@ -34,7 +35,8 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 void CPinkyController::Update(const float aDeltaTime)
 {
 	CU::Vector3f velocity;
-	velocity.y = -gravityAcceleration * aDeltaTime;
+	myGravityForce -= gravityAcceleration * aDeltaTime;
+	velocity.y = myGravityForce;
 	myElapsedWaitingToSendMessageTime += aDeltaTime;
 	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();

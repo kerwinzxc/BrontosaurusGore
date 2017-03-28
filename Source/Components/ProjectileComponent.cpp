@@ -77,10 +77,10 @@ void CProjectileComponent::Update(float aDeltaTime)
 
 void CProjectileComponent::Deactivate()
 {
+	DL_PRINT("Deactivate");
 	myIsActive = false;
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-	//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
-
+	GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 }

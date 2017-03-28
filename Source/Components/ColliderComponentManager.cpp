@@ -61,6 +61,7 @@ void CColliderComponentManager::Update()
 {
 	for (CColliderComponent* collider : myColliderComponents)
 	{
+		collider->UpdateCallbacks();
 		if (collider->GetType() == SColliderData::eColliderType::eRigidbody)
 		{
 			collider->UpdatePosition();
