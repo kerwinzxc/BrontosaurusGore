@@ -31,6 +31,7 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 
 	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
 	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();
+	blueprint.chargeDistance = someData.myData.at("ChargeDistance").GetFloat();
 	blueprint.windupChargeTime = someData.myData.at("WindUpChargeDuration").GetFloat();
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::ePinky);

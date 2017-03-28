@@ -10,6 +10,7 @@
 #include "LoadRevenant.h"
 #include "LoadPinky.h"
 #include "LoadCollider.h"
+#include "LoadHealthComponent.h"
 #include "LoadSpawner.h"
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
@@ -68,6 +69,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("MeshCollider", LoadMeshColliderServer);
 	//loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBodyServer);
 	loader.RegisterComponentLoadFunction("CharacterController", LoadCharacterControllerServer);
+	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
