@@ -36,7 +36,9 @@ namespace CU
 		myProjection = myProjection.CreateProjectionMatrixLH(aNear, aFar, aProjectionWidth , aProjectionHeight , (aFov) /** (3.14159265f / 180.f)*/);
 		myProjectionInverse = myProjection.GetInverted();
 
-		myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
+		//myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
+		myFrustum.SetFrustum(myProjectionInverse);
+
 		myTransformation = Matrix44f::Identity;
 		myFar = aFar;
 		myNear = aNear;
@@ -51,7 +53,9 @@ namespace CU
 		myProjection = myProjection.CreateOrthogonalProjectionMatrixLH(aNear, aFar, aProjectionWidth, aProjectionHeight);
 		myProjectionInverse = myProjection.GetInverted();
 
-		myFrustum.SetFrustum(aFar, aNear, 0.0f, aProjectionWidth, aProjectionHeight);
+		//myFrustum.SetFrustum(aFar, aNear, 0.0f, aProjectionWidth, aProjectionHeight);
+		myFrustum.SetFrustum(myProjectionInverse);
+
 		myTransformation = Matrix44f::Identity;
 		myFar = aFar;
 		myNear = aNear;
@@ -71,7 +75,9 @@ namespace CU
 		myProjection = myProjection.CreateProjectionMatrixLH(aNear, aFar, aProjectionWidth, aProjectionHeight, aFov * (3.14159265f / 180.f));
 		myProjectionInverse = myProjection.GetInverted();
 
-		myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
+		//myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
+		myFrustum.SetFrustum(myProjectionInverse);
+
 		myFar = aFar;
 		myNear = aNear;
 
@@ -88,7 +94,9 @@ namespace CU
 		myProjection = myProjection.CreateOrthogonalProjectionMatrixLH(aNear, aFar, aProjectionWidth, aProjectionHeight);
 		myProjectionInverse = myProjection.GetInverted();
 
-		myFrustum.SetFrustum(aFar, aNear, 0.0f, aProjectionWidth, aProjectionHeight);
+		//myFrustum.SetFrustum(aFar, aNear, 0.0f, aProjectionWidth, aProjectionHeight);
+		myFrustum.SetFrustum(myProjectionInverse);
+
 		myFar = aFar;
 		myNear = aNear;
 
