@@ -29,7 +29,8 @@ private:
 	ID3D11GeometryShader* CompileGeometryShader(std::wstring aString, unsigned int aDataFlags);
 	ID3D11InputLayout* CreateInputLayout(ID3D11InputLayout * aLayout, ID3D10Blob * aVertexBlob, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout);
 	ID3D11InputLayout* CreateInputLayout(ID3D11InputLayout * aLayout, const void* aVertexBlobPointer, const unsigned int aVertexBufferSize, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout);
-	std::string GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout);
+	std::string GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout, const bool aInstanced = false);
+	void AddInstanceDataToLayout(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout);
 
 private:
 	std::unordered_map<std::wstring, std::unordered_map<unsigned int, ID3D11VertexShader*	>> myVertexShaders;
