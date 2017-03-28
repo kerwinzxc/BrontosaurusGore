@@ -306,8 +306,7 @@ namespace DL_Debug
 			break;
 		}
 #else
-		aMessage;
-		//implement mbx for unix
+#error "Not implemented on unix"
 #endif
 	}
 

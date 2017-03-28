@@ -17,5 +17,6 @@ private:
 	std::map<std::string, SAnimationState> myAnimationStates;
 	CU::GrowingArray<SAnimationState> myAnimationStack;
 
+	CU::Vector2f myLastPosition;
 	CModelComponent& myModelComponent;
 };
