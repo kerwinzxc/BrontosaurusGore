@@ -16,6 +16,7 @@
 #include "../Components/WeaponSystemManager.h"
 #include "../Components/WeaponFactory.h"
 #include "../Components/DamageOnCollisionComponentManager.h"
+#include "../Components/HealthComponentManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -136,12 +137,14 @@ void CGameServer::CreateManagersAndFactories()
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
 	myColliderComponentManager->SetPhysics(myPhysics);
 	myColliderComponentManager->InitControllerManager();
+	CHealthComponentManager::Create();
 }
 
 void CGameServer::DestroyManagersAndFactories()
 {
 	CComponentManager::DestroyInstance();
 	CNetworkComponentManager::Destroy();
+	CHealthComponentManager::GetInstance()->Destroy();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
