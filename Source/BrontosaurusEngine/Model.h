@@ -36,9 +36,11 @@ struct SLodData
 {
 	SLodData() { myLodLevel = myIndexCount = myVertexCount = 0; myVertexBuffer = myIndexBuffer = nullptr; }
 	~SLodData() { /*SAFE_RELEASE(myVertexBuffer); SAFE_RELEASE(myIndexBuffer);*/ }
-	SLODDistances myDistances;		  
+	
 	ID3D11Buffer* myVertexBuffer;	  
 	ID3D11Buffer* myIndexBuffer;	  
+
+	SLODDistances myDistances;		
 									  
 	int myLodLevel;		
 	unsigned int myVertexCount;		  
@@ -66,26 +68,18 @@ public:
 	CModel& operator=(const CModel& aModel);
 	CModel& operator=(CModel&& aModel);
 
-	//FBX
-	bool Initialize(CEffect* aEffect, CSurface* aSurface, const CLoaderMesh* aLoadedMesh);
 	bool Initialize(CEffect* aEffect, CSurface* aSurface, const CU::GrowingArray<CLoaderMesh*>& aLoadedMesh);
-
-	bool Initialize(CEffect * aEffect, CSurface * aSurface, CU::GrowingArray<SVertexDataCube>& aVertexList, CU::GrowingArray<unsigned int>& aIndexList);
-	bool Initialize(CEffect * aEffect, CSurface * aSurface, CU::GrowingArray<SVertexDataCube>& aVertexList);
-	//Shape
 	bool Initialize(CEffect* aEffect, CSurface* aSurface);
 
 	void Render(SForwardRenderModelParams& aParamObj);
 	void Render(SDeferredRenderModelParams& aParamObj);
 	void Render(SShadowRenderModelParams& aParamObj);
+	void Render(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList);
 
 	inline bool GetInitialized() const;
 
-	void UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize);
-	inline void AddConstantBuffer(const eShaderStage aShaderStage, ID3D11Buffer* aConstantBuffer);
-	inline bool HasConstantBuffer(const eShaderStage aShaderStage) const;
+	float GetRadius() const;
 
-	inline const CU::AABB& GetBoundingBox() const;
 	inline bool IsAlphaModel() const;
 	inline const struct aiScene* GetScene() const;
 	inline void SetScene(const struct aiScene* aScene);
@@ -109,77 +103,58 @@ private:
 	SLodData& GetCurrentLODModel(const CU::Vector3f& aModelPosition);
 
 	void InitConstBuffers();
-	bool InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList, CU::GrowingArray<unsigned int>& aIndexList);
-	bool InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList);
 	bool InitBuffers(const CLoaderMesh * aLoadedMesh);
 	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
 	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
+
+	void UpdateInstanceBuffer(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList);
+
 	static void BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut);
 
-
-	inline void SetBoundingBox(const CU::AABB& aAABB);
-
 private:
-	CU::StaticArray<ID3D11Buffer*, static_cast<int>(eShaderStage::eLength)> myConstantBuffers;
-
-	std::map<std::string, CSceneAnimator> mySceneAnimators;
-	CSceneAnimator* mySceneAnimator;
-	CSceneAnimator* myBindposeSceneAnimator;
-
 #ifdef _DEBUG
 	std::string myFilePath;
 #endif // _DEBUG
-	CEffect* myDeferredEffect;
-	CEffect* myForwardEffect;
-	CSurface* mySurface;
-	CDXFramework* myFramework;
-
+	std::map<std::string, CSceneAnimator> mySceneAnimators;
 	CU::GrowingArray<SLodData> myLODModels;
-
 	ID3D11Buffer* myCbuffer; // vertexBuffer
 	ID3D11Buffer* myLightBuffer; // pixelbuffer
 	ID3D11Buffer* myPixelBuffer;
-	ID3D11Buffer* myBoneBuffer;
 
-	static const unsigned int ourMaxBoneBufferSize = 32u * sizeof(CU::Matrix44f);
+	ID3D11Buffer* myInstanceBuffer;
+
+	ID3D11Buffer* myBoneBuffer;
+	
+	CSceneAnimator* mySceneAnimator;
+	CSceneAnimator* myBindposeSceneAnimator;
+
+	CEffect* myDeferredEffect;
+	CEffect* myForwardEffect;
+	
+	CSurface* mySurface;
+	CDXFramework* myFramework;
+
 	const struct aiScene* myScene;
 
-	std::atomic_bool myIsInitialized;
-
-	//mebe a radius is enough
-	CU::AABB myAABB;
-
+	static const unsigned int ourMaxBoneBufferSize = 32u * sizeof(CU::Matrix44f);
+	static const unsigned int ourMaxInstanceSize = 64u;
 
 	unsigned int myVertexSize;
+	int myRefCount;
+	
+	float myRadius;
 
-
+	std::atomic_bool myIsInitialized;
 	bool myIsAlphaModel;
 
-	int myRefCount;
 
 };
 
-inline const CU::AABB & CModel::GetBoundingBox() const
+inline float CModel::GetRadius() const
 {
-	return myAABB;
+	return myRadius;
 }
-
-inline void CModel::AddConstantBuffer(const eShaderStage aShaderStage, ID3D11Buffer* aConstantBuffer)
-{
-	myConstantBuffers[static_cast<int>(aShaderStage)] = aConstantBuffer;
-}
-
-inline bool CModel::HasConstantBuffer(const eShaderStage aShaderStage) const
-{
-	return myConstantBuffers[static_cast<int>(aShaderStage)] != nullptr;
-}
-
-inline void CModel::SetBoundingBox(const CU::AABB & aAABB)
-{
-	myAABB = aAABB;
-}
-
 
 inline const aiScene* CModel::GetScene() const
 {
