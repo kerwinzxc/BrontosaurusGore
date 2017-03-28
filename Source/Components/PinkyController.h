@@ -5,6 +5,7 @@ enum class ePinkyState
 {
 	eIdle,
 	eWindupCharge,
+	eStartCharge,
 	eCharge,
 	eChargeCooldown,
 	eUseMeleeAttack,
@@ -27,8 +28,10 @@ private:
 	float myGravityForce;
 	float myChargeCooldown;
 	float myElapsedChargeCooldownTime;
+	float myChargeDistance2;
 	ePinkyState myState;
 	bool myIsCharging;
 	healthPoint myChargeDamage;
+	CU::Vector3f myStartChargeLocation;
 };
 

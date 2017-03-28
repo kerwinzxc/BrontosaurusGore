@@ -133,19 +133,6 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 
 	UpdateTransformationLocal(velocity, aDeltaTime);
-	/*CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
-
-	SComponentQuestionData data;
-	data.myVector4f = velocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		parentTransform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	}*/
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
