@@ -89,9 +89,7 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myConsole->Init();
 	myDebugInfoDrawer = new CDebugInfoDrawer(aInitEngineParams.myDebugFlags);
 
-	bool result;
-	Audio::CAudioInterface::CreateInstance();
-	result = Audio::CAudioInterface::GetInstance()->Init("Audio/Init.bnk");
+
 
 	timerMgr.UpdateTimers();
 	float time = timerMgr.GetTimer(handle).GetLifeTime().GetMilliseconds();

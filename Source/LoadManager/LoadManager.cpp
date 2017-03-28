@@ -90,6 +90,9 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("DoorComponent", LoadDoorComponent);
 	loader.RegisterComponentLoadFunction("KeyPickupComponent", LoadKeyPickupComponent);
 	loader.RegisterComponentLoadFunction("HighlightComponent",LoadHighlightComponent);
+	loader.RegisterComponentLoadFunction("ImpController", ClientLoadImp);
+	loader.RegisterComponentLoadFunction("RevenantController", ClientLoadRevenant);
+	loader.RegisterComponentLoadFunction("PinkyController", ClientLoadPinky);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);

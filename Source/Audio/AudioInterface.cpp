@@ -7,7 +7,7 @@ namespace Audio
 
 	CAudioInterface* CAudioInterface::myInstance = nullptr;
 	CAudioInterface::CAudioInterface()
-		:myWwiseManager(nullptr), myGameObjectCounter(0)
+		:myWwiseManager(new CWwiseManager()), myGameObjectCounter(0)
 	{
 	}
 
@@ -19,7 +19,6 @@ namespace Audio
 	bool CAudioInterface::Init(const char* aInitBank)
 	{
 		bool result;
-		myWwiseManager = new CWwiseManager();
 		result = myWwiseManager->Init(aInitBank);
 
 		myGameObjectID = RegisterGameObject();

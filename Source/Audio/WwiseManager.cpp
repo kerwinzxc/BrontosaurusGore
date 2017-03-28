@@ -1,4 +1,5 @@
 #include "WwiseManager.h"
+#include <string>
 
 #define DEMO_DEFAULT_POOL_SIZE 2*1024*1024
 #define DEMO_LENGINE_DEFAULT_POOL_SIZE 2*1024*1024
@@ -106,16 +107,10 @@ void CWwiseManager::Update()
 bool CWwiseManager::LoadBank(const char* aBankPath)
 {
 	AkBankID bankID; // Not used
-	if (AK::SoundEngine::LoadBank(aBankPath, AK_DEFAULT_POOL_ID, bankID) != AK_Success)
-	{
-		char buffer[50];
-		sprintf_s(buffer, "Could not find %s!", aBankPath);
-
-		CallError(buffer);
-		//SetLoadFileErrorMessage("Positioning_Demo.bnk");
-		return false;
-	}
-	return true;
+	AKRESULT result = AK::SoundEngine::LoadBank(aBankPath, AK_DEFAULT_POOL_ID, bankID);
+	ErrorData errorData;
+	errorData.path = aBankPath;
+	return ErrorHandling(result, errorData);
 }
 
 
@@ -233,6 +228,119 @@ bool CWwiseManager::InitWwise(AkMemSettings &in_memSettings, AkStreamMgrSettings
 	return true;
 }
 
+bool CWwiseManager::ErrorHandling(AKRESULT aResult, const ::CWwiseManager::ErrorData& aErrorData)
+{
+	if (aResult != AK_Success)
+	{
+		switch (aResult)
+		{
+		case AK_FileNotFound:
+		{
+			std::string error = "File \"";
+			error += aErrorData.path;
+			error += "\" could not be found.";
+			CallError(error.c_str());
+		}
+		break;
+
+		case AK_WrongBankVersion:
+		{
+			std::string error = "File \"";
+			error += aErrorData.path;
+			error += "\" is of the wrong version.";
+			CallError(error.c_str());
+		}
+			break;
+		case AK_Success: break;
+		case AK_Fail: 
+		case AK_NotImplemented:
+		case AK_PartialSuccess:
+		case AK_NotCompatible:
+		case AK_AlreadyConnected:
+		case AK_NameNotSet:
+		case AK_InvalidFile:
+		case AK_AudioFileHeaderTooLarge:
+		case AK_MaxReached:
+		case AK_InputsInUsed:
+		case AK_OutputsInUsed:
+		case AK_InvalidName:
+		case AK_NameAlreadyInUse:
+		case AK_InvalidID:
+		case AK_IDNotFound:
+		case AK_InvalidInstanceID:
+		case AK_NoMoreData:
+		case AK_NoSourceAvailable:
+		case AK_StateGroupAlreadyExists:
+		case AK_InvalidStateGroup:
+		case AK_ChildAlreadyHasAParent:
+		case AK_InvalidLanguage:
+		case AK_CannotAddItseflAsAChild:
+		case AK_UserNotInList:
+		case AK_NoTransitionPoint:
+		case AK_InvalidParameter:
+		case AK_ParameterAdjusted:
+		case AK_IsA3DSound:
+		case AK_NotA3DSound:
+		case AK_ElementAlreadyInList:
+		case AK_PathNotFound:
+		case AK_PathNoVertices:
+		case AK_PathNotRunning:
+		case AK_PathNotPaused:
+		case AK_PathNodeAlreadyInList:
+		case AK_PathNodeNotInList:
+		case AK_VoiceNotFound:
+		case AK_DataNeeded:
+		case AK_NoDataNeeded:
+		case AK_DataReady:
+		case AK_NoDataReady:
+		case AK_NoMoreSlotAvailable:
+		case AK_SlotNotFound:
+		case AK_ProcessingOnly:
+		case AK_MemoryLeak:
+		case AK_CorruptedBlockList:
+		case AK_InsufficientMemory:
+		case AK_Cancelled:
+		case AK_UnknownBankID:
+		case AK_IsProcessing:
+		case AK_BankReadError:
+		case AK_InvalidSwitchType:
+		case AK_VoiceDone:
+		case AK_UnknownEnvironment:
+		case AK_EnvironmentInUse:
+		case AK_UnknownObject:
+		case AK_NoConversionNeeded:
+		case AK_FormatNotReady:
+		case AK_DataReadyNoProcess:
+		case AK_DeviceNotReady:
+		case AK_CouldNotCreateSecBuffer:
+		case AK_BankAlreadyLoaded:
+		case AK_RenderedFX:
+		case AK_ProcessNeeded:
+		case AK_ProcessDone:
+		case AK_MemManagerNotInitialized:
+		case AK_StreamMgrNotInitialized:
+		case AK_SSEInstructionsNotSupported:
+		case AK_Busy:
+		case AK_UnsupportedChannelConfig:
+		case AK_PluginMediaNotAvailable:
+		case AK_MustBeVirtualized:
+		case AK_CommandTooLarge:
+		case AK_RejectedByFilter:
+		case AK_InvalidCustomPlatformName:
+		case AK_DLLCannotLoad:
+		default: break;
+		}
+
+		char buffer[50];
+		sprintf_s(buffer, "Unhandled wwise error in %s!", aErrorData.path.c_str());
+
+		CallError(buffer);
+		//SetLoadFileErrorMessage("Positioning_Demo.bnk");
+		return false;
+	}
+	return true;
+}
+
 void CWwiseManager::TermWwise()
 {
 #ifdef _DEBUG
@@ -279,6 +387,7 @@ void CWwiseManager::SetListenerPosition(const AkListenerPosition & aListenerPosi
 void CWwiseManager::SetGameObjectPosition(const AkGameObjectID aGameObjectID, const AkSoundPosition & aSoundPosition)
 {
 	AK::SoundEngine::SetPosition(aGameObjectID, aSoundPosition);
+	
 }
 
 void CWwiseManager::RegisterGameObject(const AkGameObjectID aGameObjectID)

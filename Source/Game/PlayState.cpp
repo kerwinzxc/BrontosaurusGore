@@ -230,6 +230,7 @@ void CPlayState::Init()
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
+	CEnemyClientRepresentationManager::GetInstance().Init(myWeaponSystemManager);
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	myPlayerHealthText = new CTextInstance();
 	myPlayerHealthText->Init();
@@ -243,7 +244,7 @@ void CPlayState::Init()
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
 	myMovementComponentManager->Update(aDeltaTime);
-	myEnemyComponentManager->Update(aDeltaTime);
+	myEnemyComponentManager->Update(aDeltaTime.GetSeconds());
 	myWeaponSystemManager->Update(aDeltaTime);
 	myProjectileComponentManager->Update(aDeltaTime);
 	myProjectileFactory->Update(aDeltaTime.GetSeconds());
@@ -251,6 +252,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CParticleEmitterComponentManager::GetInstance().UpdateEmitters(aDeltaTime);
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
+	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
 
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
@@ -539,7 +541,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		//bluePrint.startAttackRange = 0;
 		//bluePrint.stopAttackRange = 0;
 		//bluePrint.speed = 0;
-		//Component::CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
+		//CEnemy* enemyEnemy = myEnemyComponentManager->CreateComponent(bluePrint, 1000000);
 		//enemyObject->AddComponent(enemyEnemy);
 		//enemyObject->SetWorldPosition(CU::Vector3f(-5, -33, -13));
 

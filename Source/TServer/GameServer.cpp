@@ -16,6 +16,7 @@
 #include "../Components/WeaponSystemManager.h"
 #include "../Components/WeaponFactory.h"
 #include "../Components/DamageOnCollisionComponentManager.h"
+#include "../Components/HealthComponentManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -108,6 +109,8 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+	myEnemyComponentManager->Init(myWeaponSystemManager);
+	myGameObjectManager->SendObjectsDoneMessage();
 }
 
 void CGameServer::ReInit()
@@ -134,12 +137,14 @@ void CGameServer::CreateManagersAndFactories()
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
 	myColliderComponentManager->SetPhysics(myPhysics);
 	myColliderComponentManager->InitControllerManager();
+	CHealthComponentManager::Create();
 }
 
 void CGameServer::DestroyManagersAndFactories()
 {
 	CComponentManager::DestroyInstance();
 	CNetworkComponentManager::Destroy();
+	CHealthComponentManager::GetInstance()->Destroy();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
@@ -159,14 +164,15 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	const float updateFrequecy = 0.016f * 1000;
 	if(myTime > updateFrequecy)
 	{
-		myEnemyComponentManager->Update(aDeltaTime);
+		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
-	if (myPhysicsScene->Simulate(aDeltaTime) == true)
+	
+	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
 		myColliderComponentManager->Update();
 	}
-	myDamageOnCollisionComponentManager->Update(aDeltaTime);
+	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
 
 	return true;
 }
@@ -184,7 +190,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 
-	Component::CEnemy::SetPlayerObject(gameObject);
+	CEnemy::SetPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }

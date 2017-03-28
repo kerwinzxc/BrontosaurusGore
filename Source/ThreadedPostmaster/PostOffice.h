@@ -81,13 +81,7 @@ inline void Postmaster::Threaded::CPostOffice::Subscribe(ISubscriber* aSubscribe
 	myNarrowSubstribers[static_cast<unsigned>(aSubscriptionType)][aSourceObject].push_back(aSubscriber);
 }
 
-inline void Postmaster::Threaded::CPostOffice::Broadcast(Message::IMessage* aMessage)
-{
-	if(aMessage != nullptr)
-	{
-		myMessageQueue.Push(aMessage);
-	}
-}
+
 
 inline void Postmaster::Threaded::CPostOffice::Narrowcast(Message::IMessage* aMessage, IObject* aSourceObject)
 {

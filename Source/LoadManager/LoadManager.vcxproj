@@ -354,6 +354,7 @@
     <ClInclude Include="LoadHealthComponent.h" />
     <ClInclude Include="LoadHealthPackComponent.h" />
     <ClInclude Include="LoadHighlightComponent.h" />
+    <ClInclude Include="LoadImp.h" />
     <ClInclude Include="LoadInputComponent.h" />
     <ClInclude Include="LoadKeyPickupComponent.h" />
     <ClInclude Include="LoadManager.h" />
@@ -363,7 +364,9 @@
     <ClInclude Include="LoadObject.h" />
     <ClInclude Include="LoadColliderComponent.h" />
     <ClInclude Include="LoadParticleEmitterComponent.h" />
+    <ClInclude Include="LoadPinky.h" />
     <ClInclude Include="LoadPointLightComponent.h" />
+    <ClInclude Include="LoadRevenant.h" />
     <ClInclude Include="LoadScriptComponent.h" />
     <ClInclude Include="LoadSoundComponent.h" />
     <ClInclude Include="LoadWeaponSystemComponent.h" />
@@ -386,6 +389,7 @@
     <ClCompile Include="LoadHealthComponent.cpp" />
     <ClCompile Include="LoadHealthPackComponent.cpp" />
     <ClCompile Include="LoadHighlightComponent.cpp" />
+    <ClCompile Include="LoadImp.cpp" />
     <ClCompile Include="LoadInputComponent.cpp" />
     <ClCompile Include="LoadKeyPickupComponent.cpp" />
     <ClCompile Include="LoadManager.cpp" />
@@ -395,7 +399,9 @@
     <ClCompile Include="LoadObject.cpp" />
     <ClCompile Include="LoadColliderComponent.cpp" />
     <ClCompile Include="LoadParticleEmitterComponent.cpp" />
+    <ClCompile Include="LoadPinky.cpp" />
     <ClCompile Include="LoadPointLightComponent.cpp" />
+    <ClCompile Include="LoadRevenant.cpp" />
     <ClCompile Include="LoadScriptComponent.cpp" />
     <ClCompile Include="LoadSoundComponent.cpp" />
     <ClCompile Include="LoadWeaponSystemComponent.cpp" />

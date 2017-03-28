@@ -37,6 +37,7 @@ public:
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
 inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
+inline CColliderComponentManager* GetColliderComponentManager();
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
@@ -71,4 +72,9 @@ CMovementComponentManager* CGameServer::GetMovementComponentManager()
 inline CDamageOnCollisionComponentManager* CGameServer::GetDamageOnCollisionComponentManager() const
 {
 	return myDamageOnCollisionComponentManager;
+}
+
+inline CColliderComponentManager* CGameServer::GetColliderComponentManager()
+{
+	return myColliderComponentManager;
 }

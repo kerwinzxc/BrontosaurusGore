@@ -395,6 +395,7 @@
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="ExplosionBufferData.h" />
     <ClInclude Include="ExplosionComponent.h" />
     <ClInclude Include="ExplosionComponentManager.h" />
@@ -404,6 +405,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthComponentManager.h" />
     <ClInclude Include="HealthPickupComponent.h" />
+    <ClInclude Include="ImpController.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="KeyPickupComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
@@ -413,8 +415,10 @@
     <ClInclude Include="NetworkPlayerReciverComponent.h" />
     <ClInclude Include="AmmoPickupComponent.h" />
     <ClInclude Include="PickupComponentManager.h" />
+    <ClInclude Include="PinkyController.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
+    <ClInclude Include="RevenantController.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
     <ClInclude Include="SphereColliderComponent.h" />
@@ -447,6 +451,7 @@
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="WeaponData.h" />
     <ClInclude Include="WeaponFactory.h" />
+    <ClInclude Include="WeaponSoundData.h" />
     <ClInclude Include="WeaponSystemComponent.h" />
     <ClInclude Include="WeaponSystemManager.h" />
   </ItemGroup>
@@ -485,6 +490,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthComponentManager.cpp" />
     <ClCompile Include="HealthPickupComponent.cpp" />
+    <ClCompile Include="ImpController.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="KeyPickupComponent.cpp" />
@@ -496,12 +502,14 @@
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
     <ClCompile Include="AmmoPickupComponent.cpp" />
     <ClCompile Include="PickupComponentManager.cpp" />
+    <ClCompile Include="PinkyController.cpp" />
     <ClCompile Include="PlayerNetworkComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointLightComponentManager.cpp" />
     <ClCompile Include="ProjectileComponent.cpp" />
     <ClCompile Include="ProjectileComponentManager.cpp" />
     <ClCompile Include="ProjectileFactory.cpp" />
+    <ClCompile Include="RevenantController.cpp" />
     <ClCompile Include="RigidBodyComponent.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="ScriptComponentManager.cpp" />

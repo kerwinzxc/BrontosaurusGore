@@ -220,6 +220,7 @@ void CClient::Update()
 
 				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 				myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
 				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 
@@ -361,7 +362,7 @@ void CClient::Update()
 			{
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
-				target.GetParent()->SetWorldPosition(message->GetPosition());
+				target.GetParent()->SetWorldPosition(message->GetPosition()); // doesn't get sent anymore :/
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
@@ -369,8 +370,9 @@ void CClient::Update()
 			{
 				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
-				target.GetParent()->SetWorldTransformation(message->GetTransformation());
+				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				
 			}
 			break;
 			case ePackageType::eTakeDamage:

@@ -1,12 +1,12 @@
 #pragma once
 #include "EnemyBlueprint.h"
+#include "EnemyTypes.h"
 class CScene;
 class CComponent;
 
-namespace Component
-{
-	class CEnemy;
-}
+class CEnemy;
+class CWeaponSystemManager;
+class CColliderComponentManager;
 
 class CEnemyComponentManager
 {
@@ -21,15 +21,15 @@ public:
 	//};
 	explicit CEnemyComponentManager();
 
-	void Update(const CU::Time& aDeltaTime);
+	void Update(const float aDeltaTime);
 
-	Component::CEnemy* CreateComponent(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
-	CComponent* CreateComponentAbstract(const SEnemyBlueprint& anEnemyBlueprint, unsigned int anId);
-	void DeleteComponent(Component::CEnemy* anEnemy);
-
+	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
+	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
+	void DeleteComponent(CEnemy* anEnemy);
+	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer);
 	~CEnemyComponentManager();
 protected:
-	CU::GrowingArray<Component::CEnemy*> myEnemies;
+	CU::GrowingArray<CEnemy*> myEnemies;
 
 };
 

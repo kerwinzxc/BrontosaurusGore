@@ -6,7 +6,11 @@
 #include "LoadEnemy.h"
 #include "LoadWeaponSystemComponent.h"
 #include "LoadDamageOnCollisionComponent.h"
-
+#include "LoadImp.h"
+#include "LoadRevenant.h"
+#include "LoadPinky.h"
+#include "LoadCollider.h"
+#include "LoadHealthComponent.h"
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
 
@@ -54,6 +58,16 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy); 
 	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemServerComponent);
 	loader.RegisterComponentLoadFunction("DamageOnCollisionComponent", LoadDamageOnCollisionComponentForServer);
+	loader.RegisterComponentLoadFunction("ImpController", LoadImp);
+	loader.RegisterComponentLoadFunction("RevenantController", LoadRevenant);
+	loader.RegisterComponentLoadFunction("PinkyController", LoadPinky);
+	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxColliderServer);
+	//loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereColliderServer);
+	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleColliderServer);
+	loader.RegisterComponentLoadFunction("MeshCollider", LoadMeshColliderServer);
+	//loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBodyServer);
+	loader.RegisterComponentLoadFunction("CharacterController", LoadCharacterControllerServer);
+	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);
