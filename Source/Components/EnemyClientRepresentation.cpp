@@ -2,8 +2,10 @@
 #include "EnemyClientRepresentation.h"
 
 
-CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId) : myComponentId(anId)
+CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType)
+	:CEnemy(anId, aType)
 {
+	myComponentId = anId;
 	myPositionInterpolationSpeed = 3.1;
 	myRotationInterpolationSpeed = 7.1f;
 	myType = eEnemyTypes::eDefault;
