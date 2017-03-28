@@ -150,6 +150,7 @@ void CGameServer::DestroyManagersAndFactories()
 	CComponentManager::DestroyInstance();
 	CNetworkComponentManager::Destroy();
 	CHealthComponentManager::GetInstance()->Destroy();
+	CEnemyFactory::Destroy();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
