@@ -81,7 +81,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		shootMessage->SetShooterId(aMessageData.myVector4f.w);
 		shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(shootMessage));
 		break;
 	}
 	case eComponentMessageType::eShootWithNetworking:
