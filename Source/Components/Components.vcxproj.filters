@@ -226,6 +226,9 @@
       <Filter>EnemySpawner</Filter>
     </ClCompile>
     <ClCompile Include="SpawnerManager.cpp" />
+<ClCompile Include="ServerPlayerNetworkComponent.cpp">
+      <Filter>ServerPlayerNetwork</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -516,6 +519,9 @@
     <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="WeaponSoundData.h">
       <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPlayerNetworkComponent.h">
+      <Filter>ServerPlayerNetwork</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

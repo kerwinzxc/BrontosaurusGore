@@ -28,7 +28,8 @@
 #include "../Physics/Foundation.h"
 #include "../Components/ColliderComponentManager.h"
 #include "../Physics/PhysicsScene.h"
-
+#include "../Physics/PhysicsCharacterController.h"
+#include "../Components/CharcterControllerComponent.h"
 
 CGameServer::CGameServer():
 	myAmmoComponentManager(nullptr)
@@ -197,8 +198,13 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
-
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.minMoveDistance = 0.00001f;
+	controllerDesc.halfHeight = 1.0f;
+	CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
+	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 
 	return serverPlayerNetworkComponent;
 }
