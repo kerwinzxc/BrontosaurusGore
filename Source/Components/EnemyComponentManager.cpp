@@ -8,7 +8,7 @@
 //Temp icnludes
 #include "WeaponSystemManager.h"
 #include "WeaponSystemComponent.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "ColliderComponentManager.h"
 #include "../Physics/PhysicsCharacterController.h"
 //
