@@ -68,10 +68,12 @@ private:
 
 	void InitPackages();
 
-	void CreateBuffer();
+	void CreateOncePerFrameBuffer();
+	void CreateShadowBuffer();
 	void UpdateBuffer();
+	void UpdateShadowBuffer(SSetShadowBuffer* msg);
 
-	void UpdateBuffer(SSetShadowBuffer * msg);
+	//void UpdateBuffer(SSetShadowBuffer * msg);
 
 	void CreateRasterizerStates();
 	void CreateBlendStates();
@@ -143,7 +145,7 @@ private:
 	CU::Camera myCamera;
 
 	ID3D11Buffer* myOncePerFrameBuffer;
-
+	ID3D11Buffer* myShadowBuffer;
 	CU::TimerHandle myOncePerFrameBufferTimer;
 	CU::TimerHandle myFireTimer;
 	bool myIsRunning;
@@ -160,9 +162,3 @@ inline bool CRenderer::GetIsRunning()
 {
 	return myIsRunning;
 }
-
-//inline const CU::Camera & CRenderer::GetCamera()
-//{
-//	return myCamera;
-//}
-

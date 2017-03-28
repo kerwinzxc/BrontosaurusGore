@@ -66,7 +66,7 @@ namespace Physics
 		myPxActor->setGlobalPose(transformation);
 	}
 
-	CU::Matrix44f  CPhysicsActor::GetTransformation()
+	CU::Matrix44f CPhysicsActor::GetTransformation()
 	{
 		physx::PxTransform globalPose = myPxActor->getGlobalPose();
 		CU::Matrix44f transformation = QuatToMatrix(globalPose.q);

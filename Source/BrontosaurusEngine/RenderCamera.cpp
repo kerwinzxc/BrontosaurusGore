@@ -5,14 +5,12 @@
 #include "ShaderManager.h"
 #include "RenderMessages.h"
 
-
 CRenderCamera::CRenderCamera()
 {
 	myRenderQueue.Init(32);
 	myIsShadowCamera = false;
 	myShadowPS = nullptr;
 }
-
 
 CRenderCamera::~CRenderCamera()
 {
@@ -40,6 +38,11 @@ void CRenderCamera::ShadowInit()
 	myShadowPS = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3);
 }
 
+void CRenderCamera::SetViewport(const CU::Vector4f& aRect)
+{
+	myRenderPackage.SetViewport(aRect);
+}
+
 void CRenderCamera::AddRenderMessage(SRenderMessage * aRenderMessage)
 {
 	myRenderQueue.Add(aRenderMessage);
@@ -51,6 +54,7 @@ void CRenderCamera::Render()
 	camqueueMsg->myCamera = myCamera;
 	camqueueMsg->CameraRenderPackage = myRenderPackage;
 	camqueueMsg->CameraRenderQueue = myRenderQueue;
+	camqueueMsg->RenderDepth = myIsShadowCamera;
 	RENDERER.AddRenderMessage(camqueueMsg);
 	myRenderQueue.RemoveAll(); // these are deleted on the render thread
 }

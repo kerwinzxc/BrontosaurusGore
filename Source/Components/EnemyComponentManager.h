@@ -23,6 +23,7 @@ public:
 
 	void Update(const float aDeltaTime);
 
+	void InitWeaponSystem(CEnemy* aEnemy, CWeaponSystemManager* aWeaponSystemManager);
 	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
 	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
 	void DeleteComponent(CEnemy* anEnemy);

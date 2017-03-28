@@ -20,8 +20,7 @@
 #include "Renderer.h"
 
 CModel::CModel()
-	: myConstantBuffers(nullptr)
-	, myForwardEffect(nullptr)
+	: myForwardEffect(nullptr)
 	, myDeferredEffect(nullptr)
 	, mySurface(nullptr)
 	, myFramework(nullptr)
@@ -35,6 +34,7 @@ CModel::CModel()
 	, myIsAlphaModel(false)
 	, mySceneAnimator(nullptr)
 	, myBindposeSceneAnimator(nullptr)
+	, myInstanceBuffer(nullptr)
 	, myVertexSize(0)
 	, myRefCount(0)
 {
@@ -48,13 +48,8 @@ CModel::CModel(const CModel & aCopy)
 
 CModel::~CModel()
 {
+
 	//TODO Fix this so overloaded = operator can be removed. mebe?
-
-	for (int i = 0; i < myConstantBuffers.Size(); ++i)
-	{
-		SAFE_RELEASE(myConstantBuffers[i]);
-	}
-
 	myFramework = nullptr;
 
 	for (unsigned int i = 0; i < myLODModels.Size(); ++i)
@@ -66,6 +61,7 @@ CModel::~CModel()
 	SAFE_RELEASE(myCbuffer);
 	SAFE_RELEASE(myLightBuffer);
 	SAFE_RELEASE(myPixelBuffer);
+	SAFE_RELEASE(myInstanceBuffer);
 	myIsInitialized = false;
 	myVertexSize = 0;
 
@@ -85,34 +81,7 @@ bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface)
 	myForwardEffect = aEffect;
 	myIsInitialized = true;
 	InitConstBuffers();
-
-	myAABB.myCenterPos = { 0.0f, 0.0f, 0.0f };
-
 	return true;
-}
-
-//	FBX - AssImp
-bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, const CLoaderMesh* aLoadedMesh)
-{
-#ifdef _DEBUG
-	myFilePath = aLoadedMesh->myName;
-#endif
-
-	Initialize(aEffect, aSurface);
-	myAABB.myMinPos = aLoadedMesh->myMinPoint;
-	myAABB.myMaxPos = aLoadedMesh->myMaxPoint;
-
-	myAABB.myRadius = myAABB.myMinPos.Length();
-	if (myAABB.myMinPos.Length2() < myAABB.myMaxPos.Length2())
-	{
-		myAABB.myRadius = myAABB.myMaxPos.Length();
-	}
-
-	myIsAlphaModel = aLoadedMesh->myIsAlphaMesh;
-
-	myVertexSize = aLoadedMesh->myVertexBufferSize;
-	myLODModels.Add(SLodData());
-	return InitBuffers(aLoadedMesh);
 }
 bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, const CU::GrowingArray<CLoaderMesh*>& aLoadedMeshList)
 {
@@ -121,19 +90,10 @@ bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, const CU::GrowingA
 #endif // _DEBUG
 
 	Initialize(aEffect, aSurface);
-	myAABB.myMinPos = aLoadedMeshList.GetLast()->myMinPoint;
-	myAABB.myMaxPos = aLoadedMeshList.GetLast()->myMaxPoint;
-
-	myAABB.myRadius = myAABB.myMinPos.Length();
-	if (myAABB.myMinPos.Length2() < myAABB.myMaxPos.Length2())
-	{
-		myAABB.myRadius = myAABB.myMaxPos.Length();
-	}
+	myRadius = (aLoadedMeshList.GetLast()->myMaxPoint - aLoadedMeshList.GetLast()->myMinPoint).Length();
 
 	myIsAlphaModel = aLoadedMeshList.GetLast()->myIsAlphaMesh;
-
-
-	myVertexSize = aLoadedMeshList[0]->myVertexBufferSize;
+	myVertexSize = aLoadedMeshList.GetLast()->myVertexBufferSize;
 
 	for (unsigned int i = 0; i < aLoadedMeshList.Size(); ++i)
 	{
@@ -157,24 +117,10 @@ bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, const CU::GrowingA
 	return true;
 }
 
-bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, CU::GrowingArray<SVertexDataCube>& aVertexList, CU::GrowingArray<unsigned int>& aIndexList)
-{
-	Initialize(aEffect, aSurface);
-	myLODModels.Add(SLodData());
-	return InitBuffers(aVertexList, aIndexList);
-}
-bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface, CU::GrowingArray<SVertexDataCube>& aVertexList)
-{
-	Initialize(aEffect, aSurface);
-	//myLODModels.Add(SLodData());
-	return InitBuffers(aVertexList);
-}
-
 bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 {
 	myLODModels.GetLast().myIndexCount = static_cast<unsigned int>(aLoadedMesh->myIndexes.size());
 	myLODModels.GetLast().myVertexCount = static_cast<unsigned int>(aLoadedMesh->myVertexCount);
-
 
 	// VERTEX BUFFER
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -192,7 +138,6 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	result = DEVICE->CreateBuffer(&vertexBufferDesc, &vertexData, &myLODModels.GetLast().myVertexBuffer);
 	CHECK_RESULT(result, "Failed to create vertexbuffer.");
 
-
 	// INDEX BUFFER
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
@@ -208,6 +153,24 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	result = DEVICE->CreateBuffer(&indexBufferDesc, &indexData, &myLODModels.GetLast().myIndexBuffer);
 	CHECK_RESULT(result, "Failed to create indexbuffer.");
 
+	///////////////////////////////////////////////////////
+	//				INSTANCE BUFFER						 //
+	///////////////////////////////////////////////////////
+
+	D3D11_BUFFER_DESC instanceBufferDesc;
+	ZeroMemory(&instanceBufferDesc, sizeof(instanceBufferDesc));
+
+	instanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	instanceBufferDesc.ByteWidth = sizeof(ourMaxInstanceSize) * sizeof(SToWorldSpace);
+	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	instanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	instanceBufferDesc.MiscFlags = 0;
+
+
+	result = DEVICE->CreateBuffer(&instanceBufferDesc, nullptr, &myInstanceBuffer);
+	CHECK_RESULT(result, "Failed to create instanceBuffer.");
+	///////////////////////////////////////////////////////
+
 
 	//ANIMATION BUFFER
 	if (aLoadedMesh->myScene != nullptr && aLoadedMesh->myScene->myScene->mNumAnimations > 0)
@@ -215,76 +178,6 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 		SAnimationBoneStruct boneBuffer;
 		myBoneBuffer = BSR::CreateCBuffer<SAnimationBoneStruct>(&boneBuffer);
 	}
-
-
-	return true;
-}
-bool CModel::InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList, CU::GrowingArray<unsigned int>& aIndexList)
-{
-	myVertexSize = sizeof(SVertexDataCube);
-	myLODModels.GetLast().myIndexCount = aIndexList.Size();
-	myLODModels.GetLast().myVertexCount = aVertexList.Size();
-
-	// VERTEX BUFFER
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = aVertexList.Size() * myVertexSize;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexData;
-	ZeroMemory(&vertexData, sizeof(vertexData));
-	vertexData.pSysMem = &aVertexList[0];
-	HRESULT result;
-	result = DEVICE->CreateBuffer(&vertexBufferDesc, &vertexData, &myLODModels.GetLast().myVertexBuffer);
-	CHECK_RESULT(result, "Failed to create vertexbuffer.");
-
-
-	// INDEX BUFFER
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(int) * aIndexList.Size();
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA indexData;
-	ZeroMemory(&indexData, sizeof(indexData));
-	indexData.pSysMem = &aIndexList[0];
-	result = DEVICE->CreateBuffer(&indexBufferDesc, &indexData, &myLODModels.GetLast().myIndexBuffer);
-	CHECK_RESULT(result, "Failed to create indexbuffer.");
-
-
-
-
-	return true;
-}
-bool CModel::InitBuffers(CU::GrowingArray<SVertexDataCube>& aVertexList)
-{
-	myLODModels.Add(SLodData());
-	myVertexSize = sizeof(SVertexDataCube);
-	myLODModels.GetLast().myVertexCount = aVertexList.Size();
-
-	// VERTEX BUFFER
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = aVertexList.Size() * myVertexSize;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexData;
-	ZeroMemory(&vertexData, sizeof(vertexData));
-	vertexData.pSysMem = &aVertexList[0];
-	HRESULT result;
-	result = DEVICE->CreateBuffer(&vertexBufferDesc, &vertexData, &myLODModels.GetLast().myVertexBuffer);
-	CHECK_RESULT(result, "Failed to create vertexbuffer.");
-
-	
 	return true;
 }
 
@@ -349,15 +242,8 @@ void CModel::Render(SDeferredRenderModelParams& aParamObj)
 
 	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
 	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	if (myLODModels.GetLast().myIndexBuffer == nullptr)
-	{
-		DEVICE_CONTEXT->Draw(currentLodModel.myVertexCount, 0);
-	}
-	else
-	{
-		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
-	}
+	DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
+	
 }
 
 void CModel::Render(SShadowRenderModelParams& aParamObj)
@@ -387,6 +273,35 @@ void CModel::Render(SShadowRenderModelParams& aParamObj)
 	{
 		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
 	}
+}
+
+void CModel::Render(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList)
+{
+	if (aParamList.GetLast()->myRenderToDepth == true)
+	{
+		myDeferredEffect->ActivateForDepth();
+	}
+	else
+	{
+		myDeferredEffect->Activate();
+	}
+
+	if (mySurface != nullptr)
+	{
+		mySurface->Activate();
+	}
+
+
+
+
+	ID3D11DeviceContext* context = DEVICE_CONTEXT;
+
+	unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
+	unsigned int offsets[2] = { 0, 0 };
+	ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
+
+	context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+	context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, aParamList.Size(), 0, 0, 0);
 }
 
 void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
@@ -443,23 +358,7 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
 		DEVICE_CONTEXT->Unmap(myLightBuffer, 0);
 		DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myLightBuffer);
 	}
-
-	//if (myConstantBuffers[eShaderStage::eVertex] != nullptr)
-	//{
-	//	myFramework->GetDeviceContext()->VSSetConstantBuffers(2, 1, &myConstantBuffers[eShaderStage::eVertex]);
-	//}
-
-	if (myConstantBuffers[static_cast<int>(eShaderStage::ePixel)] != nullptr)
-	{
-		myFramework->GetDeviceContext()->PSSetConstantBuffers(1, 1, &myConstantBuffers[static_cast<int>(eShaderStage::ePixel)]);
-	}
-
-	//if (myConstantBuffers[eShaderStage::eGeometry] != nullptr)
-	//{
-	//	myFramework->GetDeviceContext()->GSSetConstantBuffers(1, 1, &myConstantBuffers[eShaderStage::eGeometry]);
-	//}
 }
-
 void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 {
 	// WorldSpace thingy
@@ -470,7 +369,6 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	updated.myWorldSpace = aParamObj.myTransform;
 	updated.myWorldSpaceLastFrame = aParamObj.myTransformLastFrame;
 	updated.myHighlightColor = aParamObj.myHighlightColor;
-	updated.myHighlightIntensivity = aParamObj.myHighlightIntensivity;
 	DEVICE_CONTEXT->Map(myCbuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
 	memcpy(mappedSubResource.pData, &updated, sizeof(SToWorldSpace));
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
@@ -504,7 +402,6 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 		}
 	}
 }
-
 void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 {
 	SDeferredRenderModelParams params;
@@ -520,6 +417,28 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	UpdateCBuffer(params);
 }
 
+void CModel::UpdateInstanceBuffer(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList)
+{
+	// WorldSpace thingy
+	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	static CU::GrowingArray<SToWorldSpace> instanceBuffer(aParamList.Size());
+	instanceBuffer.Resize(aParamList.Size());
+
+	for (int i = 0; i < aParamList.Size(); ++i)
+	{
+		instanceBuffer[i].myWorldSpace = aParamList[i]->myTransform;
+		instanceBuffer[i].myWorldSpaceLastFrame = aParamList[i]->myTransformLastFrame;
+		instanceBuffer[i].myHighlightColor = aParamList[i]->myHighlightColor;
+		instanceBuffer[i].myHighlightColor.a *= aParamList[i]->myHighlightIntensivity;
+	}
+
+	DEVICE_CONTEXT->Map(myInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+	memcpy(mappedSubResource.pData, &instanceBuffer, instanceBuffer.ByteSize());
+	DEVICE_CONTEXT->Unmap(myInstanceBuffer, 0);
+}
+
 void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut)
 {
 	for (size_t i = 0; i < aBlendFrom.size(); ++i)
@@ -528,16 +447,6 @@ void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<m
 		aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
 		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
 	}
-}
-
-void CModel::UpdateConstantBuffer(const eShaderStage aShaderStage, const void* aBufferStruct, const unsigned int aBufferSize)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
-	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	myFramework->GetDeviceContext()->Map(myConstantBuffers[static_cast<int>(aShaderStage)], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	memcpy(mappedSubResource.pData, aBufferStruct, aBufferSize);
-	myFramework->GetDeviceContext()->Unmap(myConstantBuffers[static_cast<int>(aShaderStage)], 0);
 }
 
 std::vector<mat4>& CModel::GetBones(float aTime, const char * aAnimationState, const bool aAnimationLooping)
@@ -668,17 +577,15 @@ CModel& CModel::operator=(CModel&& aModel)
 	myLightBuffer = aModel.myLightBuffer;
 	aModel.myLightBuffer = nullptr;
 
+
+	myInstanceBuffer = aModel.myInstanceBuffer;
+	aModel.myInstanceBuffer = nullptr;
+
 	myIsInitialized = aModel.myIsInitialized.load();
 	aModel.myIsInitialized = false;
 
 	myVertexSize = aModel.myVertexSize;
 	aModel.myVertexSize = 0;
-
-	for (int i = 0; i < myConstantBuffers.Size(); ++i)
-	{
-		myConstantBuffers[i] = aModel.myConstantBuffers[i];
-		aModel.myConstantBuffers[i] = nullptr;
-	}
 
 	myScene = aModel.myScene;
 	aModel.myScene = nullptr;
@@ -742,15 +649,13 @@ CModel& CModel::operator=(const CModel& aModel)
 	myLightBuffer = aModel.myLightBuffer;
 	SAFE_ADD_REF(myLightBuffer);
 
+	myInstanceBuffer = aModel.myInstanceBuffer;
+	SAFE_ADD_REF(myInstanceBuffer);
+
+
 	myIsInitialized = aModel.myIsInitialized.load();
 
 	myVertexSize = aModel.myVertexSize;
-
-	for (int i = 0; i < myConstantBuffers.Size(); ++i)
-	{
-		myConstantBuffers[i] = aModel.myConstantBuffers[i];
-		SAFE_ADD_REF(myConstantBuffers[i]);
-	}
 
 	myScene = aModel.myScene;
 

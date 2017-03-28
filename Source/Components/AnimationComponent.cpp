@@ -44,6 +44,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		myLastPosition = CU::Vector2f(GetParent()->GetLocalTransform().myPosition.x, GetParent()->GetLocalTransform().myPosition.z);
 
 		float speed = (myLastPosition - lastPosition).Length2();
+		
 
 		myModelComponent.SetAnimation("idle01");
 		myModelComponent.SetNextAnimation("walk01");

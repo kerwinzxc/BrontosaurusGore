@@ -28,10 +28,10 @@ namespace Physics
 			const physx::PxContactPair& cp = pairs[i];
 
 			CPhysicsCallbackActor* actor = static_cast<CPhysicsCallbackActor*>(pairHeader.actors[0]->userData);
-			IPhysicsCallback* actorCallback = static_cast<IPhysicsCallback*>(actor->GetCallbackData());
+			IPhysicsCallback* actorCallback = actor->GetCallbackData();
 
 			CPhysicsCallbackActor* otherActor = static_cast<CPhysicsCallbackActor*>(pairHeader.actors[1]->userData);
-			IPhysicsCallback* otherActorCallback = static_cast<IPhysicsCallback*>(otherActor->GetCallbackData());
+			IPhysicsCallback* otherActorCallback = otherActor->GetCallbackData();
 
 			if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{
@@ -57,8 +57,8 @@ namespace Physics
 				}
 			}
 		}
-		//	//Edvin är smet, Kevin är en best!
-		//	//Edvin är semst, Kevin är best!
+		//Edvin är smet, Kevin är en best!
+		//Edvin är semst, Kevin är best!
 	}
 
 	void CSimulationEventCallback::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
@@ -71,10 +71,10 @@ namespace Physics
 				continue;
 
 			CPhysicsCallbackActor* triggerActor = static_cast<CPhysicsCallbackActor*>(pairs[i].triggerActor->userData);
-			IPhysicsCallback* triggerActorCallback = static_cast<IPhysicsCallback*>(triggerActor->GetCallbackData());
+			IPhysicsCallback* triggerActorCallback = triggerActor->GetCallbackData();
 
 			CPhysicsCallbackActor* otherActor = static_cast<CPhysicsCallbackActor*>(pairs[i].otherActor->userData);
-			IPhysicsCallback* otherActorCallback = static_cast<IPhysicsCallback*>(otherActor->GetCallbackData());
+			IPhysicsCallback* otherActorCallback = otherActor->GetCallbackData();
 
 			if (pairs[i].status == physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{

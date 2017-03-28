@@ -34,6 +34,19 @@ struct PosNormBinormTanTex_InputVertex
     float2 uv : UV;
 };
 
+struct PosNormBinormTanTexInstanced_InputVertex
+{
+	float4 position : POSITION;
+	float4 normals : NORMALS;
+	float4 tangent : TANGENT;
+	float4 biTangent : BITANGENT;
+	float2 uv : UV;
+
+	//PER INSTANCE
+	float4x4 toWorldInstance : TOWORLD;
+	float4x4 toWorldLastFrameInstance : TOWORLDLASTFRAME;
+};
+
 struct PosNormBinormTanTex_InputPixel
 {
     float4 position : SV_POSITION;

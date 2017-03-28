@@ -8,7 +8,7 @@
 //Temp icnludes
 #include "WeaponSystemManager.h"
 #include "WeaponSystemComponent.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "ColliderComponentManager.h"
 #include "../Physics/PhysicsCharacterController.h"
 //
@@ -23,6 +23,53 @@ void CEnemyComponentManager::Update(const float aDeltaTime)
 	for(unsigned int i = 0; i < myEnemies.Size(); ++i)
 	{
 		myEnemies[i]->Update(aDeltaTime);
+	}
+}
+
+void CEnemyComponentManager::InitWeaponSystem(CEnemy * aEnemy, CWeaponSystemManager * aWeaponSystemManager)
+{
+	SComponentMessageData addWeaponData;
+
+	aEnemy->GetParent()->AddComponent(aWeaponSystemManager->CreateAndRegisterComponent());
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.minMoveDistance = 0.00001f;
+	controllerDesc.halfHeight = 1.0f;
+
+	aEnemy->GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.5f, 0.0f));
+	aEnemy->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	SComponentMessageData controllerPositionData;
+	controllerPositionData.myVector3f = aEnemy->GetParent()->GetLocalTransform().GetPosition();
+	aEnemy->GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	aEnemy->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	switch (aEnemy->GetEnemyType())
+	{
+	case eEnemyTypes::eImp:
+	{
+		addWeaponData.myString = "ImpMeleeAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		addWeaponData.myString = "ImpRangedAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		break;
+	}
+	case eEnemyTypes::eRevenant:
+	{
+		addWeaponData.myString = "RevenantRangedAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		addWeaponData.myString = "RevenantFlyingRangedAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		addWeaponData.myString = "RevenantMeleeAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		break;
+	}
+	case eEnemyTypes::ePinky:
+	{
+		addWeaponData.myString = "PinkyMeleeAttack";
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		break;
+	}
+	default:
+		DL_ASSERT("Type not found when giving weapon from enemymanagers weaponsystem init, ask/yell at Alex/Johan");
+		break;
 	}
 }
 
@@ -107,49 +154,8 @@ CEnemyComponentManager::~CEnemyComponentManager()
 
 void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer)
 {
-	SComponentMessageData addWeaponData;
-
 	for(unsigned int i = 0; i < myEnemies.Size(); i++)
 	{
-		myEnemies[i]->GetParent()->AddComponent(aWeaponSystemComponentManagerPointer->CreateAndRegisterComponent());
-		Physics::SCharacterControllerDesc controllerDesc;
-		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.halfHeight = 1.0f;
-
-		myEnemies[i]->GetParent()->GetLocalTransform().Move(CU::Vector3f(0.0f, 0.5f, 0.0f));
-		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-		SComponentMessageData controllerPositionData;
-		controllerPositionData.myVector3f = myEnemies[i]->GetParent()->GetLocalTransform().GetPosition();
-		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
-		myEnemies[i]->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-		switch (myEnemies[i]->GetEnemyType())
-		{
-		case eEnemyTypes::eImp:
-		{
-			addWeaponData.myString = "ImpMeleeAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			addWeaponData.myString = "ImpRangedAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			break;
-		}
-		case eEnemyTypes::eRevenant:
-		{
-			addWeaponData.myString = "RevenantRangedAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			addWeaponData.myString = "RevenantFlyingRangedAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			addWeaponData.myString = "RevenantMeleeAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			break;
-		}
-		case eEnemyTypes::ePinky:
-		{
-			addWeaponData.myString = "PinkyMeleeAttack";
-			myEnemies[i]->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
-			break;
-		}
-		default:
-			break;
-		}
+		InitWeaponSystem(myEnemies[i], aWeaponSystemComponentManagerPointer);
 	}
 }

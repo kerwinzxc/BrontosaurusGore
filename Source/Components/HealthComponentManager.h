@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_map>
+#include <map>
 
 class CHealthComponent;
 
@@ -10,7 +10,7 @@ public:
 	static void Destroy();
 	static CHealthComponentManager* GetInstance();
 
-	CHealthComponent* CreateAndRegisterComponent(unsigned int aID);
+	CHealthComponent* CreateAndRegisterComponent();
 
 	void TakeDamage(const unsigned int aID, const unsigned int aDamageTaken);
 
