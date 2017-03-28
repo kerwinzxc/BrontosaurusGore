@@ -37,9 +37,9 @@ public:
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
-	CSpawnerManager* GetSpawnerManager();
-inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
-inline CColliderComponentManager* GetColliderComponentManager();
+	inline CSpawnerManager* GetSpawnerManager();
+	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
+	inline CColliderComponentManager* GetColliderComponentManager();
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
@@ -80,4 +80,9 @@ inline CDamageOnCollisionComponentManager* CGameServer::GetDamageOnCollisionComp
 inline CColliderComponentManager* CGameServer::GetColliderComponentManager()
 {
 	return myColliderComponentManager;
+}
+
+inline CSpawnerManager* CGameServer::GetSpawnerManager()
+{
+	return mySpawnerManager;
 }
