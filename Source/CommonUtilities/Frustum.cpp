@@ -79,11 +79,62 @@ namespace CU
 		myPlanes.AddPlane(bottomPlane);
 	}
 
+	void CFrustum::SetFrustum(const CU::Matrix44f& aProjectionInverse)
+	{
+		if (myPlanes.Count() > 0)
+		{
+			myPlanes.RemovePlanes();
+		}
+
+
+		CU::Vector3f frustumPoints[8] =
+		{
+			//Far plane
+			CU::Vector3f /*topFarLeft		*/(-1.0f, 1.0f, 1.0f),
+			CU::Vector3f /*topFarRight		*/(1.0f, 1.0f, 1.0f),
+			CU::Vector3f /*bottomFarLeft	*/(-1.0f, -1.0f, 1.0f),
+			CU::Vector3f /*bottomFarRight	*/(1.0f, -1.0f, 1.0f),
+			//Near Plane
+			CU::Vector3f /*topNearLeft		*/(-1.0f, 1.0f, 0.0f),
+			CU::Vector3f /*topNearRight		*/(1.0f, 1.0f, 0.0f),
+			CU::Vector3f /*bottomNearLeft	*/(-1.0f, -1.0f, 0.0f),
+			CU::Vector3f /*bottomNearRight	*/(1.0f, -1.0f, 0.0f)
+		};
+		
+		for (CU::Vector3f& point : frustumPoints)
+		{
+			CU::Vector4f pointo(point);
+			pointo.w = 1.0f;
+			pointo = pointo * aProjectionInverse;
+			pointo /= pointo.w;
+			point = pointo;
+		}
+		//Plane<float> farPlane(bottomFarLeft, bottomFarRight, topFarLeft);
+		//Plane<float> nearPlane(bottomNearRight, bottomNearLeft, topNearRight);
+		//Plane<float> leftPlane(bottomNearLeft, bottomFarLeft, topNearLeft);
+		//Plane<float> rightPlane(bottomFarRight, bottomNearRight, topFarRight);
+		//Plane<float> topPlane(topFarLeft, topFarRight, topNearLeft);
+		//Plane<float> bottomPlane(bottomNearLeft, bottomNearRight, bottomFarLeft);
+
+		Plane<float> farPlane(		frustumPoints[2], frustumPoints[3], frustumPoints[0]);
+		Plane<float> nearPlane(		frustumPoints[7], frustumPoints[6], frustumPoints[5]);
+		Plane<float> leftPlane(		frustumPoints[6], frustumPoints[2], frustumPoints[4]);
+		Plane<float> rightPlane(	frustumPoints[3], frustumPoints[7], frustumPoints[1]);
+		Plane<float> topPlane(		frustumPoints[0], frustumPoints[1], frustumPoints[4]);
+		Plane<float> bottomPlane(	frustumPoints[6], frustumPoints[7], frustumPoints[2]);
+
+		myPlanes.AddPlane(farPlane);
+		myPlanes.AddPlane(nearPlane);
+		myPlanes.AddPlane(leftPlane);
+		myPlanes.AddPlane(rightPlane);
+		myPlanes.AddPlane(topPlane);
+		myPlanes.AddPlane(bottomPlane);
+	}
+
 	bool CFrustum::IsInside(const CU::Sphere& aSphere)
 	{
 		// assumes the AABB is in the same space as the Frustum
-		bool intersects =
-myPlanes.Inside(aSphere.myCenterPos, aSphere.myRadius);
+		bool intersects = myPlanes.Inside(aSphere.myCenterPos, aSphere.myRadius);
 		return intersects;
 	}
 }
