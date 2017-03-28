@@ -12,6 +12,7 @@ class CAmmoComponentManager;
 class CWeaponSystemManager;
 class CWeaponFactory;
 class CMovementComponentManager;
+class CSpawnerManager;
 
 class CGameServer
 {
@@ -36,6 +37,7 @@ public:
 	CServerPlayerNetworkComponent* AddPlayer() const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
+	CSpawnerManager* GetSpawnerManager();
 inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 inline CColliderComponentManager* GetColliderComponentManager();
 private:
@@ -45,6 +47,7 @@ private:
 	CWeaponFactory* myWeaponFactory;
 	CMovementComponentManager* myMovementComponentManager;
 	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
+	CSpawnerManager* mySpawnerManager;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
