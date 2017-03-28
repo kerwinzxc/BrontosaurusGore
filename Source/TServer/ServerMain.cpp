@@ -43,6 +43,7 @@
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../TShared/NetworkMessage_RevivePlayer.h"
 #include "../Physics/PhysXHelper.h"
+#include "../Components/HealthComponentManager.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -506,6 +507,7 @@ bool CServerMain::Update()
 			case ePackageType::eTakeDamage:
 			{
 				CNetworkMessage_TakeDamage* damage = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+				CHealthComponentManager::GetInstance()->TakeDamage(damage->GetID(), damage->GetDamageTaken());
 				SendTo(damage);
 			}
 			break;
