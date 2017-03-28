@@ -382,11 +382,14 @@
     <ClInclude Include="Allignment.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="C2DGUIRenderer.h" />
+    <ClInclude Include="CascadeBuffer.h" />
+    <ClInclude Include="CascadeShadowMap.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
     <ClInclude Include="HighlightComponent.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="ParticleRenderer.h" />
+    <ClInclude Include="ScreenGrab\ScreenGrab.h" />
     <ClInclude Include="SettingsSubscriber.h" />
     <ClInclude Include="Navmesh.h" />
     <ClInclude Include="ObjLoader.h" />
@@ -425,7 +428,6 @@
     <ClInclude Include="ModelInstance.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="ModelManager.h" />
-    <ClInclude Include="ModelShapes.h" />
     <ClInclude Include="NumberDrawer.h" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="ParticleEmitterInstance.h" />
@@ -463,11 +465,13 @@
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="C2DGUIRenderer.cpp" />
+    <ClCompile Include="CascadeShadowMap.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="HighlightComponent.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="ParticleRenderer.cpp" />
+    <ClCompile Include="ScreenGrab\ScreenGrab.cpp" />
     <ClCompile Include="SettingsSubscriber.cpp" />
     <ClCompile Include="Navmesh.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
