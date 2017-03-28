@@ -7,6 +7,7 @@
 #include "RenderMessages.h"
 #include "Engine.h"
 #include "Renderer.h"
+#include "..\CommonUtilities\Sphere.h"
 
 #define SHADOWMAP_SIZE 2048u * 4u
 #define SHADOWBUFFER_SIZE 1024 * 4
@@ -154,6 +155,7 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 		statemsg.myBlendState = eBlendState::eNoBlend;
 		statemsg.mySamplerState = eSamplerState::eClamp;
 		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+		myRenderCamera.GetCamera().ReInit(cascade.myOrthoProjection, cascade.myTransformation);
 
 		for (CModelInstance* modelInstance: aModelList)
 		{
@@ -161,14 +163,14 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 			{
 				continue;
 			}
-			/*if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
-			{
-				continue;
-			}*/
+
+			//if (myRenderCamera.GetCamera().IsInside(modelInstance->GetModelBoundingSphere()) == false)
+			//{
+			//	continue;
+			//}
 
 			modelInstance->RenderDeferred(myRenderCamera);
 		}
-		myRenderCamera.GetCamera().ReInit(cascade.myOrthoProjection, cascade.myTransformation);
 		myRenderCamera.Render();
 
 
@@ -205,6 +207,7 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 	}
 
 	RENDERER.AddRenderMessage(shadowMSG);
+	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
 
 const SCascade& CCascadeShadowMap::GetCascade(const int aIndex)
