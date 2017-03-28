@@ -28,5 +28,6 @@ inline const eEnemyTypes CEnemyClientRepresentation::GetEnemyType() const
 }
 inline void CEnemyClientRepresentation::SetEnemyType(const eEnemyTypes aType)
 {
+	SetType(aType);
 	myType = aType;
 }
