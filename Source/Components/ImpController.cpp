@@ -3,7 +3,7 @@
 #include "EnemyBlueprint.h"
 #include "../Physics/PhysicsCharacterController.h"
 
-static const float gravityAcceleration = 9.82f * 2.0f;
+static const float gravityAcceleration = 9.82f * 4;
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
 {
@@ -96,6 +96,7 @@ void CImpController::UpdateJumpForces(const float aDeltaTime)
 		}
 	}
 	myJumpForce -= gravityAcceleration * aDeltaTime;
+
 	if (CheckIfInAir() == false)
 	{
 		myJumpForce = 0.0f;
