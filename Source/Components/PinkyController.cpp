@@ -29,6 +29,7 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	myWindupChargeTime = pinkyData->windupChargeTime;
 	myChargeDamage = pinkyData->chargeDamage;
 	myChargeSpeed = pinkyData->chargeSpeed;
+	myChargeDistance2 = pinkyData->chargeDistance * pinkyData->chargeDistance;
 	CEnemy::SetEnemyData(aData);
 }
 
@@ -100,13 +101,22 @@ void CPinkyController::Update(const float aDeltaTime)
 		if(myElapsedWindupTime >= myWindupChargeTime)
 		{
 			myElapsedWindupTime = 0.0f;
-			myState = ePinkyState::eCharge;
+			myState = ePinkyState::eStartCharge;
 			myIsCharging = true;
 		}
 		break;
+	case ePinkyState::eStartCharge:
+		myStartChargeLocation = myPos;
+		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
 	{
 		velocity.z = myChargeSpeed;
+		volatile float distFromStart = (myStartChargeLocation - myPos).Length2();
+		if (distFromStart > myChargeDistance2)
+		{
+			myStartChargeLocation = CU::Vector3f::Zero;
+			myIsCharging = false;
+		}
 		break;
 	}
 	case ePinkyState::eChargeCooldown:
@@ -126,19 +136,6 @@ void CPinkyController::Update(const float aDeltaTime)
 	}
 
 	UpdateTransformationLocal(velocity, aDeltaTime);
-	//CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	//CU::Matrix44f rotation = parentTransform.GetRotation();
-	//rotation.myForwardVector.y = 0.f;
-
-	//SComponentQuestionData data;
-	//data.myVector4f = velocity * rotation * aDeltaTime;
-	//data.myVector4f.w = aDeltaTime;
-
-	//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	//{
-	//	parentTransform.SetPosition(data.myVector3f);
-	//	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	//}
 }
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
