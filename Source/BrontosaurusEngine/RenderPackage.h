@@ -41,7 +41,7 @@ public:
 	void UpdateTexture(ID3D11Texture2D* aTexture);
 	
 	CU::Vector2f GetSize();
-
+	void SaveToFile(const char* aPath);
 	inline bool IsInit();
 	void operator= (const CRenderPackage& aLeft);
 private:

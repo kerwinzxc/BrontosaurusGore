@@ -2,6 +2,7 @@
 #include "RenderPackage.h"
 #include "Engine.h"
 #include "DXFramework.h"
+#include "ScreenGrab/ScreenGrab.h"
 #include <vector2.h>
 
 CRenderPackage::CRenderPackage()
@@ -148,6 +149,12 @@ void CRenderPackage::UpdateTexture(ID3D11Texture2D * aTexture)
 CU::Vector2f CRenderPackage::GetSize()
 {
 	return CU::Vector2f(myViewport->Width, myViewport->Height);
+}
+
+void CRenderPackage::SaveToFile(const char* aPath)
+{
+	const wchar_t* path = CU::StringToWString(aPath).c_str();
+	DirectX::SaveDDSTextureToFile(DEVICE_CONTEXT, myTexture, path);
 }
 
 void CRenderPackage::operator=(const CRenderPackage& aLeft)
