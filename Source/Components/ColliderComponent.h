@@ -28,6 +28,13 @@ struct SColliderData
 
 	bool IsTrigger = false;
 };
+
+struct SStoredCallBackData
+{
+	void* componentPtr;
+	eComponentMessageType collisionType;
+};
+
 class CColliderComponentManager;
 
 class CColliderComponent : public CComponent , public Physics::IPhysicsCallback
@@ -36,6 +43,7 @@ public:
 	CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
 	virtual ~CColliderComponent();
 	void UpdatePosition();
+	void UpdateCallbacks();
 
 	virtual void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual inline SColliderData::eColliderType GetType() = 0;
@@ -54,11 +62,11 @@ public:
 	void OnCollisionExit(Physics::CPhysicsCallbackActor* aOther) override;
 
 protected:
-
 	Physics::CShape* myShape;
 	Physics::CPhysicsActor* myActor;
 	SColliderData myData;
 private:
+	CU::GrowingArray<SStoredCallBackData> myStoredCallBackDataList;
 	CColliderComponentManager* myManager;
 };
 

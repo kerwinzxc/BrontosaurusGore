@@ -16,6 +16,9 @@
 #include "../Components/WeaponSystemManager.h"
 #include "../Components/WeaponFactory.h"
 #include "../Components/DamageOnCollisionComponentManager.h"
+#include "../Components/HealthComponentManager.h"
+#include "../Components/SpawnerManager.h"
+#include "../Game/EnemyFactory.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -25,7 +28,8 @@
 #include "../Physics/Foundation.h"
 #include "../Components/ColliderComponentManager.h"
 #include "../Physics/PhysicsScene.h"
-
+#include "../Physics/PhysicsCharacterController.h"
+#include "../Components/CharcterControllerComponent.h"
 
 CGameServer::CGameServer():
 	myAmmoComponentManager(nullptr)
@@ -39,6 +43,7 @@ CGameServer::CGameServer():
 	, myPhysicsScene(nullptr)
 	, myWeaponSystemManager(nullptr)
 	, myMovementComponentManager(nullptr)
+	, mySpawnerManager(nullptr)
 {
 	myIsRunning = false;
 	myTime = 0;
@@ -126,22 +131,27 @@ void CGameServer::CreateManagersAndFactories()
 	myGameObjectManager = new CGameObjectManager();
 	myMovementComponentManager = new CMovementComponentManager();
 	myEnemyComponentManager = new CEnemyComponentManager();
-
 	myAmmoComponentManager = new CAmmoComponentManager();
 	myWeaponFactory = new CWeaponFactory();
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
+	mySpawnerManager = new CSpawnerManager();
+
 
 	myColliderComponentManager = new CColliderComponentManager();
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
 	myColliderComponentManager->SetPhysics(myPhysics);
 	myColliderComponentManager->InitControllerManager();
+	CHealthComponentManager::Create();
+	CEnemyFactory::Create(*myEnemyComponentManager,*myGameObjectManager,*myWeaponSystemManager,*myColliderComponentManager);
 }
 
 void CGameServer::DestroyManagersAndFactories()
 {
 	CComponentManager::DestroyInstance();
 	CNetworkComponentManager::Destroy();
+	CHealthComponentManager::GetInstance()->Destroy();
+	CEnemyFactory::Destroy();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
@@ -151,6 +161,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myWeaponSystemManager);
 	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
+	SAFE_DELETE(mySpawnerManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
@@ -162,6 +173,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	if(myTime > updateFrequecy)
 	{
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
 	
@@ -186,8 +198,13 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
-
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.minMoveDistance = 0.00001f;
+	controllerDesc.halfHeight = 1.0f;
+	CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
+	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 
 	return serverPlayerNetworkComponent;
 }
@@ -200,4 +217,9 @@ CEnemyComponentManager* CGameServer::GetEnemyComponentManager()
 CWeaponSystemManager* CGameServer::GetCWeaponSystemManager()
 {
 	return myWeaponSystemManager;
+}
+
+CSpawnerManager * CGameServer::GetSpawnerManager()
+{
+	return mySpawnerManager;
 }

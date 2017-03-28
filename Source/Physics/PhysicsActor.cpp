@@ -33,6 +33,11 @@ namespace Physics
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
 	}
 
+	bool CPhysicsActor::GetIsActive()
+	{
+		return myPxActor->getActorFlags() & physx::PxActorFlag::eDISABLE_SIMULATION;
+	}
+
 	void CPhysicsActor::SetUseGravity(const bool aUseGravity)
 	{
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !aUseGravity);

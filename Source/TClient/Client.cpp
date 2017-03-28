@@ -50,7 +50,9 @@
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
+#include "../TShared/NetworkMessage_SpawnEnemyRepesention.h"
 #include "../Components/DoorManager.h"
+#include "../Game/EnemyFactory.h"
 
 #include "../Components/PickupComponentManager.h"
 #include "../TShared/NetworkMessage_EnemyPosition.h"
@@ -372,7 +374,7 @@ void CClient::Update()
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-				DL_PRINT("Enemy network trans message");
+				
 			}
 			break;
 			case ePackageType::eTakeDamage:
@@ -392,6 +394,12 @@ void CClient::Update()
 			case ePackageType::eRevivePlayer:
 			{
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CRevivePlayerMessage());
+			}
+			break;
+			case  ePackageType::eSpawnEnemyRepresentation:
+			{
+				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
+				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType());
 			}
 			break;
 			case ePackageType::eZero:

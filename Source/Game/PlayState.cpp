@@ -35,6 +35,7 @@
 #include "DamageOnCollisionComponentManager.h"
 #include "Components/DoorManager.h"
 #include "../Components/CheckpointComponentManager.h"
+#include "EnemyFactory.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -143,6 +144,7 @@ CPlayState::~CPlayState()
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
 	CHealthComponentManager::Destroy();
+	CEnemyFactory::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -370,6 +372,7 @@ void CPlayState::CreateManagersAndFactories()
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
+	CEnemyFactory::Create(*myEnemyComponentManager, *myGameObjectManager, *myWeaponSystemManager, *myColliderComponentManager);
 	
 	myExplosionComponentManager = new CExplosionComponentManager();
 	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);

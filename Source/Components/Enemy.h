@@ -19,15 +19,19 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
+	inline void SetType(const eEnemyTypes aType);
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
-	virtual void UpdateTransformation();
+	virtual void UpdateTransformationNetworked();
+	virtual void UpdateTransformationLocal(CU::Vector3f aVelocity, const float aDeltaTime);
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange(const float aDist);
 	virtual inline bool WithinAttackRange(const float aDist);
 	virtual inline bool OutsideAttackRange(const float aDist);
+	virtual inline bool WithinWalkToMeleeRange(const float aDist);
 	void LookAtPlayer();
+
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 	unsigned int myServerId;
@@ -37,7 +41,7 @@ protected:
 	float myDetectionRange2;
 	float myStartAttackRange2;
 	float myStopAttackRange2;
-	float myShouldGoMeleeRadius2;
+	float myWalkToMeleeRange2;
 	float myNetworkPositionUpdateCoolDown;
 	float myElapsedWaitingToSendMessageTime;
 
@@ -53,7 +57,7 @@ inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 	myDetectionRange2 = aData->detectionRange * aData->detectionRange;
 	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
 	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
-	myShouldGoMeleeRadius2 = aData->shouldGoMeleeRadius *  aData->shouldGoMeleeRadius;
+	myWalkToMeleeRange2 = aData->walkToMeleeRange *  aData->walkToMeleeRange;
 }
 
 inline bool  CEnemy::WithinDetectionRange(const float aDist)
@@ -66,6 +70,11 @@ inline bool  CEnemy::WithinAttackRange(const float aDist)
 	return aDist < myStartAttackRange2;
 }
 
+inline bool  CEnemy::WithinWalkToMeleeRange(const float aDist)
+{
+	return aDist < myWalkToMeleeRange2;
+}
+
 inline bool  CEnemy::OutsideAttackRange(const float aDist)
 {
 	return aDist > myStopAttackRange2;
@@ -74,4 +83,9 @@ inline bool  CEnemy::OutsideAttackRange(const float aDist)
 inline eEnemyTypes CEnemy::GetEnemyType()
 {
 	return myType;
+}
+
+inline void CEnemy::SetType(const eEnemyTypes aType)
+{
+	myType = aType;
 }

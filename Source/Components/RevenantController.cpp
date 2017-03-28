@@ -33,7 +33,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
 	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 	const float distToPlayer = toPlayer.Length2();
-	UpdateTransformation();
+	UpdateTransformationNetworked();
 
 	if(myIsflying == false)
 	{
@@ -55,7 +55,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			myState = eRevenantState::eUseMeleeAttack;
 		}
-		else if (myShouldGoMeleeRadius2 > distToPlayer)
+		else if (myWalkToMeleeRange2 > distToPlayer)
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
 		}
@@ -86,7 +86,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	break;
 	case eRevenantState::eUseMeleeAttack:
-		ChangeWeapon(3);
+		ChangeWeapon(2);
 		Attack();
 		break;
 	case eRevenantState::eUseRangedAttack:
@@ -107,7 +107,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		myElapsedHoverTime += aDeltaTime;
 		LookAtPlayer();
-		ChangeWeapon(2);
+		ChangeWeapon(1);
 		Attack();
 		if(myElapsedHoverTime >= myHoverTime)
 		{
@@ -122,7 +122,6 @@ void CRevenantController::Update(const float aDeltaTime)
 		if(CheckIfInAir() == false)
 		{
 			myIsflying = false;
-			DL_PRINT("Stopping flight!!!");
 			myFlightForce = 0.0f;
 		}
 		break;
@@ -132,19 +131,8 @@ void CRevenantController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
 
-	SComponentQuestionData data;
-	data.myVector4f = velocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		parentTransform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	}
+	UpdateTransformationLocal(velocity, aDeltaTime);
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
