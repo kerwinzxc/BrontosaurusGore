@@ -25,5 +25,6 @@ struct SPinkyBlueprint : public SEnemyBlueprint
 	float windupChargeTime;
 	float chargeSpeed;
 	float chargeCooldown;
+	float chargeDistance;
 	healthPoint chargeDamage;
 };
