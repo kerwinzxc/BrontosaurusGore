@@ -28,11 +28,11 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 void CSpawnerComponent::SpawnEnemy()
 {
 	SImpBlueprint aData;
-	aData.speed = 1.0f;
-	aData.jumpHeight = 20.0f;
-	aData.detectionRange = 10.0f;
-	//aData.shouldGoMeleeRadius = 10.f;
-	aData.startAttackRange = 5.0f;
-	aData.stopAttackRange = 15.0f;
+	aData.speed = 10.0f;
+	aData.jumpHeight = 4.0f;
+	aData.detectionRange = 30.0f;
+	aData.walkToMeleeRange = 10.f;
+	aData.startAttackRange = 2.0f;
+	aData.stopAttackRange = 1.0f;
 	CEnemyFactory::GetInstance()->CreateImp(&aData,GetParent()->GetWorldPosition());
 }
