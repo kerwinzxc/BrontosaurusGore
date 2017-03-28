@@ -55,6 +55,31 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTex(PosNormBinormTanTex_InputV
 	return output;
 }
 
+PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputVertex input)
+{
+	PosNormBinormTanTex_InputPixel output;
+	float3x3 rotation = (float3x3) input.toWorldInstance;
+
+	output.normals = float4(mul(rotation, normalize(input.normals.xyz)), 1.0f);
+	output.tangent = float4(mul(rotation, normalize(input.tangent.xyz)), 1.0f); //input.tangent;
+	output.biTangent = float4(mul(rotation, normalize(input.biTangent.xyz)), 1.0f); //input.biTangent;
+	output.uv = input.uv;
+
+	output.position = input.position;
+	output.worldPosLastFrame = mul(input.toWorldLastFrameInstance, output.position);
+
+	output.position = mul(worldSpace, output.position);
+	output.worldPosition = float4(output.position.xyz, 1.0f);
+
+	output.position = mul(cameraSpaceInversed, output.position);
+	output.viewPosition = float4(output.position.xyz, 1.0f);
+	output.position = mul(projectionSpace, output.position);
+
+	output.worldPosLastFrame = mul(cameraSpaceInversed, output.worldPosLastFrame);
+
+	return output;
+}
+
 PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexBones(PosNormBinormTanTexBones_InputVertex input)
 {
 	PosNormBinormTanTex_InputPixel output;
