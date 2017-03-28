@@ -21,7 +21,7 @@ void CGameEventMessenger::Init(const CU::Vector2f& aPosition)
 {
 	myText.Init();
 	myText.SetPosition(aPosition);
-	myText.SetAlignment(eAlignment::CENTER);
+	myText.SetAlignment(eAlignment::eCenter);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eGameEventMessage);
 }
 

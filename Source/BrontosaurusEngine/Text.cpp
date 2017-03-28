@@ -65,7 +65,7 @@ CText::~CText()
 
 CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWString)
 {
-	if (aAlignement == eAlignment::LEFT)
+	if (aAlignement == eAlignment::eLeft)
 	{
 		return CU::Vector2f::Zero;
 	}
@@ -79,7 +79,7 @@ CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWSt
 		stringWidth -= screenAdvance.x;
 	}
 
-	if (aAlignement == eAlignment::CENTER)
+	if (aAlignement == eAlignment::eCenter)
 	{
 		stringWidth = stringWidth / 2;
 	}

@@ -1,14 +1,14 @@
 #pragma once
 #include "../BrontosaurusEngine/TextInstance.h"
 #include "../CommonUtilities/JsonValue.h"
+#include "GUIElement.h"
 
 class CSpriteInstance;
 class CBarInstance;
 
 struct SHUDElement
 {
-	CU::Vector2f myScreenPosition;
-	CU::Vector2f myScreenSize;
+	SGUIElement myGuiElement;
 	CU::Vector2ui myPixelSize;
 };
 
@@ -19,14 +19,19 @@ public:
 	~CHUD();
 
 	void LoadHUD();
+
 	void LoadArmourAndHealth(const CU::CJsonValue& aJsonValue);
 
 	void Update(CU::Time aDeltaTime);
-	void Render() const;
+	void Render();
 
 private:
+
+	void LoadText(const CU::CJsonValue& aJsonValue, CTextInstance& aTextInstance) const;
+	CBarInstance* LoadBar(const CU::CJsonValue& aJsonValue);
+
 	//health and armour
-	SHUDElement myHealthAndArmour;
+	SHUDElement myHealthAndArmourElement;
 	CSpriteInstance* myHealthAndArmorSprite;
 
 	CTextInstance myHealthNumber;
@@ -34,6 +39,8 @@ private:
 
 	CBarInstance* myHealthBar;
 	CBarInstance* myArmourBar;
+
+	bool myHealthAndArmourHasChanged;
 
 	//weapon
 	SHUDElement myWeaponElement;

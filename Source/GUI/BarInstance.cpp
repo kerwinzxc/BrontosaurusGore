@@ -9,13 +9,14 @@ CBarInstance::CBarInstance(const CU::Colour &aFullColour, const CU::Vector4f& aR
 {
 }
 
-CBarInstance::CBarInstance(const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect):
-	myCurrentLevel(1),
-	myRect(aRect),
-	myFullColour(aFullColour),
-	myEmptyColour(anEmptyColour)
+CBarInstance::CBarInstance(const CU::Colour& aBackgroundColour, const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect): 
+myCurrentLevel(0), 
+myFullColour(aFullColour), 
+myBackgroundColour(aBackgroundColour),
+myRect(aRect),
+myEmptyColour(anEmptyColour)
 {
-	
+
 }
 
 CBarInstance::~CBarInstance()

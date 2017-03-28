@@ -30,8 +30,8 @@ PixelInput VS_Bar(VertexInput input)
 	
 	outPosition *= size;
 
-	//outPosition.x = position.x;
-	//outPosition.y = outPosition.y + 1.f - position.y - size.y;
+	outPosition.x = outPosition.x + position.x;
+	outPosition.y = outPosition.y + position.y;
 
 	outPosition = outPosition * 2.f;
 	outPosition = outPosition - float2(1.f, 1.f);

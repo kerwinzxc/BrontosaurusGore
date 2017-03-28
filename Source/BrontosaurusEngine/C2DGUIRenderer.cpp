@@ -223,9 +223,16 @@ void C2DGUIRenderer::DoRenderQueues(CRenderer & aRenderer, int & drawCallsCount)
 
 void C2DGUIRenderer::RenderToGUI(const std::wstring anElementName, SRenderMessage* aRenderMessage)
 {
-	if (aRenderMessage != nullptr)
+	if (myElementIndexMap.count(anElementName) > 0)
 	{
-		myRenderQueus[myElementIndexMap.at(anElementName)].Push(aRenderMessage);
+		if (aRenderMessage != nullptr)
+		{
+			myRenderQueus[myElementIndexMap.at(anElementName)].Push(aRenderMessage);
+		}
+	}
+	else
+	{
+		DL_ASSERT("GUI Element missing");
 	}
 }
 
@@ -246,7 +253,6 @@ void C2DGUIRenderer::RenderBar(const SRenderBarMessage* const aRenderMessage)
 		InitBars();
 	}
 
-
 	myBarData.myEffect->Activate();
 
 	ID3D11DeviceContext& context = *CEngine::GetInstance()->GetFramework()->GetDeviceContext();
@@ -256,7 +262,7 @@ void C2DGUIRenderer::RenderBar(const SRenderBarMessage* const aRenderMessage)
 
 	SBarVSData barVsData;
 	barVsData.position = CU::Vector2f(rect.x, rect.y);
-	barVsData.size = CU::Vector2f(rect.z, rect.w);
+	barVsData.size = CU::Vector2f(rect.z - rect.x, rect.w - rect.y);
 
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource = {};
 

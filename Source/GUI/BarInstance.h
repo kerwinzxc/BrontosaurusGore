@@ -12,7 +12,7 @@ class CBarInstance
 {
 public:
 	CBarInstance(const CU::Colour& aFullColour, const CU::Vector4f& aRect);
-	CBarInstance(const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect);
+	CBarInstance(const CU::Colour& aBackgroundColour, const CU::Colour& aFullColour, const CU::Colour& anEmptyColour, const CU::Vector4f& aRect);
 
 	~CBarInstance();
 
