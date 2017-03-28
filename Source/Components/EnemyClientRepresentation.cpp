@@ -4,7 +4,7 @@
 
 CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId) : myComponentId(anId)
 {
-	myPositionInterpolationSpeed = 3.1;
+	myPositionInterpolationSpeed = 6.1f;
 	myRotationInterpolationSpeed = 7.1f;
 	myType = eEnemyTypes::eDefault;
 }
