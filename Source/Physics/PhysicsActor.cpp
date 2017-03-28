@@ -35,7 +35,7 @@ namespace Physics
 
 	bool CPhysicsActor::GetIsActive()
 	{
-		myPxActor->getActorFlags() & physx::PxActorFlag::eDISABLE_SIMULATION;
+		return myPxActor->getActorFlags() & physx::PxActorFlag::eDISABLE_SIMULATION;
 	}
 
 	void CPhysicsActor::SetUseGravity(const bool aUseGravity)

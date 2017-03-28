@@ -11,6 +11,7 @@
 
 #include "StringHelper.h"
 #include "CommandLineManager.h"
+#include "WindowsHelper.h"
 
 #pragma warning(disable : 4091)
 #include "DL_StackWalker.h"
@@ -298,6 +299,7 @@ namespace DL_Debug
 			exit(1);
 			break;
 		case IDRETRY:
+			WindowsHelper::GoogleIt();
 			DL_ASSERT(buffer);
 			break;
 		case IDIGNORE:
