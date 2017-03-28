@@ -19,7 +19,7 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
-
+	inline void SetType(const eEnemyTypes aType);
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformationNetworked();
@@ -83,4 +83,9 @@ inline bool  CEnemy::OutsideAttackRange(const float aDist)
 inline eEnemyTypes CEnemy::GetEnemyType()
 {
 	return myType;
+}
+
+inline void CEnemy::SetType(const eEnemyTypes aType)
+{
+	myType = aType;
 }
