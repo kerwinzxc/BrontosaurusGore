@@ -66,4 +66,9 @@ namespace WindowsHelper
 			CloseHandle(it->second.hThread);
 		}
 	}
+
+	void SetFocus(const HWND& aHwnd)
+	{
+		::SetForegroundWindow(aHwnd);
+	}
 }
