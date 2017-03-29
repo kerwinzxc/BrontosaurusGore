@@ -34,24 +34,25 @@ void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
 	myDistToPlayer = myToPlayer.Length2();
 }
 
-void CEnemy::UpdateTransformationNetworked()
+void CEnemy::SendTransformationToServer()
 {
 	if(myElapsedWaitingToSendMessageTime >= myNetworkPositionUpdateCoolDown)
 	{
-		const CU::Matrix44f tranformation = GetParent()->GetLocalTransform();
+		CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+
 		CNetworkMessage_EnemyTransformation* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_EnemyTransformation>(ID_ALL_BUT_ME);
 		message->SetId(myServerId);
-		message->SetTransformation(tranformation);
-
+		message->SetTransformation(transform);
+		
 		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
 	}
 }
 
-void CEnemy::UpdateTransformationLocal(const float aDeltaTime)
+void CEnemy::CheckForNewTransformation(const float aDeltaTime)
 {
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
+	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	CU::Matrix44f& rotation = transform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
@@ -59,7 +60,7 @@ void CEnemy::UpdateTransformationLocal(const float aDeltaTime)
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		parentTransform.SetPosition(data.myVector3f);
+		transform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 }

@@ -70,11 +70,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				if(hitData.hit == true)
 				{
 					const Physics::EActorType actorType = hitData.actor->GetType();
-					if (actorType == Physics::EActorType::eDynamic)
+					/*if (actorType == Physics::EActorType::eDynamic)
 					{
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
-					};
+					};*/
 
 					CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
 					SComponentMessageData damageData;

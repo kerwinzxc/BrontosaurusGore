@@ -29,7 +29,7 @@ void CRevenantController::Update(const float aDeltaTime)
 {
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myFlightForce;
-	UpdateTransformationNetworked();
+	SendTransformationToServer();
 	UpdateFlightForces(aDeltaTime);
 
 	if (myIsDead == false && myIsflying == false)
@@ -116,8 +116,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-
-	UpdateTransformationLocal(aDeltaTime);
+	CheckForNewTransformation(aDeltaTime);
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -127,6 +126,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		myState = eRevenantState::eDead;
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;

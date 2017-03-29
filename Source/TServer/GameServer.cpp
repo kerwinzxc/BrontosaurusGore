@@ -165,6 +165,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 	SAFE_DELETE(mySpawnerManager);
+	SAFE_DELETE(myCheckPointSystem);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)

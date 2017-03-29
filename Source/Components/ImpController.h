@@ -17,7 +17,7 @@ public:
 
 	void Update(const float aDeltaTime) override;
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
-	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
 
 	bool CheckIfInAir();
 	void ApplyJumpForce(float aJumpHeight);
