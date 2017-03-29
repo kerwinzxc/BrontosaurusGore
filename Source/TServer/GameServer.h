@@ -12,6 +12,7 @@ class CAmmoComponentManager;
 class CWeaponSystemManager;
 class CWeaponFactory;
 class CMovementComponentManager;
+class CSpawnerManager;
 
 class CGameServer
 {
@@ -33,11 +34,12 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
-	CServerPlayerNetworkComponent* AddPlayer() const;
+	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID) const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
-inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
-inline CColliderComponentManager* GetColliderComponentManager();
+	CSpawnerManager* GetSpawnerManager();
+	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
+	inline CColliderComponentManager* GetColliderComponentManager();
 private:
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
@@ -45,6 +47,8 @@ private:
 	CWeaponFactory* myWeaponFactory;
 	CMovementComponentManager* myMovementComponentManager;
 	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
+	CSpawnerManager* mySpawnerManager;
+	CCheckPointSystem* myCheckPointSystem;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;

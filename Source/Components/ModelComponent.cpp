@@ -78,6 +78,12 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 	case eComponentMessageType::eDied:
 		myModel.SetVisibility(false);
 		break;
+	case eComponentMessageType::eDeactivate:
+		myModel.SetVisibility(false);
+		break;
+	case eComponentMessageType::eActivate:
+		myModel.SetVisibility(true);
+		break;
 	}
 }
 

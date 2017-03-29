@@ -63,55 +63,6 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 	myModelList[myModels[aModelPath.c_str()]].AddRef();
 	return myModels[aModelPath.c_str()];
 }
-const CModelManager::ModelId CModelManager::LoadModel(SShape aModelShape)
-{
-	if (myModelList.Size() >= ourMaxNumberOfModels)
-	{
-		DL_MESSAGE_BOX("Too many unique models created! Current max is: %i.\nTalk to a programmer if we need more, it is probably possible.\n", ourMaxNumberOfModels);
-		DL_ASSERT("Too many unique models created! Current max is: %i.\n", ourMaxNumberOfModels);
-		return -1;
-	}
-
-	ModelId newModelID = -1;
-
-
-	if (aModelShape.shape == eModelShape::eSphere)
-	{
-		if(mySpheres.find(aModelShape.size) == mySpheres.end())
-		{
-			if (myFreeModelIDs.Size() != 0)
-			{
-				newModelID = myFreeModelIDs.Pop();
-			}
-			else
-			{
-				newModelID = myModelList.Size();
-				myModelList.Add(CModel());
-			}
-
-			myModelList[newModelID] = *CreateShape(aModelShape);
-			mySpheres[aModelShape.size] = newModelID;
-		}
-		return mySpheres[aModelShape.size];
-	}
-	else if (DoesShapeExist(aModelShape) == false)
-	{
-		if (myFreeModelIDs.Size() != 0)
-		{
-			newModelID = myFreeModelIDs.Pop();
-		}
-		else
-		{
-			newModelID = myModelList.Size();
-			myModelList.Add(CModel());
-		}
-
-		myModelList[newModelID] = *CreateShape(aModelShape);
-		myShapes[aModelShape.shape] = newModelID;
-	}
-
-	return myShapes[aModelShape.shape];
-}
 
 const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoaderMesh, const char* aTexturePath)
 {
@@ -141,11 +92,11 @@ const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoa
 
 		myModels[aLoaderMesh->myName] = handle;
 
-		myModelList[handle].Initialize(effect, surface, aLoaderMesh);
+		//myModelList[handle].Initialize(effect, surface, aLoaderMesh);
 
 		SPixelConstantBuffer bufferStruct = {};
-		ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
-		myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
+		//ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
+		//myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
 	}
 
 	return myModels[aLoaderMesh->myName];
@@ -177,11 +128,11 @@ const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh * aLo
 
 		myModels[aLoaderMesh->myName] = handle;
 
-		myModelList[handle].Initialize(effect, surface, aLoaderMesh);
+		//myModelList[handle].Initialize(effect, surface, aLoaderMesh);
 
 		SPixelConstantBuffer bufferStruct = {};
-		ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
-		myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
+		//ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
+		//myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
 	}
 
 	return myModels[aLoaderMesh->myName];
@@ -207,17 +158,19 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 }
 void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
+	static const std::string Directory("Models/Animations/");
 	std::string modelName = aPath;
-	if (modelName.find("Shotgun") != std::string::npos)
-	{
-		int br = 0;
-	}
+	DL_PRINT("modelName: %s", modelName.c_str());
 	modelName -= std::string(".fbx");
 	CU::FindAndReplace(modelName, "Meshes", "Animations");
-	modelName += std::string("@");
+	DL_PRINT("modelName - .fbx: %s", modelName.c_str());
+	modelName.insert(Directory.length(), "ANI");
+	DL_PRINT("modelName, insert ani: %s", modelName.c_str());
+	DL_PRINT("modelName, replace meshes: %s", modelName.c_str());
+	modelName += std::string("_");
 
 	const ModelId animationCount = 3;
-	const std::string animationNames[animationCount] = { ("idle"), ("walk"), ("shot") };
+	const std::string animationNames[animationCount] = { ("idle01"), ("walk01"), ("shot01") };
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
@@ -225,7 +178,7 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 	if (mdl != nullptr && /*scene->HasAnimations()*/mdl->HasBones())
 	{
 		mdl->myBindposeSceneAnimator = new CSceneAnimator();
-		mdl->myBindposeSceneAnimator->Init(scene); // shuld do it?
+		mdl->myBindposeSceneAnimator->Init(scene);
 
 		mdl->mySceneAnimators.clear();
 		CFBXLoader loader;
@@ -272,28 +225,13 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 	}
 }
 
-
-
 bool CModelManager::CreateModel(const std::string& aModelPath, ModelId aNewModel)
 {
 	return CModelLoader::LoadModel(aModelPath.c_str(), &myModelList[aNewModel]/*tempModelPointer*/);
 }
-CModel* CModelManager::CreateShape(SShape aModelShape)
-{
-	return CModelLoader::CreateShape(aModelShape);
-}
-
-
 
 bool CModelManager::DoesModelExists(const char * aModelPath)
 {
 	return myModels.find(aModelPath) != myModels.end();
 }
-bool CModelManager::DoesShapeExist(SShape aModelShape)
-{
-	if (myShapes.find(aModelShape.shape) == myShapes.end())
-	{
-		return false;
-	}
-	return true;
-}
+

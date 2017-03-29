@@ -8,7 +8,7 @@
 #include <GameObject.h>
 #include "RigidBodyComponent.h"
 #include "Physics\PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 
 CGameObject* GetCurrentObject()
 {
@@ -101,8 +101,8 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 	data.center.x *= -1;
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
-	//data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	data.myPath = "Models/PhysX/C_Rock_5m.xml";
+	data.myPath = someData.myData.at("meshPath").GetString().c_str();
+	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
 	CColliderComponent* component = CreateComponent(data);
 	return component->GetId();
@@ -136,7 +136,7 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 	
-	CCharcterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
 	return component->GetId();
 }
 
@@ -247,7 +247,7 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
-	CCharcterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data);
 	return component->GetId();
 }
 

@@ -7,7 +7,7 @@ namespace Audio
 
 	CAudioInterface* CAudioInterface::myInstance = nullptr;
 	CAudioInterface::CAudioInterface()
-		:myWwiseManager(nullptr), myGameObjectCounter(0)
+		:myWwiseManager(new CWwiseManager()), myGameObjectCounter(0)
 	{
 	}
 
@@ -19,7 +19,6 @@ namespace Audio
 	bool CAudioInterface::Init(const char* aInitBank)
 	{
 		bool result;
-		myWwiseManager = new CWwiseManager();
 		result = myWwiseManager->Init(aInitBank);
 
 		myGameObjectID = RegisterGameObject();
@@ -34,14 +33,15 @@ namespace Audio
 		}
 
 	}
-
+	static const float SoundSceneScale = 1.f;
 	void CAudioInterface::SetListenerPosition(const CU::Matrix44f & aTranslation)
 	{
 		AkListenerPosition listenerposition;
 
-		listenerposition.Position.X = aTranslation.myPosition.x;
-		listenerposition.Position.Y = aTranslation.myPosition.y;
-		listenerposition.Position.Z = aTranslation.myPosition.z;
+		const CU::Vector3f position = aTranslation.myPosition * SoundSceneScale;
+		listenerposition.Position.X = position.x;
+		listenerposition.Position.Y = position.y;
+		listenerposition.Position.Z = position.z;
 		
 		listenerposition.OrientationFront.X = aTranslation.myForwardVector.x;
 		listenerposition.OrientationFront.Y = aTranslation.myForwardVector.y;
@@ -58,9 +58,11 @@ namespace Audio
 	{
 		AkSoundPosition soundPosition;
 
-		soundPosition.Position.X = aPosition.x;
-		soundPosition.Position.Y = aPosition.y;
-		soundPosition.Position.Z = aPosition.z;
+		const CU::Vector3f position = aPosition * SoundSceneScale;
+
+		soundPosition.Position.X = position.x;
+		soundPosition.Position.Y = position.y;
+		soundPosition.Position.Z = position.z;
 
 		soundPosition.Orientation.X = aOrientation.x;
 		soundPosition.Orientation.Y = aOrientation.y;
@@ -129,10 +131,7 @@ namespace Audio
 
 	void CAudioInterface::PostEvent(const char* aEvent)
 	{
-		if (myWwiseManager)
-		{
-			return myWwiseManager->PostEvent(aEvent, myGameObjectID);
-		}
+		PostEvent(aEvent, myGameObjectID);
 	}
 
 	void CAudioInterface::SetErrorCallBack(callback_function aErrorCallback)

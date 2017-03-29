@@ -35,6 +35,7 @@
 #include "DamageOnCollisionComponentManager.h"
 #include "Components/DoorManager.h"
 #include "../Components/CheckpointComponentManager.h"
+#include "EnemyFactory.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -82,7 +83,7 @@
 #include "ColliderComponentManager.h"
 #include "BoxColliderComponent.h"
 #include "Physics/PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "../Components/ParticleEmitterComponentManager.h"
 #include "EnemyClientRepresentationManager.h"
 
@@ -119,6 +120,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 
 CPlayState::~CPlayState()
 {
+	CParticleEmitterComponentManager::Destroy();
+
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myScene);
 
@@ -135,7 +138,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
-	CParticleEmitterComponentManager::Destroy();
+
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpointComponentManager::DestoryInstance();
@@ -143,6 +146,7 @@ CPlayState::~CPlayState()
 	CPickupComponentManager::Destroy();
 	CEnemyClientRepresentationManager::Destroy();
 	CHealthComponentManager::Destroy();
+	CEnemyFactory::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
@@ -196,7 +200,8 @@ void CPlayState::Load()
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
 	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
-	
+
+
 	myWeaponFactory->LoadWeapons();
 
 
@@ -215,6 +220,8 @@ void CPlayState::Load()
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
 	
+	myHUD.LoadHUD();
+
 	myIsLoaded = true;
 	
 	// Get time to load the level:
@@ -255,6 +262,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
+	myHUD.Update(aDeltaTime);
+
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	SComponentQuestionData healthData;
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
@@ -281,6 +290,9 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+
+	myHUD.Render();
+
 	myPlayerHealthText->Render();
 	myPlayerArmorText->Render();
 }
@@ -363,6 +375,7 @@ void CPlayState::CreateManagersAndFactories()
 	myScriptComponentManager = new CScriptComponentManager();
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
+	CEnemyFactory::Create(*myEnemyComponentManager, *myGameObjectManager, *myWeaponSystemManager, *myColliderComponentManager);
 	
 	myExplosionComponentManager = new CExplosionComponentManager();
 	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
@@ -501,7 +514,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
 		controllerDesc.halfHeight = 1.0f;
-		CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		controllerDesc.slopeLimit = 45.0f;
+		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);

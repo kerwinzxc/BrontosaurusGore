@@ -9,7 +9,7 @@
 #include "ProjectileBufferData.h"
 #include "ColliderComponentManager.h"
 #include "../Physics/PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "../Physics/CollisionLayers.h"
 #include "../Physics/Shape.h"
 
@@ -114,6 +114,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	
 	SRigidBodyData rigidbodyData;
 	rigidbodyData.isKinematic = false;
+	rigidbodyData.useGravity = false;
 	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData);
 	
 	newProjectileObject->AddComponent(projectileRigidBodyCollider);

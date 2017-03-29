@@ -127,9 +127,6 @@
     <ClInclude Include="ModelLoader.h">
       <Filter>ModelManager</Filter>
     </ClInclude>
-    <ClInclude Include="ModelShapes.h">
-      <Filter>ModelManager</Filter>
-    </ClInclude>
     <ClInclude Include="WindowsWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
@@ -283,6 +280,11 @@
     </ClInclude>
     <ClInclude Include="HighlightComponent.h">
       <Filter>Highlight</Filter>
+    </ClInclude>
+    <ClInclude Include="CascadeBuffer.h" />
+    <ClInclude Include="CascadeShadowMap.h" />
+    <ClInclude Include="ScreenGrab\ScreenGrab.h">
+      <Filter>Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -441,6 +443,10 @@
     </ClCompile>
     <ClCompile Include="HighlightComponent.cpp">
       <Filter>Highlight</Filter>
+    </ClCompile>
+    <ClCompile Include="CascadeShadowMap.cpp" />
+    <ClCompile Include="ScreenGrab\ScreenGrab.cpp">
+      <Filter>Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@ struct SEnemyBlueprint
 	float detectionRange;
 	float startAttackRange;
 	float stopAttackRange;
-	float shouldGoMeleeRadius;
+	float walkToMeleeRange;
 };
 
 struct SImpBlueprint : public SEnemyBlueprint
@@ -25,5 +25,6 @@ struct SPinkyBlueprint : public SEnemyBlueprint
 	float windupChargeTime;
 	float chargeSpeed;
 	float chargeCooldown;
+	float chargeDistance;
 	healthPoint chargeDamage;
 };

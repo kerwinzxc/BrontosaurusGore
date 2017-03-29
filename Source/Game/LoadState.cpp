@@ -70,7 +70,7 @@ eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)
 
 		CNetworkMessage_ClientReady* readyMessage = messageManagerInstance->CreateMessage<CNetworkMessage_ClientReady>("__Server");
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(readyMessage));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(readyMessage));
 	}
 
 	if (myGotOkFromServer == true && myNumberOfPlayersToSpawnBeforeStarting == 0)

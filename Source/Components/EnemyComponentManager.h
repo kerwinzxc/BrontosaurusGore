@@ -23,13 +23,20 @@ public:
 
 	void Update(const float aDeltaTime);
 
-	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
-	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, unsigned int anId, eEnemyTypes aType);
+	void InitWeaponSystem(CEnemy* aEnemy, CWeaponSystemManager* aWeaponSystemManager);
+	CEnemy* CreateComponent(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
+	CComponent* CreateComponentAbstract(const SEnemyBlueprint* anEnemyBlueprint, eEnemyTypes aType);
 	void DeleteComponent(CEnemy* anEnemy);
 	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer);
 	~CEnemyComponentManager();
+	inline bool GetIsInited();
 protected:
 	CU::GrowingArray<CEnemy*> myEnemies;
 
+	bool myIsInited;
 };
 
+inline bool CEnemyComponentManager::GetIsInited()
+{
+	return myIsInited;
+}

@@ -43,6 +43,9 @@
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../TShared/NetworkMessage_RevivePlayer.h"
 #include "../Physics/PhysXHelper.h"
+#include "../Components/HealthComponentManager.h"
+#include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -321,7 +324,7 @@ void CServerMain::StartGame()
 
 	for (auto client : myClients)
 	{
-		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer();
+		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer(client.first);
 
 		myClients.at(client.first).myComponent = playerNetworkComponent;
 
@@ -437,6 +440,11 @@ bool CServerMain::Update()
 
 					CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
 					gameObject->SetWorldTransformation(positionMessage->GetTransformation());
+					gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+					SComponentMessageData positonData;
+					positonData.myVector3f = positionMessage->GetTransformation().GetPosition();
+					//gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
+					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
 				}
@@ -485,6 +493,7 @@ bool CServerMain::Update()
 					}
 					myServerState = eServerState::eLoadingLevel;
 					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+					myGameServer->CreateManagersAndFactories();
 					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
@@ -506,6 +515,7 @@ bool CServerMain::Update()
 			case ePackageType::eTakeDamage:
 			{
 				CNetworkMessage_TakeDamage* damage = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
+				CHealthComponentManager::GetInstance()->TakeDamage(damage->GetID(), damage->GetDamageTaken());
 				SendTo(damage);
 			}
 			break;
@@ -556,6 +566,7 @@ bool CServerMain::Update()
 					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
 
 					SendTo(reset);
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 				}
 			}
 			break;
@@ -594,7 +605,7 @@ bool CServerMain::Update()
 			{
 				if (CheckIfClientsReady() == true)
 				{
-					if (locLoadingThread)
+					if (locLoadingThread != nullptr)
 					{
 						locLoadingThread->join();
 						delete locLoadingThread;
@@ -617,9 +628,10 @@ bool CServerMain::Update()
 
 	return false;
 }
-
-eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+#include "../TShared/NetworkMessage_EnemyTransformation.h"
+eMessageReturn CServerMain::DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage)
 {
+
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
 
 	/*CNetworkMessage* temp = aSendNetowrkMessageMessage.UnpackHolder();
@@ -630,7 +642,6 @@ eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetow
 		int y = position->GetPosition().y;
 		int z = position->GetPosition().z;
 	}*/
-
 	return eMessageReturn::eContinue;
 }
 

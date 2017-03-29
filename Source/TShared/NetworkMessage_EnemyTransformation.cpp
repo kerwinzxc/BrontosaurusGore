@@ -11,12 +11,12 @@ CNetworkMessage_EnemyTransformation::~CNetworkMessage_EnemyTransformation()
 {
 }
 
-void CNetworkMessage_EnemyTransformation::SetId(unsigned int aId)
+void CNetworkMessage_EnemyTransformation::SetId(unsigned short aId)
 {
 	myEnemyId = aId;
 }
 
-unsigned int CNetworkMessage_EnemyTransformation::GetId() const
+unsigned short CNetworkMessage_EnemyTransformation::GetId() const
 {
 	return myEnemyId;
 }

@@ -13,6 +13,7 @@ CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physi
 	myShape = aShape;
 	myType = eComponentType::eCollision;
 	myManager = nullptr;
+	myStoredCallBackDataList.Init(10);
 }
 
 CColliderComponent::~CColliderComponent()
@@ -42,6 +43,17 @@ void CColliderComponent::UpdatePosition()
 	SComponentMessageData data;
 	data.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
+}
+
+void CColliderComponent::UpdateCallbacks()
+{
+	for (SStoredCallBackData& callbackData : myStoredCallBackDataList)
+	{
+		SComponentMessageData data;
+		data.myComponent = static_cast<CComponent*>(callbackData.componentPtr);
+		GetParent()->NotifyComponents(callbackData.collisionType, data);
+	}
+	myStoredCallBackDataList.RemoveAll();
 }
 
 void CColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -98,33 +110,20 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 
 void CColliderComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerEnter, data);
+	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerEnter });
 }
 
 void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerExit, data);
+	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerExit });
 }
 
 void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionEnter, data);
-
+	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionEnter });
 }
 
 void CColliderComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	void* compPtr = aOther->GetCallbackData()->GetUserData();
-	SComponentMessageData data;
-	data.myComponent = static_cast<CComponent*>(compPtr);
-	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionExit, data);
+	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionExit });
 }

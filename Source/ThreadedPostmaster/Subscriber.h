@@ -11,7 +11,7 @@ class DroppedFile;
 class ConsoleCalledUpon;
 class DrawCallsCount;
 class CServerReadyMessage;
-class CSendNetowrkMessageMessage;
+class CSendNetworkMessageMessage;
 class CConectMessage;
 class CConectedMessage;
 class CLoadLevelMessage;
@@ -50,7 +50,7 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const PopCurrentState& aPopCurrent);
 		virtual eMessageReturn DoEvent(const PushState& aPushState);
 		virtual eMessageReturn DoEvent(const CNetworkPosMessageEvent& aPositionEvent);
-		virtual eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage);
+		virtual eMessageReturn DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage);
 		virtual eMessageReturn DoEvent(const CServerReadyMessage& aSendNetowrkMessageMessage);
 		virtual eMessageReturn DoEvent(const Message::CPrintMessage& aPrintMessage);
 		virtual eMessageReturn DoEvent(const CConectMessage& aConectMessage);

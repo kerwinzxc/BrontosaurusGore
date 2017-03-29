@@ -11,10 +11,10 @@ namespace Physics
 	class CPhysicsScene;
 	class CPhysics;
 	class CCharacterControllerManager;
-	class CCharcterControllerComponent;
+	class CCharacterControllerComponent;
 	struct SCharacterControllerDesc;
 }
-class CCharcterControllerComponent;
+class CCharacterControllerComponent;
 class CColliderComponentManager
 {
 
@@ -29,7 +29,7 @@ public:
 	void InitControllerManager();
 	void RemoveActorFromScene(Physics::CPhysicsActor* aActor);
 
-	CCharcterControllerComponent* CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams);
+	CCharacterControllerComponent* CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams);
 
 private:
 	CColliderComponent* CreateBoxCollider(const SBoxColliderData& aBoxColliderData);

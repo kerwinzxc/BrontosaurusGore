@@ -468,7 +468,7 @@ void CNavmesh::CreateNode(CU::GrowingArray<SNavmeshNode>& aNodeList, SNavmeshTri
 
 void CNavmesh::CreateModel()
 {
-	myModel = new CModel(); 
+	/*myModel = new CModel(); 
 	myPositionsModel = new CModel();
 
 	int blueprint = 1; 
@@ -500,7 +500,7 @@ void CNavmesh::CreateModel()
 	}
 
 	myPositionsModel->Initialize(new CEffect(vertexShader, pixelShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_POINTLIST), nullptr, myPositionsModelVertices, myIndices);
-	myModel->Initialize(effect, nullptr, myModelVertices, myIndices);
+	myModel->Initialize(effect, nullptr, myModelVertices, myIndices);*/
 }
 
 void CNavmesh::BuildNodeNetwork(CU::GrowingArray<SNavmeshNode>& aNodeList, std::unordered_map<SNavmeshTriangle*, SNavmeshNode*>& triangleNodes)

@@ -1,11 +1,12 @@
 #pragma once
 #include "Component.h"
 #include "EnemyTypes.h"
+#include "Enemy.h"
 
-class CEnemyClientRepresentation : public CComponent
+class CEnemyClientRepresentation : public CEnemy
 {
 public:
-	CEnemyClientRepresentation(unsigned int anId);
+	CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType);
 	~CEnemyClientRepresentation();
 
 	void SetFutureMatrix(const CU::Matrix44f& aMatrix);
@@ -27,5 +28,6 @@ inline const eEnemyTypes CEnemyClientRepresentation::GetEnemyType() const
 }
 inline void CEnemyClientRepresentation::SetEnemyType(const eEnemyTypes aType)
 {
+	SetType(aType);
 	myType = aType;
 }

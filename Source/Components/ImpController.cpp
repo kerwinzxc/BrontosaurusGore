@@ -2,8 +2,11 @@
 #include "ImpController.h"
 #include "EnemyBlueprint.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
-static const float gravityAcceleration = 9.82f * 2.0f;
+static const float gravityAcceleration = 9.82f * 5;
+
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
 {
@@ -12,80 +15,52 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myIsJumping = false;
 }
 
-
 CImpController::~CImpController()
 {
 }
 
 void CImpController::Update(const float aDeltaTime)
 {
-	DL_PRINT("Jumpforce %f", myJumpForce);
-	CU::Vector3f velocity;
-	velocity.y = myJumpForce;
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-	const float distToPlayer = toPlayer.Length2();
-	UpdateTransformation();
-
-	if(CheckIfInAir() == false)
-	{
-		if (myJumpForce < 0)
-		{
-			myJumpForce = 0.0f;
-			myIsJumping = false;
-		}
-	}
-	myJumpForce -= gravityAcceleration * aDeltaTime;
-	if (CheckIfInAir() == false)
-	{
-		DL_PRINT("stopping jump");
-		myIsJumping = false;
-		myJumpForce = 0.0f;
-	}
-	
-
+	UpdateBaseMemberVars(aDeltaTime);
+	myVelocity.y = myJumpForce;
+	SendTransformationToServer();
+	UpdateJumpForces(aDeltaTime);
 
 	if(myIsDead == false)
 	{
-		if (myStartAttackRange2 > distToPlayer)
+		if (WithinAttackRange())
 		{
-			myState = eImpState::eUseMeleeAttack;
-		
+			myState = eImpState::eUseMeleeAttack;	
 		}
-		else if (myShouldGoMeleeRadius2 > distToPlayer)
+		else if (WithinWalkToMeleeRange())
 		{
 			myState = eImpState::eWalkIntoMeleeRange;
 		
-			if(toPlayer.y > 1.0f && myIsJumping == false)
-			{	
+			if (ShouldJumpAfterPlayer())
 				myState = eImpState::eJump;
-			}
+
 		}
-		else if (myDetectionRange2 > distToPlayer)
+		else if (WithinDetectionRange())
 		{
 			myState = eImpState::eUseRangedAttack;
-		
 		}
 		else
 		{
 			myState = eImpState::eIdle;
-		
 		}
 	}
+
+
 	switch (myState)
 	{
 	case eImpState::eIdle:
-	{
 		break;
-	}
 	case eImpState::eWalkIntoMeleeRange:
 	{
 		LookAtPlayer();
-		velocity.z = mySpeed;
-	}
+		myVelocity.z = mySpeed;
 		break;
+	}
 	case eImpState::eUseMeleeAttack:
 		ChangeWeapon(0);
 		Attack();
@@ -102,16 +77,39 @@ void CImpController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
+	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	CU::Matrix44f& rotation = transform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
+
 
 	SComponentQuestionData data;
-	data.myVector4f = velocity * rotation * aDeltaTime;
+	data.myVector4f = myVelocity * rotation * aDeltaTime;
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		parentTransform.SetPosition(data.myVector3f);
+		transform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
+
+	CheckForNewTransformation(aDeltaTime);
+}
+
+void CImpController::UpdateJumpForces(const float aDeltaTime)
+{
+	if (CheckIfInAir() == false)
+	{
+		if (myJumpForce < 0)
+		{
+			myJumpForce = 0.0f;
+			myIsJumping = false;
+		}
+	}
+	myJumpForce -= gravityAcceleration * aDeltaTime;
+
+	if (CheckIfInAir() == false)
+	{
+		myJumpForce = 0.0f;
+		myIsJumping = false;
 	}
 }
 
@@ -128,9 +126,19 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 	case eComponentMessageType::eDied:
 	{
+		myState = eImpState::eDead;
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+		myState = eImpState::eIdle;
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
 	}
 }
 
@@ -151,7 +159,6 @@ bool  CImpController::CheckIfInAir()
 		myControllerConstraints = groundeddata.myChar;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
 		{
-			DL_PRINT("Not in air !!!");
 			return false;
 		}
 	}

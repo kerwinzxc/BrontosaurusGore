@@ -374,7 +374,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="CapsuleColliderComponent.h" />
-    <ClInclude Include="CharcterControllerComponent.h" />
+    <ClInclude Include="CharacterControllerComponent.h" />
     <ClInclude Include="CheckpointComponentManager.h" />
     <ClInclude Include="CheckPointComponent.h" />
     <ClInclude Include="CheckPointSystem.h" />
@@ -418,9 +418,12 @@
     <ClInclude Include="PinkyController.h" />
     <ClInclude Include="PlayerNetworkComponent.h" />
     <ClInclude Include="ProjectileBufferData.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="RevenantController.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
+    <ClInclude Include="Spawner.h" />
+    <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
@@ -451,7 +454,7 @@
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="WeaponData.h" />
     <ClInclude Include="WeaponFactory.h" />
-    <ClInclude Include="WeaponPickupComponent.h" />
+    <ClInclude Include="WeaponSoundData.h" />
     <ClInclude Include="WeaponSystemComponent.h" />
     <ClInclude Include="WeaponSystemManager.h" />
   </ItemGroup>
@@ -466,7 +469,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="CapsuleColliderComponent.cpp" />
-    <ClCompile Include="CharcterControllerComponent.cpp" />
+    <ClCompile Include="CharacterControllerComponent.cpp" />
     <ClCompile Include="CheckpointComponentManager.cpp" />
     <ClCompile Include="CheckPointComponent.cpp" />
     <ClCompile Include="CheckPointSystem.cpp" />
@@ -522,6 +525,8 @@
     <ClCompile Include="ParticleEmitterComponent.cpp" />
     <ClCompile Include="ParticleEmitterComponentManager.cpp" />
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
+    <ClCompile Include="Spawner.cpp" />
+    <ClCompile Include="SpawnerManager.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -538,7 +543,6 @@
     <ClCompile Include="StreakEmitterComponent.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponFactory.cpp" />
-    <ClCompile Include="WeaponPickupComponent.cpp" />
     <ClCompile Include="WeaponSystemComponent.cpp" />
     <ClCompile Include="WeaponSystemManager.cpp" />
   </ItemGroup>

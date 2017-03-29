@@ -8,11 +8,11 @@ namespace Physics
 	class CPhysicsCallbackActor;
 }
 
-class CCharcterControllerComponent : public CComponent, public Physics::IPhysicsCallback
+class CCharacterControllerComponent : public CComponent, public Physics::IPhysicsCallback
 {
 public:
-	CCharcterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter = CU::Vector3f());
-	~CCharcterControllerComponent();
+	CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter = CU::Vector3f());
+	~CCharacterControllerComponent();
 
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 

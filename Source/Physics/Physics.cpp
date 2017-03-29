@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Physics.h"
 
-
 #include <foundation\PxTransform.h>
 #include <PxPhysics.h>
 #include <PxScene.h>
@@ -9,7 +8,6 @@
 #include <PxPhysicsAPI.h>
 #include <PxRigidDynamic.h>
 #include <PxRigidStatic.h>
-
 
 #include "Foundation.h"
 #include "PhysicsScene.h"
@@ -51,21 +49,18 @@ namespace Physics
 		}
 	}
 
-
 	CPhysics::CPhysics(PxPhysics* aPxPhysics)
 	{
 		myPxPhysics = aPxPhysics;
 		myDefaultMaterial = myPxPhysics->createMaterial(defMatStaticFriction, defMatDynamicFriction, defMatRestitution);
 		myEventCallback = new CSimulationEventCallback();
 		myDispatcher = PxDefaultCpuDispatcherCreate(0);
-
 	}
 
 	CPhysics::~CPhysics()
 	{
 		SAFE_RELEASE(myPxPhysics);
 		SAFE_RELEASE(myDispatcher);
-
 		SAFE_DELETE(myEventCallback);
 		//SAFE_RELEASE(myDefaultMaterial);
 	}
@@ -75,16 +70,10 @@ namespace Physics
 		PxScene* pxScene = nullptr;
 		PxSceneDesc sceneDesc(myPxPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(aGravity.x, aGravity.y, aGravity.z);
-
-	
-
 		sceneDesc.simulationEventCallback = myEventCallback;
 		sceneDesc.cpuDispatcher = myDispatcher;
-
 		//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		sceneDesc.filterShader = CollisionFilterShader;
-
-
 		pxScene = myPxPhysics->createScene(sceneDesc);
 
 #ifndef _RETAIL_BUILD
@@ -97,7 +86,6 @@ namespace Physics
 		}
 #endif
 		return new CPhysicsScene(pxScene);
-
 	}
 
 	CPhysicsActor* CPhysics::CreateStaticActor(CShape* aShape, const bool aIsTrigger)
@@ -121,6 +109,7 @@ namespace Physics
 		CPhysicsActorDynamic* actor = new CPhysicsActorDynamic(body, aShape);
 		actor->SetIsTrigger(aIsTrigger);
 		actor->SetIsKinematic(aIsKinematic);
+		actor->SetUseGravity(aUseGravity);
 		PxRigidBodyExt::updateMassAndInertia(*body, aMass);
 		return actor;
 	}
@@ -148,8 +137,6 @@ namespace Physics
 
 	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData)
 	{
-		
-
 		PxDefaultFileInputData inputData(aPath);
 		PxSerializationRegistry* registry = PxSerialization::createSerializationRegistry(PxGetPhysics());
 		PxCollection* collection = PxSerialization::createCollectionFromXml(inputData,
@@ -194,9 +181,7 @@ namespace Physics
 			case PxConcreteType::eCLOTH_FABRIC: break;
 			case PxConcreteType::eRIGID_DYNAMIC: break;
 			case PxConcreteType::eRIGID_STATIC: break;
-			case PxConcreteType::eSHAPE:
-				
-				break;
+			case PxConcreteType::eSHAPE: break;
 			case PxConcreteType::eMATERIAL: break;
 			case PxConcreteType::eCONSTRAINT: break;
 			case PxConcreteType::eCLOTH: break;
@@ -253,7 +238,4 @@ namespace Physics
 		}
 		return myPxPhysics->createMaterial(aMaterialData.aStaticFriction, aMaterialData.aDynamicFriction, aMaterialData.aRestitution);
 	}
-
-
-
 }

@@ -29,8 +29,6 @@ struct SToWorldSpace
 	CU::Matrix44f myWorldSpace;
 	CU::Matrix44f myWorldSpaceLastFrame;
 	CU::Vector4f myHighlightColor;
-	float myHighlightIntensivity;
-	float crap[3];
 };
 
 

@@ -4,10 +4,11 @@
 #include "../CommonUtilities/JsonValue.h"
 #include "../PostMaster/SendNetworkMessage.h"
 #include "../TShared/NetworkMessage_Position.h"
+#include "../Audio/AudioInterface.h"
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false)
+CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false), myIsWalking(false)
 {
 	CU::CJsonValue playerControls;
 	std::string errorMessage = playerControls.Parse("Json/Player/playerData.json");
@@ -31,6 +32,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
 	myFrameLastPositionY = -110000000.0f;
 	myIsNotFalling = false;
+
+	myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
 }
 
 CMovementComponent::~CMovementComponent()
@@ -94,8 +97,29 @@ void CMovementComponent::SwapMovementMode()
 	}
 }
 
+bool CMovementComponent::IsWalking() const
+{
+	return myKeysDown[static_cast<int>(ePlayerControls::eRight) ] && !myKeysDown[static_cast<int>(ePlayerControls::eLeft)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eLeft)] && !myKeysDown[static_cast<int>(ePlayerControls::eRight)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eForward)] && !myKeysDown[static_cast<int>(ePlayerControls::eBackward)] ||
+		myKeysDown[static_cast<int>(ePlayerControls::eBackward)] && !myKeysDown[static_cast<int>(ePlayerControls::eForward)];
+}
+
+void CMovementComponent::UpdateSoundState()
+{
+	if(IsWalking() == true)
+	{
+		const CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transformation.GetPosition(), transformation.myForwardVector);
+
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Footstep", myAudioId);
+	}
+}
+
 void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 {
+	UpdateSoundState();
+
 	myVelocity.y = 0.0f;
 	if (myKeysDown[static_cast<int>(ePlayerControls::eRight)] == true && myVelocity.x > -myMaxSpeed)
 	{

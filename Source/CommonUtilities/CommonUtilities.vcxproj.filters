@@ -97,6 +97,9 @@
     <Filter Include="Colour">
       <UniqueIdentifier>{9703f98d-943d-4c63-bd37-e7ae970a009a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WindowsHelper">
+      <UniqueIdentifier>{f664a432-540d-48d1-bc11-16dea2aab9c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -413,6 +416,7 @@
     <ClInclude Include="Colour.h">
       <Filter>Colour</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">
@@ -516,6 +520,7 @@
     <ClCompile Include="SerializerSaver.cpp">
       <Filter>Serializer</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CommonUtilities.rc" />

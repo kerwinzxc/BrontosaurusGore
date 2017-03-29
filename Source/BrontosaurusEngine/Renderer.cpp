@@ -44,7 +44,8 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
 	myFireTimer = myTimers.CreateTimer();
-	CreateBuffer();
+	CreateOncePerFrameBuffer();
+	CreateShadowBuffer();
 
 	InitPackages();
 	CreateRasterizerStates();
@@ -417,7 +418,7 @@ void CRenderer::InitPackages()
 	}
 }
 
-void CRenderer::CreateBuffer()
+void CRenderer::CreateOncePerFrameBuffer()
 {
 	SOncePerFrameBuffer buffer;
 	buffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
@@ -434,6 +435,12 @@ void CRenderer::CreateBuffer()
 	buffer.fogEnd = 0.0f;
 
 	myOncePerFrameBuffer = BSR::CreateCBuffer<SOncePerFrameBuffer>(&buffer);
+}
+
+void CRenderer::CreateShadowBuffer()
+{
+	SCascadeBuffer buffer;
+	myShadowBuffer = BSR::CreateCBuffer<>(&buffer);
 }
 
 void CRenderer::UpdateBuffer()
@@ -465,33 +472,15 @@ void CRenderer::UpdateBuffer()
 
 }
 
-void CRenderer::UpdateBuffer(SSetShadowBuffer* msg)
+
+void CRenderer::UpdateShadowBuffer(SSetShadowBuffer* msg)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
-	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-	SOncePerFrameBuffer updatedBuffer;
+	BSR::UpdateCBuffer<SCascadeBuffer>(myShadowBuffer, &msg->cascadeBuffer);
 
-	updatedBuffer.myCameraMatrices.myCameraSpaceInverse = myCamera.GetInverse();
-	updatedBuffer.myCameraMatrices.myProjectionSpace = myCamera.GetProjection();
-
-	updatedBuffer.myShadowCameraMatrices.myCameraSpaceInverse = msg->myCameraTransformation;
-	updatedBuffer.myShadowCameraMatrices.myProjectionSpace = msg->myCameraProjection;
-
-	updatedBuffer.deltaTime = myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds();
-	updatedBuffer.time = myTimers.GetTimer(myOncePerFrameBufferTimer).GetLifeTime().GetSeconds();
-	updatedBuffer.fogStart = 0.0f;
-
-	updatedBuffer.windowSize = CEngine::GetInstance()->GetWindowSize();
-	updatedBuffer.fogEnd = 0.0f;
-
-	DEVICE_CONTEXT->Map(myOncePerFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	memcpy(mappedSubResource.pData, &updatedBuffer, sizeof(SOncePerFrameBuffer));
-	DEVICE_CONTEXT->Unmap(myOncePerFrameBuffer, 0);
-	DEVICE_CONTEXT->VSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->GSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->PSSetConstantBuffers(0, 1, &myOncePerFrameBuffer);
-	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetDepthResource());
+	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetResource());
+	DEVICE_CONTEXT->PSSetConstantBuffers(3, 1, &myShadowBuffer);
 }
+
 
 void CRenderer::CreateRasterizerStates()
 {
@@ -697,7 +686,7 @@ void CRenderer::CreateBlendStates()
 	}
 	{
 		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
-		
+
 		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
@@ -897,6 +886,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		myDeferredRenderer.AddRenderMessage(aRenderMesage);
 		myParticleRenderer.AddRenderMessage(aRenderMesage);
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eSetCubemapResource:
@@ -936,7 +926,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 
 		model->Render(params);
-		++aDrawCallCount;
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eSetRTV:
@@ -986,7 +976,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eSetShadowBuffer:
 	{
 		SSetShadowBuffer* msg = static_cast<SSetShadowBuffer*>(aRenderMesage);
-		UpdateBuffer(msg);
+		UpdateShadowBuffer(msg);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderModel:
@@ -1041,15 +1031,15 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		params.myRenderToDepth = false;
 		params.aAnimationState = nullptr;
 
-		if (model->HasConstantBuffer(CModel::eShaderStage::ePixel) == true)
-		{
-			msg->myPixelConstantBufferStruct.myCameraPosition = myCamera.GetPosition();
-			model->UpdateConstantBuffer(CModel::eShaderStage::ePixel, &msg->myPixelConstantBufferStruct, sizeof(msg->myPixelConstantBufferStruct));
-		}
+		//if (model->HasConstantBuffer(CModel::eShaderStage::ePixel) == true)
+		//{
+		//	msg->myPixelConstantBufferStruct.myCameraPosition = myCamera.GetPosition();
+		//	//model->UpdateConstantBuffer(CModel::eShaderStage::ePixel, &msg->myPixelConstantBufferStruct, sizeof(msg->myPixelConstantBufferStruct));
+		//}
 
 		model->Render(params);
 
-		++aDrawCallCount;
+		//++aDrawCallCount;
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1061,7 +1051,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderSpriteMessage* msg = static_cast<SRenderSpriteMessage*>(aRenderMesage);
 		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRect, msg->myColor);
-		++aDrawCallCount;
+		//++aDrawCallCount;
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1071,8 +1061,8 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderTextMessage* msg = static_cast<SRenderTextMessage*>(aRenderMesage);
-		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement);
-		aDrawCallCount += msg->myStrings.Size();
+		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement, myGUIRenderer.GetCurrentPackage().GetSize());
+		//aDrawCallCount += msg->myStrings.Size();
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1095,14 +1085,14 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderSkyboxMessage* msg = static_cast<SRenderSkyboxMessage*>(aRenderMesage);
 		msg->mySkybox->Render(myCamera);
-		++aDrawCallCount;
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
 		myParticleRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
 
-		++aDrawCallCount;
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eActivateRenderPackage:
@@ -1125,8 +1115,10 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		myFullScreenHelper.DoEffect(
 			msg->useDepthResource ? CFullScreenHelper::eEffectType::eCopyR : CFullScreenHelper::eEffectType::eCopy,
-			msg->myRect, 
+			msg->myRect,
 			msg->useDepthResource ? msg->myRenderPackage.GetDepthResource() : msg->myRenderPackage.GetResource());
+
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderFullscreenEffect:
@@ -1145,7 +1137,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 			c1 ? p1.GetDepthResource() : p1.GetResource(),
 			c2 ? p2.GetDepthResource() : p2.GetResource());
 
-		++aDrawCallCount;
+		//++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderStreak:
@@ -1198,6 +1190,18 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myGUIRenderer.RenderToGUI(renderToGuiMessage->myElementName, renderToGuiMessage->myRenderMessage);
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eRenderBar:
+	{
+		SRenderBarMessage* msg = static_cast<SRenderBarMessage*>(aRenderMesage);
+		myGUIRenderer.GetCurrentPackage().Activate();
+
+		myGUIRenderer.RenderBar(msg);
+
+		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		else renderTo->Activate();
+		break;
+	}
+	default: break;
 	}
 }
 

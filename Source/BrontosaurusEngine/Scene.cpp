@@ -11,9 +11,12 @@
 #include "FireEmitterInstance.h"
 #include "..\CommonUtilities\Sphere.h"
 #include "../Components/ParticleEmitterComponentManager.h"
+#include "CascadeShadowMap.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
-#define SHADOWBUFFER_DIM /*16384*/2048
+#define SHADOWBUFFER_DIM /*16384*/1024
+//#define USE_SHADOWS
+
 
 CScene::CScene()
 {
@@ -24,9 +27,11 @@ CScene::CScene()
 	mySkybox = nullptr;
 
 	myCubemap = nullptr;
-
-	myShadowCamera.InitOrthographic(16, 16, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
+	myShadowCamera.InitOrthographic(8, 8, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
 	myShadowCamera.ShadowInit();
+
+	myShadowMap = new CCascadeShadowMap(0, 0.1f, 500.f);
+
 
 	for(int i = 0; i < 20; ++i)
 	{
@@ -45,7 +50,6 @@ CScene::~CScene()
 	}
 	myModels.DeleteAll();
 	myParticleEmitters.DeleteAll();
-	//myDebugObjects.DeleteAll();
 }
 
 void CScene::Update(const CU::Time aDeltaTime)
@@ -70,11 +74,6 @@ void CScene::Render()
 	cameraMsg.myCamera = myCameras[Intify(eCameraType::ePlayerOneCamera)];
 	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
 
-	CU::Vector3f shadowCamDirection = { myDirectionalLight.direction.x, myDirectionalLight.direction.y, myDirectionalLight.direction.z };
-	CU::Vector3f shadowCameraPosition = myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition() + (-shadowCamDirection * 10);
-	myShadowCamera.GetCamera().SetPosition(shadowCameraPosition);
-	myShadowCamera.GetCamera().LookAt(myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition());
-
 	SChangeStatesMessage statemsg;
 
 	if (mySkybox)
@@ -92,6 +91,11 @@ void CScene::Render()
 		RENDERER.AddRenderMessage(msg);
 	}
 
+
+#ifdef USE_SHADOWS
+	myShadowMap->ComputeShadowProjection(myCameras[Intify(eCameraType::ePlayerOneCamera)]);
+	myShadowMap->Render(myModels);
+#endif
 	statemsg.myRasterizerState = eRasterizerState::eDefault;
 	statemsg.myDepthStencilState = eDepthStencilState::eDefault;
 	statemsg.myBlendState = eBlendState::eNoBlend;
@@ -99,9 +103,6 @@ void CScene::Render()
 
 	RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
 	myShadowCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
-
-	CU::VectorOnStack<CPointLightInstance, 8> culledPointlights;
-
 
 	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
@@ -114,46 +115,28 @@ void CScene::Render()
 		lightSphere.myCenterPos = myPointLights[i].GetPosition();
 		lightSphere.myRadius = myPointLights[i].GetRange();
 
-		if (myShadowCamera.GetCamera().IsInside(lightSphere) == false)
-		{
-			continue;
-		}
-		culledPointlights.SafeAdd(myPointLights[i]); 
+		//if (myShadowCamera.GetCamera().IsInside(lightSphere) == false)
+		//{
+		//	continue;
+		//}
 
 		SRenderPointLight pointlightMessage;
 		pointlightMessage.pointLight = myPointLights[i].GetData();
 		RENDERER.AddRenderMessage(new SRenderPointLight(pointlightMessage));
 	}
 
-
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{
 		if (myModels[i] == nullptr || myModels[i]->ShouldRender() == false)
 		{
 			continue;
 		}
-		/*if (myShadowCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingBox()) == false)
-		{
-			continue;
-		}*/
 
-		myModels[i]->RenderDeferred(myShadowCamera);
-	}
+		//if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingSphere()) == false)
+		//{
+		//	continue;
+		//}
 
-
-	myShadowCamera.Render();
-	SSetShadowBuffer *shadowMSG = new SSetShadowBuffer();
-	shadowMSG->myCameraProjection = myShadowCamera.GetCamera().GetProjection();
-	shadowMSG->myCameraTransformation = myShadowCamera.GetCamera().GetInverse();
-	shadowMSG->myShadowBuffer = myShadowCamera.GetRenderPackage();
-	RENDERER.AddRenderMessage(shadowMSG);
-
-	for (unsigned int i = 0; i < myModels.Size(); ++i)
-	{
-		if (myModels[i] == nullptr || myModels[i]->ShouldRender() == false)
-		{
-			continue;
-		}
 		myModels[i]->RenderDeferred();
 	}
 
@@ -190,11 +173,11 @@ void CScene::Render()
 
 		myParticleEmitters[i]->Render(GetCamera(eCameraType::ePlayerOneCamera));
 	}
-	// DRAW SHADOWBUFFER
+	//// DRAW SHADOWBUFFER
 	//SRenderToIntermediate * interMSG = new SRenderToIntermediate();
 	//interMSG->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
 	//interMSG->useDepthResource = false;
-	//interMSG->myRenderPackage = myShadowCamera.GetRenderPackage();
+	//interMSG->myRenderPackage = myShadowMap->GetShadowMap();
 	//RENDERER.AddRenderMessage(interMSG);
 	//RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
@@ -220,6 +203,7 @@ InstanceID CScene::AddModelInstance(CModelInstance* aModelInstance)
 InstanceID CScene::AddDirectionalLight(const Lights::SDirectionalLight & aDirectionalLight)
 {
 	myDirectionalLight = aDirectionalLight;
+	myShadowMap->SetDirection(aDirectionalLight.direction);
 	return 0;
 }
 

@@ -33,6 +33,11 @@ namespace Physics
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
 	}
 
+	bool CPhysicsActor::GetIsActive()
+	{
+		return myPxActor->getActorFlags() & physx::PxActorFlag::eDISABLE_SIMULATION;
+	}
+
 	void CPhysicsActor::SetUseGravity(const bool aUseGravity)
 	{
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !aUseGravity);
@@ -61,7 +66,7 @@ namespace Physics
 		myPxActor->setGlobalPose(transformation);
 	}
 
-	CU::Matrix44f  CPhysicsActor::GetTransformation()
+	CU::Matrix44f CPhysicsActor::GetTransformation()
 	{
 		physx::PxTransform globalPose = myPxActor->getGlobalPose();
 		CU::Matrix44f transformation = QuatToMatrix(globalPose.q);

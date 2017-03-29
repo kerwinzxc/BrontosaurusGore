@@ -44,7 +44,7 @@ void CNetworkComponent::Receive(const eComponentMessageType aMessageType, const 
 		positionMessage->SetPosition(GetParent()->GetWorldPosition());
 		positionMessage->SetID(myNetworkId);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(positionMessage));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(positionMessage));
 
 	}
 		break;

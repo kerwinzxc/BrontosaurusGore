@@ -33,7 +33,7 @@ public:
 
 	short GetID();
 
-	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
+	eMessageReturn DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage) override;
 	eMessageReturn DoEvent(const CConectMessage& aConectMessage) override;
 	eMessageReturn DoEvent(const CSetClientIDMessage& aMessage) override;
 	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
@@ -61,7 +61,7 @@ private:
 
 	CU::Matrix44f myLatestPlayerTransform;
 
-	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComonents;
+	std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComponents;
 	bool myPlayerPositionUpdated;
 
 	int myRoundTripTime;

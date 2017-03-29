@@ -106,7 +106,7 @@ SRenderFullscreenEffectMessage::SRenderFullscreenEffectMessage()
 SActivateRenderPackageMessage::SActivateRenderPackageMessage()
 	: SRenderMessage(eRenderMessageType::eActivateRenderPackage)
 {
-
+	useSecondPackage = false;
 }
 
 SRenderToIntermediate::SRenderToIntermediate()
@@ -204,4 +204,15 @@ SRenderToGUI::SRenderToGUI(const std::wstring& anElementName, SRenderMessage* co
 	myElementName(anElementName), 
 	myRenderMessage(aRenderMessage)
 {
+}
+
+SRenderModelInstancedMessage::SRenderModelInstancedMessage()
+	: SRenderMessage(eRenderMessageType::eRenderModelInstanced)
+{
+
+}
+
+SRenderToGUI::~SRenderToGUI()
+{
+	delete myRenderMessage;
 }

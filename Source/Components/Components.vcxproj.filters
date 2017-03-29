@@ -139,9 +139,6 @@
     <ClCompile Include="MovementComponentManager.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
-    <ClCompile Include="CharcterControllerComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
     <ClCompile Include="RigidBodyComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
@@ -222,8 +219,15 @@
     <ClCompile Include="PinkyController.cpp">
       <Filter>Enemy\Pinky</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponPickupComponent.cpp">
-      <Filter>Pickup\Weapon</Filter>
+    <ClCompile Include="Spawner.cpp">
+      <Filter>EnemySpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnerManager.cpp" />
+    <ClCompile Include="ServerPlayerNetworkComponent.cpp">
+      <Filter>ServerPlayerNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterControllerComponent.cpp">
+      <Filter>Collider/Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -410,9 +414,6 @@
     <ClInclude Include="MovementComponentManager.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
-    <ClInclude Include="CharcterControllerComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBodyComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
@@ -508,8 +509,19 @@
     <ClInclude Include="PinkyController.h">
       <Filter>Enemy\Pinky</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponPickupComponent.h">
-      <Filter>Pickup\Weapon</Filter>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Spawner.h">
+      <Filter>EnemySpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerManager.h" />
+    <ClInclude Include="WeaponSoundData.h">
+      <Filter>Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPlayerNetworkComponent.h">
+      <Filter>ServerPlayerNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterControllerComponent.h">
+      <Filter>Collider/Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -618,8 +630,8 @@
     <Filter Include="Enemy\Pinky">
       <UniqueIdentifier>{59f4680f-f023-4ada-a222-586706da19ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pickup\Weapon">
-      <UniqueIdentifier>{d52dc60d-43ab-4c0b-99a1-b1cb069cd110}</UniqueIdentifier>
+    <Filter Include="EnemySpawner">
+      <UniqueIdentifier>{42593922-70a4-4327-90bb-ac184219853f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
