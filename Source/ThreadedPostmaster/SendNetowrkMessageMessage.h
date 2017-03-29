@@ -14,7 +14,7 @@ public:
 	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
 	CNetworkMessage* UnpackHolder() const;
 private:
-
+	CSendNetowrkMessageMessage(SNetworkMessageHolder aNetworkMessage);
 
 	SNetworkMessageHolder myNetworkMessage;
 

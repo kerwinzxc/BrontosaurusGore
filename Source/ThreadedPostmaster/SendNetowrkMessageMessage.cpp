@@ -22,7 +22,7 @@ CSendNetowrkMessageMessage::~CSendNetowrkMessageMessage()
 
 Postmaster::Message::IMessage* CSendNetowrkMessageMessage::Copy()
 {
-	return new CSendNetowrkMessageMessage(UnpackHolder());
+	return new CSendNetowrkMessageMessage(myNetworkMessage);
 }
 
 eMessageReturn CSendNetowrkMessageMessage::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
@@ -43,4 +43,9 @@ CNetworkMessage* CSendNetowrkMessageMessage::UnpackHolder() const
 	}
 
 	return messageManagerInstance->CreateMessage(myNetworkMessage);
+}
+
+CSendNetowrkMessageMessage::CSendNetowrkMessageMessage(SNetworkMessageHolder aNetworkMessage) :IMessage(eMessageType::eNetworkMessage), myNetworkMessage(aNetworkMessage)
+{
+	
 }
