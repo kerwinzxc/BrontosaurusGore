@@ -10,7 +10,7 @@
 
 CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType)
 {
-	mySpawInterval = 2.0f;
+	mySpawInterval = 5.0f;
 	myWaves = aWaves;
 
 	myEnemyType = aEnemyType;
@@ -26,9 +26,9 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 	static CU::TimeUnit elapsedTime = mySpawInterval;
 
 	//elapsedTime += aDeltaTime;
-	if (elapsedTime >= mySpawInterval)
+	while(elapsedTime >= mySpawInterval)
 	{
-		elapsedTime = 0;
+		elapsedTime -= mySpawInterval;
 		SpawnEnemy();
 	}
 }
@@ -39,7 +39,7 @@ void CSpawnerComponent::SpawnEnemy()
 	CNetworkMessage_SetIsRepesentationActive* activeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
 	activeMessage->SetActive(true);
 	activeMessage->SetNetworkID(myEnemy->GetNetworkID());
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(activeMessage));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
 }
 
 void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
