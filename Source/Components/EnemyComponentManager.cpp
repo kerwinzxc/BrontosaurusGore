@@ -16,6 +16,7 @@
 CEnemyComponentManager::CEnemyComponentManager()
 {
 	myEnemies.Init(10);
+	myIsInited = false;
 }
 
 void CEnemyComponentManager::Update(const float aDeltaTime)
@@ -143,6 +144,8 @@ void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentMa
 {
 	for(unsigned int i = 0; i < myEnemies.Size(); i++)
 	{
-		InitWeaponSystem(myEnemies[i], aWeaponSystemComponentManagerPointer);
+		InitWeaponSystem(myEnemies[i], aWeaponSystemComponentManagerPointer); 
+		myEnemies[i]->Init();
 	}
+	myIsInited = true;
 }

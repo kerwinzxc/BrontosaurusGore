@@ -114,7 +114,6 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-	myEnemyComponentManager->Init(myWeaponSystemManager);
 	myGameObjectManager->SendObjectsDoneMessage();
 }
 
@@ -184,7 +183,10 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 		myColliderComponentManager->Update();
 	}
 	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
-
+	if (myIsLoaded == true && myEnemyComponentManager->GetIsInited() == false)
+	{
+		myEnemyComponentManager->Init(myWeaponSystemManager);
+	}
 	return true;
 }
 

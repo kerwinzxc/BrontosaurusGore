@@ -29,8 +29,14 @@ public:
 	void DeleteComponent(CEnemy* anEnemy);
 	void Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer);
 	~CEnemyComponentManager();
+	inline bool GetIsInited();
 protected:
 	CU::GrowingArray<CEnemy*> myEnemies;
 
+	bool myIsInited;
 };
 
+inline bool CEnemyComponentManager::GetIsInited()
+{
+	return myIsInited;
+}
