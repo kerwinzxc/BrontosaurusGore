@@ -43,33 +43,21 @@ void CPinkyController::Update(const float aDeltaTime)
 	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
 	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
 	const float distToPlayer = toPlayer.Length2();
+
 	UpdateTransformationNetworked();
-
-	SComponentQuestionData groundeddata;
-	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
-	{
-		myControllerConstraints = groundeddata.myChar;
-		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
-		{
-			if (myGravityForce < 0)
-			{
-				myGravityForce = 0.0f;
-			}
-		}
-	}
-
+	HandleGrounded();
 
 	if (myIsDead == false && myIsCharging == false)
 	{
-		if (myStartAttackRange2 > distToPlayer)
+		if (WithinAttackRange(distToPlayer))
 		{
 			myState = ePinkyState::eUseMeleeAttack;
 		}
-		else if (myWalkToMeleeRange2 > distToPlayer)
+		else if (WithinWalkToMeleeRange(distToPlayer))
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
-		else if (myDetectionRange2 > distToPlayer)
+		else if (WithinDetectionRange(distToPlayer))
 		{
 			myState = ePinkyState::eWindupCharge;
 			myWindupChargeTime = 0.0f;
@@ -79,17 +67,15 @@ void CPinkyController::Update(const float aDeltaTime)
 			myState = ePinkyState::eIdle;
 		}
 	}
+
+
 	switch (myState)
 	{
 	case ePinkyState::eIdle:
-	{
 		break;
-	}
 	case ePinkyState::eWalkIntoMeleeRange:
-	{
 		LookAtPlayer(); //impl. turn rate?
 		velocity.z = mySpeed;
-	}
 	break;
 	case ePinkyState::eUseMeleeAttack:
 		ChangeWeapon(0);
@@ -109,26 +95,13 @@ void CPinkyController::Update(const float aDeltaTime)
 		myStartChargeLocation = myPos;
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
-	{
 		velocity.z = myChargeSpeed;
-		volatile float distFromStart = (myStartChargeLocation - myPos).Length2();
-		if (distFromStart > myChargeDistance2)
-		{
-			myStartChargeLocation = CU::Vector3f::Zero;
-			myIsCharging = false;
-		}
+		KeepWithinChargeDist();
 		break;
-	}
 	case ePinkyState::eChargeCooldown:
-	{
-		myElapsedChargeCooldownTime += aDeltaTime;
 		LookAtPlayer();
-		if(myElapsedChargeCooldownTime >= myChargeCooldown)
-		{
-			myElapsedChargeCooldownTime = 0.0f;
-		}
+		UpdateChargeCooldown(aDeltaTime);
 		break;
-	}
 	case ePinkyState::eDead:
 		break;
 	default:
@@ -157,5 +130,40 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		}
 		break;
 	}
+	}
+}
+
+void CPinkyController::HandleGrounded()
+{
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	{
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN)
+		{
+			if (myGravityForce < 0)
+			{
+				myGravityForce = 0.0f;
+			}
+		}
+	}
+}
+
+void CPinkyController::UpdateChargeCooldown(const float aDeltaTime)
+{
+	myElapsedChargeCooldownTime += aDeltaTime;
+	if (myElapsedChargeCooldownTime >= myChargeCooldown)
+	{
+		myElapsedChargeCooldownTime = 0.0f;
+	}
+}
+
+void CPinkyController::KeepWithinChargeDist()
+{
+	float distFromStart = (myStartChargeLocation - GetParent()->GetWorldPosition()).Length2();
+	if (distFromStart > myChargeDistance2)
+	{
+		myStartChargeLocation = CU::Vector3f::Zero;
+		myIsCharging = false;
 	}
 }
