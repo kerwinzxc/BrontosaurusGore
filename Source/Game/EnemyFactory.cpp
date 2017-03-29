@@ -62,7 +62,42 @@ CEnemyFactory * CEnemyFactory::GetInstance()
 	return ourInstance;
 }
 
-void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& aPosition)
+CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eEnemyTypes & aType, const CU::Vector3f & aPosition)
+{
+	CGameObject* imp = myGameObjectManager.CreateGameObject();
+	imp->SetWorldPosition(aPosition);
+
+	CEnemy* controller = myEnemyManager.CreateComponent(aBluePrint, aType);
+	imp->AddComponent(controller);
+
+	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
+	health->SetMaxHealth(100);
+	health->SetHealth(100);
+	imp->AddComponent(health);
+	//set health
+
+	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
+
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.minMoveDistance = 0.f;
+	controllerDesc.halfHeight = 1.0f;
+	controllerDesc.slopeLimit = 45;
+	controllerDesc.stepOffset = 0.3f;
+	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.radius = 0.5f;
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	imp->AddComponent(CollisionController);
+
+
+
+	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
+	message->SetEnemyType(aType);
+	message->SetHealth(10);//inläst data sen
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+}
+
+CEnemy* CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& aPosition)
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->SetWorldPosition(aPosition);
@@ -89,6 +124,7 @@ void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& a
 	imp->AddComponent(CollisionController);
 
 
+
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(eEnemyTypes::eImp);
 	message->SetHealth(10);//inläst data sen
@@ -96,7 +132,7 @@ void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& a
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 }
 
-void  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)
+CEnemy*  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)
 {
 	CGameObject* revenant = myGameObjectManager.CreateGameObject();
 
@@ -118,7 +154,7 @@ void  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)
 	revenant->AddComponent(CollisionController);
 }
 
-void CEnemyFactory::CreatePinky(const SPinkyBlueprint * aData)
+CEnemy* CEnemyFactory::CreatePinky(const SPinkyBlueprint * aData)
 {
 	CGameObject* pinky = myGameObjectManager.CreateGameObject();
 
@@ -142,7 +178,7 @@ void CEnemyFactory::CreatePinky(const SPinkyBlueprint * aData)
 	pinky->AddComponent(CollisionController);
 }
 
-void CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
+CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
 
