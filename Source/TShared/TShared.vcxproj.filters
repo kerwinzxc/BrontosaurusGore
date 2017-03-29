@@ -193,6 +193,7 @@
       <Filter>NetworkMessage\Shoot</Filter>
     </ClInclude>
     <ClInclude Include="NetworkMessage_SpawnEnemyRepesention.h" />
+    <ClInclude Include="NetworkMessage_SetIsRepesentationActive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -292,5 +293,6 @@
       <Filter>NetworkMessage\Shoot</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMessage_SpawnEnemyRepesention.cpp" />
+    <ClCompile Include="NetworkMessage_SetIsRepesentationActive.cpp" />
   </ItemGroup>
 </Project>
