@@ -37,7 +37,7 @@ void CPinkyController::Update(const float aDeltaTime)
 	UpdateBaseMemberVars(aDeltaTime);
 	myGravityForce -= gravityAcceleration * aDeltaTime;
 	myVelocity.y = myGravityForce;
-	UpdateTransformationNetworked();
+	SendTransformationToServer();
 	HandleGrounded();
 
 	if (myIsDead == false && myIsCharging == false)
@@ -101,7 +101,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		break;
 	}
 
-	UpdateTransformationLocal(aDeltaTime);
+	CheckForNewTransformation(aDeltaTime);
 }
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)

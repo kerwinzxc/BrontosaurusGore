@@ -21,7 +21,7 @@ void CImpController::Update(const float aDeltaTime)
 {
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myJumpForce;
-	UpdateTransformationNetworked();
+	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
 	if(myIsDead == false)
@@ -75,8 +75,21 @@ void CImpController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
+	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	CU::Matrix44f& rotation = transform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
 
-	UpdateTransformationLocal(aDeltaTime);
+
+	SComponentQuestionData data;
+	data.myVector4f = myVelocity * rotation * aDeltaTime;
+	data.myVector4f.w = aDeltaTime;
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		transform.SetPosition(data.myVector3f);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
+
+	CheckForNewTransformation(aDeltaTime);
 }
 
 void CImpController::UpdateJumpForces(const float aDeltaTime)

@@ -26,9 +26,9 @@ public:
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
 	void Init();
 protected:
+	void CheckForNewTransformation(const float aDeltaTime);
+	void SendTransformationToServer();
 	virtual CU::Vector3f ClosestPlayerPosition();
-	virtual void UpdateTransformationNetworked();
-	virtual void UpdateTransformationLocal(const float aDeltaTime);
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange();
