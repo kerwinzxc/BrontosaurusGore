@@ -1061,7 +1061,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderTextMessage* msg = static_cast<SRenderTextMessage*>(aRenderMesage);
-		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement);
+		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement, myGUIRenderer.GetCurrentPackage().GetSize());
 		//aDrawCallCount += msg->myStrings.Size();
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);

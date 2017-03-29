@@ -120,6 +120,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 
 CPlayState::~CPlayState()
 {
+	CParticleEmitterComponentManager::Destroy();
+
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myScene);
 
@@ -136,7 +138,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
-	CParticleEmitterComponentManager::Destroy();
+
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpointComponentManager::DestoryInstance();

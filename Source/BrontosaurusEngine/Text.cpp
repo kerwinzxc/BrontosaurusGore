@@ -7,6 +7,7 @@
 #include "Effect.h"
 #include <minwinbase.h>
 #include "Allignment.h"
+#include "binary_tree.h"
 
 struct SVertexConstantBufferType
 {
@@ -63,7 +64,7 @@ CText::~CText()
 	SAFE_RELEASE(myPixelConstantBuffer);
 }
 
-CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWString)
+CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWString,const CU::Vector2f& aTargetSize) const
 {
 	if (aAlignement == eAlignment::eLeft)
 	{
@@ -75,7 +76,7 @@ CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWSt
 	for (std::wstring::size_type i = 1; i < aWString.size(); ++i)
 	{
 		const CU::Vector2i pixelAdvance = myFont.GetAdvance(aWString[i], aWString[i - 1], true);
-		const CU::Vector2f screenAdvance(static_cast<float>(pixelAdvance.x) / WINDOW_SIZE_F.x, static_cast<float>(pixelAdvance.y) / WINDOW_SIZE_F.y);
+		const CU::Vector2f screenAdvance(static_cast<float>(pixelAdvance.x) / aTargetSize.x, static_cast<float>(pixelAdvance.y) / aTargetSize.y);
 		stringWidth -= screenAdvance.x;
 	}
 
@@ -87,7 +88,7 @@ CU::Vector2f CText::CalculateAdjustment(eAlignment aAlignement,std::wstring aWSt
 	return CU::Vector2f(stringWidth, 0);
 }
 
-void CText::Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement)
+void CText::Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement, const CU::Vector2f& aTargetSize)
 {
 	CU::Vector2f penPosition = aPosition;
 
@@ -98,7 +99,7 @@ void CText::Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::
 
 		const std::wstring tempString = someStrings[j].c_str();
 
-		penPosition.x = aPosition.x + CalculateAdjustment(anAlignement, tempString).x;
+		penPosition.x = aPosition.x + CalculateAdjustment(anAlignement, tempString, aTargetSize).x;
 		if (j > 0)
 		{
 			penPosition.y += GetlineHeight();
@@ -110,21 +111,22 @@ void CText::Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::
 			if (i > 0)
 			{
 				const CU::Vector2i pixelAdvance = myFont.GetAdvance(tempString[i], tempString[i - 1], true);
-				const CU::Vector2f screenAdvance(static_cast<float>(pixelAdvance.x) / WINDOW_SIZE_F.x, static_cast<float>(pixelAdvance.y) / WINDOW_SIZE_F.y);
+				const CU::Vector2f screenAdvance(static_cast<float>(pixelAdvance.x) / aTargetSize.x, static_cast<float>(pixelAdvance.y) / aTargetSize.y);
 				penPosition += screenAdvance;
 			}
 			
 
 			const CU::Vector2i bearing = myFont.GetBearing(tempString[i]);
-			const CU::Vector2f screenBearing(static_cast<float>(bearing.x) / WINDOW_SIZE_F.x, static_cast<float>(-bearing.y) / WINDOW_SIZE_F.y);
+			const CU::Vector2f screenBearing(static_cast<float>(bearing.x) / aTargetSize.x, static_cast<float>(-bearing.y) / aTargetSize.y);
 
-			RenderCharacter(tempString[i], penPosition + screenBearing, aColor);
+			RenderCharacter(tempString[i], penPosition + screenBearing, aColor, aTargetSize);
 		}
 	}
 }
 
 float CText::GetlineHeight() const
 {
+	//WARNING: will not be correct as long as you are not writing to fullscreen
 	return myFont.GetlineHeight() / WINDOW_SIZE_F.y;
 }
 
@@ -189,11 +191,11 @@ bool CText::InitBuffers()
 	return SUCCEEDED(result);
 }
 
-void CText::RenderCharacter(const wchar_t aCharacter, const CU::Vector2f& aPosition, const CU::Vector4f& aColor)
+void CText::RenderCharacter(const wchar_t aCharacter, const CU::Vector2f& aPosition, const CU::Vector4f& aColor, const CU::Vector2f& aTargetSize)
 {
 
 	const CU::Vector2i glyphSize = myFont.GetCharSize(aCharacter);
-	UpdateAndSetVertexConstantBuffer(aPosition, {static_cast<float>(glyphSize.x) / WINDOW_SIZE.x, static_cast<float>(glyphSize.y) / WINDOW_SIZE.y}, { 0.f,0.f,1.f,1.f }, aColor);
+	UpdateAndSetVertexConstantBuffer(aPosition, {static_cast<float>(glyphSize.x) / aTargetSize.x, static_cast<float>(glyphSize.y) / aTargetSize.y}, { 0.f,0.f,1.f,1.f }, aColor);
 
 	ID3D11ShaderResourceView* const shaderResourceView = myFont.GetCharResourceView(aCharacter);
 	DEVICE_CONTEXT->PSSetShaderResources(1u, 1u, &shaderResourceView);
