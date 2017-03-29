@@ -5,7 +5,7 @@
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 
-static const float gravityAcceleration = 9.82f * 4;
+static const float gravityAcceleration = 9.82f * 5;
 
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
