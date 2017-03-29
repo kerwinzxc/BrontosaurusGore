@@ -2,10 +2,11 @@
 #include "Component.h"
 #include "EnemyBlueprint.h"
 #include "EnemyTypes.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 class CGameObject;
 
-class CEnemy : public CComponent
+class CEnemy : public CComponent, public Postmaster::ISubscriber
 {
 public:
 	CEnemy(unsigned int aId, eEnemyTypes aType);
@@ -21,6 +22,9 @@ public:
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
 	inline void SetType(const eEnemyTypes aType);
+
+	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
+	void Init();
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformationNetworked();
@@ -32,7 +36,6 @@ protected:
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
 	void LookAtPlayer();
-
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 
@@ -40,6 +43,8 @@ protected:
 	CU::Vector3f myClosestPlayerPos;
 	CU::Vector3f myPos;
 	CU::Vector3f myToPlayer;
+	CU::Vector3f mySpawnPosition;
+
 	float myDistToPlayer;
 
 	unsigned int myServerId;

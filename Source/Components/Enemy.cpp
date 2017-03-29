@@ -20,6 +20,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRang
 
 CEnemy::~CEnemy()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
@@ -88,6 +89,8 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eDied:
 		myIsDead = true;
 		break;
+	case eComponentMessageType::eObjectDone:
+		break;
 	}
 }
 
@@ -140,4 +143,19 @@ void CEnemy::LookAtPlayer()
 	CU::Vector3f lookatPosition = ClosestPlayerPosition();
 	lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 	GetParent()->LookAt(lookatPosition);
+}
+
+eMessageReturn CEnemy::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	GetParent()->GetLocalTransform().SetPosition(mySpawnPosition);
+	SComponentMessageData controllerPositionData;
+	controllerPositionData.myVector3f = mySpawnPosition;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	return eMessageReturn::eContinue;
+}
+
+void CEnemy::Init()
+{
+	mySpawnPosition = GetParent()->GetLocalTransform().GetPosition();
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 }
