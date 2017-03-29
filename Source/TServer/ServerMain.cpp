@@ -443,7 +443,7 @@ bool CServerMain::Update()
 					gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 					SComponentMessageData positonData;
 					positonData.myVector3f = positionMessage->GetTransformation().GetPosition();
-					gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
+					//gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
 					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
