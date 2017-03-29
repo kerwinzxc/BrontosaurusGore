@@ -21,7 +21,12 @@ public:
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Update(const float aDeltaTime) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
+
 private:
+	void HandleGrounded();
+	void UpdateChargeCooldown(const float aDeltaTime);
+	void KeepWithinChargeDist();
+
 	float myWindupChargeTime;
 	float myElapsedWindupTime;
 	float myChargeSpeed;

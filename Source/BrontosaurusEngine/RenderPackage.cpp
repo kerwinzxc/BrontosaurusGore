@@ -2,6 +2,7 @@
 #include "RenderPackage.h"
 #include "Engine.h"
 #include "DXFramework.h"
+#include "ScreenGrab/ScreenGrab.h"
 #include <vector2.h>
 
 CRenderPackage::CRenderPackage()
@@ -27,7 +28,8 @@ CRenderPackage::~CRenderPackage()
 void CRenderPackage::Init(const CU::Vector2ui & aSize, ID3D11Texture2D * aTexture, DXGI_FORMAT aFormat)
 {
 	HRESULT result;
-	
+	mySize = aSize;
+
 	myViewport = new D3D11_VIEWPORT;
 	myViewport->TopLeftX = 0.f;
 	myViewport->TopLeftY = 0.f;
@@ -120,6 +122,15 @@ ID3D11Texture2D *& CRenderPackage::GetTexture()
 	return myTexture;
 }
 
+//Normalized you turd
+void CRenderPackage::SetViewport(const CU::Vector4f& aRect)
+{
+	myViewport->TopLeftX = mySize.x * aRect.x;
+	myViewport->TopLeftY = mySize.y * aRect.y;
+	myViewport->Width	 = mySize.x * aRect.z;
+	myViewport->Height	 = mySize.y * aRect.w;
+}
+
 void CRenderPackage::UpdateTexture(ID3D11Texture2D * aTexture)
 {
 	SAFE_RELEASE(myTexture);
@@ -138,6 +149,12 @@ void CRenderPackage::UpdateTexture(ID3D11Texture2D * aTexture)
 CU::Vector2f CRenderPackage::GetSize()
 {
 	return CU::Vector2f(myViewport->Width, myViewport->Height);
+}
+
+void CRenderPackage::SaveToFile(const char* aPath)
+{
+	const wchar_t* path = CU::StringToWString(aPath).c_str();
+	DirectX::SaveDDSTextureToFile(DEVICE_CONTEXT, myTexture, path);
 }
 
 void CRenderPackage::operator=(const CRenderPackage& aLeft)

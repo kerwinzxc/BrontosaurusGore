@@ -10,10 +10,6 @@ CShaderManager::CShaderManager() //precompiled shaders later
 
 CShaderManager::~CShaderManager()
 {
-	//UMapDelete<unsigned int, ID3D11VertexShader*>(myVertexShaders);
-	//UMapDelete<unsigned int, ID3D11PixelShader*>(myPixelShaders);
-	//UMapDelete<unsigned int, ID3D11GeometryShader*>(myGeometryShaders);
-
 	for (auto it = myVertexShaders.begin(); it != myVertexShaders.end(); it++)
 	{
 		for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2)
@@ -171,14 +167,14 @@ ID3D11GeometryShader * CShaderManager::CreateGeometryShader(const std::wstring& 
 
 ID3D11VertexShader* CShaderManager::CompileVertexShader(std::wstring aString, unsigned int aDataFlags)
 {
-	ID3D11InputLayout* inputLayout = nullptr;
 	ID3D11VertexShader* vertexShader;
 	ID3D10Blob* vertexBlob = nullptr;
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 	std::string shaderFunction = "VS_";
-	shaderFunction += GetInputLayoutType(aDataFlags, inputLayoutDesc);
 
+	shaderFunction += GetInputLayoutType(aDataFlags, inputLayoutDesc, (aDataFlags & EModelBluePrint::EModelBluePrint_Instance) > 0);
+	
 	std::string errorMsg;
 	bool bresult;
 	HRESULT result;
@@ -204,8 +200,8 @@ ID3D11VertexShader* CShaderManager::CompileVertexShader(std::wstring aString, un
 	result = CEngine::GetInstance()->GetFramework()->GetDevice()->CreateVertexShader(vertexBlob->GetBufferPointer(), vertexBlob->GetBufferSize(), NULL, &vertexShader);
 	CHECK_RESULT(result, "Failed to create Vertex Shader.");
 
-	inputLayout = CreateInputLayout(inputLayout, vertexBlob, inputLayoutDesc);
-	myInputLayouts[aDataFlags] = inputLayout;
+	
+	myInputLayouts[aDataFlags] = CreateInputLayout(nullptr, vertexBlob, inputLayoutDesc);
 
 	vertexBlob->Release();
 	return vertexShader;
@@ -257,7 +253,7 @@ ID3D11GeometryShader * CShaderManager::CompileGeometryShader(std::wstring aStrin
 }
 
 //returns string and sets the layout. eehehe
-std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
+std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout, const bool aInstanced)
 {
 	std::string layoutName = "";
 
@@ -335,21 +331,35 @@ std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, st
 		layoutName += "Color";
 		EffectHelper::CreateLayout(aInputLayout, "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_INPUT_PER_VERTEX_DATA, 0);
 	}
+	if (aShaderBlueprint & EModelBluePrint_Instance && !(aShaderBlueprint & EModelBluePrint_Bones))
+	{
+		layoutName += "Instanced";
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1, true);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+	}
 
 	return layoutName;
 }
 
-ID3D11InputLayout* CShaderManager::CreateInputLayout(ID3D11InputLayout* aLayout, ID3D10Blob* aVertexBlob, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
+ID3D11InputLayout* CShaderManager::CreateInputLayout(ID3D11InputLayout* /*aLayout*/, ID3D10Blob* aVertexBlob, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
 {
-	return CreateInputLayout(aLayout, aVertexBlob->GetBufferPointer(), static_cast<unsigned int>(aVertexBlob->GetBufferSize()), aInputLayout);
+	return CreateInputLayout(nullptr, aVertexBlob->GetBufferPointer(), static_cast<unsigned int>(aVertexBlob->GetBufferSize()), aInputLayout);
 }
 
-ID3D11InputLayout * CShaderManager::CreateInputLayout(ID3D11InputLayout * aLayout, const void * aVertexBlobPointer, const unsigned int aVertexBufferSize, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
+ID3D11InputLayout * CShaderManager::CreateInputLayout(ID3D11InputLayout * /*aLayout*/, const void * aVertexBlobPointer, const unsigned int aVertexBufferSize, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
 {
+	ID3D11InputLayout* inputLayout = nullptr;
 	HRESULT result;
-	result = CEngine::GetInstance()->GetFramework()->GetDevice()->CreateInputLayout(&aInputLayout[0], static_cast<UINT>(aInputLayout.size()), aVertexBlobPointer, aVertexBufferSize, &aLayout);
+	result = CEngine::GetInstance()->GetFramework()->GetDevice()->CreateInputLayout(&aInputLayout[0], static_cast<UINT>(aInputLayout.size()), aVertexBlobPointer, aVertexBufferSize, &inputLayout);
 	CHECK_RESULT(result, "Failed to create inputlayout.");
-	return aLayout;
+	return inputLayout;
 }
 
 

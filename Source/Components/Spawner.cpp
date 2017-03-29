@@ -31,8 +31,8 @@ void CSpawnerComponent::SpawnEnemy()
 	aData.speed = 10.0f;
 	aData.jumpHeight = 4.0f;
 	aData.detectionRange = 30.0f;
-	aData.walkToMeleeRange = 10.f;
-	aData.startAttackRange = 2.0f;
+	aData.walkToMeleeRange = 0.f;
+	aData.startAttackRange = 0.0f;
 	aData.stopAttackRange = 1.0f;
 	CEnemyFactory::GetInstance()->CreateImp(&aData,GetParent()->GetWorldPosition());
 }

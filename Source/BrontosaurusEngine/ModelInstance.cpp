@@ -32,36 +32,6 @@ CModelInstance::CModelInstance(const char* aModelPath)
 	myAnimationLooping = true;
 }
 
-CModelInstance::CModelInstance(const char* aModelPath, const CU::Matrix44f& aTransformation)
-	: CModelInstance(aModelPath)
-{
-	myTransformation = aTransformation;
-}
-
-CModelInstance::CModelInstance(const SShape aShape) 
-	: myHasAnimations(false)
-{
-	myAnimationCounter = 0.f;
-	myIsVisible = true;
-	myModel = MODELMGR->LoadModel(aShape);
-}
-
-CModelInstance::CModelInstance(const SShape aShape, const CU::Matrix44f& aTransformation)
-	: CModelInstance(aShape)
-{
-	myTransformation = aTransformation;
-}
-
-CModelInstance::CModelInstance(ModelId aModel, const CU::Matrix44f& aTransformation)
-	: myTransformation(aTransformation)
-	, myModel(aModel)
-	, myAnimationCounter(0.f)
-	, myIsVisible(true)
-	, myCurrentAnimation(nullptr)
-	, myHasAnimations(false)
-{
-}
-
 
 CModelInstance::~CModelInstance()
 {
@@ -256,20 +226,18 @@ bool CModelInstance::ShouldRender()
 }
 
 //in worldSpace
-CU::AABB CModelInstance::GetModelBoundingBox()
+CU::Sphere CModelInstance::GetModelBoundingSphere()
 {
-	CU::AABB box;
+	CU::Sphere sphere;
 
-	if (!myModel)
-		return box;
+	if (myModel == -1)
+		return sphere;
 
-	box = MODELMGR->GetModel(myModel)->GetBoundingBox();
-	box.myCenterPos = box.myCenterPos * myTransformation;
-	box.myMinPos = box.myMinPos * myTransformation;
-	box.myMaxPos = box.myMaxPos * myTransformation;
-	//box.myRadius *= myTransformation.m11;
-	
-	return box;
+	sphere.myCenterPos = myTransformation.GetPosition();
+	sphere.myRadius = MODELMGR->GetModel(myModel)->GetRadius();
+	sphere.myRadius *= myTransformation.m11;
+
+	return sphere;
 }
 
 void CModelInstance::SetHighlight(const CU::Vector4f& aColor, float anIntensivity)

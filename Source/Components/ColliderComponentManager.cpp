@@ -10,7 +10,7 @@
 #include "..\Physics\PhysicsActorDynamic.h"
 #include "..\Physics\CharacterControllerManager.h"
 #include "..\Physics\PhysicsCharacterController.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "..\Physics\CollisionLayers.h"
 #include "../Physics/Collection.h"
 
@@ -79,10 +79,10 @@ void CColliderComponentManager::RemoveActorFromScene(Physics::CPhysicsActor* aAc
 	myScene->RemoveActor(aActor);
 }
 
-CCharcterControllerComponent* CColliderComponentManager::CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams)
+CCharacterControllerComponent* CColliderComponentManager::CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams)
 {
 	Physics::CPhysicsCharacterController* controller = myControllerManager->CreateCharacterController(aParams);
-	CCharcterControllerComponent* component = new CCharcterControllerComponent(controller, aParams.center);
+	CCharacterControllerComponent* component = new CCharacterControllerComponent(controller, aParams.center);
 	CComponentManager::GetInstance().RegisterComponent(component);
 	return component;
 }

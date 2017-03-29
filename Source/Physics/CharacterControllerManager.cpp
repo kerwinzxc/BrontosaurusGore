@@ -19,7 +19,6 @@ namespace Physics
 		myScene = aPhysicsScene;
 		myControllerManager = PxCreateControllerManager(*aPhysicsScene->GetScene());
 		myControllerManager->setOverlapRecoveryModule(true);
-
 	}
 
 	CCharacterControllerManager::~CCharacterControllerManager()
@@ -27,7 +26,6 @@ namespace Physics
 		myScene = nullptr;
 		myPhysics = nullptr;
 		myControllerManager->purgeControllers();
-
 	}
 
 	Physics::CPhysicsCharacterController* CCharacterControllerManager::CreateCharacterController(const SCharacterControllerDesc& aDesc)
@@ -38,6 +36,7 @@ namespace Physics
 		desc.radius = aDesc.radius;
 		desc.height = aDesc.halfHeight;
 		desc.contactOffset = aDesc.skinWidth;
+		desc.climbingMode = PxCapsuleClimbingMode::eEASY;
 		desc.material = myPhysics->CreateMaterial(SMaterialData());
 		PxController* controller = myControllerManager->createController(desc);
 		return new CPhysicsCharacterController(controller, aDesc);

@@ -14,4 +14,5 @@ enum EModelBluePrint
 	EModelBluePrint_Color = 1 << 9,
 	EModelBluePrint_Fire = 1 << 10,
 	EModelBluePrint_Bar = 1 << 11,
+	EModelBluePrint_Instance = 1 << 12,
 };

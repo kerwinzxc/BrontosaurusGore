@@ -1,6 +1,5 @@
 #pragma once
 #include "ModelComponent.h"
-#include "../BrontosaurusEngine/ModelShapes.h"
 
 #define MODELCOMP_MGR CModelComponentManager::GetInstance()
 
@@ -15,8 +14,6 @@ public:
 	~CModelComponentManager();
 
 	CModelComponent* CreateComponent(const char* aModelPath);
-	//CModelComponent* CreateComponent(SShape aShape);
-
 	void DeleteModelComponent(CModelComponent* aComponent);
 
 private:

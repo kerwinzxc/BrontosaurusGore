@@ -19,6 +19,7 @@
 #include "../Components/HealthComponentManager.h"
 #include "../Components/SpawnerManager.h"
 #include "../Game/EnemyFactory.h"
+#include "../Components/CheckPointSystem.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -29,7 +30,7 @@
 #include "../Components/ColliderComponentManager.h"
 #include "../Physics/PhysicsScene.h"
 #include "../Physics/PhysicsCharacterController.h"
-#include "../Components/CharcterControllerComponent.h"
+#include "../Components/CharacterControllerComponent.h"
 
 CGameServer::CGameServer():
 	myAmmoComponentManager(nullptr)
@@ -129,6 +130,7 @@ void CGameServer::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 
 	myGameObjectManager = new CGameObjectManager();
+	myCheckPointSystem = new CCheckPointSystem();
 	myMovementComponentManager = new CMovementComponentManager();
 	myEnemyComponentManager = new CEnemyComponentManager();
 	myAmmoComponentManager = new CAmmoComponentManager();
@@ -191,17 +193,18 @@ bool CGameServer::IsLoaded() const
 	return myIsLoaded;
 }
 
-CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
+CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID) const
 {
 	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
 
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
+	serverPlayerNetworkComponent->SetClientID(aClientID);
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.minMoveDistance = 0.00001f;
 	controllerDesc.halfHeight = 1.0f;
-	CCharcterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
 	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());

@@ -31,6 +31,7 @@ namespace CU
 		void ReInit(const float aFov, const float aProjectionWidth, const float aProjectionHeight, const float aNear, const float aFar);
 		void ReInit(const float aProjectionWidth, const float aProjectionHeight, const float aNear, const float aFar);
 
+		void ReInit(const CU::Matrix44f& aProjection, const CU::Matrix44f& aTransformation);
 		
 
 		// Returns the inverse of the camera orientation 
@@ -42,6 +43,7 @@ namespace CU
 		inline const float GetProjectionWidth() const;
 		inline const float GetProjectionHeight() const;
 
+		inline const float GetFOV() const;
 		const Vector3f GetPosition() const;
 		void SetPosition(const CU::Vector3f& aPosition);
 
@@ -79,6 +81,7 @@ namespace CU
 		float myHeight;
 		float myNear;
 		float myFar;
+		float myFOV;
 	};
 
 	inline const CU::CFrustum & CU::Camera::GetFrustum()
@@ -105,4 +108,8 @@ namespace CU
 	{
 		return myHeight;
 	}
-} 
+	inline const float Camera::GetFOV() const
+	{
+		return myFOV;
+	}
+}

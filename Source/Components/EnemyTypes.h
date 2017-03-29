@@ -1,7 +1,8 @@
 #pragma once
 enum class eEnemyTypes
 {
-	eDefault,
+	//eDefault,
+	ePlaceHolder,
 	eImp,
 	eRevenant,
 	ePinky

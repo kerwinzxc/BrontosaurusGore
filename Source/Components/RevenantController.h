@@ -22,7 +22,8 @@ public:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 
 private:
-	void ApplyFlyForce(float aJumpHeight);
+	void ApplyFlightForce();
+	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
 private:
 	float myFlightHeight;

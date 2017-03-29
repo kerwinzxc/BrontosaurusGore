@@ -9,7 +9,7 @@
 #include "HealthComponentManager.h"
 #include "WeaponSystemComponent.h"
 #include "WeaponSystemManager.h"
-#include "CharcterControllerComponent.h"
+#include "CharacterControllerComponent.h"
 #include "ModelComponentManager.h"
 #include "ColliderComponentManager.h"
 #include "../Physics/PhysicsCharacterController.h"
@@ -85,7 +85,7 @@ void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& a
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
 	controllerDesc.radius = 0.5f;
-	CCharcterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 	imp->AddComponent(CollisionController);
 
 
@@ -110,7 +110,7 @@ void  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.minMoveDistance = 0.00001f;
 	controllerDesc.halfHeight = 1.0f;
-	CCharcterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 
 	revenant->AddComponent(controller);
 	revenant->AddComponent(health);
@@ -134,7 +134,7 @@ void CEnemyFactory::CreatePinky(const SPinkyBlueprint * aData)
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.minMoveDistance = 0.00001f;
 	controllerDesc.halfHeight = 1.0f;
-	CCharcterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 
 	pinky->AddComponent(controller);
 	pinky->AddComponent(health);
@@ -187,7 +187,7 @@ void CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyType
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
 	controllerDesc.radius = 0.5f;
-	CCharcterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 	repesention->AddComponent(CollisionController);
 
 }
