@@ -51,6 +51,7 @@
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../TShared/NetworkMessage_SpawnEnemyRepesention.h"
+#include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
 #include "../Components/DoorManager.h"
 #include "../Game/EnemyFactory.h"
 
@@ -406,7 +407,18 @@ void CClient::Update()
 			case  ePackageType::eSpawnEnemyRepresentation:
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
-				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType());
+				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType())->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate,SComponentMessageData());
+			}
+			break;
+			case ePackageType::eSetRepesentationActive:
+			{
+				CNetworkMessage_SetIsRepesentationActive* setmessage = currentMessage->CastTo<CNetworkMessage_SetIsRepesentationActive>();
+				if (setmessage->GetActive() == Ja)
+				{
+					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+					break;
+				}
+				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eZero:
