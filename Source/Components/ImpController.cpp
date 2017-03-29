@@ -2,6 +2,8 @@
 #include "ImpController.h"
 #include "EnemyBlueprint.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 4;
 
@@ -110,7 +112,19 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
+	{
+		myState = eImpState::eDead;
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		break;
+	}
+	case eComponentMessageType::eCheckPointReset:
+		myState = eImpState::eIdle;
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	}
 }

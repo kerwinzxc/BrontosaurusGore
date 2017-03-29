@@ -5,6 +5,7 @@
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
@@ -87,9 +88,19 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
+	{
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
+	}
 	case eComponentMessageType::eObjectDone:
+		break;
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	}
 }
@@ -158,4 +169,7 @@ void CEnemy::Init()
 {
 	mySpawnPosition = GetParent()->GetLocalTransform().GetPosition();
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
+	SComponentMessageData healData;
+	healData.myInt = 1000000;
+	GetParent()->NotifyComponents(eComponentMessageType::eHeal, healData);
 }
