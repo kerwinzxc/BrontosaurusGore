@@ -42,12 +42,9 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	{
 		CU::Vector2f lastPosition = myLastPosition;
 		myLastPosition = CU::Vector2f(GetParent()->GetLocalTransform().myPosition.x, GetParent()->GetLocalTransform().myPosition.z);
-
-		float speed = (myLastPosition - lastPosition).Length2();
-		DL_PRINT("animation speed: %f", speed);
-
+		
 		myModelComponent.SetAnimation("idle01");
-		myModelComponent.SetNextAnimation("walk01");
+		//myModelComponent.SetNextAnimation("walk01");
 		myModelComponent.SetAnimationLerpValue(/*speed*/0.4f/* += aDeltaTime.GetSeconds()*/);
 		break;
 	}
