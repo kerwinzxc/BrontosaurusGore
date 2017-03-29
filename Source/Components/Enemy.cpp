@@ -44,7 +44,7 @@ void CEnemy::SendTransformationToServer()
 		message->SetId(myServerId);
 		message->SetTransformation(transform);
 		
-		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
 	}
 }

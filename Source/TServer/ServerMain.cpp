@@ -629,7 +629,7 @@ bool CServerMain::Update()
 	return false;
 }
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
-eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+eMessageReturn CServerMain::DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage)
 {
 
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());

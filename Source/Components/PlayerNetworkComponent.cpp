@@ -48,14 +48,14 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 	{
 		CNetworkMessage_PlayerDied* playerDied = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerDied>(ID_ALL);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(playerDied));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(playerDied));
 	}
 	break;
 	case eComponentMessageType::eCheckPointReset:
 	{
 		CNetworkMessage_PlayerRespawned* playerRespawned = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerRespawned>(ID_ALL);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(playerRespawned));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(playerRespawned));
 		DL_PRINT("Back");
 	}
 	break;

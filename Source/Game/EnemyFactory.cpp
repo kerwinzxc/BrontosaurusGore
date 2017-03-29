@@ -93,7 +93,7 @@ void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& a
 	message->SetEnemyType(eEnemyTypes::eImp);
 	message->SetHealth(10);//inläst data sen
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
 }
 
 void  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)

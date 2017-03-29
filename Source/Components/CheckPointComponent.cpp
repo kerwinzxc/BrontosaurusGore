@@ -53,7 +53,7 @@ void CCheckPointComponent::SetAsNewCheckPoint()
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(GetParent()->GetWorldPosition() + myRespawnPosition));
 	CNetworkMessage_SetCheckpointMessage* netWorksMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetCheckpointMessage>(ID_ALL);
 	netWorksMessage->SetId(myId);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netWorksMessage));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netWorksMessage));
 }
 
 void CCheckPointComponent::SetAsNewCheckPointWithNetwork()

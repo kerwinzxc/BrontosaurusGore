@@ -52,7 +52,7 @@ eMessageReturn Postmaster::ISubscriber::DoEvent(const CNetworkPosMessageEvent& a
 	return eMessageReturn::eContinue;
 }
 
-eMessageReturn Postmaster::ISubscriber::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage)
 {
 	return eMessageReturn::eContinue;
 }
