@@ -166,10 +166,13 @@ void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFu
 	{
 		const SGUIElement& currentGuiElement = myElements[i].first;
 
-		const float newPixelWidth = currentGuiElement.myScreenRect.w * targetSize.y / (currentGuiElement.myScreenRect.w * 9 / (currentGuiElement.myScreenRect.z * 16));
-		const float fullScreenWidth = newPixelWidth / targetSize.y;
+		const float elementHeight = currentGuiElement.myScreenRect.w - currentGuiElement.myScreenRect.y;
+		const float elementWidth = currentGuiElement.myScreenRect.z - currentGuiElement.myScreenRect.x;
 
-		const CU::Vector2f screenSize(fullScreenWidth, currentGuiElement.myScreenRect.w);
+		const float newPixelWidth = elementHeight * targetSize.y / (elementHeight * 9 / (elementWidth * 16));
+		const float fullScreenWidth = newPixelWidth / targetSize.x;
+
+		const CU::Vector2f screenSize(fullScreenWidth, elementHeight);
 
 		CU::Vector2f screenSpacePosition;
 
@@ -179,7 +182,7 @@ void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFu
 		}
 		else
 		{
-			screenSpacePosition.y = currentGuiElement.myScreenRect.x;
+			screenSpacePosition.x = currentGuiElement.myScreenRect.x;
 		}
 
 		if (currentGuiElement.myAnchor[static_cast<int>(eAnchors::eBottom)])

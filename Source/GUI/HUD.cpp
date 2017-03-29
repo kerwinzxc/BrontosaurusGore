@@ -67,11 +67,14 @@ void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
 	const unsigned pixelHeight = sizeObject.at("pixelHeight").GetUInt();
 	myHealthAndArmourElement.myPixelSize = CU::Vector2ui(pixelWidth, pixelHeight);
 
-	myHealthAndArmourElement.myGuiElement.myScreenRect.z = sizeObject.at("screenSpaceWidth").GetFloat();
-	myHealthAndArmourElement.myGuiElement.myScreenRect.w = sizeObject.at("screenSpaceHeight").GetFloat();
+	myHealthAndArmourElement.myGuiElement.myScreenRect.z = sizeObject.at("screenSpaceWidth").GetFloat() + myHealthAndArmourElement.myGuiElement.myScreenRect.x;
+	myHealthAndArmourElement.myGuiElement.myScreenRect.w = sizeObject.at("screenSpaceHeight").GetFloat() + myHealthAndArmourElement.myGuiElement.myScreenRect.y;
 
 	LoadText(aJsonValue.at("armourNumber"), myArmourNumber);
 	LoadText(aJsonValue.at("healthNumber"), myHealthNumber);
+
+	myAmmoNumber.SetTextLine(0, L"0");
+	myHealthNumber.SetTextLine(0, L"0");
 
 	myArmourBar = LoadBar(aJsonValue.at("armorBar"));
 	myHealthBar = LoadBar(aJsonValue.at("healthBar"));
@@ -93,9 +96,9 @@ void CHUD::Render()
 		myHealthAndArmorSprite->RenderToGUI(L"healthAndArmour");
 		myHealthBar->RenderToGUI(L"healthAndArmour");
 		myArmourBar->RenderToGUI(L"healthAndArmour");
-		//myHealthNumber.RenderToGUI(L"healthAndArmour");
-		//myArmourNumber.RenderToGUI(L"healthAndArmour");
-		//myHealthAndArmourHasChanged = false;
+		myHealthNumber.RenderToGUI(L"healthAndArmour");
+		myArmourNumber.RenderToGUI(L"healthAndArmour");
+		myHealthAndArmourHasChanged = false;
 	}
 }
 

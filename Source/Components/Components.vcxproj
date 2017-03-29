@@ -554,9 +554,6 @@
       <Project>{2e206e26-7c71-4d89-9a90-2a3d0c132c9d}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Components.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
