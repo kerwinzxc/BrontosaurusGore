@@ -35,10 +35,8 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eWalkIntoMeleeRange;
 		
 			if (ShouldJumpAfterPlayer())
-			{
-
 				myState = eImpState::eJump;
-			}
+
 		}
 		else if (WithinDetectionRange())
 		{
