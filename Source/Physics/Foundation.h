@@ -44,7 +44,7 @@ namespace Physics
 	private:
 		static CFoundation* ourInstance;
 
-		CU::GrowingArray<CPhysics*, char> myPhysics;
+		CPhysics* myPhysics;
 		physx::PxFoundation* myFoundation;
 		physx::PxPvd* myPvd;
 		physx::PxCooking* myCooking;

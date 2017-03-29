@@ -239,6 +239,7 @@
   <ItemGroup>
     <ClCompile Include="BackgroundLoadingManager.cpp" />
     <ClCompile Include="CreditsState.cpp" />
+    <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEventMessenger.cpp" />
     <ClCompile Include="GlobalLuaFunctions.cpp" />
@@ -262,6 +263,7 @@
   <ItemGroup>
     <ClInclude Include="BackgroundLoadingManager.h" />
     <ClInclude Include="CreditsState.h" />
+    <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEventMessenger.h" />
     <ClInclude Include="GlobalLuaFunctions.h" />

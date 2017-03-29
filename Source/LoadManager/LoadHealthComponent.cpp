@@ -6,8 +6,7 @@
 
 int LoadHealthComponent(KLoader::SLoadedComponentData someData)
 {
-	static unsigned int id = 0;
-	CHealthComponent* healthComponent = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent(id++);
+	CHealthComponent* healthComponent = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	healthPoint loadedHealthValue = static_cast<healthPoint>(someData.myData.at("MaxHealth").GetInt());
 	healthComponent->SetMaxHealth(loadedHealthValue);
 	healthComponent->SetHealth(loadedHealthValue);

@@ -37,14 +37,11 @@ public:
 	ID3D11DepthStencilView*& GetDepthStencilView();
 
 	ID3D11Texture2D*& GetTexture();
-
+	void SetViewport(const CU::Vector4f& aRect);
 	void UpdateTexture(ID3D11Texture2D* aTexture);
 	
 	CU::Vector2f GetSize();
-
-
-
-
+	void SaveToFile(const char* aPath);
 	inline bool IsInit();
 	void operator= (const CRenderPackage& aLeft);
 private:
@@ -58,6 +55,8 @@ private:
 	ID3D11RenderTargetView* myTarget;
 	ID3D11DepthStencilView* myDepth;
 	D3D11_VIEWPORT* myViewport;
+
+	CU::Vector2f mySize;
 };
 
 inline bool CRenderPackage::IsInit()

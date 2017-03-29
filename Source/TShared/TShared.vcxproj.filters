@@ -51,6 +51,27 @@
     <Filter Include="NetworkMessage\Disconected">
       <UniqueIdentifier>{7f0f6689-a469-4cc2-a5cb-ebc72d811692}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\Door">
+      <UniqueIdentifier>{7d37306e-c32b-4dc2-aa39-0869539973d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Enemy">
+      <UniqueIdentifier>{be64e939-335e-43ee-ba3e-75d5b74a2b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Pickups">
+      <UniqueIdentifier>{67e25a24-992f-4452-a48b-56c7b327603a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Player">
+      <UniqueIdentifier>{145ac9a3-1de6-46e0-95d3-371abc6dfda5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Checkpoint">
+      <UniqueIdentifier>{91867b14-a7ab-43c5-9cbf-027fa8306faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Damage">
+      <UniqueIdentifier>{1e08d2dd-a84c-464f-98df-e2b86b8fa3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetworkMessage\Shoot">
+      <UniqueIdentifier>{ebdcb6fd-5c3c-4fdd-9115-62d37fa7fffb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -118,29 +139,60 @@
     </ClInclude>
     <ClInclude Include="Tshared_NetworkId.h" />
     <ClInclude Include="MessageStorage.h" />
-    <ClInclude Include="NetworkMessage_PlayerPositionMessage.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMessage_WeaponShoot.h" />
     <ClInclude Include="NetworkMessage_Disconected.h">
       <Filter>NetworkMessage\Disconected</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMessage_PickupHealth.h" />
-    <ClInclude Include="NetworkMessage_EnemyPosition.h" />
-    <ClInclude Include="NetworkMessage_TakeDamage.h" />
-    <ClInclude Include="NetWorkMessage_PickupAmmo.h" />
-    <ClInclude Include="Networkmessage_PickupArmor.h" />
     <ClInclude Include="NetworkMessage_TryToShoot.h" />
     <ClInclude Include="NetworkMessage_OKShoot.h" />
-    <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
-    <ClInclude Include="NetworkMessage_DoorMessage.h" />
-    <ClInclude Include="NetworkMessage_PickupKey.h" />
-    <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
-    <ClInclude Include="NetworkMessage_PlayerDied.h" />
-    <ClInclude Include="NetworkMessage_PlayerRespawned.h" />
-    <ClInclude Include="NetworkMessage_ResetToCheckpoint.h" />
-    <ClInclude Include="NetworkMessage_RevivePlayer.h" />
+    <ClInclude Include="NetworkMessage_DoorMessage.h">
+      <Filter>NetworkMessage\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_EnemyPosition.h">
+      <Filter>NetworkMessage\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_EnemyTransformation.h">
+      <Filter>NetworkMessage\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="NetWorkMessage_PickupAmmo.h">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="Networkmessage_PickupArmor.h">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PickupHealth.h">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PickupKey.h">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PlayerDied.h">
+      <Filter>NetworkMessage\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PlayerPositionMessage.h">
+      <Filter>NetworkMessage\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_PlayerRespawned.h">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_ResetToCheckpoint.h">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_RevivePlayer.h">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_TakeDamage.h">
+      <Filter>NetworkMessage\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_SetCheckpointMessage.h">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_WeaponShoot.h">
+      <Filter>NetworkMessage\Shoot</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage_SpawnEnemyRepesention.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -186,28 +238,59 @@
       <Filter>NetworkMessage\Ready</Filter>
     </ClCompile>
     <ClCompile Include="MessageStorage.cpp" />
-    <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp">
       <Filter>NetworkMessage\SpawnOtherPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
     <ClCompile Include="NetworkMessage_Disconected.cpp">
       <Filter>NetworkMessage\Disconected</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkMessage_PickupHealth.cpp" />
-    <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
-    <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
-    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp" />
-    <ClCompile Include="Networkmessage_PickupArmor.cpp" />
     <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
     <ClCompile Include="NetworkMessage_OKShoot.cpp" />
-    <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
-    <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
-    <ClCompile Include="NetworkMessage_PickupKey.cpp" />
-    <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
-    <ClCompile Include="NetworkMessage_PlayerDied.cpp" />
-    <ClCompile Include="NetworkMessage_PlayerRespawned.cpp" />
-    <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp" />
-    <ClCompile Include="NetworkMessage_RevivePlayer.cpp" />
+    <ClCompile Include="NetworkMessage_DoorMessage.cpp">
+      <Filter>NetworkMessage\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_EnemyPosition.cpp">
+      <Filter>NetworkMessage\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_EnemyTransformation.cpp">
+      <Filter>NetworkMessage\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="NetWorkMessage_PickupAmmo.cpp">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="Networkmessage_PickupArmor.cpp">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PickupHealth.cpp">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PickupKey.cpp">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PlayerDied.cpp">
+      <Filter>NetworkMessage\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PlayerPositionMessage.cpp">
+      <Filter>NetworkMessage\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PlayerRespawned.cpp">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_ResetToCheckpoint.cpp">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_RevivePlayer.cpp">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_TakeDamage.cpp">
+      <Filter>NetworkMessage\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp">
+      <Filter>NetworkMessage\Checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_WeaponShoot.cpp">
+      <Filter>NetworkMessage\Shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_SpawnEnemyRepesention.cpp" />
   </ItemGroup>
 </Project>

@@ -126,6 +126,16 @@ void CFullScreenHelper::DoEffect(const eEffectType aEffectType, const CU::Vector
 		windowSize.x = static_cast<float>(ENGINE->GetWindowSize().x);
 		windowSize.y = static_cast<float>(ENGINE->GetWindowSize().y);
 
+
+		D3D11_VIEWPORT activeViewPort;
+		unsigned int numPorts = 1u;
+ 		DEVICE_CONTEXT->RSGetViewports(&numPorts, &activeViewPort);
+
+		if(numPorts != 0u)
+		{
+			windowSize.x = activeViewPort.Width;
+			windowSize.y = activeViewPort.Height;
+		}
 		CU::Vector4f windowRect;
 		windowRect.x = windowSize.x * aRect.x;
 		windowRect.y = windowSize.y * aRect.y;

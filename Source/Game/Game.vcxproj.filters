@@ -51,6 +51,7 @@
       <Filter>States</Filter>
     </ClCompile>
     <ClCompile Include="PollingStation.cpp" />
+    <ClCompile Include="EnemyFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -106,6 +107,7 @@
       <Filter>States</Filter>
     </ClInclude>
     <ClInclude Include="PollingStation.h" />
+    <ClInclude Include="EnemyFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="States">

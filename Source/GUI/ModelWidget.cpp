@@ -27,7 +27,7 @@ namespace GUI
 
 		CModelManager* modelManager = MODELMGR;
 		CModelManager::ModelId model = modelManager->LoadGUIModel(aLoaderMesh, aTexturePaths);
-		myModelInstance = new CModelInstance(model, aLoaderMesh->myTransformation);
+		//myModelInstance = new CModelInstance(model, aLoaderMesh->myTransformation);
 		myPixelConstantBufferStruct = new SPixelConstantBuffer();
 		myOriginalTransformation = aLoaderMesh->myTransformation;
 		myMinPoint = aLoaderMesh->myMinPoint;
@@ -50,12 +50,13 @@ namespace GUI
 		, myPixelConstantBufferStruct(nullptr)
 		, myMillisecondsLeftSinceMouseEnter(0.f)
 	{
+		assert(false && "Not implemented boundingbox");
 		assert(myModelInstance != nullptr && "got model instance that was null");
 
 		myPixelConstantBufferStruct = new SPixelConstantBuffer();
 		myOriginalTransformation = myModelInstance->GetTransformation();
-		myMinPoint = myModelInstance->GetModelBoundingBox().myMinPos;
-		myMaxPoint = myModelInstance->GetModelBoundingBox().myMaxPos;
+		//myMinPoint = myModelInstance->GetModelBoundingBox().myMinPos;
+		//myMaxPoint = myModelInstance->GetModelBoundingBox().myMaxPos;
 
 		CU::Vector2f screenMinPosition;
 		ConvertPosition3DTo2D(aGUICamera, myMinPoint, screenMinPosition);

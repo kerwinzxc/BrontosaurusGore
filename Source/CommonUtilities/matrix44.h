@@ -334,19 +334,14 @@ namespace CU
 		}
 
 
-		Matrix44 CreateOrthogonalProjectionMatrixLH(TYPE aNear, TYPE aFar, TYPE aWidth, TYPE aHeight)
+		static Matrix44 CreateOrthogonalProjectionMatrixLH(TYPE aNear, TYPE aFar, TYPE aWidth, TYPE aHeight)
 		{
 			Matrix44f matrix;
-
 			matrix.m11 = 2.f / aWidth;
-
 			matrix.m22 = 2.f / aHeight;
-
 			matrix.m33 = 1.f / (aFar - aNear);
 			matrix.m43 = aNear / (aNear - aFar);
-
 			matrix.m44 = 1.f;
-
 			return matrix;
 		}
 
@@ -703,6 +698,11 @@ namespace CU
 			InvertMatrix(&m11);
 		}
 
+		void Invert()
+		{
+			InvertMatrix(&m11);
+		}
+
 		Matrix44<TYPE> GetInverted() const
 		{
 			Matrix44<TYPE> matrix44 = *this;
@@ -732,6 +732,14 @@ namespace CU
 				Vector3<TYPE> myUpVector;		TYPE ms24;
 				Vector3<TYPE> myForwardVector;	TYPE ms34;
 				Vector3<TYPE> myPosition;		TYPE ms44;
+			};
+
+			struct
+			{
+				Vector4<TYPE> myRightVector4;
+				Vector4<TYPE> myUpVector4;	
+				Vector4<TYPE> myForwardVector4;
+				Vector4<TYPE> myPosition4;	
 			};
 
 			CU::StaticArray<CU::StaticArray<TYPE, NumColumns>, NumRows> my2DArray;

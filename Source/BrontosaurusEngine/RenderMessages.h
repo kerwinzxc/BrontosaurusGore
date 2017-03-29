@@ -3,6 +3,7 @@
 #include "../CommonUtilities/matrix44.h"
 #include "../CommonUtilities/Vector2.h"
 #include "../CommonUtilities/Camera.h"
+#include "../CommonUtilities/GrowingArray.h"
 
 #include "../GUI/GUIPixelConstantBuffer.h"
 #include "RenderPackage.h"
@@ -10,6 +11,7 @@
 #include "BufferStructs.h"
 #include "Lights.h"
 #include "ParticleEmitter.h"
+#include "CascadeBuffer.h"
 #include "Colour.h"
 #include "../GUI/GUIElement.h"
 
@@ -56,6 +58,9 @@ struct SRenderMessage
 		eRenderCameraQueue,
 		eRenderModel,
 		eRenderModelDepth,
+		eRenderModelDeferred,
+		eRenderModelShadow,
+		eRenderModelInstanced,
 		eRenderGUIModel,
 		eRenderSprite,
 		eChangeStates,
@@ -76,8 +81,6 @@ struct SRenderMessage
 		eSetRTV,
 		eSetCubemapResource,
 		eClear,
-		eRenderModelDeferred,
-		eRenderModelShadow,
 		eRenderDirectionalLight,
 		eRenderPointLight,
 		eRenderSpotLight,
@@ -197,7 +200,7 @@ struct SRenderCameraQueueMessage : SRenderMessage
 	SRenderCameraQueueMessage();
 	CU::Camera myCamera;
 	CRenderPackage CameraRenderPackage;
-	CU::GrowingArray < SRenderMessage*, unsigned int, false> CameraRenderQueue;
+	CU::GrowingArray<SRenderMessage*, unsigned int, false> CameraRenderQueue;
 	//CU::GrowingArray < SRenderMessage*, unsigned int, false> DeferredCameraRenderQueue;
 	//CDeferredRenderer myDeferredRenderer;
 	bool RenderDepth;
@@ -217,6 +220,13 @@ struct SRenderModelDeferredMessage : SRenderMessage
 	int myModelID;
 };
 
+struct SRenderModelInstancedMessage : SRenderMessage
+{
+	SRenderModelInstancedMessage();
+	SDeferredRenderModelParams myRenderParams;
+	int myModelID;
+};
+
 struct SRenderModelShadowMessage : SRenderMessage
 {
 	SRenderModelShadowMessage();
@@ -224,20 +234,22 @@ struct SRenderModelShadowMessage : SRenderMessage
 	int myModelID;
 };
 
-struct SSetShadowBuffer : SRenderMessage
-{
-	SSetShadowBuffer();
-
-	CRenderPackage myShadowBuffer;
-	CU::Matrix44f myCameraTransformation;
-	CU::Matrix44f myCameraProjection;
-};
-
-
 struct SRenderModelDepthMessage : SRenderModelMessage
 {
 	SRenderModelDepthMessage();
 };
+
+struct SSetShadowBuffer : SRenderMessage
+{
+	SSetShadowBuffer();
+
+	SCascadeBuffer cascadeBuffer;
+	CRenderPackage myShadowBuffer;
+	//CU::Matrix44f myCameraTransformation;
+	//CU::Matrix44f myCameraProjection;
+};
+
+
 
 struct SRenderGUIModelMessage : SRenderMessage
 {
