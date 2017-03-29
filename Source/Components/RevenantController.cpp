@@ -127,6 +127,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		myState = eRevenantState::eDead;
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
