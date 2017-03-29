@@ -391,7 +391,7 @@ void CClient::Update()
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 				SComponentMessageData positiondata;
 				positiondata.myVector3f = message->GetTransformation().GetPosition();
-				target.GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
+				//target.GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 			}
 			break;
 			case ePackageType::eTakeDamage:
