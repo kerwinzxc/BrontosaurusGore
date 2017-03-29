@@ -25,7 +25,9 @@ namespace Physics
 	void CPhysicsActorDynamic::AddForce(const CU::Vector3f& aForce)
 	{
 		if(!myIsKinematic)
+		{
 			myDynamicActor->addForce({ aForce.x, aForce.y, aForce.z });
+		}
 	}
 
 	void CPhysicsActorDynamic::AddTorque(const CU::Vector3f& aTorque)

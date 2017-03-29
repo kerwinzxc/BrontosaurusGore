@@ -33,6 +33,12 @@ void CRigidBodyComponent::Receive(const eComponentMessageType aMessageType, cons
 			GetManager()->RemoveActorFromScene(data.myCollider->GetActor());
 			GetParent()->RemoveComponent(data.myCollider);
 		}
+		break;
+	}
+	case eComponentMessageType::eAddForce:
+	{
+		static_cast<Physics::CPhysicsActorDynamic*>(myActor)->AddForce(aMessageData.myVector3f);
+		break;
 	}
 	}
 

@@ -323,7 +323,7 @@ void CServerMain::StartGame()
 
 	for (auto client : myClients)
 	{
-		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer();
+		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer(client.first);
 
 		myClients.at(client.first).myComponent = playerNetworkComponent;
 
