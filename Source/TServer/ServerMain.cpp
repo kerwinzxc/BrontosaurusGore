@@ -45,6 +45,7 @@
 #include "../Physics/PhysXHelper.h"
 #include "../Components/HealthComponentManager.h"
 #include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -564,6 +565,7 @@ bool CServerMain::Update()
 					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
 
 					SendTo(reset);
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 				}
 			}
 			break;
