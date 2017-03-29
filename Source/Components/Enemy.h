@@ -28,9 +28,9 @@ public:
 	inline const bool GetIsDead() const; 
 	inline const unsigned short GetNetworkID() const;
 protected:
+	void CheckForNewTransformation(const float aDeltaTime);
+	void SendTransformationToServer();
 	virtual CU::Vector3f ClosestPlayerPosition();
-	virtual void UpdateTransformationNetworked();
-	virtual void UpdateTransformationLocal(const float aDeltaTime);
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange();

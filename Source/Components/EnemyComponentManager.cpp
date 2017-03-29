@@ -21,7 +21,7 @@ CEnemyComponentManager::CEnemyComponentManager()
 
 void CEnemyComponentManager::Update(const float aDeltaTime)
 {
-	for(unsigned int i = 0; i < myEnemies.Size(); ++i)
+	for (unsigned int i = 0; i < myEnemies.Size(); ++i)
 	{
 		myEnemies[i]->Update(aDeltaTime);
 	}

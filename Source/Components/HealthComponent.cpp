@@ -54,7 +54,7 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			message->SetDamageTaken(aMessageData.myInt);
 			message->SetID(myNetworkID);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
+			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 		}
 		break;
 	case eComponentMessageType::eHeal:

@@ -3,11 +3,11 @@
 #include "../TShared/NetworkMessage.h"
 #include "../TShared/NetworkMessageHolder.h"
 
-class CSendNetowrkMessageMessage: public Postmaster::Message::IMessage
+class CSendNetworkMessageMessage: public Postmaster::Message::IMessage
 {
 public:
-	CSendNetowrkMessageMessage(CNetworkMessage* aNetworkMessage);
-	~CSendNetowrkMessageMessage();
+	CSendNetworkMessageMessage(CNetworkMessage* aNetworkMessage);
+	~CSendNetworkMessageMessage();
 
 	IMessage* Copy() override;
 

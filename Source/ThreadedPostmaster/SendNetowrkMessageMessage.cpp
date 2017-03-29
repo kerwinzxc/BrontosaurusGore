@@ -8,7 +8,7 @@
 #include "../TShared/NetworkMessage_Position.h"
 
 
-CSendNetowrkMessageMessage::CSendNetowrkMessageMessage(CNetworkMessage* aNetworkMessage) : IMessage(eMessageType::eNetworkMessage)
+CSendNetworkMessageMessage::CSendNetworkMessageMessage(CNetworkMessage* aNetworkMessage) : IMessage(eMessageType::eNetworkMessage)
 {
 	aNetworkMessage->PackMessage();
 	myNetworkMessage.myHeader = aNetworkMessage->GetHeader();
@@ -16,21 +16,21 @@ CSendNetowrkMessageMessage::CSendNetowrkMessageMessage(CNetworkMessage* aNetwork
 }
 
 
-CSendNetowrkMessageMessage::~CSendNetowrkMessageMessage()
+CSendNetworkMessageMessage::~CSendNetworkMessageMessage()
 {
 }
 
-Postmaster::Message::IMessage* CSendNetowrkMessageMessage::Copy()
+Postmaster::Message::IMessage* CSendNetworkMessageMessage::Copy()
 {
 	return new CSendNetowrkMessageMessage(myNetworkMessage);
 }
 
-eMessageReturn CSendNetowrkMessageMessage::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
+eMessageReturn CSendNetworkMessageMessage::DoEvent(::Postmaster::ISubscriber& aSubscriber) const
 {
 	return aSubscriber.DoEvent(*this);
 }
 
-CNetworkMessage* CSendNetowrkMessageMessage::UnpackHolder() const
+CNetworkMessage* CSendNetworkMessageMessage::UnpackHolder() const
 {
 	CMessageManager* messageManagerInstance = CClientMessageManager::GetInstance();
 	if (messageManagerInstance == nullptr)

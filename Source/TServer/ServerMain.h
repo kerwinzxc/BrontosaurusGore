@@ -76,7 +76,7 @@ public:
 	void StartGame();
 	bool Update();
 
-	eMessageReturn DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage) override;
+	eMessageReturn DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage) override;
 
 	void PrintDebugInfo();
 private:

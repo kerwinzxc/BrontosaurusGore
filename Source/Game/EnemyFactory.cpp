@@ -95,6 +95,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eE
 	message->SetHealth(10);//inläst data sen
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+}
 
 	return controller;
 }
