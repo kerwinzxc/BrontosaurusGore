@@ -8,7 +8,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myComponentId = anId;
 	myPositionInterpolationSpeed = 6.1f;
 	myRotationInterpolationSpeed = 7.1f;
-	myType = eEnemyTypes::eDefault;
+	myType = aType;
 }
 
 

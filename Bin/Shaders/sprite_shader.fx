@@ -28,10 +28,7 @@ PixelInput VS_Sprite(VertexInput input)
 	float2 outPosition = input.position.xy;
 
 	outPosition.x -= pivot.x;
-	outPosition.y += pivot.y;
-
-	//input.position.x -= pivot.x;
-	//input.position.y += pivot.y;	
+	outPosition.y += pivot.y;	
 
 	outPosition *=  size;
 
@@ -45,8 +42,6 @@ PixelInput VS_Sprite(VertexInput input)
 	PixelInput output;
 	output.position = float4(outPosition, 0.5f, 1.f);
 
-	//output.position.x -= myPivot.x;
-	//output.position.y += myPivot.y;
 
 	output.color = color;
 

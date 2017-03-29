@@ -9,8 +9,6 @@
 
 class CText;
 
-
-
 class CTextInstance
 {
 public:
@@ -25,9 +23,9 @@ public:
 	CTextInstance(const CTextInstance& aTextInstance);
 	~CTextInstance();
 	void Init(const std::string& aFontPath = "Default");
-	void Render() const;
 
-	void SetLineGap();
+	void Render() const;
+	void RenderToGUI(std::wstring anElementName) const;
 
 	inline void SetPosition(const CU::Vector2f& aPosition);
 	inline const CU::Vector2f& GetPosition() const;
@@ -50,8 +48,8 @@ public:
 	void SetAlignment(eAlignment anAlignment);
 
 	CTextInstance& operator=(const CTextInstance& aTextInstance);
+
 private:
-	//std::wstring myString;
 	CU::GrowingArray<std::wstring> myStrings;
 	CU::Vector4f myColor;
 	CU::Vector2f myPosition;

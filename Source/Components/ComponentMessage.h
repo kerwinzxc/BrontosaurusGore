@@ -86,6 +86,8 @@ enum class eComponentMessageType
 	eNetworkDoDamage,
 	eActivateEmitter,
 	eServerShoot,
+	eAddForce,
+	eNullifyForces,
 	eLength,
 };
 

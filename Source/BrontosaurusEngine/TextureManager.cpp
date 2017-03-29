@@ -13,7 +13,7 @@ CTextureManager::CTextureManager()
 
 CTextureManager::~CTextureManager()
 {
-	assert(myTextures.size() == 0);
+	//assert(myTextures.size() == 0);
 }
 
 CTexture & CTextureManager::LoadTexture(const wchar_t* aWideTexturePath)

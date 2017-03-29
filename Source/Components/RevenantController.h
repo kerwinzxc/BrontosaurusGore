@@ -19,10 +19,11 @@ public:
 
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Update(const float aDeltaTime) override;
-	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
 
 private:
-	void ApplyFlyForce(float aJumpHeight);
+	void ApplyFlightForce();
+	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
 private:
 	float myFlightHeight;

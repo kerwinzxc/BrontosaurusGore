@@ -72,10 +72,12 @@
 
 //temp!!! hoppas jag...
 #include "../CommonUtilities/JsonValue.h"
+#include "../CommonUtilities/WindowsHelper.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
 {
+
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 	CClientMessageManager::CreateInstance(*this);
@@ -93,6 +95,19 @@ CClient::~CClient()
 		continue;
 	}
 	CClientMessageManager::DestroyInstance();
+
+	std::string processName = "TServer_Applictaion_x64_";
+
+#ifdef _DEBUG
+	processName += "Debug";
+#elif defined(RETAIL)
+	processName += "Retail";
+#elif defined(NDEBUG)
+	processName += "Release";
+#endif
+
+	processName += ".exe";
+	WindowsHelper::CloseProgram(processName);
 }
 
 bool CClient::StartClient()

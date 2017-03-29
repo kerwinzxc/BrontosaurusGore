@@ -5,6 +5,7 @@
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 #define nej false
 #define ja true
@@ -23,6 +24,17 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRang
 
 CEnemy::~CEnemy()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
+}
+
+void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
+{
+	myVelocity = CU::Vector3f::Zero;
+	myElapsedWaitingToSendMessageTime += aDeltaTime;
+	myClosestPlayerPos = ClosestPlayerPosition();
+	myPos = GetParent()->GetWorldPosition();
+	myToPlayer = myClosestPlayerPos - myPos;
+	myDistToPlayer = myToPlayer.Length2();
 }
 
 void CEnemy::UpdateTransformationNetworked()
@@ -39,14 +51,14 @@ void CEnemy::UpdateTransformationNetworked()
 	}
 }
 
-void CEnemy::UpdateTransformationLocal(CU::Vector3f aVelocity, const float aDeltaTime)
+void CEnemy::UpdateTransformationLocal(const float aDeltaTime)
 {
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
-	data.myVector4f = aVelocity * rotation * aDeltaTime;
+	data.myVector4f = myVelocity * rotation * aDeltaTime;
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
@@ -70,87 +82,34 @@ void CEnemy::Attack()
 		messageData.myVector3f = direction;
 		messageData.myVector4f.w = myServerId;
 		GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
-	
 	}
 }
 
-void CEnemy::Update(const float aDeltaTime)
-{
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	if (myIsDead == false)
-	{
-		bool hasChanged = false;
-		const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-		const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-		const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-		const float distToPlayer = toPlayer.Length2();
-
-		myStartAttackRange2 = 0.0f;
-		if (WithinDetectionRange(distToPlayer) == true)
-		{
-			hasChanged = true;
-			CU::Vector3f lookatPosition = closestPlayerPos;
-			lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
-			GetParent()->LookAt(lookatPosition); //impl. turn rate?
-		}
-
-
-		if (myIsAttacking == false)
-		{
-			if (WithinAttackRange(distToPlayer))
-			{
-				myIsAttacking = true;
-			}
-			else if (WithinDetectionRange(distToPlayer))
-			{
-				CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-				CU::Matrix44f rotation = parentTransform.GetRotation();
-				rotation.myForwardVector.y = 0.f;
-
-				SComponentQuestionData data;
-				data.myVector4f = CU::Vector3f(0.0f, 0.0f, mySpeed) * rotation * aDeltaTime;
-				data.myVector4f.w = aDeltaTime;
-
-				if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-				{
-					//parentTransform.SetPosition(data.myVector3f);
-					NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-				}
-
-				GetParent()->Move(CU::Vector3f(0.0f, 0.0f, mySpeed) * aDeltaTime); // Remove this when character cotroll
-			}
-		}
-
-		if(myIsAttacking == true)
-		{
-			if (OutsideAttackRange(distToPlayer))
-			{
-				myIsAttacking = false;
-			}
-
-			Attack();
-		}
-
-		if(hasChanged == true)
-		{
-			UpdateTransformationNetworked();
-		}
-	}
-}
 
 void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
-		myIsDead = ja;
+	{
+		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		break;
+	}
+	case eComponentMessageType::eObjectDone:
+		break;
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	case eComponentMessageType::eDeactivate:
 		myIsDead = ja;
 		break;
 	case eComponentMessageType::eActivate:
 		myIsDead = nej;
-		break;
 	}
 }
 
@@ -159,7 +118,6 @@ void CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
 	if (ourPlayerObjects.IsInitialized() == false)
 	{
 		ourPlayerObjects.Init(4);
-	
 	}
 	ourPlayerObjects.Add(aPlayerObj);
 }
@@ -204,4 +162,22 @@ void CEnemy::LookAtPlayer()
 	CU::Vector3f lookatPosition = ClosestPlayerPosition();
 	lookatPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 	GetParent()->LookAt(lookatPosition);
+}
+
+eMessageReturn CEnemy::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	GetParent()->GetLocalTransform().SetPosition(mySpawnPosition);
+	SComponentMessageData controllerPositionData;
+	controllerPositionData.myVector3f = mySpawnPosition;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	return eMessageReturn::eContinue;
+}
+
+void CEnemy::Init()
+{
+	mySpawnPosition = GetParent()->GetLocalTransform().GetPosition();
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
+	SComponentMessageData healData;
+	healData.myInt = 1000000;
+	GetParent()->NotifyComponents(eComponentMessageType::eHeal, healData);
 }
