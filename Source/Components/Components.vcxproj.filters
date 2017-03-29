@@ -222,6 +222,9 @@
     <ClCompile Include="PinkyController.cpp">
       <Filter>Enemy\Pinky</Filter>
     </ClCompile>
+    <ClCompile Include="WeaponPickupComponent.cpp">
+      <Filter>Pickup\Weapon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -505,6 +508,9 @@
     <ClInclude Include="PinkyController.h">
       <Filter>Enemy\Pinky</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponPickupComponent.h">
+      <Filter>Pickup\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -611,6 +617,9 @@
     </Filter>
     <Filter Include="Enemy\Pinky">
       <UniqueIdentifier>{59f4680f-f023-4ada-a222-586706da19ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pickup\Weapon">
+      <UniqueIdentifier>{d52dc60d-43ab-4c0b-99a1-b1cb069cd110}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
