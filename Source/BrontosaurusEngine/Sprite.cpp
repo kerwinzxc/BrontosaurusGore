@@ -169,6 +169,8 @@ void CSprite::UpdateAndSetVertexConstantBuffer(const CU::Vector2f& aPosition, co
 	context.Unmap(myVertexConstantBuffer, 0);
 
 	context.VSSetConstantBuffers(1, 1, &myVertexConstantBuffer);
+
+
 }
 
 void CSprite::CreateEffect()

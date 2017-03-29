@@ -24,7 +24,7 @@ public:
 	inline void SetType(const eEnemyTypes aType);
 
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
-	void Init();
+	virtual void Init();
 protected:
 	void CheckForNewTransformation(const float aDeltaTime);
 	void SendTransformationToServer();

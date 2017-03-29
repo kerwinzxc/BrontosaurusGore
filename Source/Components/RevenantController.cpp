@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "RevenantController.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 2.0f;
 
@@ -122,7 +124,18 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
+	{
 		myIsDead = true;
+		myState = eRevenantState::eDead;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		break;
+	}
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	}
 }

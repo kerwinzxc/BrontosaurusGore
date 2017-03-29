@@ -38,17 +38,17 @@ public:
 	~CText();
 
 
-	void Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement);
+	void Render(const CU::GrowingArray<std::wstring>& someStrings, const CU::Vector2f& aPosition, const CU::Vector4f& aColor/*, const CU::Vector2i& aSize*/, eAlignment anAlignement, const CU::Vector2f& aTargetSize);
 	float GetlineHeight() const;
 	CU::Vector2i CalculateRectPixelSize(const std::wstring& aText);
 private:
 	bool InitBuffers();
 
-	void RenderCharacter(const wchar_t aCharacter, const CU::Vector2f& aPosition, const CU::Vector4f& aColor);
+	void RenderCharacter(const wchar_t aCharacter, const CU::Vector2f& aPosition, const CU::Vector4f& aColor, const CU::Vector2f& aTargetSize);
 	void ActivateEffect();
 	void UpdateAndSetVertexConstantBuffer(const CU::Vector2f& aPosition, const CU::Vector2f& aSize, const CU::Vector4f& aRectconst, const CU::Vector4f& aColor);
 
-	CU::Vector2f CalculateAdjustment(eAlignment aAlignement, std::wstring aWString);
+	CU::Vector2f CalculateAdjustment(eAlignment aAlignement, std::wstring aWString, const CU::Vector2f& aTargetSize) const;
 
 	ID3D11Buffer* myVertexBuffer;
 	ID3D11Buffer* myVertexConstantBuffer;

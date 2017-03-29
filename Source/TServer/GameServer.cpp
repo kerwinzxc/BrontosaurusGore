@@ -72,13 +72,9 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 
 void CGameServer::Load(const int aLevelIndex)
 {
-	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
-
-	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
-	myPhysicsScene = myPhysics->CreateScene();
+	
 
 	ServerLoadManagerGuard loadManagerGuard(*this);
-	CreateManagersAndFactories();
 
 
 	CU::TimerManager timerMgr;
@@ -125,11 +121,15 @@ void CGameServer::ReInit()
 
 void CGameServer::CreateManagersAndFactories()
 {
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+	myPhysicsScene = myPhysics->CreateScene();
+
 	CComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
 
 	myGameObjectManager = new CGameObjectManager();
-	myCheckPointSystem = new CCheckPointSystem();
 	myMovementComponentManager = new CMovementComponentManager();
 	myEnemyComponentManager = new CEnemyComponentManager();
 	myAmmoComponentManager = new CAmmoComponentManager();
@@ -143,8 +143,10 @@ void CGameServer::CreateManagersAndFactories()
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
 	myColliderComponentManager->SetPhysics(myPhysics);
 	myColliderComponentManager->InitControllerManager();
+	myCheckPointSystem = new CCheckPointSystem();	
 	CHealthComponentManager::Create();
 	CEnemyFactory::Create(*myEnemyComponentManager,*myGameObjectManager,*myWeaponSystemManager,*myColliderComponentManager);
+
 }
 
 void CGameServer::DestroyManagersAndFactories()
@@ -163,6 +165,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 	SAFE_DELETE(mySpawnerManager);
+	SAFE_DELETE(myCheckPointSystem);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
