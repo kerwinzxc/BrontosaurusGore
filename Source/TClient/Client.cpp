@@ -381,6 +381,13 @@ void CClient::Update()
 			{
 				CNetworkMessage_TakeDamage* message = currentMessage->CastTo<CNetworkMessage_TakeDamage>();
 
+				if (message->GetID() == -1)
+				{
+					SComponentMessageData data;
+					data.myInt = message->GetDamageTaken();
+					CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eTakeDamage, data);
+					break;
+				}
 				CHealthComponentManager::GetInstance()->TakeDamage(message->GetID(), message->GetDamageTaken());
 			}
 			break;

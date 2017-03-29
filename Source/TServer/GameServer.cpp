@@ -191,11 +191,12 @@ bool CGameServer::IsLoaded() const
 	return myIsLoaded;
 }
 
-CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
+CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID) const
 {
 	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
 
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
+	serverPlayerNetworkComponent->SetClientID(aClientID);
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 	Physics::SCharacterControllerDesc controllerDesc;

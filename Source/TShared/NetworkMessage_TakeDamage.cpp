@@ -4,7 +4,7 @@
 
 CNetworkMessage_TakeDamage::CNetworkMessage_TakeDamage()
 {
-	myNetworkID = 999999;
+	myNetworkID = -1;
 	myDamageTaken = 0;
 }
 
