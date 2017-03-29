@@ -45,6 +45,7 @@
 #include "../Physics/PhysXHelper.h"
 #include "../Components/HealthComponentManager.h"
 #include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -323,7 +324,7 @@ void CServerMain::StartGame()
 
 	for (auto client : myClients)
 	{
-		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer();
+		CServerPlayerNetworkComponent* playerNetworkComponent = myGameServer->AddPlayer(client.first);
 
 		myClients.at(client.first).myComponent = playerNetworkComponent;
 
@@ -492,6 +493,7 @@ bool CServerMain::Update()
 					}
 					myServerState = eServerState::eLoadingLevel;
 					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+					myGameServer->CreateManagersAndFactories();
 					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
@@ -564,6 +566,7 @@ bool CServerMain::Update()
 					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
 
 					SendTo(reset);
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 				}
 			}
 			break;
@@ -602,7 +605,7 @@ bool CServerMain::Update()
 			{
 				if (CheckIfClientsReady() == true)
 				{
-					if (locLoadingThread)
+					if (locLoadingThread != nullptr)
 					{
 						locLoadingThread->join();
 						delete locLoadingThread;

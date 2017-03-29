@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "BrontosaurusEngine\Brontosaurus.vcxproj", "{C5AC5F58-5B84-4A09-8E0A-0FFBA117FADE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -42,6 +42,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModelViewer", "ModelViewer\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{E8308878-AF21-4BF8-9E80-4D5265BFC105}"
 	ProjectSection(SolutionItems) = preProject
+		..\Bin\Shaders\bar_shader.fx = ..\Bin\Shaders\bar_shader.fx
 		..\Bin\Shaders\debugLines_shader.fx = ..\Bin\Shaders\debugLines_shader.fx
 		..\Bin\Shaders\fakefog.fx = ..\Bin\Shaders\fakefog.fx
 		..\Bin\Shaders\fire_shader.fx = ..\Bin\Shaders\fire_shader.fx

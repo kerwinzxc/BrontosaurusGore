@@ -19,6 +19,7 @@
 #include "../Components/HealthComponentManager.h"
 #include "../Components/SpawnerManager.h"
 #include "../Game/EnemyFactory.h"
+#include "../Components/CheckPointSystem.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -71,13 +72,9 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 
 void CGameServer::Load(const int aLevelIndex)
 {
-	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
-
-	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
-	myPhysicsScene = myPhysics->CreateScene();
+	
 
 	ServerLoadManagerGuard loadManagerGuard(*this);
-	CreateManagersAndFactories();
 
 
 	CU::TimerManager timerMgr;
@@ -113,7 +110,6 @@ void CGameServer::Load(const int aLevelIndex)
 	}
 	myIsLoaded = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-	myEnemyComponentManager->Init(myWeaponSystemManager);
 	myGameObjectManager->SendObjectsDoneMessage();
 }
 
@@ -125,6 +121,11 @@ void CGameServer::ReInit()
 
 void CGameServer::CreateManagersAndFactories()
 {
+	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
+
+	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+	myPhysicsScene = myPhysics->CreateScene();
+
 	CComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
 
@@ -142,8 +143,10 @@ void CGameServer::CreateManagersAndFactories()
 	myColliderComponentManager->SetPhysicsScene(myPhysicsScene);
 	myColliderComponentManager->SetPhysics(myPhysics);
 	myColliderComponentManager->InitControllerManager();
+	myCheckPointSystem = new CCheckPointSystem();	
 	CHealthComponentManager::Create();
 	CEnemyFactory::Create(*myEnemyComponentManager,*myGameObjectManager,*myWeaponSystemManager,*myColliderComponentManager);
+
 }
 
 void CGameServer::DestroyManagersAndFactories()
@@ -182,7 +185,10 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 		myColliderComponentManager->Update();
 	}
 	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
-
+	if (myIsLoaded == true && myEnemyComponentManager->GetIsInited() == false)
+	{
+		myEnemyComponentManager->Init(myWeaponSystemManager);
+	}
 	return true;
 }
 
@@ -191,11 +197,12 @@ bool CGameServer::IsLoaded() const
 	return myIsLoaded;
 }
 
-CServerPlayerNetworkComponent* CGameServer::AddPlayer() const
+CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID) const
 {
 	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
 
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
+	serverPlayerNetworkComponent->SetClientID(aClientID);
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 	Physics::SCharacterControllerDesc controllerDesc;

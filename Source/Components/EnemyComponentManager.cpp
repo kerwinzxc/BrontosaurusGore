@@ -16,6 +16,7 @@
 CEnemyComponentManager::CEnemyComponentManager()
 {
 	myEnemies.Init(10);
+	myIsInited = false;
 }
 
 void CEnemyComponentManager::Update(const float aDeltaTime)
@@ -79,19 +80,6 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	static unsigned short ID = 0;
 	switch (aType)
 	{
-	case eEnemyTypes::eDefault:
-	{
-		CEnemy* enemy = new CEnemy(ID++, aType);
-		enemy->SetEnemyData(anEnemyBlueprint);
-
-		myEnemies.Add(enemy);
-
-		CComponentManager::GetInstance().RegisterComponent(enemy);
-
-		return enemy;
-		break;
-
-	}
 	case eEnemyTypes::eImp:
 	{
 		CImpController* enemy = new CImpController(ID++, aType);
@@ -156,6 +144,8 @@ void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentMa
 {
 	for(unsigned int i = 0; i < myEnemies.Size(); i++)
 	{
-		InitWeaponSystem(myEnemies[i], aWeaponSystemComponentManagerPointer);
+		InitWeaponSystem(myEnemies[i], aWeaponSystemComponentManagerPointer); 
+		myEnemies[i]->Init();
 	}
+	myIsInited = true;
 }

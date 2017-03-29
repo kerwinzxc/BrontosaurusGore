@@ -2,7 +2,7 @@
 
 enum class eAlignment
 {
-	LEFT,
-	CENTER,
-	RIGHT,
+	eLeft,
+	eCenter,
+	eRight,
 };

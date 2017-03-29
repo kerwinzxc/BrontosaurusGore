@@ -211,3 +211,8 @@ SRenderModelInstancedMessage::SRenderModelInstancedMessage()
 {
 
 }
+
+SRenderToGUI::~SRenderToGUI()
+{
+	delete myRenderMessage;
+}

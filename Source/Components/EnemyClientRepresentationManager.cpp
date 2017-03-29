@@ -15,7 +15,7 @@ CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister
 {
 	static unsigned short ID = 0;
 
-	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ID);
+	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ID, eEnemyTypes::ePlaceHolder);
 	myRepresentations.emplace(ID, rep);
 	CComponentManager::GetInstance().RegisterComponent(rep);
 	ID++;

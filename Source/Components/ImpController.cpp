@@ -2,8 +2,11 @@
 #include "ImpController.h"
 #include "EnemyBlueprint.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 4;
+
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
 {
@@ -12,42 +15,32 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myIsJumping = false;
 }
 
-
 CImpController::~CImpController()
 {
 }
 
 void CImpController::Update(const float aDeltaTime)
 {
-	CU::Vector3f velocity;
-	velocity.y = myJumpForce;
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-	const float distToPlayer = toPlayer.Length2();
-
+	UpdateBaseMemberVars(aDeltaTime);
+	myVelocity.y = myJumpForce;
 	UpdateTransformationNetworked();
 	UpdateJumpForces(aDeltaTime);
 
 	if(myIsDead == false)
 	{
-		if (WithinAttackRange(distToPlayer))
+		if (WithinAttackRange())
 		{
 			myState = eImpState::eUseMeleeAttack;	
 		}
-		else if (WithinWalkToMeleeRange(distToPlayer))
+		else if (WithinWalkToMeleeRange())
 		{
 			myState = eImpState::eWalkIntoMeleeRange;
 		
-			if (ShouldJumpAfterPlayer(toPlayer.y))
-			{
-
+			if (ShouldJumpAfterPlayer())
 				myState = eImpState::eJump;
-			}
 
 		}
-		else if (WithinDetectionRange(distToPlayer))
+		else if (WithinDetectionRange())
 		{
 			myState = eImpState::eUseRangedAttack;
 		}
@@ -55,9 +48,9 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eIdle;
 		}
-
-
 	}
+
+
 	switch (myState)
 	{
 	case eImpState::eIdle:
@@ -65,7 +58,7 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eWalkIntoMeleeRange:
 	{
 		LookAtPlayer();
-		velocity.z = mySpeed;
+		myVelocity.z = mySpeed;
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -85,7 +78,7 @@ void CImpController::Update(const float aDeltaTime)
 		break;
 	}
 
-	UpdateTransformationLocal(velocity, aDeltaTime);
+	UpdateTransformationLocal(aDeltaTime);
 }
 
 void CImpController::UpdateJumpForces(const float aDeltaTime)
@@ -120,9 +113,19 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 	case eComponentMessageType::eDied:
 	{
+		myState = eImpState::eDead;
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+		myState = eImpState::eIdle;
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
 	}
 }
 
