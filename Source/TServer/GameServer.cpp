@@ -173,7 +173,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	if(myTime > updateFrequecy)
 	{
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
-		mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		//mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		myTime = 0;
 	}
 	
