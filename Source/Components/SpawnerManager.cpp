@@ -2,6 +2,7 @@
 #include "SpawnerManager.h"
 #include "Spawner.h"
 #include "GameObject.h"
+#include "EnemyTypes.h"
 
 CSpawnerManager::CSpawnerManager()
 {
@@ -14,7 +15,7 @@ CSpawnerManager::~CSpawnerManager()
 	mySpawners.DeleteAll();
 }
 
-CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes eEnemyType)
+CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes& eEnemyType)
 {
 	CSpawnerComponent* spawner = new CSpawnerComponent(aWaves, eEnemyType);
 	CComponentManager::GetInstance().RegisterComponent(spawner);
