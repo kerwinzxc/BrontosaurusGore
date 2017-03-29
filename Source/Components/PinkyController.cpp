@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PinkyController.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 2.0f;
 
@@ -111,6 +113,8 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
 	}
 	case eComponentMessageType::eOnCollisionEnter:
@@ -123,6 +127,12 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		}
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
 	}
 }
 
