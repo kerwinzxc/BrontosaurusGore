@@ -18,7 +18,6 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myGravityForce = 0.0f;
 }
 
-
 CPinkyController::~CPinkyController()
 {
 }
@@ -35,29 +34,23 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CPinkyController::Update(const float aDeltaTime)
 {
-	CU::Vector3f velocity;
+	UpdateBaseMemberVars(aDeltaTime);
 	myGravityForce -= gravityAcceleration * aDeltaTime;
-	velocity.y = myGravityForce;
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-	const float distToPlayer = toPlayer.Length2();
-
+	myVelocity.y = myGravityForce;
 	UpdateTransformationNetworked();
 	HandleGrounded();
 
 	if (myIsDead == false && myIsCharging == false)
 	{
-		if (WithinAttackRange(distToPlayer))
+		if (WithinAttackRange())
 		{
 			myState = ePinkyState::eUseMeleeAttack;
 		}
-		else if (WithinWalkToMeleeRange(distToPlayer))
+		else if (WithinWalkToMeleeRange())
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
-		else if (WithinDetectionRange(distToPlayer))
+		else if (WithinDetectionRange())
 		{
 			myState = ePinkyState::eWindupCharge;
 			myWindupChargeTime = 0.0f;
@@ -75,7 +68,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		break;
 	case ePinkyState::eWalkIntoMeleeRange:
 		LookAtPlayer(); //impl. turn rate?
-		velocity.z = mySpeed;
+		myVelocity.z = mySpeed;
 	break;
 	case ePinkyState::eUseMeleeAttack:
 		ChangeWeapon(0);
@@ -95,7 +88,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		myStartChargeLocation = myPos;
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
-		velocity.z = myChargeSpeed;
+		myVelocity.z = myChargeSpeed;
 		KeepWithinChargeDist();
 		break;
 	case ePinkyState::eChargeCooldown:
@@ -108,7 +101,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		break;
 	}
 
-	UpdateTransformationLocal(velocity, aDeltaTime);
+	UpdateTransformationLocal(aDeltaTime);
 }
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)

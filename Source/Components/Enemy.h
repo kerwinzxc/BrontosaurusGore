@@ -11,11 +11,12 @@ public:
 	CEnemy(unsigned int aId, eEnemyTypes aType);
 	~CEnemy();
 
+	void UpdateBaseMemberVars(const float aDeltaTime);
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
 
 	virtual void Attack();
-	virtual void Update(const float aDeltaTime);
+	virtual void Update(const float aDeltaTime) = 0;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
@@ -23,17 +24,24 @@ public:
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformationNetworked();
-	virtual void UpdateTransformationLocal(CU::Vector3f aVelocity, const float aDeltaTime);
+	virtual void UpdateTransformationLocal(const float aDeltaTime);
 	virtual	void MoveForward(const float aMovAmount);
 
-	virtual inline bool WithinDetectionRange(const float aDist);
-	virtual inline bool WithinAttackRange(const float aDist);
-	virtual inline bool OutsideAttackRange(const float aDist);
-	virtual inline bool WithinWalkToMeleeRange(const float aDist);
+	virtual inline bool WithinDetectionRange();
+	virtual inline bool WithinAttackRange();
+	virtual inline bool OutsideAttackRange();
+	virtual inline bool WithinWalkToMeleeRange();
 	void LookAtPlayer();
 
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
+
+	CU::Vector3f myVelocity;
+	CU::Vector3f myClosestPlayerPos;
+	CU::Vector3f myPos;
+	CU::Vector3f myToPlayer;
+	float myDistToPlayer;
+
 	unsigned int myServerId;
 	unsigned int myActiveWeaponIndex;
 
@@ -60,24 +68,24 @@ inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 	myWalkToMeleeRange2 = aData->walkToMeleeRange *  aData->walkToMeleeRange;
 }
 
-inline bool  CEnemy::WithinDetectionRange(const float aDist)
+inline bool  CEnemy::WithinDetectionRange()
 {
-	return aDist < myDetectionRange2;
+	return myDistToPlayer < myDetectionRange2;
 }
 
-inline bool  CEnemy::WithinAttackRange(const float aDist)
+inline bool CEnemy::WithinAttackRange()
 {
-	return aDist < myStartAttackRange2;
+	return myDistToPlayer < myStartAttackRange2;
 }
 
-inline bool  CEnemy::WithinWalkToMeleeRange(const float aDist)
+inline bool CEnemy::WithinWalkToMeleeRange()
 {
-	return aDist < myWalkToMeleeRange2;
+	return myDistToPlayer < myWalkToMeleeRange2;
 }
 
-inline bool  CEnemy::OutsideAttackRange(const float aDist)
+inline bool CEnemy::OutsideAttackRange()
 {
-	return aDist > myStopAttackRange2;
+	return myDistToPlayer > myStopAttackRange2;
 }
 
 inline eEnemyTypes CEnemy::GetEnemyType()
