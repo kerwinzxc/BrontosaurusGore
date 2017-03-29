@@ -3,5 +3,6 @@ enum class eEnemyTypes
 {
 	eImp,
 	eRevenant,
-	ePinky
+	ePinky,
+	ePlaceHolder
 };
