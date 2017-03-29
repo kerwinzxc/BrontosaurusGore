@@ -19,6 +19,7 @@
 #include "../Components/HealthComponentManager.h"
 #include "../Components/SpawnerManager.h"
 #include "../Game/EnemyFactory.h"
+#include "../Components/CheckPointSystem.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -129,6 +130,7 @@ void CGameServer::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 
 	myGameObjectManager = new CGameObjectManager();
+	myCheckPointSystem = new CCheckPointSystem();
 	myMovementComponentManager = new CMovementComponentManager();
 	myEnemyComponentManager = new CEnemyComponentManager();
 	myAmmoComponentManager = new CAmmoComponentManager();
