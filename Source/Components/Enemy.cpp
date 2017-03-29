@@ -6,6 +6,9 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
+#define nej false
+#define ja true
+
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
 CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
@@ -140,7 +143,13 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
-		myIsDead = true;
+		myIsDead = ja;
+		break;
+	case eComponentMessageType::eDeactivate:
+		myIsDead = ja;
+		break;
+	case eComponentMessageType::eActivate:
+		myIsDead = nej;
 		break;
 	}
 }

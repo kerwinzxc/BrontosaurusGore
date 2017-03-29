@@ -20,6 +20,8 @@ public:
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
 	inline void SetType(const eEnemyTypes aType);
+	inline const bool GetIsDead() const; 
+	inline const unsigned short GetNetworkID() const;
 protected:
 	virtual CU::Vector3f ClosestPlayerPosition();
 	virtual void UpdateTransformationNetworked();
@@ -88,4 +90,14 @@ inline eEnemyTypes CEnemy::GetEnemyType()
 inline void CEnemy::SetType(const eEnemyTypes aType)
 {
 	myType = aType;
+}
+
+inline const bool CEnemy::GetIsDead() const
+{
+	return myIsDead;
+}
+
+inline const unsigned short CEnemy::GetNetworkID() const
+{
+	return myServerId;
 }
