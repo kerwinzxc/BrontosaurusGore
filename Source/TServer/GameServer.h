@@ -34,7 +34,7 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
-	CServerPlayerNetworkComponent* AddPlayer() const;
+	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID) const;
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
 	CSpawnerManager* GetSpawnerManager();
