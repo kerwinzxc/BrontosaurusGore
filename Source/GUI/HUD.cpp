@@ -32,7 +32,9 @@ void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
 	const std::string backgroundPath = aJsonValue.at("background").GetString();
 	myHealthAndArmorSprite = new CSpriteInstance(backgroundPath.c_str(), CU::Vector2f(1.f, 1.f));
 
-	myHealthAndArmourElement.myGuiElement.myOrigin = aJsonValue.at("origin").GetVector2f();
+	myHealthAndArmourElement = loadElement(aJsonValue);
+
+	/*myHealthAndArmourElement.myGuiElement.myOrigin = aJsonValue.at("origin").GetVector2f();
 
 	myHealthAndArmourElement.myGuiElement.myAnchor = 0;
 
@@ -68,7 +70,7 @@ void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
 	myHealthAndArmourElement.myPixelSize = CU::Vector2ui(pixelWidth, pixelHeight);
 
 	myHealthAndArmourElement.myGuiElement.myScreenRect.z = sizeObject.at("screenSpaceWidth").GetFloat() + myHealthAndArmourElement.myGuiElement.myScreenRect.x;
-	myHealthAndArmourElement.myGuiElement.myScreenRect.w = sizeObject.at("screenSpaceHeight").GetFloat() + myHealthAndArmourElement.myGuiElement.myScreenRect.y;
+	myHealthAndArmourElement.myGuiElement.myScreenRect.w = sizeObject.at("screenSpaceHeight").GetFloat() + myHealthAndArmourElement.myGuiElement.myScreenRect.y;*/
 
 	LoadText(aJsonValue.at("armourNumber"), myArmourNumber);
 	LoadText(aJsonValue.at("healthNumber"), myHealthNumber);
@@ -100,6 +102,51 @@ void CHUD::Render()
 		myArmourNumber.RenderToGUI(L"healthAndArmour");
 		//myHealthAndArmourHasChanged = false;
 	}
+}
+
+SHUDElement CHUD::loadElement(const CU::CJsonValue& aJsonValue) const
+{
+	SHUDElement hudElement;
+
+	hudElement.myGuiElement.myOrigin = aJsonValue.at("origin").GetVector2f();
+
+	hudElement.myGuiElement.myAnchor = 0;
+
+	const CU::CJsonValue anchorArray = aJsonValue.at("anchor");
+	for (int i = 0; i < anchorArray.Size(); ++i)
+	{
+		std::string anchorValue = anchorArray.at(i).GetString();
+		std::transform(anchorValue.begin(), anchorValue.end(), anchorValue.begin(), ::tolower);
+		if (anchorValue == "top")
+		{
+			hudElement.myGuiElement.myAnchor[static_cast<int>(eAnchors::eTop)] = true;
+		}
+		else if (anchorValue == "bottom")
+		{
+			hudElement.myGuiElement.myAnchor[static_cast<int>(eAnchors::eBottom)] = true;
+		}
+		else if (anchorValue == "left")
+		{
+			hudElement.myGuiElement.myAnchor[static_cast<int>(eAnchors::eLeft)] = true;
+		}
+		else if (anchorValue == "right")
+		{
+			hudElement.myGuiElement.myAnchor[static_cast<int>(eAnchors::eRight)] = true;
+		}
+	}
+
+	hudElement.myGuiElement.myScreenRect = CU::Vector4f(aJsonValue.at("position").GetVector2f());
+
+	const CU::CJsonValue sizeObject = aJsonValue.at("Size");
+
+	const unsigned pixelWidth = sizeObject.at("pixelWidth").GetUInt();
+	const unsigned pixelHeight = sizeObject.at("pixelHeight").GetUInt();
+	hudElement.myPixelSize = CU::Vector2ui(pixelWidth, pixelHeight);
+
+	hudElement.myGuiElement.myScreenRect.z = sizeObject.at("screenSpaceWidth").GetFloat() + hudElement.myGuiElement.myScreenRect.x;
+	hudElement.myGuiElement.myScreenRect.w = sizeObject.at("screenSpaceHeight").GetFloat() + hudElement.myGuiElement.myScreenRect.y;
+
+	return hudElement;
 }
 
 void CHUD::LoadText(const CU::CJsonValue& aJsonValue, CTextInstance& aTextInstance) const

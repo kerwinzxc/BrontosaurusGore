@@ -27,6 +27,8 @@ public:
 
 private:
 
+	SHUDElement loadElement(const CU::CJsonValue& aJsonValue) const;
+
 	void LoadText(const CU::CJsonValue& aJsonValue, CTextInstance& aTextInstance) const;
 	CBarInstance* LoadBar(const CU::CJsonValue& aJsonValue);
 
