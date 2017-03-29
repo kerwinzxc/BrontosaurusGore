@@ -78,6 +78,7 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanT
 	output.worldPosLastFrame = mul(cameraSpaceInversed, output.worldPosLastFrame);
 
 	return output;
+
 }
 
 PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexBones(PosNormBinormTanTexBones_InputVertex input)

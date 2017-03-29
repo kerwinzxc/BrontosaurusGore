@@ -325,7 +325,7 @@ std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, st
 		layoutName += "Color";
 		EffectHelper::CreateLayout(aInputLayout, "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_INPUT_PER_VERTEX_DATA, 0);
 	}
-	if (aShaderBlueprint & EModelBluePrint_Instance)
+	if (aShaderBlueprint & EModelBluePrint_Instance && !(aShaderBlueprint & EModelBluePrint_Bones))
 	{
 		layoutName += "Instanced";
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1, true);
