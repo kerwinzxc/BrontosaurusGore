@@ -4,6 +4,7 @@
 #include "../Physics/PhysicsCharacterController.h"
 
 static const float gravityAcceleration = 9.82f * 4;
+
 CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	: CEnemy(aId, aType)
 {
@@ -11,7 +12,6 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myJumpHeight = 0.0f;
 	myIsJumping = false;
 }
-
 
 CImpController::~CImpController()
 {
@@ -35,10 +35,8 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eWalkIntoMeleeRange;
 		
 			if (ShouldJumpAfterPlayer())
-			{
-
 				myState = eImpState::eJump;
-			}
+
 		}
 		else if (WithinDetectionRange())
 		{
@@ -48,9 +46,9 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eIdle;
 		}
-
-
 	}
+
+
 	switch (myState)
 	{
 	case eImpState::eIdle:
@@ -112,10 +110,8 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
-	{
 		myIsDead = true;
 		break;
-	}
 	}
 }
 

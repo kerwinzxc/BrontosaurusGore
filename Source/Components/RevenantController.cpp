@@ -3,13 +3,13 @@
 #include "../Physics/PhysicsCharacterController.h"
 
 static const float gravityAcceleration = 9.82f * 2.0f;
+
 CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	:CEnemy(aId, aType)
 {
 	myFlightForce = 0.0f;
 	myIsflying = false;
 }
-
 
 CRevenantController::~CRevenantController()
 {
@@ -22,7 +22,6 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	myFlightHeight = revenantData->flightHeight;
 	CEnemy::SetEnemyData(aData);
 }
-
 
 void CRevenantController::Update(const float aDeltaTime)
 {
@@ -124,10 +123,8 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
-	{
 		myIsDead = true;
 		break;
-	}
 	}
 }
 
