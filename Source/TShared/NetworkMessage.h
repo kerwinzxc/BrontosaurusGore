@@ -40,6 +40,7 @@ public:
 
 	void SetData(const char* someData, unsigned int dataSize);
 	void SetData(StreamType aStream);
+	void ClearStream();
 
 	void SetExplicitHeader(SNetworkPackageHeader& aHeader);
 	virtual void SetHeader(SNetworkPackageHeader aHeader);
@@ -58,7 +59,7 @@ protected:
 
 	SNetworkPackageHeader myHeader;
 
-
+	bool myIsPacked;
 };
 
 template <typename MESSAGE_TYPE>

@@ -28,6 +28,7 @@
 #include "NetworkMessage_ResetToCheckpoint.h"
 #include "NetworkMessage_RevivePlayer.h"
 #include "NetworkMessage_SpawnEnemyRepesention.h"
+#include "NetworkMessage_SetIsRepesentationActive.h"
 
 CMessageManager::CMessageManager()
 {
@@ -45,6 +46,7 @@ CMessageManager::~CMessageManager()
 CNetworkMessage* CMessageManager::CreateMessage(const SNetworkMessageHolder& aMessageHolder)
 {
 	CNetworkMessage* message = CreateMessage(aMessageHolder.myHeader);
+
 	message->SetData(aMessageHolder.Stream);
 	return message;
 }
@@ -109,6 +111,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_RevivePlayer>(aHeader);
 	case ePackageType::eSpawnEnemyRepresentation:
 		return CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(aHeader);
+	case ePackageType::eSetRepesentationActive:
+		return CreateMessage<CNetworkMessage_SetIsRepesentationActive>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

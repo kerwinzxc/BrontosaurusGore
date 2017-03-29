@@ -34,5 +34,5 @@ void CKeyPickupComponent::DoMyEffect()
 	CNetworkMessage_PickupKey* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupKey>(ID_ALL_BUT_ME);
 	message->SetID(myNetworkId);
 	message->SetLockID(myLockId);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
 }

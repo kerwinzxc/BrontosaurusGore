@@ -7,6 +7,9 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
+#define nej false
+#define ja true
+
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
 CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
@@ -44,7 +47,7 @@ void CEnemy::SendTransformationToServer()
 		message->SetId(myServerId);
 		message->SetTransformation(transform);
 		
-		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
 	}
 }
@@ -98,11 +101,18 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eCheckPointReset:
+	{
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
+	}
+	case eComponentMessageType::eDeactivate:
+		myIsDead = ja;
+		break;
+	case eComponentMessageType::eActivate:
+		myIsDead = nej;
 	}
 }
 

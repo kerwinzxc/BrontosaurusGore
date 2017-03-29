@@ -59,6 +59,7 @@ namespace CU
 		float GetFloat() const;
 		int GetInt() const;
 		unsigned int GetUInt() const;
+		const unsigned char GetUchar() const;
 
 		template<typename T>
 		T GetEnum();

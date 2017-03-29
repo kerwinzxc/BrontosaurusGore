@@ -443,7 +443,7 @@ bool CServerMain::Update()
 					gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 					SComponentMessageData positonData;
 					positonData.myVector3f = positionMessage->GetTransformation().GetPosition();
-					gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
+					//gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
 					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
@@ -629,7 +629,7 @@ bool CServerMain::Update()
 	return false;
 }
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
-eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+eMessageReturn CServerMain::DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage)
 {
 
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());
