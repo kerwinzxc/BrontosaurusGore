@@ -79,19 +79,6 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 	static unsigned short ID = 0;
 	switch (aType)
 	{
-	case eEnemyTypes::eDefault:
-	{
-		CEnemy* enemy = new CEnemy(ID++, aType);
-		enemy->SetEnemyData(anEnemyBlueprint);
-
-		myEnemies.Add(enemy);
-
-		CComponentManager::GetInstance().RegisterComponent(enemy);
-
-		return enemy;
-		break;
-
-	}
 	case eEnemyTypes::eImp:
 	{
 		CImpController* enemy = new CImpController(ID++, aType);
