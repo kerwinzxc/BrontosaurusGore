@@ -100,11 +100,13 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eCheckPointReset:
+	{
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
+	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = ja;
 		break;
