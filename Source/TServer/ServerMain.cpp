@@ -493,6 +493,7 @@ bool CServerMain::Update()
 					}
 					myServerState = eServerState::eLoadingLevel;
 					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+					myGameServer->CreateManagersAndFactories();
 					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
