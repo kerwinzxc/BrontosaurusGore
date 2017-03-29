@@ -34,3 +34,5 @@ void CArmorPickupComponent::DoMyEffect()
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
 }
+
+

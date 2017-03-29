@@ -9,6 +9,7 @@
 CKeyPickupComponent::CKeyPickupComponent()
 {
 	myLockId = -1;
+	myType = eComponentType::eKeyPickup;
 }
 
 
