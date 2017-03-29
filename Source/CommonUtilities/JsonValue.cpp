@@ -305,7 +305,7 @@ namespace CU
 		if (IsObject() == false)
 		{
 			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
+			JSON_ERROR("json value is not an object, it's %s", myValue->to_str().c_str());
 			type = eJsoneValueType::JSON_NULL; //remove warning
 			return Vector2f();
 		}

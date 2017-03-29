@@ -605,7 +605,7 @@ bool CServerMain::Update()
 			{
 				if (CheckIfClientsReady() == true)
 				{
-					if (locLoadingThread)
+					if (locLoadingThread != nullptr)
 					{
 						locLoadingThread->join();
 						delete locLoadingThread;
