@@ -4,6 +4,7 @@
 #include "../KevinLoader/KLoaderError.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+#include "../Game/PollingStation.h"
 
 //Managers
 #include "../LoadManager/ServerLoadManager.h"
@@ -20,6 +21,7 @@
 #include "../Components/SpawnerManager.h"
 #include "../Game/EnemyFactory.h"
 #include "../Components/CheckPointSystem.h"
+#include "../Game/WaveManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -45,6 +47,7 @@ CGameServer::CGameServer():
 	, myWeaponSystemManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, mySpawnerManager(nullptr)
+	,myWaveManager(nullptr)
 {
 	myIsRunning = false;
 	myTime = 0;
@@ -128,6 +131,8 @@ void CGameServer::CreateManagersAndFactories()
 
 	CComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
+	new CPollingStation();
+
 
 	myGameObjectManager = new CGameObjectManager();
 	myMovementComponentManager = new CMovementComponentManager();
@@ -137,6 +142,7 @@ void CGameServer::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 	mySpawnerManager = new CSpawnerManager();
+	myWaveManager = new CWaveManager();
 
 
 	myColliderComponentManager = new CColliderComponentManager();
@@ -155,6 +161,8 @@ void CGameServer::DestroyManagersAndFactories()
 	CNetworkComponentManager::Destroy();
 	CHealthComponentManager::GetInstance()->Destroy();
 	CEnemyFactory::Destroy();
+
+	delete CPollingStation::GetInstance();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
@@ -177,7 +185,8 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	if(myTime > updateFrequecy)
 	{
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
-		mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		//mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		myWaveManager->Update();
 		myTime = 0;
 	}
 	
@@ -213,6 +222,8 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClie
 	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
 	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
+
+	CPollingStation::GetInstance()->AddPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }
