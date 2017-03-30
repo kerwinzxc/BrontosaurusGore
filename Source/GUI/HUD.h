@@ -23,6 +23,7 @@ public:
 
 	void LoadArmourAndHealth(const CU::CJsonValue& aJsonValue);
 	void LoadWeaponHud(const CU::CJsonValue& aJsonValue);
+	void LoadCrosshair(const CU::CJsonValue& aJsonValue);
 
 	void Update(CU::Time aDeltaTime);
 	void SetAmmoHudRect();
@@ -62,9 +63,9 @@ private:
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
+	bool myCrosshairHasUpdated;
 
 	//test
 	float testValue;
-
 };
 

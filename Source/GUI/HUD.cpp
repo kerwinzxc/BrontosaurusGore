@@ -9,7 +9,7 @@
 #include <algorithm>
 
 
-CHUD::CHUD() : myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myHealthAndArmourHasChanged(true), myWeaponSprite(nullptr), myCurrentWeapon(0), myTransitionLength(0), myWeaponHUDHasChanged(true), myCrosshairSprite(nullptr), testValue(0.f)
+CHUD::CHUD() : myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myHealthAndArmourHasChanged(true), myWeaponSprite(nullptr), myCurrentWeapon(0), myTransitionLength(0), myWeaponHUDHasChanged(true), myCrosshairSprite(nullptr), myCrosshairHasUpdated(true), testValue(0.f)
 {
 }
 
@@ -26,6 +26,7 @@ void CHUD::LoadHUD()
 
 	LoadArmourAndHealth(jsonDocument.at("healthAndArmor"));
 	LoadWeaponHud(jsonDocument.at("weapon"));
+	LoadCrosshair(jsonDocument.at("crosshair"));
 }
 
 void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
@@ -77,6 +78,13 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 
 	LoadText(aJsonValue.at("ammoText"), myAmmoNumber);
 	myAmmoNumber.SetText(L"\u221E");
+}
+
+void CHUD::LoadCrosshair(const CU::CJsonValue& aJsonValue)
+{
+	myCrosshairElement = LoadElement(aJsonValue);
+	myCrosshairSprite = new CSpriteInstance(aJsonValue.at("sprite").GetString().c_str());
+	myCrosshairSprite->SetSize({ 1.f,1.f });
 }
 
 void CHUD::Update(CU::Time aDeltaTime)
@@ -156,7 +164,17 @@ void CHUD::Render()
 
 		myWeaponSprite->RenderToGUI(L"weapon");
 		myAmmoNumber.RenderToGUI(L"weapon");
-		//myWeaponHUDHasChanged = false;
+		myWeaponHUDHasChanged = false;
+	}
+
+	if (myCrosshairHasUpdated == true)
+	{
+		SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"crosshair", myCrosshairElement.myGuiElement, myCrosshairElement.myPixelSize);
+
+		RENDERER.AddRenderMessage(createOrClearGui);
+
+		myCrosshairSprite->RenderToGUI(L"crosshair");
+		//myCrosshairHasUpdated = false;
 	}
 }
 
