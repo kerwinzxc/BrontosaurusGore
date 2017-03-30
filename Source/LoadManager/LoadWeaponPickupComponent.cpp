@@ -5,6 +5,6 @@
 
 int LoadWeaponPickupkComponent(KLoader::SLoadedComponentData someData)
 {
-	CWeaponPickupComponent* pickup = CPickupComponentManager::GetInstance()->CreateWeaponPickupComponent(someData.myData.at("WeaponName").GetString());
+	CWeaponPickupComponent* pickup = CPickupComponentManager::GetInstance()->CreateWeaponPickupComponent(someData.myData.at("Weapon").GetString());
 	return pickup->GetId();
 }

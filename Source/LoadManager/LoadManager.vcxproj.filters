@@ -95,6 +95,9 @@
       <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
     </ClInclude>
     <ClInclude Include="LoadSpawner.h" />
+    <ClInclude Include="LoadWeaponPickupComponent.h">
+      <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -188,6 +191,9 @@
       <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
     </ClCompile>
     <ClCompile Include="LoadSpawner.cpp" />
+    <ClCompile Include="LoadWeaponPickupComponent.cpp">
+      <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -285,6 +291,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadSpawner">
       <UniqueIdentifier>{8101c034-4fd0-4bf8-b15d-5bb2a596d702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadWeaponPickupComponent">
+      <UniqueIdentifier>{fa4869d4-ff5e-47fa-a19c-3c00dfb507d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
