@@ -1,11 +1,19 @@
 #include "stdafx.h"
 #include "Spawner.h"
 #include "EnemyFactory.h"
+#include "../Components/Enemy.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
+#include "../TServer/ServerMessageManager.h"
+#include "EnemyTypes.h"
 
-CSpawnerComponent::CSpawnerComponent(const unsigned char aId, const CU::TimeUnit aSpawnInterval)
+CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType)
 {
-	mySpawnerId = aId;
-	mySpawInterval = aSpawnInterval;
+	mySpawInterval = 5.0f;
+	myWaves = aWaves;
+
+	myEnemyType = aEnemyType;
 }
 
 
@@ -15,10 +23,10 @@ CSpawnerComponent::~CSpawnerComponent()
 
 void CSpawnerComponent::Update(const float aDeltaTime)
 {
-	static CU::TimeUnit elapsedTime = 0.0f;
+	static CU::TimeUnit elapsedTime = mySpawInterval;
 
-	elapsedTime += aDeltaTime;
-	while (elapsedTime >= mySpawInterval)
+	//elapsedTime += aDeltaTime;
+	while(elapsedTime >= mySpawInterval)
 	{
 		elapsedTime -= mySpawInterval;
 		SpawnEnemy();
@@ -27,12 +35,60 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 
 void CSpawnerComponent::SpawnEnemy()
 {
-	SImpBlueprint aData;
-	aData.speed = 10.0f;
-	aData.jumpHeight = 4.0f;
-	aData.detectionRange = 30.0f;
-	aData.walkToMeleeRange = 0.f;
-	aData.startAttackRange = 0.0f;
-	aData.stopAttackRange = 1.0f;
-	CEnemyFactory::GetInstance()->CreateImp(&aData,GetParent()->GetWorldPosition());
+	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eActivate,SComponentMessageData());
+	CNetworkMessage_SetIsRepesentationActive* activeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
+	activeMessage->SetActive(true);
+	activeMessage->SetNetworkID(myEnemy->GetNetworkID());
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
+}
+
+void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+{
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eAddComponent:
+	{
+		switch (myEnemyType)
+		{
+		case eEnemyTypes::eImp:
+		{
+			SImpBlueprint aData;
+			aData.speed = 10.0f;
+			aData.jumpHeight = 4.0f;
+			aData.detectionRange = 30.0f;
+			aData.walkToMeleeRange = 10.f;
+			aData.startAttackRange = 0.0f;
+			aData.stopAttackRange = 1.0f;
+			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+		}
+		break;
+		case eEnemyTypes::ePinky:
+		{
+			SPinkyBlueprint aData;
+			aData.speed = 10.0f;
+			aData.detectionRange = 30.0f;
+			aData.walkToMeleeRange = 0.f;
+			aData.startAttackRange = 0.0f;
+			aData.stopAttackRange = 1.0f;
+			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+		}
+		break;
+		case eEnemyTypes::eRevenant:
+		{
+			SRevenantBlueprint aData;
+			aData.speed = 10.0f;
+			aData.detectionRange = 30.0f;
+			aData.walkToMeleeRange = 0.f;
+			aData.startAttackRange = 0.0f;
+			aData.stopAttackRange = 1.0f;
+			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+		}
+		break;
+		default:
+			break;
+		}
+		myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+	}
+	break;
+	}
 }

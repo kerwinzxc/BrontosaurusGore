@@ -104,7 +104,14 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 	data.myPath = someData.myData.at("meshPath").GetString().c_str();
 	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
+
+
 	CColliderComponent* component = CreateComponent(data);
+	if(component == nullptr)
+	{
+		return -1;
+	}
+
 	return component->GetId();
 }
 

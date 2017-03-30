@@ -7,6 +7,9 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
+#define nej false
+#define ja true
+
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
 CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
@@ -34,24 +37,25 @@ void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
 	myDistToPlayer = myToPlayer.Length2();
 }
 
-void CEnemy::UpdateTransformationNetworked()
+void CEnemy::SendTransformationToServer()
 {
 	if(myElapsedWaitingToSendMessageTime >= myNetworkPositionUpdateCoolDown)
 	{
-		const CU::Matrix44f tranformation = GetParent()->GetLocalTransform();
+		CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+
 		CNetworkMessage_EnemyTransformation* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_EnemyTransformation>(ID_ALL_BUT_ME);
 		message->SetId(myServerId);
-		message->SetTransformation(tranformation);
-
-		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(message));
+		message->SetTransformation(transform);
+		
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
 	}
 }
 
-void CEnemy::UpdateTransformationLocal(const float aDeltaTime)
+void CEnemy::CheckForNewTransformation(const float aDeltaTime)
 {
-	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = parentTransform.GetRotation();
+	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	CU::Matrix44f& rotation = transform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
@@ -59,7 +63,7 @@ void CEnemy::UpdateTransformationLocal(const float aDeltaTime)
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
-		parentTransform.SetPosition(data.myVector3f);
+		transform.SetPosition(data.myVector3f);
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 }
@@ -97,11 +101,18 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eCheckPointReset:
+	{
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
+	}
+	case eComponentMessageType::eDeactivate:
+		myIsDead = ja;
+		break;
+	case eComponentMessageType::eActivate:
+		myIsDead = nej;
 	}
 }
 

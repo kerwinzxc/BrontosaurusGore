@@ -35,7 +35,7 @@ public:
 	CNetworkMessage* Recieve(char** senderIp = nullptr, char** senderPort = nullptr);
 
 	int GetAndClearDataSent();
-
+	static bool CheckPortOpen(const std::string& aPort);
 
 private:
 	__int16 GetMessageCount();

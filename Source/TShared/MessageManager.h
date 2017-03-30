@@ -34,7 +34,9 @@ MESSAGE_TYPE* CMessageManager::CreateMessage(const SNetworkPackageHeader &aHeade
 		CMessageStorage::GetInstance()->AddType<MESSAGE_TYPE>(new MESSAGE_TYPE);
 	}
 
+	
 	CNetworkMessage* message = CMessageStorage::GetInstance()->GetType<MESSAGE_TYPE>();
+	message->ClearStream();
 	myMutex.unlock();
 
 	message->SetHeader(aHeader);

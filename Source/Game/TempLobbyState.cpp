@@ -105,7 +105,7 @@ void CTempLobbyState::Select()
 			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
 			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
 			netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netowrkMessageMessage));
 		}
 	}
 	break;
@@ -149,7 +149,7 @@ void CTempLobbyState::Conect()
 		myIP = L"127.0.0.1";
 	}
 
-	if(myIP == L"127.0.0.1")
+	if(myIP == L"127.0.0.1" && TShared_NetworkWrapper::CheckPortOpen(SERVER_PORT) == true)
 	{
 		std::string processName = "TServer_Applictaion_x64_";
 
