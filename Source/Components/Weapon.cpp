@@ -77,10 +77,14 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					};*/
 
 					CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
-					SComponentMessageData damageData;
-					damageData.myInt = myWeaponData->projectileData->damage;
-					gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-					//Do massive Domage!!
+					if(gameObject != myUser)
+					{
+						SComponentMessageData damageData;
+						damageData.myInt = myWeaponData->projectileData->damage;
+						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+						//Do massive Domage!!
+					
+					}
 				}
 			}
 
