@@ -25,6 +25,8 @@ public:
 
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
 	virtual void Init();
+	inline const bool GetIsDead() const; 
+	inline const unsigned short GetNetworkID() const;
 protected:
 	void CheckForNewTransformation(const float aDeltaTime);
 	void SendTransformationToServer();
@@ -101,4 +103,14 @@ inline eEnemyTypes CEnemy::GetEnemyType()
 inline void CEnemy::SetType(const eEnemyTypes aType)
 {
 	myType = aType;
+}
+
+inline const bool CEnemy::GetIsDead() const
+{
+	return myIsDead;
+}
+
+inline const unsigned short CEnemy::GetNetworkID() const
+{
+	return myServerId;
 }

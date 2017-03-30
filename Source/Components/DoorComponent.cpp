@@ -153,7 +153,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 				CNetworkMessage_DoorMessage* doorMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 				doorMessage->SetDoorAction(eDoorAction::eOpen);
 				doorMessage->SetID(myNetworkID);
-				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(doorMessage));
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(doorMessage));
 				
 				if (myShouldReset == true)
 				{
@@ -170,12 +170,12 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 					CNetworkMessage_DoorMessage* lockdoorMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 					lockdoorMessage->SetDoorAction(eDoorAction::eUnlock);
 					lockdoorMessage->SetID(myNetworkID);
-					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(lockdoorMessage));
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(lockdoorMessage));
 
 					CNetworkMessage_DoorMessage* opendoorMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 					opendoorMessage->SetDoorAction(eDoorAction::eOpen);
 					opendoorMessage->SetID(myNetworkID);
-					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(opendoorMessage));
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(opendoorMessage));
 					if (myShouldReset == true)
 					{
 						Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));

@@ -44,6 +44,14 @@ void IPickupComponent::Receive(const eComponentMessageType aMessageType, const S
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eAddComponent:
+		if(aMessageData.myComponentTypeAdded == eComponentType::eModel)
+		{
+			SComponentMessageData message;
+			message.myComponentTypeAdded = myType;
+			GetParent()->NotifyComponents(eComponentMessageType::eAddComponent, message);
+		}
+		break;
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{

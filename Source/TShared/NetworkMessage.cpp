@@ -8,6 +8,7 @@ CNetworkMessage::CNetworkMessage()
 {
 	myHeader.myPackageType = static_cast<ePackageType>(0);
 	myHeader.myTargetID = ID_SERVER;
+	myIsPacked = false;
 }
 
 
@@ -18,13 +19,23 @@ CNetworkMessage::~CNetworkMessage()
 
 void CNetworkMessage::PackMessage()
 {
-	myStream.clear();
-	DoSerialize(myStream);
+	if (myIsPacked == false)
+	{
+		myStream.clear();
+		DoSerialize(myStream);
+		myIsPacked = true;
+	}
 }
 
 void CNetworkMessage::UnpackMessage()
 {
-	DoDeserialize(myStream);
+	if (myIsPacked == true)
+	{
+		DoDeserialize(myStream);
+		myIsPacked = false;
+		return;
+	}
+	DL_ASSERT("Message was not packed");
 }
 
 void CNetworkMessage::SetData(const char* someData, unsigned dataSize)
@@ -35,6 +46,12 @@ void CNetworkMessage::SetData(const char* someData, unsigned dataSize)
 void CNetworkMessage::SetData(StreamType aStream)
 {
 	myStream = aStream;
+	myIsPacked = true;
+}
+void CNetworkMessage::ClearStream()
+{
+	myStream.clear();
+	myIsPacked = false;
 }
 
 void CNetworkMessage::SetExplicitHeader(SNetworkPackageHeader& aHeader)

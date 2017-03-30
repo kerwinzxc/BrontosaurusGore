@@ -51,6 +51,7 @@
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../TShared/NetworkMessage_SpawnEnemyRepesention.h"
+#include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
 #include "../Components/DoorManager.h"
 #include "../Game/EnemyFactory.h"
 
@@ -228,26 +229,26 @@ void CClient::Update()
 
 				const unsigned ID = playerPosition->GetID();
 
-				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
 				/*CU::CJsonValue playerControls;
 				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
-				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
+				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
 
-				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComonents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
-				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+				myNetworkRecieverComponents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
-				//myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 
 				/*CU::CJsonValue playerControls;
 				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
 
-				myNetworkRecieverComonents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
 
 
-				myNetworkRecieverComonents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eSpawnOtherPlayer:
@@ -271,7 +272,7 @@ void CClient::Update()
 			break;
 			case ePackageType::eLoadLevel:
 			{
-				myNetworkRecieverComonents.clear();
+				myNetworkRecieverComponents.clear();
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
 
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
@@ -288,8 +289,8 @@ void CClient::Update()
 				switch (shoot->GetShooter())
 				{
 				case CNetworkMessage_WeaponShoot::Shooter::Player:
-					myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
-					myNetworkRecieverComonents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					myNetworkRecieverComponents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+					myNetworkRecieverComponents.at(shoot->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
 					break;
 				case CNetworkMessage_WeaponShoot::Shooter::Enemy:
 				{
@@ -423,7 +424,18 @@ void CClient::Update()
 			case  ePackageType::eSpawnEnemyRepresentation:
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
-				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType());
+				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType())->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate,SComponentMessageData());
+			}
+			break;
+			case ePackageType::eSetRepesentationActive:
+			{
+				CNetworkMessage_SetIsRepesentationActive* setmessage = currentMessage->CastTo<CNetworkMessage_SetIsRepesentationActive>();
+				if (setmessage->GetActive() == Ja)
+				{
+					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+					break;
+				}
+				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eZero:
@@ -446,7 +458,7 @@ void CClient::Update()
 		}
 
 		std::map<unsigned int, CNetworkPlayerReciverComponent*>::iterator it;
-		for (it = myNetworkRecieverComonents.begin(); it != myNetworkRecieverComonents.end(); it++)
+		for (it = myNetworkRecieverComponents.begin(); it != myNetworkRecieverComponents.end(); it++)
 		{
 			if (it->second != nullptr)
 			{
@@ -503,9 +515,9 @@ short CClient::GetID()
 	return myId;
 }
 
-eMessageReturn CClient::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+eMessageReturn CClient::DoEvent(const CSendNetworkMessageMessage& aSendNetworkMessageMessage)
 {
-	Send(aSendNetowrkMessageMessage.UnpackHolder());
+	Send(aSendNetworkMessageMessage.UnpackHolder());
 	return eMessageReturn::eContinue;
 }
 
@@ -533,12 +545,12 @@ eMessageReturn CClient::DoEvent(const CPlayerPositionMessage& aMessage)
 
 eMessageReturn CClient::DoEvent(const COtherPlayerSpawned& aMassage)
 {
-	myNetworkRecieverComonents[aMassage.GetComponent()->GetPlayerID()] = aMassage.GetComponent();
+	myNetworkRecieverComponents[aMassage.GetComponent()->GetPlayerID()] = aMassage.GetComponent();
 	return eMessageReturn::eStop;
 }
 
 eMessageReturn CClient::DoEvent(const CChangeLevel& aChangeLevelMessage)
 {
-	myNetworkRecieverComonents.clear();
+	myNetworkRecieverComponents.clear();
 	return eMessageReturn::eContinue;
 }

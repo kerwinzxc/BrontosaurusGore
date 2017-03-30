@@ -22,7 +22,7 @@ void CServerPlayerNetworkComponent::Receive(const eComponentMessageType aMessage
 	{
 		CNetworkMessage_TakeDamage* takeDamage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_TakeDamage>(myClientID);
 		takeDamage->SetDamageTaken(aMessageData.myInt);
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(takeDamage));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(takeDamage));
 		DL_PRINT("TookDamage on server");
 	}
 	}

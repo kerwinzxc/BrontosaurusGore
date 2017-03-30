@@ -66,7 +66,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 			shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Player);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(shootMessage));
 		}
 		break;
 	}
@@ -83,7 +83,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			shootMessage->SetShooterId(aMessageData.myVector4f.w);
 			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(shootMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(shootMessage));
 		
 		}
 		break;
