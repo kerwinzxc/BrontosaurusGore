@@ -323,7 +323,7 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 {
 	myKeysDown[static_cast<int>(aPlayerControl)] = true;
 
-	if (myKeysDown[static_cast<int>(ePlayerControls::eJump)] == true )
+	if (aPlayerControl == ePlayerControls::eJump )
 	{
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN || myIsNotFalling == true)
 		{

@@ -32,3 +32,10 @@ void CServerPlayerNetworkComponent::SetClientID(const unsigned short aClientID)
 {
 	myClientID = aClientID;
 }
+
+void CServerPlayerNetworkComponent::Update()
+{
+	SComponentMessageData controllerPositionData;
+	controllerPositionData.myVector3f = GetParent()->GetLocalTransform().GetPosition();
+	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+}

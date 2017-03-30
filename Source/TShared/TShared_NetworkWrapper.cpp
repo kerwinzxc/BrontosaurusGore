@@ -285,3 +285,32 @@ int TShared_NetworkWrapper::GetAndClearDataSent()
 	myDataSent = 0;
 	return tempDataCount;
 }
+
+bool TShared_NetworkWrapper::CheckPortOpen(const std::string& aPort)
+{
+	
+	SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (s == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	//bind the socket
+
+	sockaddr_in address;
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(std::stoi(aPort));
+
+	int iResult = bind(s, reinterpret_cast<const sockaddr*>(&address), static_cast<int>(sizeof(sockaddr_in)));
+
+	if (iResult == SOCKET_ERROR)
+	{
+		return false;
+	}
+
+	closesocket(s);
+
+	return true;
+}

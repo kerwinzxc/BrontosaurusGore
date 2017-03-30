@@ -149,7 +149,7 @@ void CTempLobbyState::Conect()
 		myIP = L"127.0.0.1";
 	}
 
-	if(myIP == L"127.0.0.1")
+	if(myIP == L"127.0.0.1" && TShared_NetworkWrapper::CheckPortOpen(SERVER_PORT) == true)
 	{
 		std::string processName = "TServer_Applictaion_x64_";
 
