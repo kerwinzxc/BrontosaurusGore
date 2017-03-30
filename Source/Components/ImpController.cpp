@@ -149,6 +149,10 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 {
 	const SImpBlueprint* impData = static_cast<const SImpBlueprint*>(aData);
 	myJumpHeight = impData->jumpHeight;
+	myWanderAngle = impData->wanderAngle;
+	myWanderDistance = impData->wanderDistance;
+	myWanderDuration = impData->wanderDuration;
+	myAttacksUntillRunningAway = impData->attacksUntillRunningAway;
 	CEnemy::SetEnemyData(aData);
 }
 
