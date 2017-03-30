@@ -20,7 +20,9 @@ public:
 private:
 	void HandleKeyPressed(const SComponentMessageData& aMessageData);
 	void HandleKeyReleased(const SComponentMessageData& aMessageData);
+
 	void ChangeWeapon(unsigned int aIndex);
+	void ChangeWeaponLocal(unsigned int aIndex);
 
 	CU::GrowingArray<CWeapon*> myWeapons;
 	CU::GrowingArray<SAmmoData*> myTemporaryAmmoDataList;

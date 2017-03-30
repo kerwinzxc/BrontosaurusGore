@@ -153,28 +153,31 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
 		}
 
-		CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
-		direction.Normalize();
+		for (int i = 0; i < myWeaponData->projectilesFiredPerShot; ++i)
+		{
+			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
+			direction.Normalize();
 
-		/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
+			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 		rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 		rotatedDirection.Normalize();*/
-		if (CProjectileFactory::GetInstance() != nullptr)
-		{
-			CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
-			if (myWeaponObject != nullptr)
+			if (CProjectileFactory::GetInstance() != nullptr)
 			{
-				shootPosition = myWeaponObject->GetWorldPosition();
-				CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
-				localWeaponMatrix.Move(shootDisplacment);
-				shootPosition = localWeaponMatrix.GetPosition();
+				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+				if (myWeaponObject != nullptr)
+				{
+					shootPosition = myWeaponObject->GetWorldPosition();
+					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+					localWeaponMatrix.Move(shootDisplacment);
+					shootPosition = localWeaponMatrix.GetPosition();
+
+				}
+
+				PlaySound(SoundEvent::Fire, aDirection);
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				myElapsedFireTimer = 0.0f;
 
 			}
-
-			PlaySound(SoundEvent::Fire, aDirection);
-			CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
-			myElapsedFireTimer = 0.0f;
-
 		}
 	}
 }
