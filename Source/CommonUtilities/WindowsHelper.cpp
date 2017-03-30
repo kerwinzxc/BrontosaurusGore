@@ -9,22 +9,30 @@ static std::map<std::string, PROCESS_INFORMATION> locStartedProcesses;
 
 namespace WindowsHelper
 {
-	void GoogleIt()
+	void GoogleIt(const std::string& aGoogleSearch)
 	{
-		std::string googleString = "https://www.google.se/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=stack+overflow+please+help&*";
+		std::string googleString = "https://www.google.se/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=";//stack+overflow+my+pointer+is+null&*";
+		for (char ch : aGoogleSearch)
+		{
+			if (ch == ' ')
+			{
+				ch = '+';
+			}
+
+			googleString += ch;
+		}
+		googleString += "&*";
+
 		ShellExecuteA(NULL, "open", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", googleString.c_str(), NULL, SW_SHOWDEFAULT);
+	}
+
+	void GoogleIt(const std::wstring& aGoogleSearch)
+	{
+		GoogleIt(std::string(aGoogleSearch.begin(), aGoogleSearch.end()));
 	}
 
 	void StartProgram(const std::string& aExePath)
 	{
-		//HINSTANCE newProgram = ShellExecuteA(nullptr, "open", aExePath.c_str(), nullptr, nullptr, SW_SHOWDEFAULT);
-		//int success = (int)newProgram;
-		//if (success <= 32)
-		//{
-		//	int apa = 0;
-		//}
-		//return newProgram;
-
 		std::wstring widePath(aExePath.begin(), aExePath.end());
 
 		STARTUPINFO si;
@@ -60,8 +68,9 @@ namespace WindowsHelper
 		auto it = locStartedProcesses.find(aExePath);
 		if (it != locStartedProcesses.end())
 		{
-			TerminateProcess(it->second.hProcess, 0);
-
+			BOOL threadResult = TerminateThread(it->second.hThread, 0);
+			BOOL result = TerminateProcess(it->second.hProcess, 0);
+			DL_PRINT("%s", (result) ? "true" : "false");
 			CloseHandle(it->second.hProcess);
 			CloseHandle(it->second.hThread);
 		}

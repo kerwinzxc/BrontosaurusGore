@@ -37,6 +37,7 @@ CModel::CModel()
 	, myInstanceBuffer(nullptr)
 	, myVertexSize(0)
 	, myRefCount(0)
+	, myInstanceBufferData(2)
 {
 }
 
@@ -161,7 +162,7 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	ZeroMemory(&instanceBufferDesc, sizeof(instanceBufferDesc));
 
 	instanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	instanceBufferDesc.ByteWidth = sizeof(ourMaxInstanceSize) * sizeof(SToWorldSpace);
+	instanceBufferDesc.ByteWidth = ourMaxInstanceSize;
 	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	instanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	instanceBufferDesc.MiscFlags = 0;
@@ -181,7 +182,7 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	return true;
 }
 
-void CModel::Render(SForwardRenderModelParams & aParamObj)
+void CModel::Render(SForwardRenderModelParams& aParamObj)
 {
 	if (aParamObj.myRenderToDepth == true)
 	{
@@ -216,7 +217,6 @@ void CModel::Render(SForwardRenderModelParams & aParamObj)
 		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
 	}
 }
-
 void CModel::Render(SDeferredRenderModelParams& aParamObj)
 {
 	if (aParamObj.myRenderToDepth == true)
@@ -245,7 +245,6 @@ void CModel::Render(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
 	
 }
-
 void CModel::Render(SShadowRenderModelParams& aParamObj)
 {
 	myForwardEffect->ActivateForDepth(aParamObj.aPixelshader);
@@ -275,15 +274,15 @@ void CModel::Render(SShadowRenderModelParams& aParamObj)
 	}
 }
 
-void CModel::Render(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList)
+void CModel::RenderInstanced(const bool aRenderDepth)
 {
-	if (aParamList.GetLast()->myRenderToDepth == true)
+	if (aRenderDepth)
 	{
-		myDeferredEffect->ActivateForDepth();
+		myDeferredEffect->ActivateForDepth(nullptr, true);
 	}
 	else
 	{
-		myDeferredEffect->Activate();
+		myDeferredEffect->Activate(true);
 	}
 
 	if (mySurface != nullptr)
@@ -291,20 +290,48 @@ void CModel::Render(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamL
 		mySurface->Activate();
 	}
 
-
-
-
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
 
-	unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
-	unsigned int offsets[2] = { 0, 0 };
-	ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
+	context->IASetIndexBuffer(myLODModels.GetLast().myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-	context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, aParamList.Size(), 0, 0, 0);
+	const unsigned int drawCalls = myInstanceBufferData.Size() / ourMaxInstances + 1u;
+	for (unsigned int i = 0; i < drawCalls; ++i)
+	{
+		UpdateInstanceBuffer(i * ourMaxInstances);
+		unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
+		unsigned int offsets[2] = { 0, 0 };
+
+		ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
+
+		context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+		unsigned int instanceCount = myInstanceBufferData.Size() - i * ourMaxInstances;
+		instanceCount = min(instanceCount, ourMaxInstances);
+		context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, instanceCount, 0, 0, 0);
+	}
+
+	//UpdateInstanceBuffer();
+	//ID3D11DeviceContext* context = DEVICE_CONTEXT;
+	//unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
+	//unsigned int offsets[2] = { 0, 0 };
+	//ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
+	//context->IASetVertexBuffers(0, 2, buffers, strides, offsets);	
+	//context->IASetIndexBuffer(myLODModels.GetLast().myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	//context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, min(myInstanceBufferData.Size(), ourMaxInstances), 0, 0, 0);
+
+	myInstanceBufferData.RemoveAll();
 }
 
-void CModel::UpdateCBuffer(SForwardRenderModelParams & aParamObj)
+void CModel::AddInstanceToRenderBuffer(const SDeferredRenderModelParams& aParamObj)
+{
+	SToWorldSpace instanceData;
+	instanceData.myHighlightColor = aParamObj.myHighlightColor;
+	instanceData.myHighlightColor.a = aParamObj.aHighlightIntencity;
+	instanceData.myWorldSpace = aParamObj.myTransform;
+	instanceData.myWorldSpaceLastFrame = aParamObj.myTransformLastFrame;
+	myInstanceBufferData.Add(instanceData);
+}
+
+void CModel::UpdateCBuffer(SForwardRenderModelParams& aParamObj)
 {
 	assert(false && "Carl was here :)");
 	// WorldSpace thingy
@@ -417,25 +444,14 @@ void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
 	UpdateCBuffer(params);
 }
 
-void CModel::UpdateInstanceBuffer(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList)
+void CModel::UpdateInstanceBuffer(const unsigned int aStartIndex)
 {
-	// WorldSpace thingy
 	D3D11_MAPPED_SUBRESOURCE mappedSubResource;
 	ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-	static CU::GrowingArray<SToWorldSpace> instanceBuffer(aParamList.Size());
-	instanceBuffer.Resize(aParamList.Size());
-
-	for (int i = 0; i < aParamList.Size(); ++i)
-	{
-		instanceBuffer[i].myWorldSpace = aParamList[i]->myTransform;
-		instanceBuffer[i].myWorldSpaceLastFrame = aParamList[i]->myTransformLastFrame;
-		instanceBuffer[i].myHighlightColor = aParamList[i]->myHighlightColor;
-		instanceBuffer[i].myHighlightColor.a *= aParamList[i]->myHighlightIntensivity;
-	}
-
-	DEVICE_CONTEXT->Map(myInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-	memcpy(mappedSubResource.pData, &instanceBuffer, instanceBuffer.ByteSize());
+	HRESULT hr = DEVICE_CONTEXT->Map(myInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
+	CHECK_RESULT(hr, "Failed to map instancebuffer");
+	size_t byteSize = min(myInstanceBufferData.ByteSize(), ourMaxInstanceSize);
+	memcpy(mappedSubResource.pData, myInstanceBufferData.AsVoidPointer(aStartIndex), byteSize);
 	DEVICE_CONTEXT->Unmap(myInstanceBuffer, 0);
 }
 

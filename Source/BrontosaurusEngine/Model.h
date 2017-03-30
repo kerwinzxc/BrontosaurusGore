@@ -74,7 +74,10 @@ public:
 	void Render(SForwardRenderModelParams& aParamObj);
 	void Render(SDeferredRenderModelParams& aParamObj);
 	void Render(SShadowRenderModelParams& aParamObj);
-	void Render(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList);
+
+
+	void RenderInstanced(const bool aRenderDepth);
+	void AddInstanceToRenderBuffer(const SDeferredRenderModelParams& aParamObj);
 
 	inline bool GetInitialized() const;
 
@@ -89,7 +92,7 @@ public:
 	inline void AddRef();
 	inline void RemoveRef();
 
-	inline int GetRefCount();
+	inline int GetRefCount() const;
 	CU::Matrix44f GetBoneTransform(const float aTime, const char * aAnimationState, const char* aBoneName);
 
 	inline bool HasBones() const;
@@ -108,7 +111,7 @@ private:
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
 	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
 
-	void UpdateInstanceBuffer(const CU::GrowingArray<SDeferredRenderModelParams*>& aParamList);
+	void UpdateInstanceBuffer(const unsigned int aStartIndex);
 
 	static void BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut);
 
@@ -118,6 +121,8 @@ private:
 #endif // _DEBUG
 	std::map<std::string, CSceneAnimator> mySceneAnimators;
 	CU::GrowingArray<SLodData> myLODModels;
+	CU::GrowingArray<SToWorldSpace> myInstanceBufferData;
+
 	ID3D11Buffer* myCbuffer; // vertexBuffer
 	ID3D11Buffer* myLightBuffer; // pixelbuffer
 	ID3D11Buffer* myPixelBuffer;
@@ -137,8 +142,9 @@ private:
 
 	const struct aiScene* myScene;
 
-	static const unsigned int ourMaxBoneBufferSize = 32u * sizeof(CU::Matrix44f);
-	static const unsigned int ourMaxInstanceSize = 64u;
+	static const unsigned int ourMaxBoneBufferSize = 64u * sizeof(CU::Matrix44f);
+	static const unsigned int ourMaxInstances = 512u;
+	static const unsigned int ourMaxInstanceSize = ourMaxInstances * sizeof(SToWorldSpace);
 
 	unsigned int myVertexSize;
 	int myRefCount;
@@ -147,8 +153,6 @@ private:
 
 	std::atomic_bool myIsInitialized;
 	bool myIsAlphaModel;
-
-
 };
 
 inline float CModel::GetRadius() const
@@ -181,7 +185,7 @@ inline void CModel::RemoveRef()
 	myRefCount--;
 }
 
-inline int CModel::GetRefCount()
+inline int CModel::GetRefCount() const
 {
 	return myRefCount;
 }

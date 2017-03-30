@@ -127,7 +127,7 @@ void CScene::Render()
 
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{
-		if (myModels[i] == nullptr || myModels[i]->ShouldRender() == false)
+		if (myModels[i] == nullptr)
 		{
 			continue;
 		}
@@ -136,9 +136,32 @@ void CScene::Render()
 		//{
 		//	continue;
 		//}
-
-		myModels[i]->RenderDeferred();
+		if (myModels[i]->GetIgnoreDepth() == false)
+		{
+			myModels[i]->RenderDeferred();
+		}
 	}
+	RENDERER.AddRenderMessage(new SRenderModelBatches());
+
+	//statemsg.myRasterizerState = eRasterizerState::eDefault;
+	//statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	//statemsg.myBlendState = eBlendState::eNoBlend;
+	//statemsg.mySamplerState = eSamplerState::eDeferred;
+	//RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+
+	for (CModelInstance* model : myModels)
+	{
+		if (model == nullptr)
+		{
+			continue;
+		}
+		if (model->GetIgnoreDepth() == true)
+		{
+			model->RenderDeferred();
+		}
+	}
+
+
 
 	SRenderDirectionalLight light;
 	light.directionalLight = myDirectionalLight;

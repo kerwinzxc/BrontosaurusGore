@@ -21,6 +21,7 @@ public:
 	void SetAnimation(const std::string& aAnimationKey);
 	void SetNextAnimation(const std::string& aAnimationKey);
 	void SetAnimationLerpValue(const float aLerpValue);
+	void SetIgnoreDepth(bool aShouldIgnoreDepth);
 
 private:
 	void CreateAnimationComponent();

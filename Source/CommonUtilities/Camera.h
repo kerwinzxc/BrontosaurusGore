@@ -5,7 +5,7 @@
 
 namespace CU
 {
-	class Sphere;
+	struct Sphere;
 
 
 	class Camera

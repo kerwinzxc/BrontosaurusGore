@@ -73,6 +73,7 @@
 //temp!!! hoppas jag...
 #include "../CommonUtilities/JsonValue.h"
 #include "../CommonUtilities/WindowsHelper.h"
+#include "../TShared/NetworkMessage_WeaponChange.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -229,26 +230,31 @@ void CClient::Update()
 
 				const unsigned ID = playerPosition->GetID();
 
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+				if(myNetworkRecieverComponents.find(ID) != myNetworkRecieverComponents.end())
+				{
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
-				/*CU::CJsonValue playerControls;
-				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
+					/*CU::CJsonValue playerControls;
+					std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComponents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					myNetworkRecieverComponents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 
-				/*CU::CJsonValue playerControls;
-				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+					/*CU::CJsonValue playerControls;
+					std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+					myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				}
+				
 
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 			}
 			break;
 			case ePackageType::eSpawnOtherPlayer:
@@ -390,9 +396,6 @@ void CClient::Update()
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-				SComponentMessageData positiondata;
-				positiondata.myVector3f = message->GetTransformation().GetPosition();
-				//target.GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 			}
 			break;
 			case ePackageType::eTakeDamage:
@@ -438,6 +441,14 @@ void CClient::Update()
 				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
+			case ePackageType::eWeaponChange:
+				{
+				CNetworkMessage_WeaponChange* changeMessage = currentMessage->CastTo<CNetworkMessage_WeaponChange>();
+				SComponentMessageData data;
+				data.myInt = changeMessage->GetWeaponIndex();
+				myNetworkRecieverComponents.at(changeMessage->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
+				}
+				break;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
 			default: break;

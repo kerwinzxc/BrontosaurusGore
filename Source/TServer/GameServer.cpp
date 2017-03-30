@@ -48,6 +48,7 @@ CGameServer::CGameServer():
 {
 	myIsRunning = false;
 	myTime = 0;
+	myPlayersNetworkComponents.Init(5);
 }
 
 
@@ -185,11 +186,16 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
-	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
+	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	if (myIsLoaded == true && myEnemyComponentManager->GetIsInited() == false)
 	{
 		myEnemyComponentManager->Init(myWeaponSystemManager);
 	}
+	for(unsigned int i = 0; i < myPlayersNetworkComponents.Size(); i++)
+	{
+		myPlayersNetworkComponents[i]->Update();
+	}
+	myWeaponSystemManager->Update(aDeltaTime);
 	return true;
 }
 
@@ -198,12 +204,13 @@ bool CGameServer::IsLoaded() const
 	return myIsLoaded;
 }
 
-CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID) const
+CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID)
 {
 	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
 
 	CServerPlayerNetworkComponent*const serverPlayerNetworkComponent = new CServerPlayerNetworkComponent;
 	serverPlayerNetworkComponent->SetClientID(aClientID);
+	myPlayersNetworkComponents.Add(serverPlayerNetworkComponent);
 	CComponentManager::GetInstance().RegisterComponent(serverPlayerNetworkComponent);
 	gameObject->AddComponent(serverPlayerNetworkComponent);
 	Physics::SCharacterControllerDesc controllerDesc;

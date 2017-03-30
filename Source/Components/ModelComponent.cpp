@@ -56,9 +56,10 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 		}
 		else if(aData.myComponentTypeAdded == eComponentType::eArmorPickup || 
 			aData.myComponentTypeAdded == eComponentType::eAmmoPickup || 
-			aData.myComponentTypeAdded == eComponentType::eHealthPickupComponent)
+			aData.myComponentTypeAdded == eComponentType::eHealthPickupComponent ||
+				aData.myComponentTypeAdded == eComponentType::eKeyPickup)
 		{
-			myModel.SetHighlight(CU::Vector4f(0, 1, 0, 1), .75f);
+			myModel.SetHighlight(CU::Vector4f(0, 1, 0, 1), 0.75f);
 		}
 		else if(aData.myComponentTypeAdded == eComponentType::eHighlightComponent)
 		{
@@ -98,6 +99,11 @@ void CModelComponent::CreateAnimationComponent()
 			GetParent()->AddComponent(animationComponent);
 		}
 	}
+}
+
+void CModelComponent::SetIgnoreDepth(bool aShouldIgnoreDepth)
+{
+	myModel.SetIgnoreDepth(aShouldIgnoreDepth);
 }
 
 void CModelComponent::SetAnimation(const std::string& aAnimationKey)

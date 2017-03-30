@@ -2,17 +2,18 @@
 #include <Camera.h>
 #include "RenderPackage.h"
 
-struct  SRenderMessage;
-struct  ID3D11PixelShader;
+struct SRenderMessage;
+struct CGeometryBuffer;
+struct ID3D11PixelShader;
 
 class CRenderCamera
 {
 public:
-	CRenderCamera();
+	CRenderCamera(const bool deferred = false);
 	~CRenderCamera();
 
 	void InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
-	void InitOrthographic(const float aWidth, const float aHeight, const float aFar, const float aNear, const int aTextureWidth, const int aTextureHeight, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
+	void InitOrthographic(const float aWidth, const float aHeight, const float aFar, const float aNear, const unsigned int aTextureWidth, const unsigned int aTextureHeight, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
 	void ShadowInit();
 
 	inline void SetCamera(const CU::Camera& aCamera);
@@ -27,13 +28,15 @@ public:
 
 	ID3D11PixelShader* GetShadowShader();
 private:
+	void InitRenderPackages(const CU::Vector2ui& aTextureSize, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat);
+
+private:
+	CGeometryBuffer* myGbuffer;
 	CU::Camera myCamera;
 	CRenderPackage myRenderPackage;
 	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
-	bool myIsShadowCamera;
-
 	ID3D11PixelShader* myShadowPS;
-
+	bool myIsShadowCamera;
 };
 
 inline CRenderPackage & CRenderCamera::GetRenderPackage() 

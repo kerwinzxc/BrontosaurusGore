@@ -61,6 +61,7 @@ struct SRenderMessage
 		eRenderModelDeferred,
 		eRenderModelShadow,
 		eRenderModelInstanced,
+		eRenderModelBatches,
 		eRenderGUIModel,
 		eRenderSprite,
 		eChangeStates,
@@ -225,6 +226,12 @@ struct SRenderModelInstancedMessage : SRenderMessage
 	SRenderModelInstancedMessage();
 	SDeferredRenderModelParams myRenderParams;
 	int myModelID;
+};
+
+struct SRenderModelBatches : SRenderMessage
+{
+	SRenderModelBatches();
+	bool myRenderToDepth;
 };
 
 struct SRenderModelShadowMessage : SRenderMessage

@@ -13,6 +13,7 @@
 #include "CharacterControllerComponent.h"
 #include "..\Physics\CollisionLayers.h"
 #include "../Physics/Collection.h"
+#include "EffectHelper.h"
 
 
 CColliderComponentManager::CColliderComponentManager()
@@ -44,7 +45,15 @@ CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aC
 		myColliderComponents.Add(CreateCapsuleCollider(*reinterpret_cast<SCapsuleColliderData*>(aColliderData)));
 		break;
 	case SColliderData::eColliderType::eMesh:
-		myColliderComponents.Add(CreateMeshCollider(*reinterpret_cast<SMeshColliderData*>(aColliderData)));
+		{
+		CColliderComponent* collider = CreateMeshCollider(*reinterpret_cast<SMeshColliderData*>(aColliderData));
+			if(collider != nullptr)
+			{
+
+				myColliderComponents.Add(collider);
+				return nullptr;
+			}
+		}
 		break;
 	case SColliderData::eColliderType::eRigidbody:
 		myColliderComponents.Add(CreateRigidbody(*reinterpret_cast<SRigidBodyData*>(aColliderData)));
@@ -161,6 +170,12 @@ CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCaps
 
 CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshColliderData& aMeshColliderData)
 {
+	std::string path(aMeshColliderData.myPath);
+	if (EffectHelper::FileExists(std::wstring(path.begin(), path.end()).c_str()) == false)
+	{
+		return nullptr;
+	}
+
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateMeshShape(aMeshColliderData.myPath, material);
 

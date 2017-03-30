@@ -59,11 +59,15 @@ public:
 	const std::string& GetAnimationState() const;
 	float GetAnimationCounter() const;
 
-	void SetHighlightIntencity(const float aHighlightIntencity);
 	
 	inline ModelId GetModelID();
+	void SetHighlightIntencity(const float aHighlightIntencity);
 
 	void SetHighlight(const CU::Vector4f& aColor, float anIntensivit);
+
+	inline void SetIgnoreDepth(const bool aShouldIgnore);
+	inline bool GetIgnoreDepth() const;
+
 private:
 
 	CU::Matrix44f myTransformation;
@@ -83,6 +87,7 @@ private:
 	bool myIsVisible;
 	bool myHasAnimations;
 	bool myAnimationLooping;
+	bool myIgnoreDepth;
 };
 
 inline const CU::Matrix44f& CModelInstance::GetTransformation() const
@@ -106,3 +111,12 @@ inline int CModelInstance::GetModelID()
 }
 
 
+inline void CModelInstance::SetIgnoreDepth(const bool aShouldIgnore)
+{
+	myIgnoreDepth = aShouldIgnore;
+}
+
+inline bool CModelInstance::GetIgnoreDepth() const
+{
+	return myIgnoreDepth;
+}

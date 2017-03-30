@@ -5,11 +5,19 @@
 #include "ShaderManager.h"
 #include "RenderMessages.h"
 
-CRenderCamera::CRenderCamera()
+#include "GeometryBuffer.h"
+
+CRenderCamera::CRenderCamera(const bool aDeferred /*= false*/)
 {
 	myRenderQueue.Init(32);
 	myIsShadowCamera = false;
 	myShadowPS = nullptr;
+	myGbuffer = nullptr;
+
+	if (aDeferred == true)
+	{
+		myGbuffer = new CGeometryBuffer();
+	}
 }
 
 CRenderCamera::~CRenderCamera()
@@ -21,15 +29,14 @@ void CRenderCamera::InitPerspective(const float aFov, const float aWidth, const 
 {
 	myCamera.Init(aFov, aWidth, aHeight, aNear, aFar);
 	CU::Vector2ui size(aWidth, aHeight);
-	myRenderPackage.Init(size, aTexture, aFormat);
+	InitRenderPackages(size, aTexture, aFormat);
 }
 
 //ORTOGRAPHIC
-void CRenderCamera::InitOrthographic(const float aWidth, const float aHeight, const float aFar, const float aNear, const int aTextureWidth, const int aTextureHeight, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat /*= DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM*/)
+void CRenderCamera::InitOrthographic(const float aWidth, const float aHeight, const float aFar, const float aNear, const unsigned int aTextureWidth, const unsigned int aTextureHeight, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat /*= DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM*/)
 {
 	myCamera.Init(aWidth, aHeight, aNear, aFar);
-	CU::Vector2ui size(aTextureWidth, aTextureHeight);
-	myRenderPackage.Init(size, aTexture, aFormat);
+	InitRenderPackages({ aTextureWidth, aTextureHeight }, aTexture, aFormat);
 }
 
 void CRenderCamera::ShadowInit()
@@ -62,5 +69,24 @@ void CRenderCamera::Render()
 ID3D11PixelShader* CRenderCamera::GetShadowShader()
 {
 	return myShadowPS;
+}
+
+void CRenderCamera::InitRenderPackages(const CU::Vector2ui& aTextureSize, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat)
+{
+	myRenderPackage.Init(aTextureSize, aTexture, aFormat);
+	if (myGbuffer != nullptr)
+	{
+		CEngine* engine = CEngine::GetInstance();
+		if (!engine)
+		{
+			DL_ASSERT("Failed to get engine");
+		}
+		CDXFramework* framework = engine->GetFramework();
+		if (!framework)
+		{
+			DL_ASSERT("Failed to get framework");
+		}
+		myGbuffer->Init(aTextureSize, framework, aTexture, aFormat);
+	}
 }
 
