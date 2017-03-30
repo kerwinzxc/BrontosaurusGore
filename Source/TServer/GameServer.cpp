@@ -48,6 +48,7 @@ CGameServer::CGameServer():
 {
 	myIsRunning = false;
 	myTime = 0;
+	myPlayersNetworkComponents.Init(5);
 }
 
 
