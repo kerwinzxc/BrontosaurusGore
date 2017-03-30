@@ -136,6 +136,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		myState = eRevenantState::eIdle;
 		break;
 	}
 }
