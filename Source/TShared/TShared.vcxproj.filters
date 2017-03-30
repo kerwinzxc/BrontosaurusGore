@@ -200,6 +200,7 @@
     <ClInclude Include="NetworkMessage_WeaponChange.h">
       <Filter>NetworkMessage\ChangeWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
