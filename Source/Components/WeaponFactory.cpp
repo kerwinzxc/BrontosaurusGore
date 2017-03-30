@@ -162,6 +162,7 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 	if(aOwner->AskComponents(eComponentQuestionType::eGetCameraObject, cameraObjectQuestionData))
 	{
 		CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
+		newWeaponModelComponent->SetIgnoreDepth(true);
 		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 		newWeaponObject->AddComponent(newWeaponModelComponent);
 		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
