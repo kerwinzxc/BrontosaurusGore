@@ -46,6 +46,7 @@
 #include "../Components/HealthComponentManager.h"
 #include "../Components/ComponentMessage.h"
 #include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
+#include "../TShared/NetworkMessage_WeaponChange.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -455,11 +456,11 @@ bool CServerMain::Update()
 				std::string positionString;
 				positionString += "Position: ";
 				positionString += " X: ";
-				positionString += position->GetPosition().x;
+				positionString += std::to_string(position->GetPosition().x);
 				positionString += " Y: ";
-				positionString += position->GetPosition().y;
+				positionString += std::to_string(position->GetPosition().y);
 				positionString += " Z: ";
-				positionString += position->GetPosition().z;
+				positionString += std::to_string(position->GetPosition().z);
 
 				DL_PRINT(positionString.c_str());
 
@@ -576,9 +577,16 @@ bool CServerMain::Update()
 				myAlivePlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
 			}
 			break;
+			case ePackageType::eWeaponChange:
+				{
+				CNetworkMessage_WeaponChange* message = currentMessage->CastTo < CNetworkMessage_WeaponChange >();
+				SendTo(message);
+				}
+				break;;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
 			default: break;
+
 			}
 
 			delete currentSenderIp;

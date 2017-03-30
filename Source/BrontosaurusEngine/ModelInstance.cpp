@@ -9,7 +9,7 @@
 //Lights
 #include "PointLightInstance.h"
 #include "Intersection.h"
-
+#define HIGH_ENUF 8
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
@@ -30,6 +30,7 @@ CModelInstance::CModelInstance(const char* aModelPath)
 	myNextAnimation = "";
 	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
+	myIgnoreDepth = false;
 }
 
 
@@ -141,23 +142,64 @@ void CModelInstance::RenderForward(Lights::SDirectionalLight * aLight, CU::Vecto
 
 void CModelInstance::RenderDeferred()
 {
-	SRenderModelDeferredMessage msg;
-	msg.myModelID = myModel;
-	msg.myRenderParams.myTransform = myTransformation;
-	msg.myRenderParams.myTransformLastFrame = myLastFrame;
-	msg.myRenderParams.myHighlightColor = myHighlightColor;
-	msg.myRenderParams.myHighlightIntensivity = myHighlightIntencity;
-	msg.myRenderParams.myRenderToDepth = false;
-	msg.myRenderParams.aHighlightIntencity = myHighlightIntencity;
-	if(myHasAnimations == true)
+	if (!ShouldRender())
 	{
-		msg.myRenderParams.aAnimationLooping = myAnimationLooping;
-		msg.myRenderParams.aAnimationState = myCurrentAnimation;
-		msg.myRenderParams.aNextAnimationState = myNextAnimation;
-		msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
-		msg.myRenderParams.aAnimationTime = myAnimationCounter;
-	}	
-	RENDERER.AddRenderMessage(new SRenderModelDeferredMessage(msg));
+		return;
+	}
+
+	CModelManager* modelManager = MODELMGR;
+	int modelRefCount = modelManager->GetModelRefCount(myModel);
+	
+	SDeferredRenderModelParams params;
+	params.myTransform = myTransformation;
+	params.myTransformLastFrame = myLastFrame;
+	params.myHighlightColor = myHighlightColor;
+	params.myHighlightIntensivity = myHighlightIntencity;
+	params.myRenderToDepth = false;
+	params.aHighlightIntencity = myHighlightIntencity;
+	if (myHasAnimations == true)
+	{
+		params.aAnimationLooping = myAnimationLooping;
+		params.aAnimationState = myCurrentAnimation;
+		params.aNextAnimationState = myNextAnimation;
+		params.aAnimationLerper = myAnimationLerpie;
+		params.aAnimationTime = myAnimationCounter;
+	}
+	
+	SRenderMessage* msg = nullptr;
+	if (!myHasAnimations && modelRefCount > HIGH_ENUF)
+	{
+		SRenderModelInstancedMessage* instancedMsg = new SRenderModelInstancedMessage();
+		instancedMsg->myModelID = myModel;
+		instancedMsg->myRenderParams = params;
+		msg = instancedMsg;
+	}
+	else
+	{
+		SRenderModelDeferredMessage* lonelyMsg = new SRenderModelDeferredMessage();
+		lonelyMsg->myModelID = myModel;
+		lonelyMsg->myRenderParams = params;
+		msg = lonelyMsg;
+	}
+
+	//SRenderModelDeferredMessage msg;
+	//msg.myModelID = myModel;
+	//msg.myRenderParams.myTransform = myTransformation;
+	//msg.myRenderParams.myTransformLastFrame = myLastFrame;
+	//msg.myRenderParams.myHighlightColor = myHighlightColor;
+	//msg.myRenderParams.myHighlightIntensivity = myHighlightIntencity;
+	//msg.myRenderParams.myRenderToDepth = false;
+	//msg.myRenderParams.aHighlightIntencity = myHighlightIntencity;
+	//if(myHasAnimations == true)
+	//{
+	//	msg.myRenderParams.aAnimationLooping = myAnimationLooping;
+	//	msg.myRenderParams.aAnimationState = myCurrentAnimation;
+	//	msg.myRenderParams.aNextAnimationState = myNextAnimation;
+	//	msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
+	//	msg.myRenderParams.aAnimationTime = myAnimationCounter;
+	//}
+
+	RENDERER.AddRenderMessage(/*new SRenderModelDeferredMessage*/(msg));
 }
 
 void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)

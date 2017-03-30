@@ -14,7 +14,7 @@ cbuffer ToWorld : register(b1)
 
 cbuffer AnimationBuffer : register(b3)
 {
-	float4x4 Bones[32];
+	float4x4 Bones[64];
 }
 
 //VERTEX SHADER
@@ -68,7 +68,7 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanT
 	output.position = input.position;
 	output.worldPosLastFrame = mul(input.toWorldLastFrameInstance, output.position);
 
-	output.position = mul(worldSpace, output.position);
+	output.position = mul(input.toWorldInstance, output.position);
 	output.worldPosition = float4(output.position.xyz, 1.0f);
 
 	output.position = mul(cameraSpaceInversed, output.position);
