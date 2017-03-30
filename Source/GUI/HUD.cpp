@@ -25,7 +25,7 @@ void CHUD::LoadHUD()
 	jsonDocument.Parse("Json/HUD/HUD.json");
 
 	LoadArmourAndHealth(jsonDocument.at("healthAndArmor"));
-	//LoadWeaponHud(jsonDocument.at("weapon"));
+	LoadWeaponHud(jsonDocument.at("weapon"));
 }
 
 void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
@@ -59,7 +59,9 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 	const float frameWidth = frameSizeValue.at("width").GetFloat();
 	const float frameHeight = frameSizeValue.at("height").GetFloat();
 
-	myWeaponSprite->SetRect({ 0,0, frameWidth, frameHeight });
+	const CU::Vector2f mySpriteSize = myWeaponSprite->GetTextureSize();
+
+	myWeaponSprite->SetRect({ 0,0, frameWidth / mySpriteSize.x, frameHeight / mySpriteSize.y});
 	myWeaponSprite->SetSize({ 1.f,1.f });
 
 	const CU::CJsonValue & weaponIndexValue = spretsheeValue.at("weaponTypes");
@@ -142,18 +144,18 @@ void CHUD::Render()
 		myHealthAndArmourHasChanged = false;
 	}
 
-	//if (myWeaponHUDHasChanged == true)
-	//{
-	//	SetAmmoHudRect();
+	if (myWeaponHUDHasChanged == true)
+	{
+		SetAmmoHudRect();
 
-	//	SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"weapon", myWeaponElement.myGuiElement, myWeaponElement.myPixelSize);
+		SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"weapon", myWeaponElement.myGuiElement, myWeaponElement.myPixelSize);
 
-	//	RENDERER.AddRenderMessage(createOrClearGui);
+		RENDERER.AddRenderMessage(createOrClearGui);
 
-	//	myWeaponSprite->RenderToGUI(L"weapon");
-	//	myAmmoNumber.RenderToGUI(L"weapon");
-	//	//myWeaponHUDHasChanged = false;
-	//}
+		myWeaponSprite->RenderToGUI(L"weapon");
+		myAmmoNumber.RenderToGUI(L"weapon");
+		//myWeaponHUDHasChanged = false;
+	}
 }
 
 SHUDElement CHUD::LoadElement(const CU::CJsonValue& aJsonValue) const
