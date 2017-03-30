@@ -26,6 +26,9 @@ void  CEnemyClientRepresentation::Update(float aDeltaTime)
 	GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
 	GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	SComponentMessageData positiondata;
+	positiondata.myVector3f = GetParent()->GetLocalTransform().GetPosition();
+	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 }
 
 void  CEnemyClientRepresentation::Init()
