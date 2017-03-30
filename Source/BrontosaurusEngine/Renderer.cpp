@@ -126,8 +126,6 @@ void CRenderer::Render()
 
 	DoRenderQueue();
 
-
-
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
@@ -135,7 +133,7 @@ void CRenderer::Render()
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
 
-	myDeferredRenderer.DoRenderQueue();
+	myDeferredRenderer.DoRenderQueue(*this);
 
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
@@ -580,7 +578,6 @@ void CRenderer::CreateBlendStates()
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-
 		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
@@ -589,7 +586,6 @@ void CRenderer::CreateBlendStates()
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
-
 
 		//THIS ONE MAKES EVERYTHING WEIRD AF:
 		//blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
@@ -600,7 +596,6 @@ void CRenderer::CreateBlendStates()
 		//blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		//blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		//blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-
 
 		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
 		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
@@ -1016,6 +1011,17 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		++aDrawCallCount;
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eRenderModelInstanced:
+	{
+		myDeferredRenderer.AddRenderMessage(aRenderMesage);
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eRenderModelBatches:
+	{
+		myDeferredRenderer.AddRenderMessage(aRenderMesage);
+		aDrawCallCount += myDeferredRenderer.myBatchedModelIds.Size();
+		break;
+	}
 	case SRenderMessage::eRenderMessageType::eRenderGUIModel:
 	{
 		myGUIRenderer.GetCurrentPackage().Activate();
@@ -1071,6 +1077,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eChangeStates:
 	{
 		SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(aRenderMesage);
+		if(msg->mySamplerState == eSamplerState::eDeferred) myDeferredRenderer.AddRenderMessage(msg);
 		SetStates(msg);
 		break;
 	}
