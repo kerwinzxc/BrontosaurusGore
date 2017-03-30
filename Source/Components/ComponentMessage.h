@@ -87,7 +87,7 @@ enum class eComponentMessageType
 	eActivateEmitter,
 	eServerShoot,
 	eAddForce,
-	eNullifyForces,
+	eNullifyForces, // doesn't do stuff :(
 	eLength,
 };
 
