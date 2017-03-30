@@ -129,6 +129,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myState = eRevenantState::eDead;
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		myIsflying = false;
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
@@ -137,6 +138,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		myState = eRevenantState::eIdle;
+		myIsflying = false;
 		break;
 	}
 }
