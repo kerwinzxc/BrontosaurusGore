@@ -7,6 +7,7 @@ enum class eImpState
 	eUseMeleeAttack,
 	eUseRangedAttack,
 	eJump,
+	eRunAfterShooting,
 	eDead
 };
 class CImpController : public CEnemy
@@ -25,11 +26,21 @@ private:
 	inline bool ShouldJumpAfterPlayer();
 	void UpdateJumpForces(const float aDeltaTime);
 
+	void InitiateWander();
+private:
+	CU::Vector3f myWanderToPosition;
+
 	float myJumpHeight;
 	float myJumpForce;
+	float myWanderDistance;
+	float myWanderDuration;
+	float myElaspedWanderTime;
 	eImpState myState;
 
 	bool myIsJumping;
+	unsigned char myWanderAngle;
+	char myAttacksUntillRunningAway;
+	char myUsedAttackSinceLastRunning;
 };
 
 inline bool CImpController::ShouldJumpAfterPlayer()
