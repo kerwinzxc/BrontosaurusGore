@@ -8,7 +8,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myComponentId = anId;
 	myPositionInterpolationSpeed = 6.1f;
 	myRotationInterpolationSpeed = 7.1f;
-	myType = eEnemyTypes::eDefault;
+	myType = aType;
 }
 
 
@@ -26,6 +26,9 @@ void  CEnemyClientRepresentation::Update(float aDeltaTime)
 	GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
 	GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	SComponentMessageData positiondata;
+	positiondata.myVector3f = GetParent()->GetLocalTransform().GetPosition();
+	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 }
 
 void  CEnemyClientRepresentation::Init()

@@ -109,6 +109,7 @@ namespace Physics
 		CPhysicsActorDynamic* actor = new CPhysicsActorDynamic(body, aShape);
 		actor->SetIsTrigger(aIsTrigger);
 		actor->SetIsKinematic(aIsKinematic);
+		actor->SetUseGravity(aUseGravity);
 		PxRigidBodyExt::updateMassAndInertia(*body, aMass);
 		return actor;
 	}

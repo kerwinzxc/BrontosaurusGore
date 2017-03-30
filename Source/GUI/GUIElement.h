@@ -1,7 +1,7 @@
 #pragma once
-#include "vector4.h"
-#include "vector2.h"
-#include "BitSet.h"
+#include "../CommonUtilities/vector4.h"
+#include "../CommonUtilities/vector2.h"
+#include "../CommonUtilities/BitSet.h"
 
 enum class eAnchors
 {

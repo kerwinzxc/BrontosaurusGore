@@ -6,6 +6,7 @@ class CImpController;
 class CRevenantController;
 class CPinkyController;
 class CEnemyComponentManager;
+class CEnemy;
 class CGameObjectManager;
 class CWeaponSystemManager;
 class CColliderComponentManager;
@@ -17,10 +18,11 @@ public:
 	static void Destroy();
 	static CEnemyFactory* GetInstance();
 
-	void CreateImp(const SImpBlueprint* aData,const CU::Vector3f& aPosition);
-	void CreateRevenant(const SRevenantBlueprint* aData);
-	void CreatePinky(const SPinkyBlueprint* aData); // skapar ett lill finger
-	void CreateRepesention(const short aHealthValue, const eEnemyTypes aType);
+	CEnemy* CreateEnemy(const SEnemyBlueprint* aBluePrint, const eEnemyTypes& aType, const CU::Vector3f& aPosition);
+	CEnemy* CreateImp(const SImpBlueprint* aData,const CU::Vector3f& aPosition);
+	CEnemy* CreateRevenant(const SRevenantBlueprint* aData);
+	CEnemy* CreatePinky(const SPinkyBlueprint* aData); // skapar ett lill finger
+	CEnemy* CreateRepesention(const short aHealthValue, const eEnemyTypes aType);
 	
 
 private:

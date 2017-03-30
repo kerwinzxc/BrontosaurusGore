@@ -141,6 +141,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationState.h" />
     <ClInclude Include="NetworkMessage_DoorMessage.h" />
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
     <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
@@ -170,10 +171,12 @@
     <ClInclude Include="NetworkMessage_RevivePlayer.h" />
     <ClInclude Include="NetworkMessage_ServerReady.h" />
     <ClInclude Include="NetworkMessage_SetCheckpointMessage.h" />
+    <ClInclude Include="NetworkMessage_SetIsRepesentationActive.h" />
     <ClInclude Include="NetworkMessage_SpawnEnemyRepesention.h" />
     <ClInclude Include="NetworkMessage_SpawnOtherPlayer.h" />
     <ClInclude Include="NetworkMessage_TakeDamage.h" />
     <ClInclude Include="NetworkMessage_TryToShoot.h" />
+    <ClInclude Include="NetworkMessage_WeaponChange.h" />
     <ClInclude Include="NetworkMessage_WeaponShoot.h" />
     <ClInclude Include="NetworkMesssage_Connect.h" />
     <ClInclude Include="PackageType.h" />
@@ -185,6 +188,7 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationState.cpp" />
     <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
@@ -212,10 +216,12 @@
     <ClCompile Include="NetworkMessage_RevivePlayer.cpp" />
     <ClCompile Include="NetworkMessage_ServerReady.cpp" />
     <ClCompile Include="NetworkMessage_SetCheckpointMessage.cpp" />
+    <ClCompile Include="NetworkMessage_SetIsRepesentationActive.cpp" />
     <ClCompile Include="NetworkMessage_SpawnEnemyRepesention.cpp" />
     <ClCompile Include="NetworkMessage_SpawnOtherPlayer.cpp" />
     <ClCompile Include="NetworkMessage_TakeDamage.cpp" />
     <ClCompile Include="NetworkMessage_TryToShoot.cpp" />
+    <ClCompile Include="NetworkMessage_WeaponChange.cpp" />
     <ClCompile Include="NetworkMessage_WeaponShoot.cpp" />
     <ClCompile Include="NetworkMesssage_Connect.cpp" />
     <ClCompile Include="stdafx.cpp">

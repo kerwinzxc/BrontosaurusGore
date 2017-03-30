@@ -33,14 +33,6 @@ namespace WindowsHelper
 
 	void StartProgram(const std::string& aExePath)
 	{
-		//HINSTANCE newProgram = ShellExecuteA(nullptr, "open", aExePath.c_str(), nullptr, nullptr, SW_SHOWDEFAULT);
-		//int success = (int)newProgram;
-		//if (success <= 32)
-		//{
-		//	int apa = 0;
-		//}
-		//return newProgram;
-
 		std::wstring widePath(aExePath.begin(), aExePath.end());
 
 		STARTUPINFO si;
@@ -76,10 +68,16 @@ namespace WindowsHelper
 		auto it = locStartedProcesses.find(aExePath);
 		if (it != locStartedProcesses.end())
 		{
-			TerminateProcess(it->second.hProcess, 0);
-
+			BOOL threadResult = TerminateThread(it->second.hThread, 0);
+			BOOL result = TerminateProcess(it->second.hProcess, 0);
+			DL_PRINT("%s", (result) ? "true" : "false");
 			CloseHandle(it->second.hProcess);
 			CloseHandle(it->second.hThread);
 		}
+	}
+
+	void SetFocus(const HWND& aHwnd)
+	{
+		::SetForegroundWindow(aHwnd);
 	}
 }

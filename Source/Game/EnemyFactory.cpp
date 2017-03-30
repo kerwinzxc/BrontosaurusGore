@@ -62,14 +62,14 @@ CEnemyFactory * CEnemyFactory::GetInstance()
 	return ourInstance;
 }
 
-void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& aPosition)
+CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eEnemyTypes & aType, const CU::Vector3f & aPosition)
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->SetWorldPosition(aPosition);
 
-	CEnemy* controller = myEnemyManager.CreateComponent(aData,eEnemyTypes::eImp);
+	CEnemy* controller = myEnemyManager.CreateComponent(aBluePrint, aType);
 	imp->AddComponent(controller);
-	
+
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	health->SetMaxHealth(100);
 	health->SetHealth(100);
@@ -89,60 +89,17 @@ void CEnemyFactory::CreateImp(const SImpBlueprint * aData, const CU::Vector3f& a
 	imp->AddComponent(CollisionController);
 
 
+
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
-	message->SetEnemyType(eEnemyTypes::eImp);
+	message->SetEnemyType(aType);
 	message->SetHealth(10);//inläst data sen
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+
+	return controller;
 }
 
-void  CEnemyFactory::CreateRevenant(const SRevenantBlueprint * aData)
-{
-	CGameObject* revenant = myGameObjectManager.CreateGameObject();
-
-	CEnemy* controller = myEnemyManager.CreateComponent(aData, eEnemyTypes::eRevenant);
-	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
-	//set health
-
-	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
-	//CModelComponent* model = CModelComponentManager::GetInstance().CreateComponent("someJSONpath");
-
-	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.00001f;
-	controllerDesc.halfHeight = 1.0f;
-	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
-
-	revenant->AddComponent(controller);
-	revenant->AddComponent(health);
-	//revenant->AddComponent(model);
-	revenant->AddComponent(CollisionController);
-}
-
-void CEnemyFactory::CreatePinky(const SPinkyBlueprint * aData)
-{
-	CGameObject* pinky = myGameObjectManager.CreateGameObject();
-
-	CEnemy* controller = myEnemyManager.CreateComponent(aData, eEnemyTypes::ePinky);
-
-	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
-
-	//set health
-
-	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
-	//CModelComponent* model = CModelComponentManager::GetInstance().CreateComponent("someJSONpath");
-
-	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.00001f;
-	controllerDesc.halfHeight = 1.0f;
-	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
-
-	pinky->AddComponent(controller);
-	pinky->AddComponent(health);
-	//pinky->AddComponent(model);
-	pinky->AddComponent(CollisionController);
-}
-
-void CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
+CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
 
@@ -190,4 +147,5 @@ void CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyType
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 	repesention->AddComponent(CollisionController);
 
+	return enemy;
 }

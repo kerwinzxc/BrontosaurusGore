@@ -1067,7 +1067,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderTextMessage* msg = static_cast<SRenderTextMessage*>(aRenderMesage);
-		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement);
+		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement, myGUIRenderer.GetCurrentPackage().GetSize());
 		//aDrawCallCount += msg->myStrings.Size();
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
@@ -1197,6 +1197,18 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myGUIRenderer.RenderToGUI(renderToGuiMessage->myElementName, renderToGuiMessage->myRenderMessage);
 		break;
 	}
+	case SRenderMessage::eRenderMessageType::eRenderBar:
+	{
+		SRenderBarMessage* msg = static_cast<SRenderBarMessage*>(aRenderMesage);
+		myGUIRenderer.GetCurrentPackage().Activate();
+
+		myGUIRenderer.RenderBar(msg);
+
+		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
+		else renderTo->Activate();
+		break;
+	}
+	default: break;
 	}
 }
 

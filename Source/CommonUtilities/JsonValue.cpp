@@ -266,6 +266,11 @@ namespace CU
 		return static_cast<unsigned int>(GetNumber());
 	}
 
+	const unsigned char CJsonValue::GetUchar() const
+	{
+		return static_cast<unsigned char>(GetNumber());
+	}
+
 	const std::string& CJsonValue::GetString() const
 	{
 		const static std::string nullString("");
@@ -305,7 +310,7 @@ namespace CU
 		if (IsObject() == false)
 		{
 			eJsoneValueType type = GetType();
-			JSON_ERROR("json value is not an array, it's %s", myValue->to_str().c_str());
+			JSON_ERROR("json value is not an object, it's %s", myValue->to_str().c_str());
 			type = eJsoneValueType::JSON_NULL; //remove warning
 			return Vector2f();
 		}

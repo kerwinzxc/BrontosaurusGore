@@ -17,12 +17,12 @@ public:
 
 	void Update(const float aDeltaTime) override;
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
-	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
+	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
 
 	bool CheckIfInAir();
 	void ApplyJumpForce(float aJumpHeight);
 private:
-	inline bool ShouldJumpAfterPlayer(float aHeightDiff);
+	inline bool ShouldJumpAfterPlayer();
 	void UpdateJumpForces(const float aDeltaTime);
 
 	float myJumpHeight;
@@ -32,7 +32,7 @@ private:
 	bool myIsJumping;
 };
 
-inline bool CImpController::ShouldJumpAfterPlayer(float aHeightDiff)
+inline bool CImpController::ShouldJumpAfterPlayer()
 {
-	return (aHeightDiff > 1.0f) && (myIsJumping == false);
+	return (myToPlayer.y > 1.0f) && (myIsJumping == false);
 }

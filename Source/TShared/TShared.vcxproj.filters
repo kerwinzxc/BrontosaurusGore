@@ -72,6 +72,9 @@
     <Filter Include="NetworkMessage\Shoot">
       <UniqueIdentifier>{ebdcb6fd-5c3c-4fdd-9115-62d37fa7fffb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\ChangeWeapon">
+      <UniqueIdentifier>{28cc44ba-6cc0-4a37-ad0f-9c7cbb9034da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -193,6 +196,10 @@
       <Filter>NetworkMessage\Shoot</Filter>
     </ClInclude>
     <ClInclude Include="NetworkMessage_SpawnEnemyRepesention.h" />
+    <ClInclude Include="NetworkMessage_SetIsRepesentationActive.h" />
+    <ClInclude Include="NetworkMessage_WeaponChange.h">
+      <Filter>NetworkMessage\ChangeWeapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -292,5 +299,9 @@
       <Filter>NetworkMessage\Shoot</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMessage_SpawnEnemyRepesention.cpp" />
+    <ClCompile Include="NetworkMessage_SetIsRepesentationActive.cpp" />
+    <ClCompile Include="NetworkMessage_WeaponChange.cpp">
+      <Filter>NetworkMessage\ChangeWeapon</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

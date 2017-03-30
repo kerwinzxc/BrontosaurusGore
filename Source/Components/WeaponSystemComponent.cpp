@@ -13,6 +13,7 @@
 #include "../TClient/ClientMessageManager.h"
 #include "../FontEngine/FontEngineFacade.h"
 #include "../TServer/ServerMessageManager.h"
+#include "../TShared/NetworkMessage_WeaponChange.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -66,7 +67,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 			shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Player);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(shootMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(shootMessage));
 		}
 		break;
 	}
@@ -83,7 +84,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			shootMessage->SetShooterId(aMessageData.myVector4f.w);
 			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetowrkMessageMessage(shootMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(shootMessage));
 		
 		}
 		break;
@@ -111,7 +112,6 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		if(myIsActive == true)
 		{
 			short index = myActiveWeaponIndex + aMessageData.myInt;
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 			if (index < 0)
 			{
 				index = myWeapons.Size() - 1;
@@ -120,8 +120,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			{
 				index = 0;
 			}
-			myActiveWeaponIndex = static_cast<unsigned int>(index);
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+			ChangeWeapon(index);
 		
 		}
 		break;
@@ -157,6 +156,9 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		ChangeWeapon(aMessageData.myInt);
 		break;
 	}
+	case eComponentMessageType::eServerChangeWeapon:
+		ChangeWeaponLocal(aMessageData.myInt);
+		break;
 	case eComponentMessageType::eDied:
 	{
 		myIsActive = false;
@@ -264,6 +266,15 @@ void CWeaponSystemComponent::HandleKeyReleased(const SComponentMessageData& aMes
 	}
 }
 
+void CWeaponSystemComponent::ChangeWeapon(unsigned aIndex)
+{
+	ChangeWeaponLocal(aIndex);
+	
+	CNetworkMessage_WeaponChange* changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>("__All");
+	changeMessage->SetWeapon(myActiveWeaponIndex);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
+}
+
 void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
 {
 	WeaponFactoryPointer->CreateWeapon(aWeaponName, this);
@@ -275,7 +286,7 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
 }
 
-void CWeaponSystemComponent::ChangeWeapon(unsigned int aIndex)
+void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 {
 	if(aIndex >= 0 && aIndex < myWeapons.Size())
 	{
@@ -284,7 +295,6 @@ void CWeaponSystemComponent::ChangeWeapon(unsigned int aIndex)
 			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 			myActiveWeaponIndex = aIndex;
 			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
-
 		}
 	}
 }

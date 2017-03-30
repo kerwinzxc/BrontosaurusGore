@@ -120,6 +120,8 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 
 CPlayState::~CPlayState()
 {
+	CParticleEmitterComponentManager::Destroy();
+
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myScene);
 
@@ -136,7 +138,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
-	CParticleEmitterComponentManager::Destroy();
+
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpointComponentManager::DestoryInstance();
@@ -218,6 +220,8 @@ void CPlayState::Load()
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
 	
+	myHUD.LoadHUD();
+
 	myIsLoaded = true;
 	
 	// Get time to load the level:
@@ -258,6 +262,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
+	myHUD.Update(aDeltaTime);
+
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
 	SComponentQuestionData healthData;
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
@@ -284,6 +290,9 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 void CPlayState::Render()
 {
 	myScene->Render();
+
+	myHUD.Render();
+
 	myPlayerHealthText->Render();
 	myPlayerArmorText->Render();
 }
@@ -375,7 +384,13 @@ void CPlayState::CreateManagersAndFactories()
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 {
 	CGameObject* otherPlayer = myGameObjectManager->CreateGameObject();
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_BFG_01.fbx");
+	CGameObject* modelObject = myGameObjectManager->CreateGameObject();
+	CU::Matrix44f transformation;
+	transformation.RotateAroundAxis(3.14, CU::Axees::Y);
+	transformation.SetPosition(0, -1.8, 0);
+	modelObject->SetWorldTransformation(transformation);
+	
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Player_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -416,7 +431,8 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	otherPlayer->AddComponent(model);
+	modelObject->AddComponent(model);
+	otherPlayer->AddComponent(modelObject);
 	otherPlayer->AddComponent(playerReciver);
 
 	

@@ -45,6 +45,8 @@
 #include "../Physics/PhysXHelper.h"
 #include "../Components/HealthComponentManager.h"
 #include "../Components/ComponentMessage.h"
+#include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
+#include "../TShared/NetworkMessage_WeaponChange.h"
 
 std::thread* locLoadingThread = nullptr;
 
@@ -164,6 +166,7 @@ void CServerMain::Ping(ClientID aClientID)
 {
 	//Ping was my best best friend growing up
 	//though Ping stole my gir....
+	//Now I'm on a quest to slay the dark overlord Ping to restore balnce to the force!
 	CNetworkMessage_Ping* pingMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>(aClientID);
 
 	SendTo(pingMessage);
@@ -440,9 +443,6 @@ bool CServerMain::Update()
 					CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
 					gameObject->SetWorldTransformation(positionMessage->GetTransformation());
 					gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-					SComponentMessageData positonData;
-					positonData.myVector3f = positionMessage->GetTransformation().GetPosition();
-					gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
 					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
@@ -492,6 +492,7 @@ bool CServerMain::Update()
 					}
 					myServerState = eServerState::eLoadingLevel;
 					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
+					myGameServer->CreateManagersAndFactories();
 					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
 
@@ -564,6 +565,7 @@ bool CServerMain::Update()
 					CNetworkMessage_ResetToCheckpoint* reset = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_ResetToCheckpoint>(ID_ALL);
 
 					SendTo(reset);
+					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CResetToCheckPointMessage());
 				}
 			}
 			break;
@@ -575,9 +577,16 @@ bool CServerMain::Update()
 				myAlivePlayers.emplace(playerDied->GetHeader().mySenderID, myPlayerRespawnTime);
 			}
 			break;
+			case ePackageType::eWeaponChange:
+				{
+				CNetworkMessage_WeaponChange* message = currentMessage->CastTo < CNetworkMessage_WeaponChange >();
+				SendTo(message);
+				}
+				break;;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
 			default: break;
+
 			}
 
 			delete currentSenderIp;
@@ -602,7 +611,7 @@ bool CServerMain::Update()
 			{
 				if (CheckIfClientsReady() == true)
 				{
-					if (locLoadingThread)
+					if (locLoadingThread != nullptr)
 					{
 						locLoadingThread->join();
 						delete locLoadingThread;
@@ -626,7 +635,7 @@ bool CServerMain::Update()
 	return false;
 }
 #include "../TShared/NetworkMessage_EnemyTransformation.h"
-eMessageReturn CServerMain::DoEvent(const CSendNetowrkMessageMessage& aSendNetowrkMessageMessage)
+eMessageReturn CServerMain::DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage)
 {
 
 	SendTo(aSendNetowrkMessageMessage.UnpackHolder());

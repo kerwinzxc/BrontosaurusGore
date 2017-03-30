@@ -37,7 +37,7 @@ State* CChangeLevel::CreateLoadState(StateStack& aStateStack) const
 {
 	CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
 	netowrkMessageMessage->myLevelIndex = myNewLevelIndex;
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netowrkMessageMessage));
 
 	return new CLoadState(aStateStack, myNewLevelIndex);
 }

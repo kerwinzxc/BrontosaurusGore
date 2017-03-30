@@ -34,13 +34,14 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
-	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID) const;
+	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID);
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
 	CSpawnerManager* GetSpawnerManager();
 	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 	inline CColliderComponentManager* GetColliderComponentManager();
 private:
+	CU::GrowingArray<CServerPlayerNetworkComponent*> myPlayersNetworkComponents;
 	CGameObjectManager* myGameObjectManager;
 	CAmmoComponentManager* myAmmoComponentManager;
 	CWeaponSystemManager* myWeaponSystemManager;
@@ -48,6 +49,7 @@ private:
 	CMovementComponentManager* myMovementComponentManager;
 	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 	CSpawnerManager* mySpawnerManager;
+	CCheckPointSystem* myCheckPointSystem;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;

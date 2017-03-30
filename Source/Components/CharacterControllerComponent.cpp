@@ -60,6 +60,7 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 		//CU::Vector3f worldPos = myData.center;
 		//transformation.SetPosition(transformation.GetPosition() + worldPos);
 		myController->SetPosition(aMessageData.myVector3f);
+		
 		break;
 	}
 

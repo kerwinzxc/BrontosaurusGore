@@ -105,6 +105,8 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 		errorMessage += " Size of data package: ";
 		errorMessage += std::to_string(streamType.size());
 		DL_ASSERT(errorMessage.c_str());
+
+		return myMessageCount;
 	}
 
 	const unsigned tempBufferSize = aNetworkMessage->GetSerializedData().size();
@@ -122,12 +124,22 @@ __int16 TShared_NetworkWrapper::Send(CNetworkMessage* aNetworkMessage, const cha
 		myBuffer = new char[myCurrentBufferSize];
 	}
 
-	memcpy_s(myBuffer, myCurrentBufferSize, &aNetworkMessage->GetHeader(), sizeof(SNetworkPackageHeader));
-	memcpy_s(&myBuffer[sizeof(SNetworkPackageHeader)], myCurrentBufferSize - sizeof(SNetworkPackageHeader), streamType.data(), streamType.size());
+	errno_t headerError = memcpy_s(myBuffer, myCurrentBufferSize, &aNetworkMessage->GetHeader(), sizeof(SNetworkPackageHeader));
+	if (headerError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message header to buffer, error code: %s (%d)", (headerError == EINVAL) ? "something was null" : (headerError == ERANGE) ? "buffer too small" : "", headerError);
+		return myMessageCount;
+	}
+	errno_t bodyError = memcpy_s(&myBuffer[sizeof(SNetworkPackageHeader)], myCurrentBufferSize - sizeof(SNetworkPackageHeader), streamType.data(), streamType.size());
+	if (bodyError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message body to buffer, error code: %s (%d)", (bodyError == EINVAL) ? "something was null" : (bodyError == ERANGE) ? "buffer too small" : "", bodyError);
+		return myMessageCount;
+	}
 
 	sockaddr_in adress;
 	adress.sin_family = AF_INET;
-	adress.sin_port = htons(std::stoi(aRecieverPort));
+	adress.sin_port = htons(std::atoi(aRecieverPort));
 
 	inet_pton(AF_INET, aRecieverAdress, &(adress.sin_addr));
 
@@ -172,8 +184,18 @@ bool TShared_NetworkWrapper::Send(SNetworkPackageHeader aPackageHeader, const ch
 
 	}
 
-	memcpy_s(myBuffer, myCurrentBufferSize, &aPackageHeader, sizeof(aPackageHeader));
-	memcpy_s(&myBuffer[sizeof(aPackageHeader)], myCurrentBufferSize - sizeof(SNetworkPackageHeader), aData, aDataSize);
+	errno_t headerError = memcpy_s(myBuffer, myCurrentBufferSize, &aPackageHeader, sizeof(aPackageHeader));
+	if (headerError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message header to buffer, error code: %s (%d)", (headerError == EINVAL) ? "something was null" : (headerError == ERANGE) ? "buffer too small" : "", headerError);
+		return myMessageCount;
+	}
+	errno_t bodyError = memcpy_s(&myBuffer[sizeof(aPackageHeader)], myCurrentBufferSize - sizeof(SNetworkPackageHeader), aData, aDataSize);
+	if (bodyError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message body to buffer, error code: %s (%d)", (bodyError == EINVAL) ? "something was null" : (bodyError == ERANGE) ? "buffer too small" : "", bodyError);
+		return myMessageCount;
+	}
 
 	sockaddr_in adress;
 	adress.sin_family = AF_INET;
@@ -221,19 +243,32 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 		port += std::to_string(ntohs(fromAddress.sin_port));
 		
 		*senderPort = new char[port.size() + 1];
-		memcpy_s(*senderPort, port.size() + 1, port.c_str(), port.size() + 1);
+		errno_t senderPortError = memcpy_s(*senderPort, port.size() + 1, port.c_str(), port.size() + 1);
+		if (senderPortError != 0)
+		{
+			DL_MESSAGE_BOX("failed to memcpy sender port name to char** in TShared_NetworkWRapper::Recieve. Error code: %s (%d)", (senderPortError == EINVAL) ? "something was null" : (senderPortError == ERANGE) ? "buffer too small" : "", senderPortError);
+		}
 	}
 
 	SNetworkPackageHeader header;
-
-	memcpy_s(&header, sizeof(header), buffer, sizeof(header));
+	errno_t headerError = memcpy_s(&header, sizeof(header), buffer, sizeof(header));
+	if (headerError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message header to buffer, error code: %s (%d)", (headerError == EINVAL) ? "something was null" : (headerError == ERANGE) ? "buffer too small" : "", headerError);
+		return nullptr;
+	}
 
 	const unsigned dataSize = bytes - sizeof(header);
 
-	char * data = new char[dataSize];
+	char* data = new char[dataSize];
 	ZeroMemory(data, dataSize);
 
-	memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
+	errno_t bodyError = memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
+	if (bodyError != 0)
+	{
+		DL_MESSAGE_BOX("Failed to memcpy message body to buffer, error code: %s (%d)", (bodyError == EINVAL) ? "something was null" : (bodyError == ERANGE) ? "buffer too small" : "", bodyError);
+		return nullptr;
+	}
 
 	CNetworkMessage* newMessage = myMessageManager->CreateMessage<CNetworkMessage>(header);
 
@@ -249,4 +284,33 @@ int TShared_NetworkWrapper::GetAndClearDataSent()
 	const int tempDataCount = myDataSent;
 	myDataSent = 0;
 	return tempDataCount;
+}
+
+bool TShared_NetworkWrapper::CheckPortOpen(const std::string& aPort)
+{
+	
+	SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (s == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	//bind the socket
+
+	sockaddr_in address;
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(std::stoi(aPort));
+
+	int iResult = bind(s, reinterpret_cast<const sockaddr*>(&address), static_cast<int>(sizeof(sockaddr_in)));
+
+	if (iResult == SOCKET_ERROR)
+	{
+		return false;
+	}
+
+	closesocket(s);
+
+	return true;
 }

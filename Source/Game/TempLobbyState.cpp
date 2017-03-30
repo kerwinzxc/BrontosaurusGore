@@ -17,6 +17,10 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
 #include "CommonUtilities.h"
+#include "WindowsHelper.h"
+#include "Engine.h"
+#include "DXFramework.h"
+#include "WindowsWindow.h"
 //#include "ThreadedPostmaster/Postmaster.h"
 
 
@@ -101,7 +105,7 @@ void CTempLobbyState::Select()
 			myStateStack.PushState(new CLoadState(myStateStack, myCurrentLine - 4));
 			CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
 			netowrkMessageMessage->myLevelIndex = myCurrentLine - 4;
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetowrkMessageMessage(netowrkMessageMessage));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netowrkMessageMessage));
 		}
 	}
 	break;
@@ -141,7 +145,26 @@ void CTempLobbyState::Conect()
 
 	if (myIP.empty())
 	{
+
 		myIP = L"127.0.0.1";
+	}
+
+	if(myIP == L"127.0.0.1" && TShared_NetworkWrapper::CheckPortOpen(SERVER_PORT) == true)
+	{
+		std::string processName = "TServer_Applictaion_x64_";
+
+#ifdef _DEBUG
+		processName += "Debug";
+#elif defined(RETAIL)
+		processName += "Retail";
+#elif defined(RELEASE)
+		processName += "Release";
+#endif
+
+		processName += ".exe";
+		WindowsHelper::StartProgram(processName);
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		WindowsHelper::SetFocus(CEngine::GetInstance()->GetWindow()->GetHWND());
 	}
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(CU::StringHelper::WStringToString(myName), CU::StringHelper::WStringToString(myIP)));

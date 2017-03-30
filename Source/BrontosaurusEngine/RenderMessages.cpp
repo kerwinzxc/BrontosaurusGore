@@ -217,3 +217,8 @@ SRenderModelBatches::SRenderModelBatches()
 {
 	myRenderToDepth = false;
 }
+
+SRenderToGUI::~SRenderToGUI()
+{
+	delete myRenderMessage;
+}

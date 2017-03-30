@@ -33,5 +33,8 @@ enum class ePackageType: __int8
 	eResetToCheckpoint,
 	eRevivePlayer,
 	eSpawnEnemyRepresentation,
-	eSize
+	eSetRepesentationActive, 
+	eWeaponChange,
+	eSize,
+	
 };

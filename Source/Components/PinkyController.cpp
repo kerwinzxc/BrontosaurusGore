@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PinkyController.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 2.0f;
 
@@ -18,7 +20,6 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myGravityForce = 0.0f;
 }
 
-
 CPinkyController::~CPinkyController()
 {
 }
@@ -35,29 +36,23 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CPinkyController::Update(const float aDeltaTime)
 {
-	CU::Vector3f velocity;
+	UpdateBaseMemberVars(aDeltaTime);
 	myGravityForce -= gravityAcceleration * aDeltaTime;
-	velocity.y = myGravityForce;
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-	const float distToPlayer = toPlayer.Length2();
-
-	UpdateTransformationNetworked();
+	myVelocity.y = myGravityForce;
+	SendTransformationToServer();
 	HandleGrounded();
 
 	if (myIsDead == false && myIsCharging == false)
 	{
-		if (WithinAttackRange(distToPlayer))
+		if (WithinAttackRange())
 		{
 			myState = ePinkyState::eUseMeleeAttack;
 		}
-		else if (WithinWalkToMeleeRange(distToPlayer))
+		else if (WithinWalkToMeleeRange())
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
-		else if (WithinDetectionRange(distToPlayer))
+		else if (WithinDetectionRange())
 		{
 			myState = ePinkyState::eWindupCharge;
 			myWindupChargeTime = 0.0f;
@@ -75,7 +70,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		break;
 	case ePinkyState::eWalkIntoMeleeRange:
 		LookAtPlayer(); //impl. turn rate?
-		velocity.z = mySpeed;
+		myVelocity.z = mySpeed;
 	break;
 	case ePinkyState::eUseMeleeAttack:
 		ChangeWeapon(0);
@@ -95,7 +90,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		myStartChargeLocation = myPos;
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
-		velocity.z = myChargeSpeed;
+		myVelocity.z = myChargeSpeed;
 		KeepWithinChargeDist();
 		break;
 	case ePinkyState::eChargeCooldown:
@@ -108,7 +103,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		break;
 	}
 
-	UpdateTransformationLocal(velocity, aDeltaTime);
+	CheckForNewTransformation(aDeltaTime);
 }
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -118,6 +113,9 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		myState = ePinkyState::eDead;
 		break;
 	}
 	case eComponentMessageType::eOnCollisionEnter:
@@ -130,6 +128,12 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		}
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
 	}
 }
 

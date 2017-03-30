@@ -6,7 +6,7 @@
 class CEnemyClientRepresentation : public CEnemy
 {
 public:
-	CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType = eEnemyTypes::eDefault);
+	CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType);
 	~CEnemyClientRepresentation();
 
 	void SetFutureMatrix(const CU::Matrix44f& aMatrix);

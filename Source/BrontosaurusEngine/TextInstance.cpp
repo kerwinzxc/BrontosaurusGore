@@ -12,7 +12,7 @@ const CU::Vector4f CTextInstance::White(1, 1, 1, 1);
 
 CTextInstance::CTextInstance()
 	: myText(nullptr)
-	  , myAlignemnt(eAlignment::LEFT), myColor(1, 1, 1, 1)
+	  , myAlignemnt(eAlignment::eLeft), myColor(1, 1, 1, 1)
 {
 	myStrings.Init(2);
 }
@@ -47,6 +47,23 @@ void CTextInstance::Render() const
 		renderTextMessage->myText = myText;
 		renderTextMessage->myAlignement = myAlignemnt;
 		CEngine::GetInstance()->GetRenderer().AddRenderMessage(renderTextMessage);
+	}
+}
+
+void CTextInstance::RenderToGUI(std::wstring anElementName) const
+{
+	if (myText != nullptr && myStrings.Size() > 0)
+	{
+		SRenderTextMessage* renderTextMessage = new SRenderTextMessage();
+		renderTextMessage->myColor = myColor;
+		renderTextMessage->myPosition = myPosition;
+		renderTextMessage->myLineHeight = myLineGap + CU::Vector2f(0, GetlineHeight());
+		renderTextMessage->myStrings = myStrings;
+		renderTextMessage->myText = myText;
+		renderTextMessage->myAlignement = myAlignemnt;
+
+		SRenderToGUI* renderToGui = new SRenderToGUI(anElementName, renderTextMessage);
+		CEngine::GetInstance()->GetRenderer().AddRenderMessage(renderToGui);
 	}
 }
 

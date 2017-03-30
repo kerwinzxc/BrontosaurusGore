@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "RevenantController.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../ThreadedPostmaster/Postmaster.h"
 
 static const float gravityAcceleration = 9.82f * 2.0f;
+
 CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	:CEnemy(aId, aType)
 {
 	myFlightForce = 0.0f;
 	myIsflying = false;
 }
-
 
 CRevenantController::~CRevenantController()
 {
@@ -23,49 +25,30 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	CEnemy::SetEnemyData(aData);
 }
 
-
 void CRevenantController::Update(const float aDeltaTime)
 {
-	CU::Vector3f velocity;
-	velocity.y = myFlightForce;
-	myElapsedWaitingToSendMessageTime += aDeltaTime;
-	const CU::Vector3f closestPlayerPos = ClosestPlayerPosition();
-	const CU::Vector3f myPos = GetParent()->GetWorldPosition();
-	const CU::Vector3f toPlayer = closestPlayerPos - myPos;
-	const float distToPlayer = toPlayer.Length2();
-	UpdateTransformationNetworked();
-
-	if(myIsflying == false)
-	{
-		myFlightForce -= gravityAcceleration * aDeltaTime;
-	}
-
-	if(CheckIfInAir() == false)
-	{
-		if (myFlightForce < 0)
-		{
-			myFlightForce = 0.0f;
-		}
-	}
-
+	UpdateBaseMemberVars(aDeltaTime);
+	myVelocity.y = myFlightForce;
+	SendTransformationToServer();
+	UpdateFlightForces(aDeltaTime);
 
 	if (myIsDead == false && myIsflying == false)
 	{
-		if (myStartAttackRange2 > distToPlayer)
+		if (WithinAttackRange())
 		{
 			myState = eRevenantState::eUseMeleeAttack;
 		}
-		else if (myWalkToMeleeRange2 > distToPlayer)
+		else if (WithinWalkToMeleeRange())
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
 		}
-		else if (myDetectionRange2 > distToPlayer)
+		else if (WithinDetectionRange())
 		{
 			myState = eRevenantState::eUseRangedAttack;
-			if (toPlayer.y > 2.0f)
+			if (myToPlayer.y > 2.0f)
 			{
 				myState = eRevenantState::eFlyAscend;
-				ApplyFlyForce(myFlightHeight);
+				ApplyFlightForce();
 			}
 		}
 		else
@@ -73,17 +56,15 @@ void CRevenantController::Update(const float aDeltaTime)
 			myState = eRevenantState::eIdle;
 		}
 	}
+
+
 	switch (myState)
 	{
 	case eRevenantState::eIdle:
-	{
 		break;
-	}
 	case eRevenantState::eWalkIntoMeleeRange:
-	{
-		LookAtPlayer(); //impl. turn rate?
-		velocity.z = mySpeed;
-	}
+		LookAtPlayer();
+		myVelocity.z = mySpeed;
 	break;
 	case eRevenantState::eUseMeleeAttack:
 		ChangeWeapon(2);
@@ -95,6 +76,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		break;
 	case eRevenantState::eFlyAscend:
 	{
+		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 		if(myFlightForce <= 0.0f)
 		{
@@ -105,10 +87,11 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyHover:
 	{
-		myElapsedHoverTime += aDeltaTime;
 		LookAtPlayer();
 		ChangeWeapon(1);
 		Attack();
+
+		myElapsedHoverTime += aDeltaTime;
 		if(myElapsedHoverTime >= myHoverTime)
 		{
 			myElapsedHoverTime = 0.0f;
@@ -118,6 +101,8 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyDescend:
 	{
+		LookAtPlayer();
+
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 		if(CheckIfInAir() == false)
 		{
@@ -131,8 +116,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-
-	UpdateTransformationLocal(velocity, aDeltaTime);
+	CheckForNewTransformation(aDeltaTime);
 }
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -142,17 +126,42 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		myState = eRevenantState::eDead;
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+		myIsDead = false;
+		SComponentMessageData visibilityData;
+		visibilityData.myBool = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
 	}
 }
 
-void  CRevenantController::ApplyFlyForce(float aJumpHeight)
+void  CRevenantController::ApplyFlightForce()
 {
 	if(CheckIfInAir() == false)
 	{
 		myIsflying = true;
-		myFlightForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+		myFlightForce = sqrtf((gravityAcceleration)* myFlightHeight * 2);
+	}
+}
+
+void CRevenantController::UpdateFlightForces(const float aDeltaTime)
+{
+	if (myIsflying == false)
+	{
+		myFlightForce -= gravityAcceleration * aDeltaTime;
+	}
+
+	if (CheckIfInAir() == false)
+	{
+		if (myFlightForce < 0)
+		{
+			myFlightForce = 0.0f;
+		}
 	}
 }
 
