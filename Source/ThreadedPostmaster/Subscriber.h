@@ -29,6 +29,9 @@ class CResetToCheckPointMessage;
 class CCreateExplosionMessage;
 class CDeactivateExplosionMessage;
 class CRevivePlayerMessage;
+class CStartWaveMessage;
+class CAddEnemyToWave;
+class CPlayerEnteredArena;
 
 namespace Postmaster
 {
@@ -70,5 +73,9 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CCreateExplosionMessage & aCreateExplosionMessage);
 		virtual eMessageReturn DoEvent(const CDeactivateExplosionMessage & aDeactivateExplosionMessage);
 		virtual eMessageReturn DoEvent(const CRevivePlayerMessage & aRevivePlayerMessage);
+		virtual eMessageReturn DoEvent(const CStartWaveMessage & aStartWaveMessage);
+		virtual eMessageReturn DoEvent(const CAddEnemyToWave & aAddEnemyToWave);
+		virtual eMessageReturn DoEvent(const CPlayerEnteredArena & aPLayerEnteredArena);
+
 	};
 }

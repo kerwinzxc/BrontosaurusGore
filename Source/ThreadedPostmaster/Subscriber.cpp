@@ -151,3 +151,18 @@ eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aR
 {
 	return eMessageReturn::eContinue;
 }
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CStartWaveMessage & aStartWaveMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CPlayerEnteredArena & aPLayerEnteredArena)
+{
+	return eMessageReturn::eContinue;
+}
