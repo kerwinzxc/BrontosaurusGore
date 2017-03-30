@@ -1,5 +1,6 @@
 #pragma once
-#include <Windows.h>
+
+typedef struct HWND__ *HWND;
 
 namespace WindowsHelper
 {

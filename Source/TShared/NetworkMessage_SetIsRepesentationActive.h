@@ -3,6 +3,9 @@
 
 #define Ja true
 #define Nej false
+#define Kanske static_cast<bool>(rand() % 2)
+#define Mojligen static_cast<bool>(rand() % 1000)
+#define TypInte static_cast<bool>(rand() % 1000000)
 
 class CNetworkMessage_SetIsRepesentationActive: public CImportantNetworkMessage
 {
