@@ -229,26 +229,31 @@ void CClient::Update()
 
 				const unsigned ID = playerPosition->GetID();
 
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+				if(myNetworkRecieverComponents.find(ID) != myNetworkRecieverComponents.end())
+				{
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
-				/*CU::CJsonValue playerControls;
-				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
+					/*CU::CJsonValue playerControls;
+					std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().LerpPosition(playerPosition->GetTransformation().GetPosition(), 0);*/
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
-				myNetworkRecieverComponents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					myNetworkRecieverComponents.at(ID)->SetInpolationPosition(playerPosition->GetTransformation().GetPosition());
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform() = playerPosition->GetTransformation();
 
-				//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
+					//myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().SetRotation(playerPosition->GetTransformation());
 
-				/*CU::CJsonValue playerControls;
-				std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
+					/*CU::CJsonValue playerControls;
+					std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
+					myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				}
+				
 
 
-				myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 			}
 			break;
 			case ePackageType::eSpawnOtherPlayer:
