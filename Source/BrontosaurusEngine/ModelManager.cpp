@@ -14,6 +14,9 @@
 #include "..\GUI\GUIPixelConstantBuffer.h"
 
 
+#include "../TShared/AnimationState.h"
+ENUM_STRING_MACRO(AnimationState, apa, apa2, apa3, apa345);
+
 CModelManager::CModelManager()
 	: myModelList(ourMaxNumberOfModels)
 {

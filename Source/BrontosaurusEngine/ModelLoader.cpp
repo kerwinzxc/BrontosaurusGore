@@ -9,9 +9,6 @@
 #include "ShaderManager.h"
 #include "Surface.h"
 
-#include "../TShared/AnimationState.h"
-ENUM_STRING_MACRO(AnimationState, apa, apa2, apa3, apa345);
-
 constexpr const char* MODEL_TEXTURE_DIRECTORY = "Models/Textures/";
 
 CModelLoader::CModelLoader()
