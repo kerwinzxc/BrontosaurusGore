@@ -188,7 +188,6 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AnimationState.cpp" />
     <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
