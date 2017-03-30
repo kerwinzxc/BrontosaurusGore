@@ -209,5 +209,11 @@ SRenderToGUI::SRenderToGUI(const std::wstring& anElementName, SRenderMessage* co
 SRenderModelInstancedMessage::SRenderModelInstancedMessage()
 	: SRenderMessage(eRenderMessageType::eRenderModelInstanced)
 {
+	myModelID = -1;
+}
 
+SRenderModelBatches::SRenderModelBatches()
+	: SRenderMessage(eRenderMessageType::eRenderModelBatches)
+{
+	myRenderToDepth = false;
 }
