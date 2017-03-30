@@ -95,7 +95,7 @@ namespace CU
 
 		inline void Optimize();
 
-		inline void QuickSort(std::function<bool(ObjectType, ObjectType)> aCompareFunction);
+		inline void QuickSort(const std::function<bool(ObjectType, ObjectType)>& aCompareFunction);
 
 		inline void Resize(const SizeType aNewSize);
 		inline void Resize(const SizeType aNewSize, const ObjectType& aObject);
@@ -687,7 +687,7 @@ namespace CU
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
-	inline void CU::GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::QuickSort(std::function<bool(ObjectType, ObjectType)> aCompareFunction)
+	inline void CU::GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::QuickSort(const std::function<bool(ObjectType, ObjectType)>& aCompareFunction)
 	{
 		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
 		CU::QuickSort(*this, static_cast<SizeType>(0), mySize, aCompareFunction);

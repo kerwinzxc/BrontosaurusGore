@@ -9,45 +9,35 @@
 
 CEffect::CEffect(ID3D11VertexShader* aVertexShader, ID3D11PixelShader* aPixelShader,
 	ID3D11GeometryShader* aGeometryShader, ID3D11InputLayout* aInputLayout,
-	D3D_PRIMITIVE_TOPOLOGY aTopology)
+	D3D_PRIMITIVE_TOPOLOGY aTopology, ID3D11VertexShader* aVertexInstancedShader, ID3D11InputLayout* aInstancedLayout)
 {
 	myFramework = CEngine::GetInstance()->GetFramework();
 	myVertexShader = aVertexShader;
-	//SAFE_ADD_REF(myVertexShader);
 	myPixelShader = aPixelShader;
-	//SAFE_ADD_REF(myPixelShader);
 	myGeometryShader = aGeometryShader;
-	//SAFE_ADD_REF(myGeometryShader);
 	myLayout = aInputLayout;
-	//SAFE_ADD_REF(myLayout);
 	myTopology = aTopology;
-	//SAFE_ADD_REF(myTopology);
+
+	myVertexInstancedShader = aVertexInstancedShader;
+	myInstancedLayout = aInstancedLayout;
 }
 
 CEffect::CEffect(const CEffect& aEffect)
 {
 	myFramework = aEffect.myFramework;
 
-	//SAFE_RELEASE(myVertexShader);
 	myVertexShader = aEffect.myVertexShader;
-	//SAFE_ADD_REF(myVertexShader);
 
-	//SAFE_RELEASE(myGeometryShader);
 	myGeometryShader = aEffect.myGeometryShader;
-	//SAFE_ADD_REF(myGeometryShader);
 
-	//SAFE_RELEASE(myPixelShader);
 	myPixelShader = aEffect.myPixelShader;
-	//SAFE_ADD_REF(myPixelShader);
 
-	//SAFE_RELEASE(myLayout);
 	myLayout = aEffect.myLayout;
-	//SAFE_ADD_REF(myLayout);
 
-	//SAFE_RELEASE(myTopology);
 	myTopology = aEffect.myTopology;
-	//SAFE_ADD_REF(myTopology);
 
+	myVertexInstancedShader = aEffect.myVertexInstancedShader;
+	myInstancedLayout = aEffect.myInstancedLayout;
 }
 
 
@@ -55,31 +45,42 @@ CEffect::CEffect(const CEffect& aEffect)
 
 CEffect::~CEffect()
 {
-	//TELL SHADERMGR THAT WE DON'T WANT IT ANYMORE??
-
-
-	//SAFE_RELEASE(myVertexShader);
-	//SAFE_RELEASE(myGeometryShader);
-	//SAFE_RELEASE(myPixelShader);
-	//SAFE_RELEASE(myLayout);
 }
 
-void CEffect::Activate()
+void CEffect::Activate(const bool aInstanced)
 {
-	myFramework->GetDeviceContext()->VSSetShader(myVertexShader, NULL, 0);
+	assert((aInstanced && myVertexInstancedShader && myInstancedLayout) || (!aInstanced));
+	if (aInstanced)
+	{
+		myFramework->GetDeviceContext()->VSSetShader(myVertexInstancedShader, NULL, 0);
+		myFramework->GetDeviceContext()->IASetInputLayout(myInstancedLayout);
+	}
+	else
+	{
+		myFramework->GetDeviceContext()->VSSetShader(myVertexShader, NULL, 0);
+		myFramework->GetDeviceContext()->IASetInputLayout(myLayout);
+	}
+
 	myFramework->GetDeviceContext()->PSSetShader(myPixelShader, NULL, 0);
 	myFramework->GetDeviceContext()->GSSetShader(myGeometryShader, NULL, 0);
-	myFramework->GetDeviceContext()->IASetInputLayout(myLayout);
 	myFramework->GetDeviceContext()->IASetPrimitiveTopology(myTopology);
 }
 
-
-void CEffect::ActivateForDepth(ID3D11PixelShader* aShadowShader)
+void CEffect::ActivateForDepth(ID3D11PixelShader* aShadowShader, const bool aInstanced)
 {
-	myFramework->GetDeviceContext()->VSSetShader(myVertexShader, NULL, 0);
+	assert((aInstanced && myVertexInstancedShader && myInstancedLayout) || (!aInstanced));
+	if (aInstanced)
+	{
+		myFramework->GetDeviceContext()->VSSetShader(myVertexInstancedShader, NULL, 0);
+		myFramework->GetDeviceContext()->IASetInputLayout(myInstancedLayout);
+	}
+	else
+	{
+		myFramework->GetDeviceContext()->VSSetShader(myVertexShader, NULL, 0);
+		myFramework->GetDeviceContext()->IASetInputLayout(myLayout);
+	}
+
 	myFramework->GetDeviceContext()->PSSetShader(aShadowShader, NULL, 0);
 	myFramework->GetDeviceContext()->GSSetShader(NULL, NULL, 0);
-	myFramework->GetDeviceContext()->IASetInputLayout(myLayout);
 	myFramework->GetDeviceContext()->IASetPrimitiveTopology(myTopology);
 }
-

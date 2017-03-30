@@ -17,6 +17,7 @@ enum class eComponentQuestionType
 	eGetCollisionShape,
 	eMovePhysicsController,
 	ePhysicsControllerConstraints,
+	eCanShoot,
 	eLength,
 };
 

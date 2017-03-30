@@ -135,7 +135,10 @@ PixelOutput PS_PosNormBinormTanTexBones(PosNormBinormTanTex_InputPixel input)
 {
 	return PS_PosNormBinormTanTex(input);
 }
-
+PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTex_InputPixel input)
+{
+	return PS_PosNormBinormTanTex(input);
+}
 
 
 	// Coola värden för att ändra foggen, detta kommer att komma in i Lua inladdningen och sättas via Engine asball!

@@ -76,6 +76,12 @@ PixelOutput PS_PosNormBinormTanTexBones(PosNormBinormTanTex_InputPixel input)
 	return PS_PosNormBinormTanTex(input);
 }
 
+PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTex_InputPixel input)
+{
+	return PS_PosNormBinormTanTex(input);
+
+}
+
 float3 PS_ObjectNormal(PosNormBinormTanTex_InputPixel input)
 {
 	float3 normal = normalMap.Sample(samplerWrap, input.uv).xyz;
