@@ -2,6 +2,7 @@
 #include "../BrontosaurusEngine/TextInstance.h"
 #include "../CommonUtilities/JsonValue.h"
 #include "GUIElement.h"
+#include "map"
 
 class CSpriteInstance;
 class CBarInstance;
@@ -21,13 +22,15 @@ public:
 	void LoadHUD();
 
 	void LoadArmourAndHealth(const CU::CJsonValue& aJsonValue);
+	void LoadWeaponHud(const CU::CJsonValue& aJsonValue);
 
 	void Update(CU::Time aDeltaTime);
+	void SetAmmoHudRect();
 	void Render();
 
 private:
 
-	SHUDElement loadElement(const CU::CJsonValue& aJsonValue) const;
+	SHUDElement LoadElement(const CU::CJsonValue& aJsonValue) const;
 
 	void LoadText(const CU::CJsonValue& aJsonValue, CTextInstance& aTextInstance) const;
 	CBarInstance* LoadBar(const CU::CJsonValue& aJsonValue);
@@ -50,11 +53,18 @@ private:
 
 	CTextInstance myAmmoNumber;
 
+	char myCurrentWeapon; 
+	char myTransitionLength;
+	bool myWeaponHUDHasChanged;
+	std::map<std::string, char> myWeaponIndexes;
+	CU::CBitSet<3> myPickedUpWeapons;
+
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
 
 	//test
 	float testValue;
+
 };
 
