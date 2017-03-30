@@ -24,15 +24,11 @@
 
 CDeferredRenderer::CDeferredRenderer()
 {
+	myBatchedModelIds.Init(64);
 	myFramework = CEngine::GetInstance()->GetFramework();
 	CU::Vector2ui windowSize = CEngine::GetInstance()->GetWindowSize();
 
-	myGbuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myGbuffer.normal.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myGbuffer.emissive.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myGbuffer.RMAO.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myGbuffer.highLight.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-
+	myGbuffer.Init(windowSize, myFramework, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mySSAORandomTexture = &CEngine::GetInstance()->GetTextureManager().LoadTexture("SSAORandomTexture.dds");
@@ -109,11 +105,11 @@ void CDeferredRenderer::DoRenderMessage(SRenderMessage* aRenderMessage)
 	}
 }
 
-void CDeferredRenderer::DoRenderQueue()
+void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 {
-	ClearRenderTargets();
-	SetRenderTargets();
-
+	myGbuffer.Clear();	
+	myGbuffer.UnbindInput();
+	myGbuffer.BindOutput();
 
 	for (unsigned int i = 0; i < myRenderMessages.Size(); ++i)
 	{
@@ -131,8 +127,42 @@ void CDeferredRenderer::DoRenderQueue()
 			model->Render(msg->myRenderParams);
 			break;
 		}
-		default:
+		case SRenderMessage::eRenderMessageType::eRenderModelInstanced:
+		{
+			SRenderModelInstancedMessage* msg = static_cast<SRenderModelInstancedMessage*>(myRenderMessages[i]);
+			CModel* model = CEngine::GetInstance()->GetModelManager()->GetModel(msg->myModelID);
+			model->AddInstanceToRenderBuffer(msg->myRenderParams);
+
+			if (myBatchedModelIds.Find(msg->myModelID) == myBatchedModelIds.FoundNone)
+			{
+				myBatchedModelIds.Add(msg->myModelID);
+			}
 			break;
+		}
+		case SRenderMessage::eRenderMessageType::eRenderModelBatches:
+		{
+			SRenderModelBatches* msg = static_cast<SRenderModelBatches*>(myRenderMessages[i]);
+			CModelManager* modelManager = CEngine::GetInstance()->GetModelManager();
+			if (!modelManager) break;
+
+			CModel* model = nullptr;
+
+			for (int id : myBatchedModelIds)
+			{
+				model = modelManager->GetModel(id);
+				if (!model) continue;
+
+				model->RenderInstanced(msg->myRenderToDepth);
+			}
+			myBatchedModelIds.RemoveAll();
+			break;
+		}
+		case SRenderMessage::eRenderMessageType::eChangeStates:
+		{
+			SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
+			aRenderer.SetStates(msg);
+			break;
+		}
 		}
 	}
 
@@ -148,7 +178,8 @@ void CDeferredRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)
 	case SRenderMessage::eRenderMessageType::eRenderDirectionalLight:
 		myLightMessages.Add(aRenderMessage);
 		break;
-	case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
+	//case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
+	default:
 		myRenderMessages.Add(aRenderMessage);
 		break;
 	}
@@ -169,7 +200,7 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 
 	//SSAO
 #ifdef _ENABLE_RENDERMODES
-	if(myRenderMode == ERenderMode::eSSAO)
+	if(myRenderMode == ERenderMode::eSSAO || myRenderMode == ERenderMode::eIntermediate)
 #endif
 	{
 		SChangeStatesMessage changeStateMessage = {};
@@ -179,8 +210,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		aRenderer.SetStates(&changeStateMessage);
 
-
-		ActivateSSAO();
 		DoSSAO(aFullscreenHelper);
 	}
 	SChangeStatesMessage changeStateMessage = {};
@@ -190,39 +219,36 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
 
-
 	ActivateIntermediate();
-	SetSRV();
+	myGbuffer.BindInput();
 #ifdef _ENABLE_RENDERMODES
 	myInputWrapper->Update();
 	HandleInput();
 
 	switch (myRenderMode)
 	{
-	case CDeferredRenderer::eDiffuse:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.diffuse);
+	case ERenderMode::eDiffuse:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myDiffuse);
 		break;
-	case CDeferredRenderer::eNormal:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.normal);
+	case ERenderMode::eNormal:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myNormal);
 		break;
-	case CDeferredRenderer::eRoughness:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyR, &myGbuffer.RMAO);
+	case ERenderMode::eRoughness:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyR, &myGbuffer.myRMAO);
 		break;
-	case CDeferredRenderer::eMetalness:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyG, &myGbuffer.RMAO);
+	case ERenderMode::eMetalness:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyG, &myGbuffer.myRMAO);
 		break;
-	case CDeferredRenderer::eAO:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.RMAO);
+	case ERenderMode::eAO:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.myRMAO);
 		break;
-	case CDeferredRenderer::eSSAO:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.RMAO);
+	case ERenderMode::eSSAO:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.myRMAO);
 		break;
-
-	case eHighlight: 
-
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.highLight);
+	case ERenderMode::eHighlight:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
 		break;
-	case CDeferredRenderer::eIntermediate:
+	case ERenderMode::eIntermediate:
 		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 		changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 		changeStateMessage.myBlendState = eBlendState::eNoBlend;
@@ -235,8 +261,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		aRenderer.SetStates(&changeStateMessage);
 		DoDirectLighting(aFullscreenHelper);
-
-		
 
 		DoHighlight(aFullscreenHelper,aRenderer);
 		break;
@@ -257,100 +281,30 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		aRenderer.SetStates(&changeStateMessage);
 		DoDirectLighting(aFullscreenHelper);
+		DoHighlight(aFullscreenHelper, aRenderer);
 #endif
 }
 
 ID3D11DepthStencilView* CDeferredRenderer::GetDepthStencil()
 {
-	return myGbuffer.diffuse.GetDepthStencilView();
+	return myGbuffer.myDiffuse.GetDepthStencilView();
 }
 
 ID3D11ShaderResourceView* CDeferredRenderer::GetDepthResource()
 {
-	return myGbuffer.diffuse.GetDepthResource();
-}
-
-void CDeferredRenderer::SetRenderTargets()
-{
-	ID3D11ShaderResourceView* srvs[5];
-	srvs[0] = nullptr;
-	srvs[1] = nullptr;
-	srvs[2] = nullptr;
-	srvs[3] = nullptr;
-	srvs[4] = nullptr;
-
-	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
-
-
-	ID3D11RenderTargetView* rtvs[5];
-	rtvs[0] = myGbuffer.diffuse.GetRenderTargetView();
-	rtvs[1] = myGbuffer.normal.GetRenderTargetView();
-	rtvs[2] = myGbuffer.RMAO.GetRenderTargetView();
-	rtvs[3] = myGbuffer.emissive.GetRenderTargetView();
-	rtvs[4] = myGbuffer.highLight.GetRenderTargetView();
-
-	myFramework->GetDeviceContext()->OMSetRenderTargets(5, rtvs, myGbuffer.diffuse.GetDepthStencilView());
-}
-
-void CDeferredRenderer::ClearRenderTargets()
-{
-	myGbuffer.diffuse.Clear();
-	myGbuffer.normal.Clear();
-	myGbuffer.RMAO.Clear();
-	myGbuffer.emissive.Clear();
-	myGbuffer.highLight.Clear();
+	return myGbuffer.myDiffuse.GetDepthResource();
 }
 
 void CDeferredRenderer::ActivateIntermediate()
 {
-	ID3D11RenderTargetView* rtvs[4];
-	rtvs[0] = nullptr;
-	rtvs[1] = nullptr;
-	rtvs[2] = nullptr;
-	rtvs[3] = nullptr;
-	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, nullptr);
-
-
+	myGbuffer.UnbindOutput();
 	myIntermediatePackage.Clear();
 	myIntermediatePackage.Activate();
 }
 
-void CDeferredRenderer::ActivateSSAO()
-{
-	ID3D11RenderTargetView* rtvs[4];
-	rtvs[0] = nullptr;
-	rtvs[1] = nullptr;
-	rtvs[2] = nullptr;
-	rtvs[3] = nullptr;
-	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, nullptr);
-
-	myGbuffer.RMAO.Activate();
-	//mySSAOPackage.Clear();
-	//mySSAOPackage.Activate();
-
-	ID3D11ShaderResourceView* srvs[5];
-	srvs[0] = myGbuffer.diffuse.GetResource();
-	srvs[1] = myGbuffer.normal.GetResource();
-	srvs[2] = nullptr;//myGbuffer.RMAO.GetResource();
-	srvs[3] = myGbuffer.emissive.GetResource();
-	srvs[4] = myGbuffer.diffuse.GetDepthResource();
-	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
-}
-
-void CDeferredRenderer::SetSRV()
-{
-	ID3D11ShaderResourceView* srvs[5];
-	srvs[0] = myGbuffer.diffuse.GetResource();
-	srvs[1] = myGbuffer.normal.GetResource();
-	srvs[2] = myGbuffer.RMAO.GetResource();
-	srvs[3] = myGbuffer.emissive.GetResource();
-	srvs[4] = myGbuffer.diffuse.GetDepthResource();
-	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
-}
-
 void CDeferredRenderer::SetRMAOSRV()
 {
-	myFramework->GetDeviceContext()->PSSetShaderResources(3, 1, &myGbuffer.RMAO.GetResource());
+	myFramework->GetDeviceContext()->PSSetShaderResources(3, 1, &myGbuffer.myRMAO.GetResource());
 }
 
 void CDeferredRenderer::SetCBuffer()
@@ -414,28 +368,21 @@ void CDeferredRenderer::RenderSpotLight(SRenderMessage* aRenderMessage, CFullScr
 void CDeferredRenderer::DoHighlight(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer)
 {
 	SChangeStatesMessage changeStateMessage;
-	/*changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	aRenderer.SetStates(&changeStateMessage);
-	myGbuffer.highLight.Activate();
-
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eGaussianBlurHorizontal, &myGbuffer.highLight);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eGaussianBlurVertical, &myGbuffer.highLight);*/
-
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 	changeStateMessage.myBlendState = eBlendState::eOverlay;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
-	//ActivateIntermediate();
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.highLight);
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
 }
-
 
 void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)
 {
+	myGbuffer.UnbindOutput();
+	myGbuffer.myRMAO.Activate();
+	CGeometryBuffer::EGeometryPackages packages = CGeometryBuffer::EGeometryPackage::eALL - CGeometryBuffer::EGeometryPackage::eRMAO;
+	myGbuffer.BindInput(packages);
+
 	myFramework->GetDeviceContext()->PSSetShaderResources(6, 1, mySSAORandomTexture->GetShaderResourceViewPointer());
 	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eSSAO);
 }
