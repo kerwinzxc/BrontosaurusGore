@@ -456,11 +456,11 @@ bool CServerMain::Update()
 				std::string positionString;
 				positionString += "Position: ";
 				positionString += " X: ";
-				positionString += position->GetPosition().x;
+				positionString += std::to_string(position->GetPosition().x);
 				positionString += " Y: ";
-				positionString += position->GetPosition().y;
+				positionString += std::to_string(position->GetPosition().y);
 				positionString += " Z: ";
-				positionString += position->GetPosition().z;
+				positionString += std::to_string(position->GetPosition().z);
 
 				DL_PRINT(positionString.c_str());
 
