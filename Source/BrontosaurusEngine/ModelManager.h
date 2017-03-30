@@ -30,6 +30,7 @@ public:
 	const ModelId LoadGUIModel(const CLoaderMesh* aLoaderMesh, const CU::GrowingArray<std::string>& aTexturePaths);
 	CModel* GetModel(const ModelId aModelID);
 	void RemoveModel(const ModelId aModelID);
+	int GetModelRefCount(const ModelId aModelID) const;
 
 private:
 	void LoadAnimations(const char * aPath, const ModelId aModelId);

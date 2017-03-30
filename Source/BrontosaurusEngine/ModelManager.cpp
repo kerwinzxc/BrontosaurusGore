@@ -156,6 +156,17 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 		myModelList[aModelID] = CModel();
 	}
 }
+
+int CModelManager::GetModelRefCount(const ModelId aModelID) const
+{
+	if (aModelID == -1 || myModelList[aModelID].GetInitialized() == false)
+	{
+		return 0;
+	}
+
+	return myModelList[aModelID].GetRefCount();
+}
+
 void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
 	static const std::string Directory("Models/Animations/");
