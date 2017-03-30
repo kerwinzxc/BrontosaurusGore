@@ -173,7 +173,7 @@ ID3D11VertexShader* CShaderManager::CompileVertexShader(std::wstring aString, un
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 	std::string shaderFunction = "VS_";
 
-	shaderFunction += GetInputLayoutType(aDataFlags, inputLayoutDesc, (aDataFlags & EModelBluePrint::EModelBluePrint_Instance) > 0);
+	shaderFunction += GetInputLayoutType(aDataFlags, inputLayoutDesc);
 	
 	std::string errorMsg;
 	bool bresult;
@@ -253,7 +253,7 @@ ID3D11GeometryShader * CShaderManager::CompileGeometryShader(std::wstring aStrin
 }
 
 //returns string and sets the layout. eehehe
-std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout, const bool aInstanced)
+std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, std::vector<D3D11_INPUT_ELEMENT_DESC>& aInputLayout)
 {
 	std::string layoutName = "";
 
@@ -328,7 +328,7 @@ std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, st
 	if (aShaderBlueprint & EModelBluePrint_Instance && !(aShaderBlueprint & EModelBluePrint_Bones))
 	{
 		layoutName += "Instanced";
-		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1, true);
+		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
@@ -337,6 +337,8 @@ std::string CShaderManager::GetInputLayoutType(unsigned int aShaderBlueprint, st
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 		EffectHelper::CreateLayout(aInputLayout, "TOWORLDLASTFRAME", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
+
+		EffectHelper::CreateLayout(aInputLayout, "HIGHLIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_INPUT_PER_INSTANCE_DATA, 1);
 	}
 
 	return layoutName;
