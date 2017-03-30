@@ -61,7 +61,7 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 
 	const CU::Vector2f mySpriteSize = myWeaponSprite->GetTextureSize();
 
-	myWeaponSprite->SetRect({ 0,0, frameWidth / mySpriteSize.x, frameHeight / mySpriteSize.y});
+	myWeaponSprite->SetRect({ 0,0, frameWidth / mySpriteSize.x, frameHeight / mySpriteSize.y });
 	myWeaponSprite->SetSize({ 1.f,1.f });
 
 	const CU::CJsonValue & weaponIndexValue = spretsheeValue.at("weaponTypes");
@@ -76,6 +76,7 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 	myPickedUpWeapons = 0;
 
 	LoadText(aJsonValue.at("ammoText"), myAmmoNumber);
+	myAmmoNumber.SetText(L"\u221E");
 }
 
 void CHUD::Update(CU::Time aDeltaTime)
@@ -125,7 +126,8 @@ void CHUD::SetAmmoHudRect()
 	const float finalX = static_cast<float>(largeX % 1000) / 1000;
 	const float finalY = static_cast<float>(newRow) * frameSize.y;
 
-	myWeaponSprite->SetRect(CU::Vector4f(finalX, finalY, finalX + frameSize.x, finalY + frameSize.y));
+	CU::Vector4f rect(CU::Vector4f(MIN(finalX, 1), MIN(1 - (finalY + frameSize.y), 1), MIN(finalX + frameSize.x, 1), MIN(1 - finalY, 1)));
+	myWeaponSprite->SetRect(rect);
 }
 
 void CHUD::Render()
