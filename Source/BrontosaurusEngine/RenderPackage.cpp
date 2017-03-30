@@ -153,8 +153,8 @@ CU::Vector2f CRenderPackage::GetSize()
 
 void CRenderPackage::SaveToFile(const char* aPath)
 {
-	const wchar_t* path = CU::StringToWString(aPath).c_str();
-	DirectX::SaveDDSTextureToFile(DEVICE_CONTEXT, myTexture, path);
+	std::wstring path = CU::StringToWString(aPath);
+	DirectX::SaveDDSTextureToFile(DEVICE_CONTEXT, myTexture, path.c_str());
 }
 
 void CRenderPackage::operator=(const CRenderPackage& aLeft)

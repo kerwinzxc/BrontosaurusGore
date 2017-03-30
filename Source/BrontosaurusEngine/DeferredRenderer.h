@@ -1,18 +1,14 @@
 #pragma once
-#include "RenderPackage.h"
-
+#include "GeometryBuffer.h"
 
 #ifndef _RETAIL_BUILD
 #define _ENABLE_RENDERMODES
 #endif
 
-
 struct SRenderMessage;
 struct ID3D11Buffer;
 class CDXFramework;
-
 class CLightModel;
-
 class CFullScreenHelper;
 class CTexture;
 
@@ -23,43 +19,29 @@ namespace CU
 }
 #endif
 
-
 class CDeferredRenderer
 {
 	friend CRenderer;
-	struct SGBuffer
-	{
-		CRenderPackage diffuse;
-		CRenderPackage normal;
-		CRenderPackage RMAO;
-		CRenderPackage emissive;
-		CRenderPackage highLight;
-	};
 
 	struct SCameraStruct
 	{
 		CU::Matrix44f prjInv;
 		CU::Matrix44f camTW;
 	};
-
 public:
 	CDeferredRenderer();
 	~CDeferredRenderer();
 
 	void DoRenderMessage(SRenderMessage* aRenderMessage);
-	void DoRenderQueue();
+	void DoRenderQueue(CRenderer & aRenderer);
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, const CU::Matrix44f & aProjectionInverse);
 
-	
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
 	ID3D11ShaderResourceView* GetDepthResource();
 private:
-	void SetRenderTargets();
-	void ClearRenderTargets();
-
 	void DoAmbientLighting(CFullScreenHelper& aFullscreenHelper);
 	void DoDirectLighting(CFullScreenHelper& aFullscreenHelper);
 
@@ -70,8 +52,6 @@ private:
 	void DoHighlight(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 
 	void ActivateIntermediate();
-	void ActivateSSAO();
-	void SetSRV();
 	void SetRMAOSRV();
 
 	void SetCBuffer();
@@ -79,10 +59,10 @@ private:
 	void InitPointLightModel();
 	void DoSSAO(CFullScreenHelper& aFullscreenHelper);
 
-
 private:
 	CU::GrowingArray<SRenderMessage*> myRenderMessages;
 	CU::GrowingArray<SRenderMessage*> myLightMessages;
+	CU::GrowingArray<int> myBatchedModelIds;
 
 	CLightModel* myLightModel;
 
@@ -91,7 +71,7 @@ private:
 	ID3D11Buffer* myPointLightBuffer;
 	ID3D11Buffer* mySpotLightBuffer;
 
-	SGBuffer myGbuffer;
+	CGeometryBuffer myGbuffer;
 	
 	CRenderPackage myIntermediatePackage;
 	
@@ -100,7 +80,7 @@ private:
 	CRenderPackage mySSAOPackage;
 
 #ifdef _ENABLE_RENDERMODES
-	enum ERenderMode
+	enum class ERenderMode
 	{
 		eDiffuse,
 		eNormal,
@@ -115,4 +95,3 @@ private:
 	void HandleInput();
 #endif 
 };
-

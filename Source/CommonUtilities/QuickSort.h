@@ -12,19 +12,19 @@ namespace CU
 		GrowingArray<type, sizet, safemode>& A, 
 		int p, 
 		int q, 
-		std::function<bool(type, type)> aCompFunction);
+		const std::function<bool(type, type)>& aCompFunction);
 
 	template<typename type, typename sizet, bool safemode>
 	void QuickSort(
 		GrowingArray<type, sizet, safemode>& aList, 
 		sizet aStartIndex, 
 		sizet aEndIndex, 
-		std::function<bool(type, type)> aCompFunction);
+		const std::function<bool(type, type)>& aCompFunction);
 
 
 
 	template<typename type, typename sizet, bool safemode>
-	int Partition(GrowingArray<type, sizet, safemode>& A, sizet p, sizet q, std::function<bool(type, type)> aCompFunction)
+	int Partition(GrowingArray<type, sizet, safemode>& A, sizet p, sizet q, const std::function<bool(type, type)>& aCompFunction)
 	{
 		sizet i = p;
 		sizet j;
@@ -51,7 +51,7 @@ namespace CU
 
 
 	template<typename type, typename sizet, bool safemode>
-	void QuickSort(GrowingArray<type, sizet, safemode>& aList, sizet aStartIndex, sizet aEndIndex, std::function<bool(type, type)> aCompFunction)
+	void QuickSort(GrowingArray<type, sizet, safemode>& aList, sizet aStartIndex, sizet aEndIndex, const std::function<bool(type, type)>& aCompFunction)
 	{
 		sizet r;
 		if (aStartIndex < aEndIndex)

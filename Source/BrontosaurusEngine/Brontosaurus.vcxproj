@@ -386,6 +386,7 @@
     <ClInclude Include="CascadeShadowMap.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="GeometryBuffer.h" />
     <ClInclude Include="HighlightComponent.h" />
     <ClInclude Include="LightModel.h" />
     <ClInclude Include="ParticleRenderer.h" />
@@ -468,6 +469,7 @@
     <ClCompile Include="CascadeShadowMap.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
+    <ClCompile Include="GeometryBuffer.cpp" />
     <ClCompile Include="HighlightComponent.cpp" />
     <ClCompile Include="LightModel.cpp" />
     <ClCompile Include="ParticleRenderer.cpp" />

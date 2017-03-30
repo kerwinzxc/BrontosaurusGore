@@ -9,6 +9,9 @@
 #include "ShaderManager.h"
 #include "Surface.h"
 
+#include "../TShared/AnimationState.h"
+ENUM_STRING_MACRO(AnimationState, apa, apa2, apa3, apa345);
+
 constexpr const char* MODEL_TEXTURE_DIRECTORY = "Models/Textures/";
 
 CModelLoader::CModelLoader()
@@ -44,13 +47,20 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 	std::wstring directory = std::wstring(modelPath.begin(), modelPath.end());
 
 	int shaderType = scene.myMeshes[0]->myShaderType;
-	shaderType |= (scene.myNumBones > 0) ? EModelBluePrint_Instance : 0;
-
 
 	std::string shaderPath = scene.myMeshes[0]->myShaderFile.c_str();
 	std::wstring wShaderPath = std::wstring(shaderPath.begin(), shaderPath.end());
 
 	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/vertex_shader.fx", shaderType);
+
+	ID3D11VertexShader* vertexInstancedShader = nullptr;
+	ID3D11InputLayout* instancedInputLayout = nullptr;
+	if (scene.myNumBones == 0)
+	{
+		vertexInstancedShader = SHADERMGR->LoadVertexShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/vertex_shader.fx", shaderType | EModelBluePrint_Instance);
+		instancedInputLayout = SHADERMGR->LoadInputLayout(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/vertex_shader.fx", shaderType | EModelBluePrint_Instance);
+	}
+
 	ID3D11PixelShader* forwardPixelShader = SHADERMGR->LoadPixelShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/pixel_shader.fx", shaderType);
 	ID3D11PixelShader* deferredPixelShader = SHADERMGR->LoadPixelShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/Deferred/deferred_pixel.fx", shaderType);
 
@@ -61,8 +71,8 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 
 	D3D_PRIMITIVE_TOPOLOGY topology			= D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	//Put effects in a manager mebe?
-	CEffect* forwardEffect = new CEffect(vertexShader, forwardPixelShader, geometryShader, inputLayout, topology);
-	CEffect* deferredEffect = new CEffect(vertexShader, deferredPixelShader, geometryShader, inputLayout, topology);
+	CEffect* forwardEffect = new CEffect(vertexShader, forwardPixelShader, geometryShader, inputLayout, topology, vertexInstancedShader, instancedInputLayout);
+	CEffect* deferredEffect = new CEffect(vertexShader, deferredPixelShader, geometryShader, inputLayout, topology, vertexInstancedShader, instancedInputLayout);
 
 	CSurface* surface = new CSurface(MODEL_TEXTURE_DIRECTORY, scene.myTextures);
 

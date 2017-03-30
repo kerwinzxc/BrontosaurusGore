@@ -24,6 +24,7 @@ struct SCameraViewProjection
 	CU::Matrix44f myProjectionSpace;
 }; 
 
+
 struct SToWorldSpace
 {
 	CU::Matrix44f myWorldSpace;
@@ -59,7 +60,7 @@ struct SOncePerFrameBuffer
 
 struct SAnimationBoneStruct 
 {
-	CU::Matrix44f boneMatrices[32];
+	CU::Matrix44f boneMatrices[64];
 };
 
 struct SForwardRenderModelParams
