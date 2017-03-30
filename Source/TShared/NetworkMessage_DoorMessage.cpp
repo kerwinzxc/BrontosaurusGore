@@ -4,6 +4,7 @@
 
 CNetworkMessage_DoorMessage::CNetworkMessage_DoorMessage()
 {
+	myKeyID = -1;
 }
 
 
@@ -24,6 +25,16 @@ void CNetworkMessage_DoorMessage::SetID(const unsigned char aNetworkID)
 void CNetworkMessage_DoorMessage::SetDoorAction(const eDoorAction aDoorAction)
 {
 	myDoorAction = aDoorAction;
+}
+
+void CNetworkMessage_DoorMessage::SetKeyID(const short aKeyID)
+{
+	myKeyID = aKeyID;
+}
+
+const short CNetworkMessage_DoorMessage::GetKeyID() const
+{
+	return myKeyID;
 }
 
 const unsigned char CNetworkMessage_DoorMessage::GetNetworkID() const
