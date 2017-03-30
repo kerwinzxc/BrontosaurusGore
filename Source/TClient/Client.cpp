@@ -390,9 +390,6 @@ void CClient::Update()
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.SetFutureMatrix(message->GetTransformation());
 				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-				SComponentMessageData positiondata;
-				positiondata.myVector3f = message->GetTransformation().GetPosition();
-				//target.GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 			}
 			break;
 			case ePackageType::eTakeDamage:
