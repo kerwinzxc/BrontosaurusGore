@@ -9,10 +9,26 @@ static std::map<std::string, PROCESS_INFORMATION> locStartedProcesses;
 
 namespace WindowsHelper
 {
-	void GoogleIt()
+	void GoogleIt(const std::string& aGoogleSearch)
 	{
-		std::string googleString = "https://www.google.se/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=stack+overflow+please+help&*";
+		std::string googleString = "https://www.google.se/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=";//stack+overflow+my+pointer+is+null&*";
+		for (char ch : aGoogleSearch)
+		{
+			if (ch == ' ')
+			{
+				ch = '+';
+			}
+
+			googleString += ch;
+		}
+		googleString += "&*";
+
 		ShellExecuteA(NULL, "open", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", googleString.c_str(), NULL, SW_SHOWDEFAULT);
+	}
+
+	void GoogleIt(const std::wstring& aGoogleSearch)
+	{
+		GoogleIt(std::string(aGoogleSearch.begin(), aGoogleSearch.end()));
 	}
 
 	void StartProgram(const std::string& aExePath)
