@@ -229,6 +229,7 @@
     <ClCompile Include="CharacterControllerComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
+    <ClCompile Include="TriggerArenaComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -523,6 +524,7 @@
     <ClInclude Include="CharacterControllerComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
+    <ClInclude Include="TriggerArenaComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Particles">
@@ -632,6 +634,9 @@
     </Filter>
     <Filter Include="EnemySpawner">
       <UniqueIdentifier>{42593922-70a4-4327-90bb-ac184219853f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TriggerArena">
+      <UniqueIdentifier>{594cfbe2-4fd8-45a5-9907-9b5cdf57f397}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

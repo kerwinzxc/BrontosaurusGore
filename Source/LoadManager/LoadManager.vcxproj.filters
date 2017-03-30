@@ -95,6 +95,7 @@
       <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
     </ClInclude>
     <ClInclude Include="LoadSpawner.h" />
+    <ClInclude Include="LoadArenaTrigger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -188,6 +189,7 @@
       <Filter>LoadThings\LoadEnemy\LoadPinky</Filter>
     </ClCompile>
     <ClCompile Include="LoadSpawner.cpp" />
+    <ClCompile Include="LoadArenaTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
