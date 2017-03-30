@@ -55,7 +55,6 @@ enum class eComponentType : unsigned char
 	eCharacterController,
 	eAnimationComponent,
 	eHighlightComponent,
-	eHealthPickupComponent, 
 	eAmmoPickup,
 	eArmorPickup,
 	eKeyPickup,
