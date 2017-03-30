@@ -194,6 +194,7 @@
     </ClInclude>
     <ClInclude Include="NetworkMessage_SpawnEnemyRepesention.h" />
     <ClInclude Include="NetworkMessage_SetIsRepesentationActive.h" />
+    <ClInclude Include="AnimationState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -294,5 +295,6 @@
     </ClCompile>
     <ClCompile Include="NetworkMessage_SpawnEnemyRepesention.cpp" />
     <ClCompile Include="NetworkMessage_SetIsRepesentationActive.cpp" />
+    <ClCompile Include="AnimationState.cpp" />
   </ItemGroup>
 </Project>
