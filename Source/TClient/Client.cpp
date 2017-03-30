@@ -73,6 +73,7 @@
 //temp!!! hoppas jag...
 #include "../CommonUtilities/JsonValue.h"
 #include "../CommonUtilities/WindowsHelper.h"
+#include "../TShared/NetworkMessage_WeaponChange.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
@@ -440,6 +441,14 @@ void CClient::Update()
 				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
+			case ePackageType::eWeaponChange:
+				{
+				CNetworkMessage_WeaponChange* changeMessage = currentMessage->CastTo<CNetworkMessage_WeaponChange>();
+				SComponentMessageData data;
+				data.myInt = changeMessage->GetWeaponIndex();
+				myNetworkRecieverComponents.at(changeMessage->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
+				}
+				break;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
 			default: break;
