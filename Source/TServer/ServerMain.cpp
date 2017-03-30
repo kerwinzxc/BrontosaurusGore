@@ -165,6 +165,7 @@ void CServerMain::Ping(ClientID aClientID)
 {
 	//Ping was my best best friend growing up
 	//though Ping stole my gir....
+	//Now I'm on a quest to slay the dark overlord Ping to restore balnce to the force!
 	CNetworkMessage_Ping* pingMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>(aClientID);
 
 	SendTo(pingMessage);
@@ -441,9 +442,6 @@ bool CServerMain::Update()
 					CGameObject*const gameObject = myClients.at(ID).myComponent->GetParent();
 					gameObject->SetWorldTransformation(positionMessage->GetTransformation());
 					gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-					SComponentMessageData positonData;
-					positonData.myVector3f = positionMessage->GetTransformation().GetPosition();
-					//gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, SComponentMessageData());
 					gameObject->SetName("Spelaren");
 
 					SendTo(positionMessage);
