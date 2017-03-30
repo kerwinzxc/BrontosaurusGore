@@ -133,6 +133,7 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		myState = ePinkyState::eIdle;
 		break;
 	}
 }
