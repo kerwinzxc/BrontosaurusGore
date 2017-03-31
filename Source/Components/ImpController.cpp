@@ -49,6 +49,10 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eIdle;
 		}
 	}
+	else
+	{
+		myState = eImpState::eDead;
+	}
 
 
 	switch (myState)
@@ -133,11 +137,19 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
+	{
 		myState = eImpState::eIdle;
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
+	}
+	case eComponentMessageType::eDeactivate:
+		myIsDead = true;
+		break;
+	case eComponentMessageType::eActivate:
+		myIsDead = false;
 		break;
 	}
 }

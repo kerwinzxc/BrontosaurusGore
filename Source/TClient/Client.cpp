@@ -351,34 +351,34 @@ void CClient::Update()
 				case eDoorAction::eClose:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
+						//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
+					//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eOpen:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
+						//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
+					//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eUnlock:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
+						//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
+					//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eLock:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
+						//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
+					//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
 				default:
 					break;
 				}
@@ -450,9 +450,7 @@ void CClient::Update()
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
 				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType());
-				enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
-				SComponentMessageData data; data.myBool = false;
-				enemy->GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+				//enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eSetRepesentationActive:
@@ -460,12 +458,12 @@ void CClient::Update()
 				CNetworkMessage_SetIsRepesentationActive* setmessage = currentMessage->CastTo<CNetworkMessage_SetIsRepesentationActive>();
 				if (setmessage->GetActive() == Ja)
 				{
+					DL_PRINT("Representation Activated");
 					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 					break;
 				}
+				DL_PRINT("Representation Deactivated");
 				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
-				SComponentMessageData data; data.myBool = false;
-				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
 			}
 			break;
 			case ePackageType::eWeaponChange:

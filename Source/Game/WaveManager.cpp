@@ -33,6 +33,8 @@ CWaveManager::~CWaveManager()
 
 void CWaveManager::StartWave()
 {
+	DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
+	DL_PRINT(std::to_string(myWaveCount).c_str());
 	if (myWaveCount < myNumberOfWavesToSpawn)
 	{
 		myWaveCount++;

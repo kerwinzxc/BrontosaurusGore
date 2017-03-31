@@ -21,19 +21,23 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eOnTriggerEnter:
+		DL_PRINT("On Trigger enter arenaaaa");
 		for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); ++i)
 		{
-			if (CPollingStation::GetInstance()->GetPlayers()[i] == aMessageData.myGameObject)
+			DL_PRINT("On Trigger enter arenaaaa is player?");
+			if (CPollingStation::GetInstance()->GetPlayers()[i] == aMessageData.myComponent->GetParent())
 			{
+				DL_PRINT("On Trigger enter arenaaaa is player!");
 				OnPlayerEnter();
 				break;
 			}
 		}
 		break;
 	case eComponentMessageType::eOnTriggerExit:
+		DL_PRINT("On Trigger exit arenaaaa");
 		for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); ++i)
 		{
-			if (CPollingStation::GetInstance()->GetPlayers()[i] == aMessageData.myGameObject)
+			if (CPollingStation::GetInstance()->GetPlayers()[i] == aMessageData.myComponent->GetParent())
 			{
 				OnPlayerExit();
 				break;

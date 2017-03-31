@@ -45,7 +45,8 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 
 void CSpawnerComponent::SpawnEnemy()
 {
-	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
+	DL_PRINT("Spawning Enemy");
+	//myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
 
 	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eActivate,SComponentMessageData());
 	CNetworkMessage_SetIsRepesentationActive* activeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
@@ -100,7 +101,7 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 		default:
 			break;
 		}
-		myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		//myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		//glöm inte att lägga in så att charcontroller deactiverar sin collider när detta meddelande fås
 	}
 	break;
@@ -109,6 +110,7 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 
 eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMessage)
 {
+	DL_PRINT("hej");
 	for (int i = 0; i < myWaves.Size(); i++)
 	{
 		if (myWaves[i] == aStartWaveMessage.GetWave())
