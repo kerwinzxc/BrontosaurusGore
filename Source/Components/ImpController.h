@@ -8,6 +8,7 @@ enum class eImpState
 	eUseRangedAttack,
 	eJump,
 	eRunAfterShooting,
+	eChargingRangedAttack,
 	eDead
 };
 class CImpController : public CEnemy
@@ -35,6 +36,8 @@ private:
 	float myWanderDistance;
 	float myWanderDuration;
 	float myElaspedWanderTime;
+	float myChargeRangedAttackDuration;
+	float myElapsedChargeAttackTime;
 	eImpState myState;
 
 	bool myIsJumping;
