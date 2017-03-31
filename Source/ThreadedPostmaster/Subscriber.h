@@ -2,6 +2,7 @@
 #include "../PostMaster/EMessageReturn.h"
 #include "../PostMaster/NetworkPosMessageEvent.h"
 #include "SpawnOtherPlayerMessage.h"
+#include <thread>
 
 class PushState;
 class PopCurrentState;
@@ -77,5 +78,9 @@ namespace Postmaster
 		virtual eMessageReturn DoEvent(const CAddEnemyToWave & aAddEnemyToWave);
 		virtual eMessageReturn DoEvent(const CPlayerEnteredArena & aPLayerEnteredArena);
 
+		void SetSubscribedThread(const std::thread::id& aId);
+		const std::thread::id& GetSubscribedId() const;
+	private:
+		std::thread::id mySubscribedId;
 	};
 }

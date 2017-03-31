@@ -30,6 +30,7 @@ public:
 	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
 	void MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon);
+	void LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue);
 private:
 	SWeaponSoundData GetSoundData(CU::CJsonValue aSoundData);
 	CU::GrowingArray<SWeaponData*> myWeaponDataList;
