@@ -16,10 +16,6 @@ DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
-	if (std::string(aModelPath).find("M_Shotgun_01") != std::string::npos)
-	{
-		int br = 0;
-	}
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;

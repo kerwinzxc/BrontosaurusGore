@@ -18,28 +18,19 @@
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelManager::CModelManager()
-	: myModelList(ourMaxNumberOfModels)
+	: myModelList(64)
 {
-	myThreadPool = CEngine::GetInstance()->GetThreadPool();
 }
 
 CModelManager::~CModelManager()
 {
 }
 
-
 const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelPath)
 {
-	if (myModelList.Size() >= ourMaxNumberOfModels)
-	{
-		DL_MESSAGE_BOX("Too many unique models created! Current max is: %i.\nTalk to a programmer if we need more, it is probably possible.\n", ourMaxNumberOfModels);
-		DL_ASSERT("Too many unique models created! Current max is: %i.\n", ourMaxNumberOfModels);
-		return NULL_MODEL;
-	}
-
 	ModelId newModelID = -1;
 
-	if (myModels.count(aModelPath.c_str()) == 0) //check if derp, else flip bool
+	if (myModels.find(aModelPath) == myModels.end()) //check if derp, else flip bool
 	{
 		if (myFreeModelIDs.Size() != 0)
 		{
@@ -48,34 +39,27 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 		else
 		{
 			newModelID = myModelList.Size();
-			myModelList.Add(CModel());
+			myModelList.Add();
 		}
 
-		myModels[aModelPath.c_str()] = newModelID;
+		myModels[aModelPath] = newModelID;
 
 		if (CreateModel(aModelPath, newModelID) == false)
 		{
 			myModelList.Pop();
-			myModels.erase(aModelPath.c_str());
+			myModels.erase(aModelPath);
 			return NULL_MODEL;
 		}
 
-		LoadAnimations(aModelPath.c_str(), newModelID);
+		LoadAnimations(aModelPath, newModelID);
 	}
 
-	myModelList[myModels[aModelPath.c_str()]].AddRef();
-	return myModels[aModelPath.c_str()];
+	myModelList[myModels[aModelPath]].AddRef();
+	return myModels[aModelPath];
 }
 
 const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoaderMesh, const char* aTexturePath)
 {
-	if (myModelList.Size() >= ourMaxNumberOfModels)
-	{
-		DL_MESSAGE_BOX("Too many unique models created! Current max is: %i.\nTalk to a programmer if you want more, it is probably possible.\n", ourMaxNumberOfModels);
-		DL_ASSERT("Too many unique models created! Current max is: %i.\n", ourMaxNumberOfModels);
-		return -1;
-	}
-
 	if (myModels.find(aLoaderMesh->myName) == myModels.end())
 	{
 		CEffect* effect = GUIModleHelper::CreateEffect(aLoaderMesh);
@@ -104,15 +88,9 @@ const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoa
 
 	return myModels[aLoaderMesh->myName];
 }
-const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh * aLoaderMesh, const CU::GrowingArray<std::string>& aTexturePaths)
-{
-	if (myModelList.Size() >= ourMaxNumberOfModels)
-	{
-		DL_MESSAGE_BOX("Too many unique models created! Current max is: %i.\nTalk to a programmer if you want more, it is probably possible.\n", ourMaxNumberOfModels);
-		DL_ASSERT("Too many unique models created! Current max is: %i.\n", ourMaxNumberOfModels);
-		return -1;
-	}
 
+const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoaderMesh, const CU::GrowingArray<std::string>& aTexturePaths)
+{
 	if (myModels.find(aLoaderMesh->myName) == myModels.end())
 	{
 		CEffect* effect = GUIModleHelper::CreateEffect(aLoaderMesh);
@@ -170,7 +148,7 @@ int CModelManager::GetModelRefCount(const ModelId aModelID) const
 	return myModelList[aModelID].GetRefCount();
 }
 
-void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
+void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aModelId)
 {
 	static const std::string Directory("Models/Animations/");
 	std::string modelName = aPath;
@@ -243,7 +221,7 @@ bool CModelManager::CreateModel(const std::string& aModelPath, ModelId aNewModel
 	return CModelLoader::LoadModel(aModelPath.c_str(), &myModelList[aNewModel]/*tempModelPointer*/);
 }
 
-bool CModelManager::DoesModelExists(const char * aModelPath)
+bool CModelManager::DoesModelExists(const std::string& aModelPath)
 {
 	return myModels.find(aModelPath) != myModels.end();
 }
