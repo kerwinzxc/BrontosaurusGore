@@ -218,8 +218,8 @@ int LoadMeshColliderServer(KLoader::SLoadedComponentData someData)
 	data.center.x *= -1;
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
-	//data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	data.myPath = "Models/PhysX/C_Rock_5m.xml";
+	data.myPath = someData.myData.at("meshPath").GetString().c_str();
+	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
 	CColliderComponent* component = CreateComponentServer(data);
 	return component->GetId();

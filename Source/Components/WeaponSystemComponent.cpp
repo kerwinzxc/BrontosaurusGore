@@ -75,16 +75,20 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	{
 		if(myIsActive == true)
 		{
-			myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+			if(myWeapons[myActiveWeaponIndex]->CanShoot() == true)
+			{
+				myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
 
-			CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
+				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
-			shootMessage->SetDirection(aMessageData.myVector3f);
-			shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Enemy);
-			shootMessage->SetShooterId(aMessageData.myVector4f.w);
-			shootMessage->SetWeaponIndex(myActiveWeaponIndex);
+				shootMessage->SetDirection(aMessageData.myVector3f);
+				shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Enemy);
+				shootMessage->SetShooterId(aMessageData.myVector4f.w);
+				shootMessage->SetWeaponIndex(myActiveWeaponIndex);
 
-			Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(shootMessage));
+				Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(shootMessage));
+			
+			}
 		
 		}
 		break;
@@ -297,4 +301,19 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		}
 	}
+}
+
+bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eCanShoot :
+	{
+		return myWeapons[myActiveWeaponIndex]->CanShoot();
+		break;
+	}
+	default:
+		break;
+	}
+	return false;
 }

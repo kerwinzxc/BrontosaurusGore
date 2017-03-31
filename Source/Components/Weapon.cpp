@@ -47,25 +47,30 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
 		CU::Vector3f shootPosition = myUser->GetWorldPosition();
+		CU::Vector3f cameraPosition = shootPosition;
 		SComponentQuestionData cameraPositionData;
 		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
 		{
 			shootPosition = cameraPositionData.myVector3f;
+			cameraPosition = shootPosition;
 			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
+			CU::Vector3f direction = RandomizedDirection(aDirection);
+			direction.Normalize();
+
 			if (myWeaponData->projectileData->shouldRayCast == true)
 			{
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(myWeaponObject->GetParent()->GetWorldPosition() + myWeaponObject->GetParent()->GetToWorldTransform().myForwardVector, aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(myUser->GetWorldPosition(), aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
@@ -88,9 +93,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 			}
 
-			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
-			direction.Normalize();
-
 			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 			rotatedDirection.Normalize();*/
@@ -106,7 +108,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				
 				}
 
-				PlaySound(SoundEvent::Fire, aDirection);
+				PlaySound(SoundEvent::Fire, direction);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
@@ -255,4 +257,13 @@ CU::Vector3f CWeapon::RandomizedDirection(const CU::Vector3f& aDirection)
 	CU::Vector3f direction = rotatedMatrix.GetPosition() - unRotatedMatrix.GetPosition();
 	return direction;
 
+}
+
+bool CWeapon::CanShoot()
+{
+	if (myElapsedFireTimer >= myWeaponData->fireRate)
+	{
+		return true;
+	}
+	return false;
 }
