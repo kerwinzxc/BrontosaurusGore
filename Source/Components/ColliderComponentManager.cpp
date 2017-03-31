@@ -47,12 +47,13 @@ CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aC
 	case SColliderData::eColliderType::eMesh:
 		{
 		CColliderComponent* collider = CreateMeshCollider(*reinterpret_cast<SMeshColliderData*>(aColliderData));
-			if(collider != nullptr)
+			if(collider == nullptr)
 			{
-
-				myColliderComponents.Add(collider);
 				return nullptr;
+				
+				
 			}
+			myColliderComponents.Add(collider);
 		}
 		break;
 	case SColliderData::eColliderType::eRigidbody:
