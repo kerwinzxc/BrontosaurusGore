@@ -12,7 +12,21 @@
 #include "Components/GameObject.h"
 
 
-CHUD::CHUD() : myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myHealthAndArmourHasChanged(true), myWeaponSprite(nullptr), myCurrentWeapon(0), myTransitionLength(0), myWeaponHUDHasChanged(true), myCrosshairSprite(nullptr), myCrosshairHasUpdated(true), testValue(0.f)
+CHUD::CHUD() : myHealthAndArmorSprite(nullptr),
+myCurrentHealth(0), 
+myCurrentMaxHealth(0), 
+myCurrentArmour(0), 
+myCurrentMaxArmour(0), 
+myHealthBar(nullptr), 
+myArmourBar(nullptr), 
+myHealthAndArmourHasChanged(true), 
+myWeaponSprite(nullptr), 
+myCurrentWeapon(0), 
+myTransitionLength(0), 
+myWeaponHUDHasChanged(true), 
+myCrosshairSprite(nullptr), 
+myCrosshairHasUpdated(true), 
+testValue(0.f)
 {
 }
 
@@ -135,7 +149,27 @@ void CHUD::UpdateHealthAndArmour()
 
 void CHUD::UpdateWeapon()
 {
+	SComponentQuestionData ammoQuestion;
+	ammoQuestion.myAmmoLeftData = new SAmmoLeftData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetCurrentWeaponData, ammoQuestion);
 
+	if (ammoQuestion.myAmmoLeftData->ammoLeft != myCurrentAmmo || ammoQuestion.myAmmoLeftData->maxAmmo != myCurrentMaxAmmo)
+	{
+		myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
+		myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
+
+		std::wstring ammoString = std::to_wstring(myCurrentAmmo);
+		ammoString += L"/";
+		ammoString += std::to_wstring(myCurrentMaxAmmo);
+		myAmmoNumber.SetText(ammoString);
+		myWeaponHUDHasChanged = true;
+	}
+
+	/*if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)
+	{
+		
+	}*/
+	delete ammoQuestion.myAmmoLeftData;
 }
 
 void CHUD::Update(CU::Time aDeltaTime)
@@ -173,6 +207,8 @@ void CHUD::SetAmmoHudRect()
 		break;
 	default: break;
 	}
+
+
 
 	const unsigned immageIndex = myCurrentWeapon + offset;
 

@@ -66,6 +66,9 @@ private:
 	std::map<std::string, char> myWeaponIndexes;
 	CU::CBitSet<3> myPickedUpWeapons;
 
+	unsigned short myCurrentAmmo;
+	unsigned short myCurrentMaxAmmo;
+
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
