@@ -34,6 +34,9 @@ namespace Postmaster
 			//Get the post office (for that thread)
 			CPostOffice& GetThreadOffice();
 
+			//Get the post office (for the specified thread)
+			CPostOffice& GetThreadOffice(std::thread::id anId);
+
 			//Broadcast message to all threads.
 			void Broadcast(Message::IMessage* aMessage);
 			//Broadcast message to this thread.
@@ -46,8 +49,12 @@ namespace Postmaster
 
 			//Subscriptions will only be valid on the thread they subscribe from.
 			void Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType);
+			//Allows you to specify a thread where the subscriber will be subscribed
+			void Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType, std::thread::id anId);
 			//Subscribe to messages from the given object. Subscriptions will only be valid on the thread they subscribe from.
 			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType);
+			//Subscribe to messages from the given object. Subscriptions will only be valid on the specified thread.
+			void Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType, std::thread::id anId);
 			//Unsubscribe from all your subscriptions
 			void Unsubscribe(ISubscriber* aSubscriber);
 			

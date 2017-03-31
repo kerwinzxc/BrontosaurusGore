@@ -2,6 +2,7 @@
 #include "Message.h"
 #include "PostOffice.h"
 #include "../CommonUtilities/GrowingArray.h"
+#include "Subscriber.h"
 
 Postmaster::Threaded::CPostmaster* Postmaster::Threaded::CPostmaster::ourInstance = nullptr;
 
@@ -38,7 +39,12 @@ void Postmaster::Threaded::CPostmaster::SetOfficeActive(bool anActive)
 
 Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadOffice()
 {
-	std::thread::id threadId = std::this_thread::get_id();
+	return GetThreadOffice(std::this_thread::get_id());
+}
+
+Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadOffice(std::thread::id anId)
+{
+	std::thread::id threadId = anId;
 
 	std::map<std::thread::id, CPostOffice*>::iterator it = myOffices.find(threadId);
 
@@ -94,17 +100,28 @@ void Postmaster::Threaded::CPostmaster::NarrowcastLocal(Message::IMessage* aMess
 
 void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType)
 {
-	GetThreadOffice().Subscribe(aSubscriber, aSubscriptionType);
+	Subscribe(aSubscriber, aSubscriptionType,std::this_thread::get_id());
+}
+
+void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType, std::thread::id anId)
+{
+	GetThreadOffice(anId).Subscribe(aSubscriber, aSubscriptionType);
 }
 
 void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType)
 {
-	GetThreadOffice().Subscribe(aSubscriber, aSourceObject, aSubscriptionType);
+	Subscribe(aSubscriber, aSourceObject, aSubscriptionType, std::this_thread::get_id());
+}
+
+void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, IObject* aSourceObject, eMessageType aSubscriptionType, std::thread::id anId)
+{
+	aSubscriber->SetSubscribedThread(anId);
+	GetThreadOffice(anId).Subscribe(aSubscriber, aSourceObject, aSubscriptionType);
 }
 
 void Postmaster::Threaded::CPostmaster::Unsubscribe(ISubscriber* aSubscriber)
 {
-	GetThreadOffice().Unsubscribe(aSubscriber);
+	GetThreadOffice(aSubscriber->GetSubscribedId()).Unsubscribe(aSubscriber);
 }
 
 void Postmaster::Threaded::CPostmaster::HandleOutgoingBroadcast(Container::CLocklessQueue<Message::IMessage*>& aLocklessQueue)
