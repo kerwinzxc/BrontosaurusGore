@@ -18,6 +18,8 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myUsedAttackSinceLastRunning = 0;
 	myWanderDuration = 5.0f;
 	myWanderAngle = 80;
+	myElaspedWanderTime = 0.0f;
+	myChargeRangedAttackDuration = 2.0f;
 }
 
 CImpController::~CImpController()
@@ -31,23 +33,25 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
-	if(myIsDead == false && myState != eImpState::eRunAfterShooting)
+	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack)
 	{
-		if (WithinAttackRange())
+		if (WithinAttackRange() == true)
 		{
 			myState = eImpState::eUseMeleeAttack;	
 		}
-		else if (WithinWalkToMeleeRange())
+		else if (WithinWalkToMeleeRange() == true)
 		{
 			myState = eImpState::eWalkIntoMeleeRange;
 		
-			if (ShouldJumpAfterPlayer())
+			if (ShouldJumpAfterPlayer() == true)
+			{
 				myState = eImpState::eJump;
+			}
 
 		}
-		else if (WithinDetectionRange())
+		else if (WithinDetectionRange() == true)
 		{
-			myState = eImpState::eUseRangedAttack;
+			myState = eImpState::eChargingRangedAttack;
 		}
 		else
 		{
@@ -101,6 +105,18 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eIdle;
 			myElaspedWanderTime = 0.0f;
+		}
+		break;
+	}
+	case eImpState::eChargingRangedAttack:
+	{
+		DL_PRINT("elapsed chargTime %f", myElapsedChargeAttackTime);
+		DL_PRINT("chargTime %f", myChargeRangedAttackDuration);
+		myElapsedChargeAttackTime += aDeltaTime;
+		if(myElapsedChargeAttackTime >= myChargeRangedAttackDuration)
+		{
+			myElapsedChargeAttackTime = 0.0f;
+			myState = eImpState::eUseRangedAttack;
 		}
 		break;
 	}

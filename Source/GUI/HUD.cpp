@@ -7,6 +7,9 @@
 #include "CommonUtilities.h"
 #include "BarInstance.h"
 #include <algorithm>
+#include "Game/PollingStation.h"
+#include "Components/ComponentAnswer.h"
+#include "Components/GameObject.h"
 
 
 CHUD::CHUD() : myHealthAndArmorSprite(nullptr), myHealthBar(nullptr), myArmourBar(nullptr), myHealthAndArmourHasChanged(true), myWeaponSprite(nullptr), myCurrentWeapon(0), myTransitionLength(0), myWeaponHUDHasChanged(true), myCrosshairSprite(nullptr), myCrosshairHasUpdated(true), testValue(0.f)
@@ -87,9 +90,58 @@ void CHUD::LoadCrosshair(const CU::CJsonValue& aJsonValue)
 	myCrosshairSprite->SetSize({ 1.f,1.f });
 }
 
+void CHUD::UpdateHealthAndArmour()
+{
+	SComponentQuestionData healthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
+	SComponentQuestionData maxHealthData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxHealth, maxHealthData);
+
+	if (healthData.myInt != myCurrentHealth | maxHealthData.myInt != myCurrentMaxHealth)
+	{
+		myCurrentHealth = healthData.myInt;
+		myCurrentMaxHealth = maxHealthData.myInt;
+
+		std::wstring numberString = std::to_wstring(myCurrentHealth);
+		numberString += L"/";
+		numberString += std::to_wstring(myCurrentMaxHealth);
+
+		myHealthNumber.SetText(numberString);
+		myHealthBar->SetLevel(myCurrentHealth / myCurrentMaxHealth);
+
+		myHealthAndArmourHasChanged = true;
+	}
+
+	SComponentQuestionData armourData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetArmor, armourData);
+	SComponentQuestionData maxArmourData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmourData);
+
+	if (armourData.myInt != myCurrentArmour | maxArmourData.myInt != myCurrentMaxArmour)
+	{
+		myCurrentArmour = armourData.myInt;
+		myCurrentMaxArmour = maxArmourData.myInt;
+
+		std::wstring armourString = std::to_wstring(myCurrentArmour);
+		armourString += L"/";
+		armourString += std::to_wstring(myCurrentMaxArmour);
+
+		myArmourNumber.SetText(armourString);
+		myArmourBar->SetLevel(myCurrentArmour / myCurrentMaxArmour);
+
+		myHealthAndArmourHasChanged = true;
+	}
+}
+
+void CHUD::UpdateWeapon()
+{
+
+}
+
 void CHUD::Update(CU::Time aDeltaTime)
 {
-	myHealthBar->SetLevel(MAX(myHealthBar->GetLevel() - 0.01, 0));
+	UpdateHealthAndArmour();
+	UpdateWeapon();
 }
 
 void CHUD::SetAmmoHudRect()
@@ -174,7 +226,7 @@ void CHUD::Render()
 		RENDERER.AddRenderMessage(createOrClearGui);
 
 		myCrosshairSprite->RenderToGUI(L"crosshair");
-		//myCrosshairHasUpdated = false;
+		myCrosshairHasUpdated = false;
 	}
 }
 
@@ -254,6 +306,7 @@ CBarInstance* CHUD::LoadBar(const CU::CJsonValue& aJsonValue)
 
 	const CU::CJsonValue rectValue = aJsonValue.at("rect");
 	const CU::Vector4f rect(rectValue.at("topLeft").GetVector2f(), rectValue.at("bottomRight").GetVector2f());
+	const CU::Vector4f flipedRect(rect.x, 1 - rect.w, rect.z, 1 - rect.y);
 
-	return new CBarInstance(backgroundColour, fullColour, emptyColour, rect);
+	return new CBarInstance(backgroundColour, fullColour, emptyColour, flipedRect);
 }

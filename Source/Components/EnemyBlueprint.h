@@ -14,6 +14,7 @@ struct SImpBlueprint : public SEnemyBlueprint
 	float jumpHeight;
 	float wanderDistance;
 	float wanderDuration;
+	float chargeAttackDuration;
 	unsigned char wanderAngle;
 	char attacksUntillRunningAway;
 };
