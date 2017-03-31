@@ -299,7 +299,7 @@ namespace DL_Debug
 			exit(1);
 			break;
 		case IDRETRY:
-			WindowsHelper::GoogleIt();
+			WindowsHelper::GoogleIt(buffer);
 			DL_ASSERT(buffer);
 			break;
 		case IDIGNORE:
@@ -328,6 +328,7 @@ namespace DL_Debug
 			exit(1);
 			break;
 		case IDRETRY:
+			WindowsHelper::GoogleIt(buffer);
 			DL_ASSERT(buffer);
 			break;
 		case IDIGNORE:

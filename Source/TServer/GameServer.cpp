@@ -195,7 +195,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
-	myDamageOnCollisionComponentManager->Update(aDeltaTime + (updateFrequecy / 1000.0f));
+	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	if (myIsLoaded == true && myEnemyComponentManager->GetIsInited() == false)
 	{
 		myEnemyComponentManager->Init(myWeaponSystemManager);
@@ -204,6 +204,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myPlayersNetworkComponents[i]->Update();
 	}
+	myWeaponSystemManager->Update(aDeltaTime);
 	return true;
 }
 

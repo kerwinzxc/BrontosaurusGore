@@ -158,12 +158,11 @@ void C2DGUIRenderer::RemoveElement(const std::wstring& anElementName)
 
 void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFullScreenHelper & aFullScreenHelper)
 {
-	aTargetPackage.Activate();
-
 	const CU::Vector2f targetSize = aTargetPackage.GetSize();
 
 	for (unsigned char i = 0; i < myElements.Size(); ++i)
 	{
+		aTargetPackage.Activate();
 		const SGUIElement& currentGuiElement = myElements[i].first;
 
 		const float elementHeight = currentGuiElement.myScreenRect.w - currentGuiElement.myScreenRect.y;

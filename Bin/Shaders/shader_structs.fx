@@ -45,6 +45,7 @@ struct PosNormBinormTanTexInstanced_InputVertex
 	//PER INSTANCE
 	float4x4 toWorldInstance : TOWORLD;
 	float4x4 toWorldLastFrameInstance : TOWORLDLASTFRAME;
+	float4 highlight : HIGHLIGHT;
 };
 
 struct PosNormBinormTanTex_InputPixel

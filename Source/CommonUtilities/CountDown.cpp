@@ -43,7 +43,7 @@ namespace CU
 	{
 		if (myOutputText != nullptr)
 		{
-			time(&myCurrentTime);
+			/*time(&myCurrentTime);
 
 			int seconds = static_cast<int>(myGoalTime - myCurrentTime);
 
@@ -87,7 +87,7 @@ namespace CU
 			timeString += seconds;
 			timeString += L" seconds.";
 
-			myOutputText->SetTextLine(1, std::move(timeString));
+			myOutputText->SetTextLine(1, std::move(timeString));*/
 		}
 	}
 
