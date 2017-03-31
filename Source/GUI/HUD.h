@@ -24,7 +24,8 @@ public:
 	void LoadArmourAndHealth(const CU::CJsonValue& aJsonValue);
 	void LoadWeaponHud(const CU::CJsonValue& aJsonValue);
 	void LoadCrosshair(const CU::CJsonValue& aJsonValue);
-
+	void UpdateHealthAndArmour();
+	void UpdateWeapon();
 	void Update(CU::Time aDeltaTime);
 	void SetAmmoHudRect();
 	void Render();
@@ -41,7 +42,12 @@ private:
 	CSpriteInstance* myHealthAndArmorSprite;
 
 	CTextInstance myHealthNumber;
+	int myCurrentHealth;
+	int myCurrentMaxHealth;
+
 	CTextInstance myArmourNumber;
+	int myCurrentArmour;
+	int myCurrentMaxArmour;
 
 	CBarInstance* myHealthBar;
 	CBarInstance* myArmourBar;

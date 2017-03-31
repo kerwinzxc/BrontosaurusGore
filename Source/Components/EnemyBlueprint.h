@@ -12,6 +12,11 @@ struct SEnemyBlueprint
 struct SImpBlueprint : public SEnemyBlueprint
 {
 	float jumpHeight;
+	float wanderDistance;
+	float wanderDuration;
+	float chargeAttackDuration;
+	unsigned char wanderAngle;
+	char attacksUntillRunningAway;
 };
 
 struct SRevenantBlueprint : public SEnemyBlueprint

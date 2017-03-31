@@ -28,6 +28,51 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	{
 		blueprint.walkToMeleeRange = someData.myData.at("WalkToMeleeRange").GetFloat();
 	}
+	if (someData.myData.HasKey("wanderDistance") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.walkToMeleeRange = someData.myData.at("myWanderDistance").GetFloat();
+	}
+	else
+	{
+		blueprint.wanderDistance = 5.0f;
+	}
+	if (someData.myData.HasKey("wanderDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.wanderDuration = someData.myData.at("wanderDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.wanderDuration = 3.0f;
+	}
+	if (someData.myData.HasKey("wanderAngle") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.wanderAngle = someData.myData.at("wanderAngle").GetUchar();
+	}
+	else
+	{
+		blueprint.wanderAngle = 120.0f;
+	}
+	if (someData.myData.HasKey("attacksUntillRunningAway") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.attacksUntillRunningAway = someData.myData.at("attacksUntillRunningAway").GetUchar();
+	}
+	else
+	{
+		blueprint.attacksUntillRunningAway = 3;
+	}
+	if (someData.myData.HasKey("chargeAttackDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.wanderDuration = someData.myData.at("chargeAttackDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.chargeAttackDuration = 2.0f;
+	}
 
 	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();
 
