@@ -16,11 +16,22 @@ DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
+	if (std::string(aModelPath).find("MindControlled") != std::string::npos)
+	{
+		int br = 0;
+	}
+	if (std::string(aModelPath).find("Plasma") != std::string::npos)
+	{
+		int br = 0;
+	}
+
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
-	myModel = MODELMGR->LoadModel(aModelPath);
-	CModel* model = MODELMGR->GetModel(myModel);
+
+	CModelManager* modelManager = MODELMGR;
+	myModel = modelManager->LoadModel(aModelPath);
+	CModel* model = modelManager->GetModel(myModel);
 	if (model != nullptr)
 	{
 		myHasAnimations = model->HasAnimations();
