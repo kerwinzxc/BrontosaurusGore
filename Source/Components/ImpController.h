@@ -45,5 +45,5 @@ private:
 
 inline bool CImpController::ShouldJumpAfterPlayer()
 {
-	return (myToPlayer.y > 1.0f) && (myIsJumping == false);
+	return (myToPlayer.y > 2.0f) && (myIsJumping == false);
 }

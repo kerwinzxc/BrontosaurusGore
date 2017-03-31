@@ -33,19 +33,21 @@ void CImpController::Update(const float aDeltaTime)
 
 	if(myIsDead == false && myState != eImpState::eRunAfterShooting)
 	{
-		if (WithinAttackRange())
+		if (WithinAttackRange() == true)
 		{
 			myState = eImpState::eUseMeleeAttack;	
 		}
-		else if (WithinWalkToMeleeRange())
+		else if (WithinWalkToMeleeRange() == true)
 		{
 			myState = eImpState::eWalkIntoMeleeRange;
 		
-			if (ShouldJumpAfterPlayer())
+			if (ShouldJumpAfterPlayer() == true)
+			{
 				myState = eImpState::eJump;
+			}
 
 		}
-		else if (WithinDetectionRange())
+		else if (WithinDetectionRange() == true)
 		{
 			myState = eImpState::eUseRangedAttack;
 		}
