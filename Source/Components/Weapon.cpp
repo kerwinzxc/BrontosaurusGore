@@ -47,11 +47,13 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
 		CU::Vector3f shootPosition = myUser->GetWorldPosition();
+		CU::Vector3f cameraPosition = shootPosition;
 		SComponentQuestionData cameraPositionData;
 		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
 		{
 			shootPosition = cameraPositionData.myVector3f;
-			//shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
+			cameraPosition = shootPosition;
+			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
@@ -61,11 +63,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
