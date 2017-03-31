@@ -13,7 +13,6 @@ public:
 private:
 	int myNetworkID;
 
-
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;
 };
