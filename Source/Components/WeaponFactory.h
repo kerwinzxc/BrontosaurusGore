@@ -27,7 +27,8 @@ public:
 
 	void Init(CGameObjectManager* aGameObjectPointer, CModelComponentManager* aModelComponentManager, Physics::CPhysicsScene* aPhysicsScene);
 	void LoadWeapons();
-	void CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
+	unsigned short CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo);
+	void CreateWeapon(unsigned short aWeaponIndex, CGameObject* aObjectToGiveAWeaponTo);
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
 	void MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon);
 	void LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue);

@@ -100,7 +100,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eAddWeapon:
 	{
-		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		unsigned short theWeaponIndexOfAddedweapon = WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		break;
+	}
+	case eComponentMessageType::eAddWeaponIndex:
+	{
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myInt, GetParent());
 		break;
 	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
