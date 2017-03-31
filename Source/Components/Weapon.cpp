@@ -58,16 +58,19 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 		{
+			CU::Vector3f direction = RandomizedDirection(aDirection);
+			direction.Normalize();
+
 			if (myWeaponData->projectileData->shouldRayCast == true)
 			{
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, aDirection, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
@@ -90,9 +93,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 			}
 
-			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
-			direction.Normalize();
-
 			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 			rotatedDirection.Normalize();*/
@@ -108,7 +108,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				
 				}
 
-				PlaySound(SoundEvent::Fire, aDirection);
+				PlaySound(SoundEvent::Fire, direction);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
 			
