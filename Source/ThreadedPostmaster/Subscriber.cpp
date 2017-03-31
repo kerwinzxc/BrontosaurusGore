@@ -1,5 +1,6 @@
 #include "Subscriber.h"
 #include "Postmaster.h"
+#include "../CommonUtilities/DL_Debug.h"
 
 
 Postmaster::ISubscriber::ISubscriber()
@@ -154,6 +155,11 @@ eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aR
 
 void Postmaster::ISubscriber::SetSubscribedThread(const std::thread::id & aId)
 {
+	if(mySubscribedId != std::thread::id() && mySubscribedId != aId)
+	{
+		DL_ASSERT("Postmaster subscriber is attempting to subscribe from multiple threads.");
+	}
+
 	mySubscribedId = aId;
 }
 
