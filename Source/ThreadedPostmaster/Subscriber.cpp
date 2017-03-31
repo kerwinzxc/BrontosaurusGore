@@ -151,3 +151,13 @@ eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aR
 {
 	return eMessageReturn::eContinue;
 }
+
+void Postmaster::ISubscriber::SetSubscribedThread(const std::thread::id & aId)
+{
+	mySubscribedId = aId;
+}
+
+const std::thread::id& Postmaster::ISubscriber::GetSubscribedId() const
+{
+	return mySubscribedId;
+}
