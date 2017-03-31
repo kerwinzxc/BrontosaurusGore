@@ -15,7 +15,7 @@
 
 
 #include "../TShared/AnimationState.h"
-ENUM_STRING_MACRO(AnimationState, apa, apa2, apa3, apa345);
+DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelManager::CModelManager()
 	: myModelList(ourMaxNumberOfModels)
@@ -174,17 +174,10 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 {
 	static const std::string Directory("Models/Animations/");
 	std::string modelName = aPath;
-	DL_PRINT("modelName: %s", modelName.c_str());
 	modelName -= std::string(".fbx");
 	CU::FindAndReplace(modelName, "Meshes", "Animations");
-	DL_PRINT("modelName - .fbx: %s", modelName.c_str());
 	modelName.insert(Directory.length(), "ANI");
-	DL_PRINT("modelName, insert ani: %s", modelName.c_str());
-	DL_PRINT("modelName, replace meshes: %s", modelName.c_str());
 	modelName += std::string("_");
-
-	const ModelId animationCount = 3;
-	const std::string animationNames[animationCount] = { ("idle01"), ("walk01"), ("shot01") };
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
@@ -196,9 +189,9 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 
 		mdl->mySceneAnimators.clear();
 		CFBXLoader loader;
-		for (int i = 0; i < animationCount; ++i)
+		for (int i = 0; i < SAnimationState::AnimationStates.Size(); ++i)
 		{
-			const std::string& animationName = animationNames[i];
+			const std::string& animationName = SAnimationState::AnimationStates[i];
 
 			const aiScene* animationScene = loader.GetScene(modelName + animationName + ".fbx");
 			
@@ -207,21 +200,27 @@ void CModelManager::LoadAnimations(const char* aPath, const ModelId aModelId)
 				continue;
 			}
 
-			mdl->mySceneAnimators[animationName] = CSceneAnimator();
-			mdl->mySceneAnimators[animationName].Init(animationScene);
+			mdl->mySceneAnimators[static_cast<eAnimationState>(i)] = CSceneAnimator();
+			mdl->mySceneAnimators[static_cast<eAnimationState>(i)].Init(animationScene);
+
+			//mdl->mySceneAnimators[animationName] = CSceneAnimator();
+			//mdl->mySceneAnimators[animationName].Init(animationScene);
+
 			//mdl->mySceneAnimators[animationName].CarlSave(modelName + animationName + ".animation");
 			//mdl->mySceneAnimators[animationName].CarlLoad(modelName + animationName + ".animation");
 		}
 
 		if (mdl->mySceneAnimators.empty() == true)
 		{
-			mdl->mySceneAnimators["idle"] = CSceneAnimator();
-			mdl->mySceneAnimators["idle"].Init(mdl->GetScene());
+			mdl->mySceneAnimators[eAnimationState::idle01] = CSceneAnimator();
+			mdl->mySceneAnimators[eAnimationState::idle01].Init(mdl->GetScene());
+			//mdl->mySceneAnimators["idle"] = CSceneAnimator();
+			//mdl->mySceneAnimators["idle"].Init(mdl->GetScene());
 		}
 
-		if (mdl->mySceneAnimators.find("idle") != mdl->mySceneAnimators.end())
+		if (mdl->mySceneAnimators.find(/*"idle"*/eAnimationState::idle01) != mdl->mySceneAnimators.end())
 		{
-			mdl->mySceneAnimator = &mdl->mySceneAnimators["idle"];
+			mdl->mySceneAnimator = &mdl->mySceneAnimators[/*"idle"*/eAnimationState::idle01];
 		}
 		else if (mdl->mySceneAnimators.begin() != mdl->mySceneAnimators.end())
 		{

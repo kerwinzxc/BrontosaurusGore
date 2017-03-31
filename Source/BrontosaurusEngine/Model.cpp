@@ -19,6 +19,9 @@
 #include <StringHelper.h>
 #include "Renderer.h"
 
+#include "../TShared/AnimationState.h"
+DECLARE_ANIMATION_ENUM_AND_STRINGS;
+
 CModel::CModel()
 	: myForwardEffect(nullptr)
 	, myDeferredEffect(nullptr)
@@ -347,12 +350,9 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 
 	//ANIMATION BUFFER
-	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0'*/)
+	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none))
 	{
-
-		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
-
-		//memcpy(static_cast<void*>(msg->myBoneMatrices), &bones[0], min(sizeof(msg->myBoneMatrices), bones.size() * sizeof(mat4)));
+		std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState, aParamObj.aAnimationLooping);
 
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
@@ -403,16 +403,16 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
 
 	//ANIMATION BUFFER
-	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState.empty() == false) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
+	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
 	{
-		const std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState.c_str(), aParamObj.aAnimationLooping);
+		const std::vector<mat4>& bones = GetBones(aParamObj.aAnimationTime, aParamObj.aAnimationState, aParamObj.aAnimationLooping);
 		const std::vector<mat4>* finalBones = &bones;
 
 		std::vector<mat4> blendedBones;
 
-		if (!aParamObj.aNextAnimationState.empty() && aParamObj.aAnimationState != aParamObj.aNextAnimationState)
+		if (aParamObj.aNextAnimationState != eAnimationState::none && aParamObj.aAnimationState != aParamObj.aNextAnimationState)
 		{
-			const std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState.c_str(), aParamObj.aAnimationLooping);
+			const std::vector<mat4>& nextBones = GetBones(aParamObj.aAnimationTime, aParamObj.aNextAnimationState, aParamObj.aAnimationLooping);
 
 			blendedBones.resize(bones.size());
 			BlendBones(bones, nextBones, aParamObj.aAnimationLerper, blendedBones);
@@ -465,7 +465,7 @@ void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<m
 	}
 }
 
-std::vector<mat4>& CModel::GetBones(float aTime, const char * aAnimationState, const bool aAnimationLooping)
+std::vector<mat4>& CModel::GetBones(float aTime, const eAnimationState aAnimationState, const bool aAnimationLooping)
 {
 	if(mySceneAnimator != nullptr)
 	{
@@ -515,7 +515,7 @@ void CModel::InitConstBuffers()
 	
 }
 
-CU::Matrix44f CModel::GetBoneTransform(const float aTime, const char * aAnimationState, const char* aBoneName)
+CU::Matrix44f CModel::GetBoneTransform(const float aTime, const eAnimationState aAnimationState, const char* aBoneName)
 {
 	if (mySceneAnimator != nullptr)
 	{

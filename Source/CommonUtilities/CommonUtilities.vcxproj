@@ -397,6 +397,7 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GrowingArray.h" />
+    <ClInclude Include="growingvector.h" />
     <ClInclude Include="Heap.h" />
     <ClInclude Include="InputListener.h" />
     <ClInclude Include="InputMessage.h" />
