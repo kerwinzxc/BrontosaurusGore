@@ -32,11 +32,11 @@ public:
 	CDeferredRenderer();
 	~CDeferredRenderer();
 
-	void DoRenderMessage(SRenderMessage* aRenderMessage);
 	void DoRenderQueue(CRenderer & aRenderer);
 
 	void AddRenderMessage(SRenderMessage* aRenderMessage);
 	void UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, const CU::Matrix44f & aProjectionInverse);
+	void SetGeometryBuffer(CGeometryBuffer& myGbuffer);
 
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
@@ -55,6 +55,7 @@ private:
 	void SetRMAOSRV();
 
 	void SetCBuffer();
+
 
 	void InitPointLightModel();
 	void DoSSAO(CFullScreenHelper& aFullscreenHelper);
