@@ -23,6 +23,7 @@ enum class ePackageType: __int8
 	ePickupAmmo,
 	ePickupArmor,
 	ePickupKey,
+	ePickupWeapon,
 	eDoorMessage,
 	eEnemyPosition,
 	eTakeDamage,
