@@ -59,6 +59,11 @@ CNetworkMessage_WeaponShoot::Shooter CNetworkMessage_WeaponShoot::GetShooter()
 	return myShooter;
 }
 
+void CNetworkMessage_WeaponShoot::SetShooterId(unsigned int anId)
+{
+	myId = anId;
+}
+
 unsigned CNetworkMessage_WeaponShoot::GetId()
 {
 	return myId;
@@ -67,9 +72,4 @@ unsigned CNetworkMessage_WeaponShoot::GetId()
 void CNetworkMessage_WeaponShoot::SetShooter(Shooter aShooter)
 {
 	myShooter = aShooter;
-}
-
-void CNetworkMessage_WeaponShoot::SetShooterId(unsigned anId)
-{
-	myId = anId;
 }

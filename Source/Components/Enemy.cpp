@@ -116,6 +116,18 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	}
 }
 
+bool CEnemy::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eEnemyNetworkID:
+		aQuestionData.myInt = myServerId;
+		return true;
+		break;
+	}
+	return false;
+}
+
 void CEnemy::SetPlayerObject(CGameObject* aPlayerObj)
 {
 	if (ourPlayerObjects.IsInitialized() == false)

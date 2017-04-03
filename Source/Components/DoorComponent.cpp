@@ -145,7 +145,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 			}
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
-		if (aMessageData.myGameObject != GetParent())
+		if (aMessageData.myGameObject != GetParent() && aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{
 			if (myIsLocked == false)
 			{

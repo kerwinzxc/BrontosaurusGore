@@ -31,7 +31,7 @@ namespace Physics
 		{
 			mySimulationTimer -= ourSimulationFrequensy;
 			myPxScene->simulate(ourSimulationFrequensy);
-			myPxScene->fetchResults(); // vi kanske borde fixa den här krashen någon gång.
+			myPxScene->fetchResults(); // vi kanske borde fixa den här krashen någon gång. // Ja tack! mvh Alex
 			return true;
 		}
 		return false;

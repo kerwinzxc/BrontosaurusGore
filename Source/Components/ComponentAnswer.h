@@ -20,6 +20,7 @@ enum class eComponentQuestionType
 	eCanShoot,
 	eGetCurrentWeaponData,
 	eGetWeaponFactoryIndexOfActiveWeapon,
+	eEnemyNetworkID,
 	eLength,
 };
 
