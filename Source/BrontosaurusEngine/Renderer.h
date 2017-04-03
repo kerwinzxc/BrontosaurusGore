@@ -57,7 +57,8 @@ public:
 	void SetStates(const SChangeStatesMessage* aState);
 private:
 	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
-	
+	void RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount);
+
 	void Bloom();
 	void HDR();
 	void MotionBlur();

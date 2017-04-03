@@ -9,7 +9,8 @@ struct ID3D11PixelShader;
 class CRenderCamera
 {
 public:
-	CRenderCamera(const bool deferred = false);
+	friend class CRenderer;
+	CRenderCamera(const bool deferred = true);
 	~CRenderCamera();
 
 	void InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM);
