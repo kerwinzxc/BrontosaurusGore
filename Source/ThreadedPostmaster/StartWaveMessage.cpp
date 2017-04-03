@@ -1,11 +1,12 @@
 #include "StartWaveMessage.h"
 #include "../PostMaster/MessageType.h"
 #include "Subscriber.h"
+#include "../CommonUtilities/DL_Debug.h"
 
 
 CStartWaveMessage::CStartWaveMessage(const unsigned char aWave) : IMessage(eMessageType::eSpawnWave), myWave(aWave)
 {
-
+	DL_PRINT("StartWaveMessage");
 }
 
 CStartWaveMessage::~CStartWaveMessage()

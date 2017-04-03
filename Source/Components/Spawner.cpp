@@ -10,14 +10,14 @@
 #include "../TServer/ServerMessageManager.h"
 #include "EnemyTypes.h"
 
-CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType)
+CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID)
 {
 	mySpawInterval = 5.0f;
 	myWaves = aWaves;
 
 	myEnemyType = aEnemyType;
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSpawnWave);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSpawnWave, aID);
 	//skapa wave system
 	//skapa postmaster meddelanden för vilken wave det är och vilka fiender som tillhör waven
 	//låsa dörrar till waven låsa upp dörr vid sista waven
@@ -46,13 +46,58 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 void CSpawnerComponent::SpawnEnemy()
 {
 	DL_PRINT("Spawning Enemy");
-	//myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
+	/*myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
 
-	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eActivate,SComponentMessageData());
-	CNetworkMessage_SetIsRepesentationActive* activeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
-	activeMessage->SetActive(true);
-	activeMessage->SetNetworkID(myEnemy->GetNetworkID());
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
+	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eActivate,SComponentMessageData());*/
+
+	//skicka ett meddelande som revivar repensentation
+	//CNetworkMessage_SetIsRepesentationActive* activeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
+	//activeMessage->SetActive(true);
+	//activeMessage->SetNetworkID(myEnemy->GetNetworkID());
+	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
+
+
+
+	switch (myEnemyType)
+	{
+	case eEnemyTypes::eImp:
+	{
+		SImpBlueprint aData;
+		aData.speed = 1.0f;
+		aData.jumpHeight = 4.0f;
+		aData.detectionRange = 30.0f;
+		aData.walkToMeleeRange = 10.f;
+		aData.startAttackRange = 4.0f;
+		aData.stopAttackRange = 5.0f;
+		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+	}
+	break;
+	case eEnemyTypes::ePinky:
+	{
+		SPinkyBlueprint aData;
+		aData.speed = 10.0f;
+		aData.detectionRange = 30.0f;
+		aData.walkToMeleeRange = 0.f;
+		aData.startAttackRange = 0.0f;
+		aData.stopAttackRange = 1.0f;
+		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+	}
+	break;
+	case eEnemyTypes::eRevenant:
+	{
+		SRevenantBlueprint aData;
+		aData.speed = 10.0f;
+		aData.detectionRange = 30.0f;
+		aData.walkToMeleeRange = 0.f;
+		aData.startAttackRange = 0.0f;
+		aData.stopAttackRange = 1.0f;
+		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
+	}
+	break;
+	default:
+		break;
+	}
+
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddEnemyToWave(myEnemy));
 }
 
@@ -62,45 +107,7 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 	{
 	case eComponentMessageType::eAddComponent:
 	{
-		switch (myEnemyType)
-		{
-		case eEnemyTypes::eImp:
-		{
-			SImpBlueprint aData;
-			aData.speed = 10.0f;
-			aData.jumpHeight = 4.0f;
-			aData.detectionRange = 30.0f;
-			aData.walkToMeleeRange = 10.f;
-			aData.startAttackRange = 0.0f;
-			aData.stopAttackRange = 1.0f;
-			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-		}
-		break;
-		case eEnemyTypes::ePinky:
-		{
-			SPinkyBlueprint aData;
-			aData.speed = 10.0f;
-			aData.detectionRange = 30.0f;
-			aData.walkToMeleeRange = 0.f;
-			aData.startAttackRange = 0.0f;
-			aData.stopAttackRange = 1.0f;
-			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-		}
-		break;
-		case eEnemyTypes::eRevenant:
-		{
-			SRevenantBlueprint aData;
-			aData.speed = 10.0f;
-			aData.detectionRange = 30.0f;
-			aData.walkToMeleeRange = 0.f;
-			aData.startAttackRange = 0.0f;
-			aData.stopAttackRange = 1.0f;
-			myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-		}
-		break;
-		default:
-			break;
-		}
+	
 		//myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		//glöm inte att lägga in så att charcontroller deactiverar sin collider när detta meddelande fås
 	}

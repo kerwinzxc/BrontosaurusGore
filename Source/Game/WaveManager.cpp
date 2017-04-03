@@ -33,11 +33,14 @@ CWaveManager::~CWaveManager()
 
 void CWaveManager::StartWave()
 {
+	DL_PRINT("TotalWaves:");
 	DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
-	DL_PRINT(std::to_string(myWaveCount).c_str());
 	if (myWaveCount < myNumberOfWavesToSpawn)
 	{
 		myWaveCount++;
+		DL_PRINT("Wave:");
+		DL_PRINT(std::to_string(myWaveCount).c_str());
+		DL_PRINT("BroadCast StartWave");
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CStartWaveMessage(myWaveCount));
 	}
 	else
@@ -71,6 +74,7 @@ void CWaveManager::Update()
 
 eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 {
+	DL_PRINT("EnemyAdded");
 	myEnemiesInWave.Add(aAddEnemyToWave.GetEnemy());
 
 	return eMessageReturn::eContinue;
@@ -78,6 +82,8 @@ eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 
 eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena)
 {
+
+	DL_PRINT("WaveManager: PlayerEntered");
 	myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
 	myNumberOfWavesToSpawn = aPlayerEnteredArena.GetWaveAmount();
