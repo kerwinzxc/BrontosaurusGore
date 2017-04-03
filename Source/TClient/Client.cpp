@@ -352,6 +352,7 @@ void CClient::Update()
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
+						int lol = 10;
 						break;
 					}
 					//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
@@ -360,6 +361,7 @@ void CClient::Update()
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
+						int lol = 10;
 						break;
 					}
 					//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
@@ -368,6 +370,7 @@ void CClient::Update()
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
+						int lol = 10;
 						break;
 					}
 					//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
@@ -376,6 +379,7 @@ void CClient::Update()
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
+						int lol = 10;
 						break;
 					}
 					//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
@@ -450,6 +454,7 @@ void CClient::Update()
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
 				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType());
+				DL_PRINT("EnemyRepSpawned");
 				//enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
@@ -471,6 +476,11 @@ void CClient::Update()
 				CNetworkMessage_WeaponChange* changeMessage = currentMessage->CastTo<CNetworkMessage_WeaponChange>();
 				SComponentMessageData data;
 				data.myInt = changeMessage->GetWeaponIndex();
+				if (changeMessage->GetShooter() == CNetworkMessage_WeaponChange::Shooter::Enemy)
+				{
+					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(changeMessage->GetId()).GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
+					break;
+				}
 				myNetworkRecieverComponents.at(changeMessage->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
 				}
 				break;
