@@ -79,9 +79,8 @@ void CAmmoComponent::Destroy()
 {
 }
 
-void CAmmoComponent::Update(float aDeltaTime)
+void CAmmoComponent::Update(float /*aDeltaTime*/)
 {
-	aDeltaTime;
 	//this function doesn't do anthing anymore :/;
 }
 
@@ -108,7 +107,12 @@ bool CAmmoComponent::Answer(const eComponentQuestionType aQuestionType, SCompone
 		aQuestionData.myAmmoLeftData->ammoLeft = myGeneralAmmoDataList[mySelectedAmmoType]->currentAmmoAmount;
 		aQuestionData.myAmmoLeftData->maxAmmo = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
 		return true;
-		break;
+	}
+	case eComponentQuestionType::eGetCurrentWeaponData:
+	{
+		aQuestionData.myAmmoLeftData->weaponName = myGeneralAmmoDataList.At(mySelectedAmmoType)->ammoTypeData->ammoForWeaponName.c_str();
+		aQuestionData.myAmmoLeftData->ammoLeft = myGeneralAmmoDataList.At(mySelectedAmmoType)->currentAmmoAmount;
+		aQuestionData.myAmmoLeftData->maxAmmo = myGeneralAmmoDataList.At(mySelectedAmmoType)->ammoTypeData->maxAmmo;
 	}
 	default:
 		break;

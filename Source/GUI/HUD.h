@@ -52,7 +52,7 @@ private:
 	CBarInstance* myHealthBar;
 	CBarInstance* myArmourBar;
 
-	bool myHealthAndArmourHasChanged;
+	volatile bool myHealthAndArmourHasChanged;
 
 	//weapon
 	SHUDElement myWeaponElement;
@@ -62,14 +62,17 @@ private:
 
 	char myCurrentWeapon; 
 	char myTransitionLength;
-	bool myWeaponHUDHasChanged;
+	volatile bool myWeaponHUDHasChanged;
 	std::map<std::string, char> myWeaponIndexes;
 	CU::CBitSet<3> myPickedUpWeapons;
+
+	unsigned short myCurrentAmmo;
+	unsigned short myCurrentMaxAmmo;
 
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
-	bool myCrosshairHasUpdated;
+	volatile bool myCrosshairHasUpdated;
 
 	//test
 	float testValue;
