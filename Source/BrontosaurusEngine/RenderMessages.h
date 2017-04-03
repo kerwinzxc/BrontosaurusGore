@@ -14,6 +14,7 @@
 #include "CascadeBuffer.h"
 #include "Colour.h"
 #include "../GUI/GUIElement.h"
+#include "RenderCamera.h"
 
 struct ID3D11RenderTargetView;
 
@@ -183,6 +184,7 @@ struct SActivateRenderPackageMessage : SRenderMessage
 	SActivateRenderPackageMessage();
 	CRenderPackage myRenderPackage;
 	CRenderPackage mySecondRenderPackage;
+	bool unbindShadowBuffer;
 	bool useSecondPackage;
 };
 
@@ -199,9 +201,10 @@ struct SRenderCameraQueueMessage : SRenderMessage
 	~SRenderCameraQueueMessage() override;
 	//mebe put SetCameraMessage in here?
 	SRenderCameraQueueMessage();
-	CU::Camera myCamera;
-	CRenderPackage CameraRenderPackage;
-	CU::GrowingArray<SRenderMessage*, unsigned int, false> CameraRenderQueue;
+	//CU::Camera myCamera;
+	//CRenderPackage CameraRenderPackage;
+	//CU::GrowingArray<SRenderMessage*, unsigned int, false> CameraRenderQueue;
+	CRenderCamera myRenderCamera;
 	//CU::GrowingArray < SRenderMessage*, unsigned int, false> DeferredCameraRenderQueue;
 	//CDeferredRenderer myDeferredRenderer;
 	bool RenderDepth;

@@ -85,15 +85,16 @@ SRenderModelDepthMessage::SRenderModelDepthMessage()
 	myType = eRenderMessageType::eRenderModelDepth;
 }
 
-SRenderCameraQueueMessage::~SRenderCameraQueueMessage()
-{
-	CameraRenderQueue.DeleteAll();
-}
 
 SRenderCameraQueueMessage::SRenderCameraQueueMessage()
 	: SRenderMessage(eRenderMessageType::eRenderCameraQueue)
 {
 	RenderDepth = false;
+}
+
+SRenderCameraQueueMessage::~SRenderCameraQueueMessage()
+{
+	//CameraRenderQueue.DeleteAll();
 }
 
 SRenderFullscreenEffectMessage::SRenderFullscreenEffectMessage()
@@ -107,6 +108,7 @@ SActivateRenderPackageMessage::SActivateRenderPackageMessage()
 	: SRenderMessage(eRenderMessageType::eActivateRenderPackage)
 {
 	useSecondPackage = false;
+	unbindShadowBuffer = false;
 }
 
 SRenderToIntermediate::SRenderToIntermediate()
