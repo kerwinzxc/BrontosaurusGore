@@ -153,6 +153,21 @@ eMessageReturn  Postmaster::ISubscriber::DoEvent(const CRevivePlayerMessage & aR
 	return eMessageReturn::eContinue;
 }
 
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CStartWaveMessage & aStartWaveMessage)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
+{
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn Postmaster::ISubscriber::DoEvent(const CPlayerEnteredArena & aPLayerEnteredArena)
+{
+	return eMessageReturn::eContinue;
+}
+
 void Postmaster::ISubscriber::SetSubscribedThread(const std::thread::id & aId)
 {
 	if(mySubscribedId != std::thread::id() && mySubscribedId != aId)

@@ -21,6 +21,8 @@ class CModelInstance;
 class CModelLoader;
 class CPointLightInstance;
 
+enum class eAnimationState;
+
 namespace Lights
 {
 	struct SDirectionalLight;
@@ -83,22 +85,18 @@ public:
 
 	float GetRadius() const;
 
+	CU::Matrix44f GetBoneTransform(const float aTime, const eAnimationState aAnimationState, const char* aBoneName);
+	std::vector<mat4>& GetBones(float aTime, const eAnimationState aAnimationState, const bool aAnimationLooping);
+	inline bool HasBones() const;
+	inline bool HasAnimations();
+
 	inline bool IsAlphaModel() const;
 	inline const struct aiScene* GetScene() const;
 	inline void SetScene(const struct aiScene* aScene);
 
-	inline bool HasAnimations();
-
 	inline void AddRef();
 	inline void RemoveRef();
-
 	inline int GetRefCount() const;
-	CU::Matrix44f GetBoneTransform(const float aTime, const char * aAnimationState, const char* aBoneName);
-
-	inline bool HasBones() const;
-
-	std::vector<mat4>& GetBones(float aTime, const char * aAnimationState, const bool aAnimationLooping);
-
 	__forceinline const std::string& GetName() const;
 
 private:
@@ -119,7 +117,10 @@ private:
 #ifdef _DEBUG
 	std::string myFilePath;
 #endif // _DEBUG
-	std::map<std::string, CSceneAnimator> mySceneAnimators;
+
+	std::map<std::string, CSceneAnimator> mySceneAnimatorsOld;
+	std::map<eAnimationState, CSceneAnimator> mySceneAnimators;
+
 	CU::GrowingArray<SLodData> myLODModels;
 	CU::GrowingArray<SToWorldSpace> myInstanceBufferData;
 

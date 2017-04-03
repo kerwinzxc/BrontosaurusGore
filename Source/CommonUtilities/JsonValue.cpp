@@ -261,6 +261,11 @@ namespace CU
 		return static_cast<int>(GetNumber());
 	}
 
+	short CJsonValue::GetShort() const
+	{
+		return static_cast<short>(GetNumber());
+	}
+
 	unsigned int CJsonValue::GetUInt() const
 	{
 		return static_cast<unsigned int>(GetNumber());

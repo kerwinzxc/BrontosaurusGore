@@ -62,12 +62,65 @@ void CDoorManager::OpenDoor(const unsigned char aNetworkID)
 	myDoors.at(aNetworkID)->SetIsClosed(false);
 }
 
+void CDoorManager::OpenDoor(const short aKeyId)
+{
+	for (auto door : myDoors)
+	{
+		if (door.second->GetLockId() == aKeyId)
+		{
+			door.second->SetIsClosed(false);
+			break;
+		}
+	}
+}
+
+void CDoorManager::LockDoor(const unsigned char aNetworkID)
+{
+	myDoors.at(aNetworkID)->SetIsLocked(true);
+}
+
+void CDoorManager::LockDoor(const short aKeyId)
+{
+	for (auto door : myDoors)
+	{
+		if (door.second->GetLockId() == aKeyId)
+		{
+			door.second->SetIsLocked(true);
+			break;
+		}
+	}
+}
+
 void CDoorManager::UnlockDoor(const unsigned char aNetworkID)
 {
 	myDoors.at(aNetworkID)->SetIsLocked(false);
 }
 
+void CDoorManager::UnlockDoor(const short aKeyId)
+{
+	for (auto door : myDoors)
+	{
+		if (door.second->GetLockId() == aKeyId)
+		{
+			door.second->SetIsLocked(false);
+			break;
+		}
+	}
+}
+
 void CDoorManager::CloseDoor(const unsigned char aNetworkID)
 {
 	myDoors.at(aNetworkID)->SetIsClosed(true);
+}
+
+void CDoorManager::CloseDoor(const short aKeyId)
+{
+	for (auto door : myDoors)
+	{
+		if (door.second->GetLockId() == aKeyId)
+		{
+			door.second->SetIsClosed(true);
+			break;
+		}
+	}
 }

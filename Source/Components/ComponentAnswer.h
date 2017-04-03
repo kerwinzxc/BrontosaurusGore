@@ -24,6 +24,9 @@ enum class eComponentQuestionType
 	eMovePhysicsController,
 	ePhysicsControllerConstraints,
 	eCanShoot,
+
+	eGetWeaponFactoryIndexOfActiveWeapon,
+	eEnemyNetworkID,
 	eGetCurrentAmmoData,
 	eGetWeapons,
 	eLength,

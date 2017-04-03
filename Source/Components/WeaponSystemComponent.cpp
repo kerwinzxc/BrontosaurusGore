@@ -14,6 +14,7 @@
 #include "../FontEngine/FontEngineFacade.h"
 #include "../TServer/ServerMessageManager.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
+#include "../TServer/ServerMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -100,7 +101,8 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eAddWeapon:
 	{
-		unsigned short theWeaponIndexOfAddedweapon = WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eAddWeaponIndex:
@@ -279,8 +281,20 @@ void CWeaponSystemComponent::ChangeWeapon(unsigned aIndex)
 {
 	ChangeWeaponLocal(aIndex);
 	
-	CNetworkMessage_WeaponChange* changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>("__All");
+	CNetworkMessage_WeaponChange* changeMessage;
+	if (CClientMessageManager::GetInstance() != nullptr) //kollar om det är på clienten och då är det en spelare om den finns
+	{
+		changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>(ID_ALL);
+		changeMessage->SetWeapon(myActiveWeaponIndex);
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
+		return;
+	}
+	changeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>(ID_ALL);
 	changeMessage->SetWeapon(myActiveWeaponIndex);
+	changeMessage->SetShooter(CNetworkMessage_WeaponChange::Shooter::Enemy);
+	SComponentQuestionData question;
+	if (GetParent()->AskComponents(eComponentQuestionType::eEnemyNetworkID, question) == true)
+		changeMessage->SetShooterId(question.myInt);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
 }
 
@@ -320,6 +334,12 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	{
 		aQuestionData.myWeapons = &myWeapons;
 		return true;
+	}
+	case eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon:
+	{
+		aQuestionData.myInt = WeaponFactoryPointer->GetWeaponFactoryWeaponIndex(myWeapons[myActiveWeaponIndex]->GetData()->name.c_str());
+		return true; 
+		break;
 	}
 	default:
 		break;

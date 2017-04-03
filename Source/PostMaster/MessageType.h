@@ -22,6 +22,9 @@ enum class eMessageType
 	eCreateExplosionMessage,
 	eDeactivateExplosion,
 	eRevivePlayer,
+	eSpawnWave,
+	eAddEnemyToWave,
+	ePlayerEnterArena,
 	eLength,
 };
 

@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddEnemyToWave.h" />
     <ClInclude Include="AddToCheckPointResetList.h" />
     <ClInclude Include="ConectedMessage.h" />
     <ClInclude Include="ConetctMessage.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="NetworkDebugInfo.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="OtherPlayerSpawned.h" />
+    <ClInclude Include="PlayerEnteredArena.h" />
     <ClInclude Include="PlayerPositionMessage.h" />
     <ClInclude Include="Postmaster.h" />
     <ClInclude Include="PostOffice.h" />
@@ -144,9 +146,11 @@
     <ClInclude Include="SetAsNewCheckPointMessage.h" />
     <ClInclude Include="SetClientIDMessage.h" />
     <ClInclude Include="SpawnOtherPlayerMessage.h" />
+    <ClInclude Include="StartWaveMessage.h" />
     <ClInclude Include="Subscriber.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddEnemyToWave.cpp" />
     <ClCompile Include="AddToCheckPointResetList.cpp" />
     <ClCompile Include="ConectedMessage.cpp" />
     <ClCompile Include="ConetctMessage.cpp" />
@@ -157,6 +161,7 @@
     <ClCompile Include="LoadLevelMessage.cpp" />
     <ClCompile Include="NetworkDebugInfo.cpp" />
     <ClCompile Include="OtherPlayerSpawned.cpp" />
+    <ClCompile Include="PlayerEnteredArena.cpp" />
     <ClCompile Include="PlayerPositionMessage.cpp" />
     <ClCompile Include="Postmaster.cpp" />
     <ClCompile Include="PostOffice.cpp" />
@@ -167,6 +172,7 @@
     <ClCompile Include="SetAsNewCheckPointMessage.cpp" />
     <ClCompile Include="SetClientIDMessage.cpp" />
     <ClCompile Include="SpawnOtherPlayerMessage.cpp" />
+    <ClCompile Include="StartWaveMessage.cpp" />
     <ClCompile Include="Subscriber.cpp" />
   </ItemGroup>
   <ItemGroup>

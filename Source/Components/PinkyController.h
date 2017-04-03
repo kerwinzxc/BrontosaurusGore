@@ -10,6 +10,7 @@ enum class ePinkyState
 	eChargeCooldown,
 	eUseMeleeAttack,
 	eWalkIntoMeleeRange,
+	eChargingMeleeAttack,
 	eDead
 };
 class CPinkyController : public CEnemy
@@ -34,6 +35,8 @@ private:
 	float myChargeCooldown;
 	float myElapsedChargeCooldownTime;
 	float myChargeDistance2;
+	float myMeleeAttackChargeDuration;
+	float myElapsedChargeMeleeAttackTime;
 	ePinkyState myState;
 	bool myIsCharging;
 	healthPoint myChargeDamage;

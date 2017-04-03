@@ -343,6 +343,7 @@
   <ItemGroup>
     <ClInclude Include="LoadAmmoComponent.h" />
     <ClInclude Include="LoadAmmoPickupComponent.h" />
+    <ClInclude Include="LoadArenaTrigger.h" />
     <ClInclude Include="LoadArmorComponent.h" />
     <ClInclude Include="LoadCamera.h" />
     <ClInclude Include="LoadCheckPointComponent.h" />
@@ -370,6 +371,7 @@
     <ClInclude Include="LoadScriptComponent.h" />
     <ClInclude Include="LoadSoundComponent.h" />
     <ClInclude Include="LoadSpawner.h" />
+    <ClInclude Include="LoadWeaponPickupComponent.h" />
     <ClInclude Include="LoadWeaponSystemComponent.h" />
     <ClInclude Include="LuaFunctions.h" />
     <ClInclude Include="ServerLoadManager.h" />
@@ -379,6 +381,7 @@
   <ItemGroup>
     <ClCompile Include="LoadAmmoComponent.cpp" />
     <ClCompile Include="LoadAmmoPickupComponent.cpp" />
+    <ClCompile Include="LoadArenaTrigger.cpp" />
     <ClCompile Include="LoadArmorComponent.cpp" />
     <ClCompile Include="LoadCamera.cpp" />
     <ClCompile Include="LoadCheckPointComponent.cpp" />
@@ -406,6 +409,7 @@
     <ClCompile Include="LoadScriptComponent.cpp" />
     <ClCompile Include="LoadSoundComponent.cpp" />
     <ClCompile Include="LoadSpawner.cpp" />
+    <ClCompile Include="LoadWeaponPickupComponent.cpp" />
     <ClCompile Include="LoadWeaponSystemComponent.cpp" />
     <ClCompile Include="LuaFunctions.cpp" />
     <ClCompile Include="ServerLoadManager.cpp" />

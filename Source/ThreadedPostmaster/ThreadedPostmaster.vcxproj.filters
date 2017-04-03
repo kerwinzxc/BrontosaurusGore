@@ -140,6 +140,9 @@
       <Filter>Message\DeactivateExplosion</Filter>
     </ClCompile>
     <ClCompile Include="RevivePlayerMessage.cpp" />
+    <ClCompile Include="StartWaveMessage.cpp" />
+    <ClCompile Include="AddEnemyToWave.cpp" />
+    <ClCompile Include="PlayerEnteredArena.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Postmaster.h">
@@ -206,5 +209,8 @@
       <Filter>Message\DeactivateExplosion</Filter>
     </ClInclude>
     <ClInclude Include="RevivePlayerMessage.h" />
+    <ClInclude Include="StartWaveMessage.h" />
+    <ClInclude Include="AddEnemyToWave.h" />
+    <ClInclude Include="PlayerEnteredArena.h" />
   </ItemGroup>
 </Project>

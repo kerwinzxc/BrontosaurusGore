@@ -11,7 +11,7 @@ public:
 	~CNetworkMessage_PlayerPositionMessage();
 	ePackageType GetPackageType()const override;
 
-	const CU::Matrix44f& GetTransformation();
+	const CU::Matrix44f GetTransformation();
 	//const CU::Vector3f& GetPosition();
 	const unsigned GetID();
 	void SetTransformation(const CU::Matrix44f& aTransform);

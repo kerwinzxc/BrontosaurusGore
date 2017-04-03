@@ -201,6 +201,9 @@
       <Filter>NetworkMessage\ChangeWeapon</Filter>
     </ClInclude>
     <ClInclude Include="AnimationState.h" />
+    <ClInclude Include="NetworkMessage_PickupWeapon.h">
+      <Filter>NetworkMessage\Pickups</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -303,6 +306,9 @@
     <ClCompile Include="NetworkMessage_SetIsRepesentationActive.cpp" />
     <ClCompile Include="NetworkMessage_WeaponChange.cpp">
       <Filter>NetworkMessage\ChangeWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_PickupWeapon.cpp">
+      <Filter>NetworkMessage\Pickups</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
