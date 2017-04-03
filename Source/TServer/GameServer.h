@@ -35,6 +35,7 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
+	std::thread::id& GetThreadID();
 	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID);
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
@@ -57,6 +58,8 @@ private:
 	CU::TimerHandle myMainTimer;
 
 	CU::ThreadPool myThreadPool;
+
+	std::thread::id myThreadID;
 
 
 

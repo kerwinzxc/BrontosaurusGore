@@ -52,6 +52,8 @@ CGameServer::CGameServer():
 	myIsRunning = false;
 	myTime = 0;
 	myPlayersNetworkComponents.Init(5);
+
+	myThreadID = std::this_thread::get_id();
 }
 
 
@@ -76,7 +78,6 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 
 void CGameServer::Load(const int aLevelIndex)
 {
-	
 
 	ServerLoadManagerGuard loadManagerGuard(*this);
 
@@ -179,6 +180,8 @@ void CGameServer::DestroyManagersAndFactories()
 
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
+
+
 	//DL_PRINT("In Update");
 	myTime += aDeltaTime.GetMilliseconds();
 
@@ -190,6 +193,8 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 		myWaveManager->Update();
 		myTime = 0;
 	}
+
+	CPollingStation* instance = CPollingStation::GetInstance();
 	
 	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
@@ -211,6 +216,11 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 bool CGameServer::IsLoaded() const
 {
 	return myIsLoaded;
+}
+
+std::thread::id & CGameServer::GetThreadID()
+{
+	return myThreadID;
 }
 
 CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID)
