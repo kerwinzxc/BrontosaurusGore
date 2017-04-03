@@ -16,14 +16,14 @@ DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelInstance::CModelInstance(const char* aModelPath)
 {
-	if (std::string(aModelPath).find("MindControlled") != std::string::npos)
-	{
-		int br = 0;
-	}
-	if (std::string(aModelPath).find("Plasma") != std::string::npos)
-	{
-		int br = 0;
-	}
+	//if (std::string(aModelPath).find("MindControlled") != std::string::npos)
+	//{
+	//	int br = 0;
+	//}
+	//if (std::string(aModelPath).find("Plasma") != std::string::npos)
+	//{
+	//	int br = 0;
+	//}
 
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
