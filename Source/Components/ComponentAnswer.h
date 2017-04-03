@@ -18,6 +18,7 @@ enum class eComponentQuestionType
 	eMovePhysicsController,
 	ePhysicsControllerConstraints,
 	eCanShoot,
+	eEnemyNetworkID,
 	eLength,
 };
 
