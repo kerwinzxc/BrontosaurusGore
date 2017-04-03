@@ -26,6 +26,26 @@ int CNetworkMessage_WeaponChange::GetWeaponIndex() const
 	return myWeaponIndex;
 }
 
+CNetworkMessage_WeaponChange::Shooter CNetworkMessage_WeaponChange::GetShooter()
+{
+	return myShooter;
+}
+
+void CNetworkMessage_WeaponChange::SetShooterId(unsigned int anId)
+{
+	myId = anId;
+}
+
+unsigned CNetworkMessage_WeaponChange::GetId()
+{
+	return myId;
+}
+
+void CNetworkMessage_WeaponChange::SetShooter(Shooter aShooter)
+{
+	myShooter = aShooter;
+}
+
 void CNetworkMessage_WeaponChange::DoSerialize(StreamType& aStream)
 {
 	CImportantNetworkMessage::DoSerialize(aStream);
