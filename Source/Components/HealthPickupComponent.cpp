@@ -2,8 +2,8 @@
 #include "PollingStation.h"
 #include "HealthPickupComponent.h"
 #include "../ThreadedPostmaster/Postmaster.h"
-#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_PickupHealth.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TClient/ClientMessageManager.h"
 
 CHealthPickupComponent::CHealthPickupComponent()
