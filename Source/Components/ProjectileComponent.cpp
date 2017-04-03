@@ -21,6 +21,7 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	{
 	case eComponentMessageType::eOnCollisionEnter:
 	{
+		Deactivate();
 		if(myData->shouldRayCast == false)
 		{
 			SComponentMessageData damageData;
@@ -29,9 +30,8 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData, true));
 		}
-		Deactivate();
 		break;
 	}
 	default:
@@ -77,7 +77,6 @@ void CProjectileComponent::Update(float aDeltaTime)
 
 void CProjectileComponent::Deactivate()
 {
-	DL_PRINT("Deactivate");
 	myIsActive = false;
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;

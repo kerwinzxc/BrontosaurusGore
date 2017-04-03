@@ -11,23 +11,33 @@
 #include "Intersection.h"
 #define HIGH_ENUF 8
 
+#include "../TShared/AnimationState.h"
+DECLARE_ANIMATION_ENUM_AND_STRINGS;
+
 CModelInstance::CModelInstance(const char* aModelPath)
 {
-	if (std::string(aModelPath).find("M_Shotgun_01") != std::string::npos)
-	{
-		int br = 0;
-	}
+	//if (std::string(aModelPath).find("MindControlled") != std::string::npos)
+	//{
+	//	int br = 0;
+	//}
+	//if (std::string(aModelPath).find("Plasma") != std::string::npos)
+	//{
+	//	int br = 0;
+	//}
+
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
 	myAnimationCounter = 0.f;
-	myModel = MODELMGR->LoadModel(aModelPath);
-	CModel* model = MODELMGR->GetModel(myModel);
+
+	CModelManager* modelManager = MODELMGR;
+	myModel = modelManager->LoadModel(aModelPath);
+	CModel* model = modelManager->GetModel(myModel);
 	if (model != nullptr)
 	{
 		myHasAnimations = model->HasAnimations();
 	}
-	myCurrentAnimation = "idle";
-	myNextAnimation = "";
+	myCurrentAnimation = eAnimationState::idle01;
+	myNextAnimation = eAnimationState::none;
 	myAnimationLerpie = 0.f;
 	myAnimationLooping = true;
 	myIgnoreDepth = false;
@@ -291,7 +301,7 @@ void CModelInstance::SetHighlight(const CU::Vector4f& aColor, float anIntensivit
 	myHighlightIntencity = anIntensivity;
 }
 
-void CModelInstance::SetAnimation(const std::string& aAnimationKey)
+void CModelInstance::SetAnimation(const eAnimationState aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
 }
@@ -301,7 +311,7 @@ void CModelInstance::SetAnimationLerpie(const float aLerpValue)
 	myAnimationLerpie = aLerpValue;
 }
 
-void CModelInstance::SetNextAnimation(const std::string& aAnimationKey)
+void CModelInstance::SetNextAnimation(const eAnimationState aAnimationKey)
 {
 	myNextAnimation = aAnimationKey;
 }
@@ -317,7 +327,7 @@ void CModelInstance::ResetAnimation()
 	myAnimationCounter = 0.0f;
 }
 
-const std::string& CModelInstance::GetAnimationState() const
+eAnimationState CModelInstance::GetAnimationState() const
 {
 	return myCurrentAnimation;
 }

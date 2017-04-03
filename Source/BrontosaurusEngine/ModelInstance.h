@@ -4,6 +4,7 @@
 #include "../CommonUtilities/Sphere.h"
 #include <map>
 
+enum class eAnimationState;
 
 namespace CU
 {
@@ -51,12 +52,12 @@ public:
 	void SetPosition(CU::Vector3f aPosition);
 	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
-	void SetAnimation(const std::string& aAnimationKey);
+	void SetAnimation(const eAnimationState aAnimationKey);
 	void SetAnimationLerpie(const float aLerpValue);
-	void SetNextAnimation(const std::string& aAnimationKey);
+	void SetNextAnimation(const eAnimationState aAnimationKey);
 	void SetAnimationLooping(const bool aValue);
 	void ResetAnimation();
-	const std::string& GetAnimationState() const;
+	eAnimationState GetAnimationState() const;
 	float GetAnimationCounter() const;
 
 	
@@ -75,8 +76,8 @@ private:
 
 	CU::Vector4f myHighlightColor;
 
-	std::string myCurrentAnimation;
-	std::string myNextAnimation;
+	eAnimationState myCurrentAnimation;
+	eAnimationState myNextAnimation;
 
 	ModelId myModel;
 	

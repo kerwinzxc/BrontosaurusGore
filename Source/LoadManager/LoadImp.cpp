@@ -31,7 +31,7 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	if (someData.myData.HasKey("wanderDistance") == true)
 	{
 		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
-		blueprint.walkToMeleeRange = someData.myData.at("myWanderDistance").GetFloat();
+		blueprint.walkToMeleeRange = someData.myData.at("wanderDistance").GetFloat();
 	}
 	else
 	{

@@ -33,15 +33,13 @@ public:
 	int GetModelRefCount(const ModelId aModelID) const;
 
 private:
-	void LoadAnimations(const char * aPath, const ModelId aModelId);
+	void LoadAnimations(const std::string& aPath, const ModelId aModelId);
 	bool CreateModel(const std::string& aModelPath, ModelId aNewModel);
-	bool DoesModelExists(const char * aModelPath);
+	bool DoesModelExists(const std::string& aModelPath);
 
 private:
 	std::unordered_map<std::string, ModelId> myModels;
 	CU::Stack<ModelId> myFreeModelIDs;
 	CU::GrowingArray<CModel, ModelId> myModelList;
-	CU::ThreadPool* myThreadPool;
-	static const unsigned int ourMaxNumberOfModels = 512u;
 };
 
