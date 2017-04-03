@@ -184,6 +184,8 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 	myWanderDistance = impData->wanderDistance;
 	myWanderDuration = impData->wanderDuration;
 	myAttacksUntillRunningAway = impData->attacksUntillRunningAway;
+	myChargeMeleeAttackDuration = impData->chargeMeleeAttackDuration;
+	myChargeRangedAttackDuration = impData->chargeAttackDuration;
 	CEnemy::SetEnemyData(aData);
 }
 
