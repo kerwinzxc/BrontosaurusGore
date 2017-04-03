@@ -47,6 +47,7 @@
 #include "../TShared/NetWorkMessage_PickupAmmo.h"
 #include "../TShared/NetWorkmessage_PickupArmor.h"
 #include "../TShared/Networkmessage_pickupkey.h"
+#include "../TShared/Networkmessage_pickupWeapon.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
@@ -341,6 +342,13 @@ void CClient::Update()
 				CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
 				CPickupComponentManager::GetInstance()->DeactivateKeyPickup(pickup->GetNetWorkID());
 				CPollingStation::GetInstance()->AddKey(pickup->GetLockID());
+			}
+			break;
+			case ePackageType::ePickupWeapon:
+			{
+				CNetworkMessage_PickupWeapon* pickup = currentMessage->CastTo<CNetworkMessage_PickupWeapon>();
+				CPickupComponentManager::GetInstance()->DeactivateWeaponPickup(pickup->GetID());
+				CPollingStation::GetInstance()->AddWeapon(pickup->GetWeaponPickup());
 			}
 			break;
 			case ePackageType::eDoorMessage:

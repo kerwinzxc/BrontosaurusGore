@@ -85,7 +85,10 @@ CWeaponPickupComponent* CPickupComponentManager::CreateWeaponPickupComponent(con
 	weapon->SetWeaponPickup(aWeaponName);
 	weapon->SetNetworkId(weaponPickupId);
 	COMPMGR.RegisterComponent(weapon);
-	myWeaponPickups.emplace(weaponPickupId++, weapon);
+	if (myWeaponPickups.emplace(weaponPickupId++, weapon).second == false)
+	{
+		int br = 0;
+	}
 	return weapon;
 }
 
@@ -134,7 +137,7 @@ void CPickupComponentManager::DeactivateKeyPickup(const int aId)
 }
 void CPickupComponentManager::DeactivateWeaponPickup(const int aId)
 {
-	myKeyPickups.at(aId)->SetActive(false);
+	myWeaponPickups.at(aId)->SetActive(false);
 }
 
 CPickupComponentManager::CPickupComponentManager()

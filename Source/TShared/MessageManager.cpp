@@ -16,6 +16,7 @@
 #include "NetWorkMessage_PickupAmmo.h"
 #include "Networkmessage_PickupArmor.h"
 #include "NetworkMessage_PickupKey.h"
+#include "NetworkMessage_PickupWeapon.h"
 #include "NetworkMessage_EnemyPosition.h"
 #include "NetworkMessage_EnemyTransformation.h"
 #include "NetworkMessage_TakeDamage.h"
@@ -86,6 +87,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetWorkMessage_PickupAmmo>(aHeader);
 	case ePackageType::ePickupArmor:
 		return CreateMessage<CNetworkmessage_PickupArmor>(aHeader);
+	case ePackageType::ePickupWeapon:
+		return CreateMessage<CNetworkMessage_PickupWeapon>(aHeader);
 	case ePackageType::ePickupKey:
 		return CreateMessage<CNetworkMessage_PickupKey>(aHeader);
 	case ePackageType::eEnemyPosition:

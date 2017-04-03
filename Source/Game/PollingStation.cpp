@@ -9,6 +9,7 @@ CPollingStation::CPollingStation()
 	assert(ourInstance == nullptr);
 	ourInstance = this;
 	myKeys.Init(1);
+	myWeaponIndexes.Init(4);
 }
 
 CPollingStation::~CPollingStation()
@@ -20,6 +21,16 @@ CPollingStation::~CPollingStation()
 CPollingStation* CPollingStation::GetInstance()
 {
 	return ourInstance;
+}
+
+void CPollingStation::AddWeapon(const int aWeaponId)
+{
+	myWeaponIndexes.Add(aWeaponId);
+}
+
+void CPollingStation::RemoveWeapon(const int aWeaponId)
+{
+	myWeaponIndexes.Remove(aWeaponId);
 }
 
 void CPollingStation::SetPlayerObject(CGameObject* aPlayerObject)
