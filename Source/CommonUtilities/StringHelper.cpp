@@ -147,6 +147,35 @@ namespace CU
 	{
 		return std::string(aWString.begin(), aWString.end());
 	}
+	std::vector<std::string> StringHelper::Split(const std::string & aStringToSplit, const std::string & aSplitValues)
+	{
+		std::vector<std::string> substrings;
+
+		size_t startIndex = 0;
+		size_t endIndex = 0;
+		for(int i = 0; i < aStringToSplit.size();++i)
+		{
+			endIndex = i;
+			for(int j = 0; j < aSplitValues.size(); ++j)
+			{
+				if(aStringToSplit[i] == aSplitValues[j])
+				{
+					const size_t width = endIndex - startIndex;
+					substrings.push_back(aStringToSplit.substr(startIndex, width));
+					startIndex = i + 1;
+				}
+			}
+		}
+
+		if(startIndex < endIndex)
+		{
+			const size_t width = endIndex - startIndex;
+
+			substrings.push_back(aStringToSplit.substr(startIndex, width));
+		}
+
+		return substrings;
+	}
 }
 
 std::string& operator-=(std::string& aLeft, const std::string& aRight)

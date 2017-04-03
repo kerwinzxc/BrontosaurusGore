@@ -25,12 +25,15 @@ namespace CU
 		Work(const Work& aWork);
 		Work() {};
 		~Work();
+
 		void DoWork();
 		inline ePriority GetPriority();
 
 		std::string myLogMessage;
 		DL_Debug::eLogTypes myToWhatLog;
 	private:
+
+		std::function<bool(void)> myLoopCondition;
 		ePriority myPrio;
 		std::function < void() > myWork;
 
