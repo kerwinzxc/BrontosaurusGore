@@ -280,9 +280,9 @@ void CWeaponSystemComponent::ChangeWeapon(unsigned aIndex)
 {
 	ChangeWeaponLocal(aIndex);
 	
-	CNetworkMessage_WeaponChange* changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>("__All");
-	changeMessage->SetWeapon(myActiveWeaponIndex);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
+	//CNetworkMessage_WeaponChange* changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>("__All");
+	//changeMessage->SetWeapon(myActiveWeaponIndex);
+	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
 }
 
 void CWeaponSystemComponent::GiveWeapon(const char* aWeaponName)
