@@ -169,8 +169,24 @@ void CPlayState::Load()
 	//**************************************************************//
 	//							PHYSICS								//
 	//**************************************************************//
-	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
-	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+	if (Physics::CFoundation::GetInstance() == nullptr)
+	{
+		Physics::CFoundation::Create();
+		if (Physics::CFoundation::GetInstance()->GetPhysics() == nullptr)
+		{
+			myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+		}
+	}
+	else
+	{
+		myPhysics = Physics::CFoundation::GetInstance()->GetPhysics();
+	}
+
+	if (myPhysicsScene != nullptr)
+	{
+		delete myPhysicsScene;
+	}
+
 	myPhysicsScene = myPhysics->CreateScene();
 
 	//**************************************************************//
