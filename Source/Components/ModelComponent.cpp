@@ -120,3 +120,13 @@ void CModelComponent::SetAnimationLerpValue(const float aLerpValue)
 {
 	myModel.SetAnimationLerpie(aLerpValue);
 }
+
+void CModelComponent::SetAnimationLooping(const bool aIsLooping)
+{
+	myModel.SetAnimationLooping(aIsLooping);
+}
+
+void CModelComponent::ResetAnimation()
+{
+	myModel.ResetAnimation();
+}

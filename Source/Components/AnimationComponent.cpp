@@ -13,8 +13,12 @@ struct CAnimationComponent::SAnimation
 	eAnimationState myNextAnimationKey;
 	float myAnimationBlend = 0.f;
 	float myBlendTime = 0.f;
-	float myLifeTime = INFINITY;
+	float myLifeTime = FLT_MAX;
+	bool myIsLooping = true;
 };
+
+CAnimationComponent::SAnimation idleState;
+CAnimationComponent::SAnimation shotState;
 
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
@@ -23,51 +27,100 @@ CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 {
 	myType = eComponentType::eAnimationComponent;
 
-	SAnimation idleState;
-	idleState.myAnimationKey = eAnimationState::walk01;
+	idleState.myAnimationKey = eAnimationState::idle01;
+	idleState.myNextAnimationKey = eAnimationState::none;
+
+	shotState.myAnimationKey = eAnimationState::shot01;
+	shotState.myNextAnimationKey = eAnimationState::none;
+	shotState.myIsLooping = false;
+	shotState.myLifeTime = 2.f;
 
 	myAnimationStack.Add(idleState);
 	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
 	myModelComponent.SetNextAnimation(eAnimationState::none);
 	myModelComponent.SetAnimationLerpValue(0.f);
+
+	ourAnimations.Add(this);
 }
 
 CAnimationComponent::~CAnimationComponent()
 {
+	ourAnimations.RemoveCyclic(this);
 }
 
 void CAnimationComponent::Update(const CU::Time aDeltaTime)
 {
 	myMainTimer += aDeltaTime.GetSeconds();
 
-	if (myMainTimer < 0.5f)
+	if (myAnimationStack.GetLast().myBlendTime > 0.f)
 	{
-		myModelComponent.SetAnimation(eAnimationState::idle01);
-		myModelComponent.SetNextAnimation(eAnimationState::walk01);
-		myModelComponent.SetAnimationLerpValue(myMainTimer / 0.5f);
+		if (myAnimationStack.GetLast().myBlendTime < myAnimationStack.GetLast().myAnimationBlend)
+		{
+			myAnimationStack.GetLast().myAnimationBlend += aDeltaTime.GetSeconds();
+		}
 	}
-	else if (myMainTimer < 1.f)
+
+
+	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
+	myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
+	myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myBlendTime);
+	myModelComponent.SetAnimationLooping(myAnimationStack.GetLast().myIsLooping);
+
+
+	if (myMainTimer >= myAnimationStack.GetLast().myLifeTime)
 	{
-		myModelComponent.SetAnimation(eAnimationState::walk01);
-		myModelComponent.SetNextAnimation(eAnimationState::run01);
-		myModelComponent.SetAnimationLerpValue((myMainTimer - 0.5f) / 0.5f);
+		if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::none)
+		{
+			myAnimationStack.Pop();
+		}
+		else
+		{
+			switch (myAnimationStack.GetLast().myNextAnimationKey)
+			{
+			case eAnimationState::idle01:
+				//break;
+			case eAnimationState::walk01:
+				//break;
+			case eAnimationState::run01:
+				//break;
+			case eAnimationState::shot01:
+				//break;
+			default:
+				DL_PRINT_WARNING("Error in animation, trying to change to animation %s but it is not available", SAnimationState::AnimationStates[(int)myAnimationStack.GetLast().myNextAnimationKey]);
+				myAnimationStack.Pop();
+				break;
+			}
+		}
 	}
-	else if (myMainTimer < 1.5f)
-	{
-		myModelComponent.SetAnimation(eAnimationState::run01);
-		myModelComponent.SetNextAnimation(eAnimationState::walk01);
-		myModelComponent.SetAnimationLerpValue((myMainTimer - 1.f) / 0.5f);
-	}
-	else if (myMainTimer < 2.f)
-	{
-		myModelComponent.SetAnimation(eAnimationState::walk01);
-		myModelComponent.SetNextAnimation(eAnimationState::idle01);
-		myModelComponent.SetAnimationLerpValue((myMainTimer - 1.5f) / 0.5f);
-	}
-	else
-	{
-		myMainTimer = 0.f;
-	}
+
+	//if (myMainTimer < 0.5f)
+	//{
+	//	myModelComponent.SetAnimation(eAnimationState::idle01);
+	//	myModelComponent.SetNextAnimation(eAnimationState::walk01);
+	//	myModelComponent.SetAnimationLerpValue(myMainTimer / 0.5f);
+	//}
+	//else if (myMainTimer < 1.f)
+	//{
+	//	myModelComponent.SetAnimation(eAnimationState::walk01);
+	//	myModelComponent.SetNextAnimation(eAnimationState::run01);
+	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 0.5f) / 0.5f);
+	//}
+	//else if (myMainTimer < 1.5f)
+	//{
+	//	myModelComponent.SetAnimation(eAnimationState::run01);
+	//	myModelComponent.SetNextAnimation(eAnimationState::walk01);
+	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 1.f) / 0.5f);
+	//}
+	//else if (myMainTimer < 2.f)
+	//{
+	//	myModelComponent.SetAnimation(eAnimationState::walk01);
+	//	myModelComponent.SetNextAnimation(eAnimationState::idle01);
+	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 1.5f) / 0.5f);
+	//}
+	//else
+	//{
+	//	myMainTimer = 0.f;
+	//}
 }
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -75,8 +128,8 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	aMessageType;
 	aMessageData;
 
-	//switch (aMessageType)
-	//{
+	switch (aMessageType)
+	{
 	//case eComponentMessageType::eMoving:
 	//{
 	//	CU::Vector2f lastPosition = myLastPosition;
@@ -87,12 +140,18 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	//	myModelComponent.SetAnimationLerpValue(/*speed*/0.4f/* += aDeltaTime.GetSeconds()*/);
 	//	break;
 	//}
-	//case eComponentMessageType::eShoot:
-	//	DL_PRINT("shot in animation component");
-	//	myModelComponent.SetAnimation(eAnimationState::shot01);
-	//	//play shoot animation (if this is the real shoot message?)
-	//	break;
-	//}
+	case eComponentMessageType::eShoot:
+		DL_PRINT("shot in animation component");
+		//myModelComponent.SetAnimation(eAnimationState::shot01);
+		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::shot01)
+		{
+			myAnimationStack.Add(shotState);
+			myModelComponent.ResetAnimation();
+			myMainTimer = 0.f;
+		}
+		//play shoot animation (if this is the real shoot message?)
+		break;
+	}
 }
 
 void CAnimationComponent::UpdateAnimations(const CU::Time aDeltaTime)
