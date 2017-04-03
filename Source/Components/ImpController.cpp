@@ -63,7 +63,10 @@ void CImpController::Update(const float aDeltaTime)
 	}
 	else
 	{
-		myState = eImpState::eDead;
+		if (myIsDead == true)
+		{
+			myState = eImpState::eDead;
+		}
 	}
 
 
