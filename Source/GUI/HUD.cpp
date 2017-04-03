@@ -75,12 +75,13 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 	myWeaponSprite = new CSpriteInstance(spritePath.c_str());
 
 	const CU::CJsonValue& frameSizeValue = spretsheeValue.at("frameSize");
-	const float frameWidth = frameSizeValue.at("width").GetFloat();
-	const float frameHeight = frameSizeValue.at("height").GetFloat();
 
 	const CU::Vector2f mySpriteSize = myWeaponSprite->GetTextureSize();
 
-	myWeaponSprite->SetRect({ 0,0, frameWidth / mySpriteSize.x, frameHeight / mySpriteSize.y });
+	myFrameSize.x = frameSizeValue.at("width").GetFloat() / mySpriteSize.x;
+	myFrameSize.y = frameSizeValue.at("height").GetFloat() / mySpriteSize.y;
+
+	myWeaponSprite->SetRect({ 0,0, myFrameSize.x, myFrameSize.y});
 	myWeaponSprite->SetSize({ 1.f,1.f });
 
 	const CU::CJsonValue& weaponIndexValue = spretsheeValue.at("weaponTypes");
@@ -305,14 +306,9 @@ void CHUD::SetAmmoHudRect()
 		}
 	}
 	
-	
-	
-
-
 	//const unsigned immageIndex = myCurrentWeapon + offset;
 
-	const CU::Vector4f &currentRect = myWeaponSprite->GetRect();
-	const CU::Vector2f frameSize = CU::Vector2f(currentRect.z - currentRect.x, currentRect.w - currentRect.y);
+	const CU::Vector2f &frameSize = myFrameSize;
 
 	const float newX = frameSize.x * imageIndex;
 	const int newRow = newX;

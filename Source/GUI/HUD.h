@@ -66,6 +66,7 @@ private:
 	std::map<std::string, char> myWeaponIndexes;
 	CU::CBitSet<3> myPickedUpWeapons;
 
+	CU::Vector2f myFrameSize;
 	unsigned short myCurrentAmmo;
 	unsigned short myCurrentMaxAmmo;
 
