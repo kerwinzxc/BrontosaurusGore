@@ -8,12 +8,18 @@ Postmaster::Threaded::CPostmaster* Postmaster::Threaded::CPostmaster::ourInstanc
 
 Postmaster::Threaded::CPostOffice&  Postmaster::Threaded::CPostmaster::AddThreadOffice()
 {
-	std::thread::id threadId = std::this_thread::get_id();
+	return AddThreadOffice(std::this_thread::get_id());
+
+}
+
+Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::AddThreadOffice(std::thread::id aId)
+{
+	std::thread::id threadId = aId;
 
 	std::lock_guard<std::mutex> lock(myOfficeLock);
 	std::map<std::thread::id, CPostOffice*>::iterator it = myOffices.find(threadId);
 
-	if(it != myOffices.end())
+	if (it != myOffices.end())
 	{
 		return *it->second;
 	}
@@ -50,7 +56,7 @@ Postmaster::Threaded::CPostOffice& Postmaster::Threaded::CPostmaster::GetThreadO
 
 	if (it == myOffices.end())
 	{
-		return AddThreadOffice();
+		return AddThreadOffice(threadId);
 	}
 
 	return *it->second;
@@ -105,6 +111,7 @@ void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, eMes
 
 void Postmaster::Threaded::CPostmaster::Subscribe(ISubscriber* aSubscriber, eMessageType aSubscriptionType, std::thread::id anId)
 {
+	aSubscriber->SetSubscribedThread(anId);
 	GetThreadOffice(anId).Subscribe(aSubscriber, aSubscriptionType);
 }
 

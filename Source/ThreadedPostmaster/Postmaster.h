@@ -28,6 +28,9 @@ namespace Postmaster
 			//Create a local post office (for that thread)
 			CPostOffice& AddThreadOffice();
 
+			//Create a local post office (for that thread)
+			CPostOffice& AddThreadOffice(std::thread::id aId);
+
 			//Set office active
 			void SetOfficeActive(bool anActive);
 
