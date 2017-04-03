@@ -126,10 +126,12 @@ void CGameServer::ReInit()
 
 void CGameServer::CreateManagersAndFactories()
 {
-	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
-
-	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
-	myPhysicsScene = myPhysics->CreateScene();
+	if (Physics::CFoundation::GetInstance() == nullptr)
+	{
+		Physics::CFoundation::Create();
+		myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+		myPhysicsScene = myPhysics->CreateScene();
+	}
 
 	CComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
@@ -165,6 +167,8 @@ void CGameServer::DestroyManagersAndFactories()
 	CEnemyFactory::Destroy();
 
 	delete CPollingStation::GetInstance();
+
+	myPlayersNetworkComponents.RemoveAll();
 
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
