@@ -41,7 +41,7 @@ void CColliderComponent::UpdatePosition()
 
 	GetParent()->SetWorldTransformation(transform);
 	SComponentMessageData data;
-	data.myBool = false;
+	data.myComponent = this;
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
 }
 
@@ -65,7 +65,7 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
-		if (aMessageData.myBool == false)
+		if (aMessageData.myComponent != this)
 		{
 			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
 			transformation.SetScale({ 1.0f, 1.0f, 1.0f });
