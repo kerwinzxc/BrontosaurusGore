@@ -417,6 +417,9 @@
       <Filter>Colour</Filter>
     </ClInclude>
     <ClInclude Include="WindowsHelper.h" />
+    <ClInclude Include="growingvector.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">

@@ -106,12 +106,12 @@ void CModelComponent::SetIgnoreDepth(bool aShouldIgnoreDepth)
 	myModel.SetIgnoreDepth(aShouldIgnoreDepth);
 }
 
-void CModelComponent::SetAnimation(const std::string& aAnimationKey)
+void CModelComponent::SetAnimation(const eAnimationState aAnimationKey)
 {
 	myModel.SetAnimation(aAnimationKey);
 }
 
-void CModelComponent::SetNextAnimation(const std::string& aAnimationKey)
+void CModelComponent::SetNextAnimation(const eAnimationState aAnimationKey)
 {
 	myModel.SetNextAnimation(aAnimationKey);
 }

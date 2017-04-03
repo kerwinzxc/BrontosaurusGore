@@ -2,6 +2,7 @@
 #include "Component.h"
 
 class CModelInstance;
+enum class eAnimationState;
 
 class CModelComponent : public CComponent
 {
@@ -18,8 +19,8 @@ public:
 	void Receive(const eComponentMessageType, const SComponentMessageData&) override;
 	inline CModelInstance& GetModelInstance() { return myModel; }
 
-	void SetAnimation(const std::string& aAnimationKey);
-	void SetNextAnimation(const std::string& aAnimationKey);
+	void SetAnimation(const eAnimationState aAnimationKey);
+	void SetNextAnimation(const eAnimationState aAnimationKey);
 	void SetAnimationLerpValue(const float aLerpValue);
 	void SetIgnoreDepth(bool aShouldIgnoreDepth);
 
