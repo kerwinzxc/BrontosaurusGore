@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 //FORWARD DECLERATION BEGIN
 //std::string and std::wstring
@@ -43,6 +44,7 @@ namespace CU
 
 		std::string WStringToString(const std::wstring aWString);
 
+		std::vector<std::string> Split(const std::string& aStringToSplit, const std::string& aSplitValues);
 	}
 }
 

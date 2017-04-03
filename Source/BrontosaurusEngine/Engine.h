@@ -107,7 +107,6 @@ public:
 	void OnResize(const unsigned int aWidth, const unsigned int aHeight);
 	inline const CU::Vector2ui& GetWindowSize();
 	inline CU::Vector2f GetWindowSizeF();
-
 private:
 	CEngine();
 	~CEngine();
