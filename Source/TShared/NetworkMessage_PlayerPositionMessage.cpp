@@ -19,7 +19,7 @@ ePackageType CNetworkMessage_PlayerPositionMessage::GetPackageType() const
 }
 
 
-const CU::Matrix44f& CNetworkMessage_PlayerPositionMessage::GetTransformation()
+const CU::Matrix44f CNetworkMessage_PlayerPositionMessage::GetTransformation()
 {
 	CU::Matrix44f transform = Physics::QuatToMatrix(myRotation);
 	transform.SetPosition(myPosition);
