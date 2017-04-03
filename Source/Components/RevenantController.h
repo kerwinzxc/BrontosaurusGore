@@ -31,6 +31,12 @@ private:
 	float myStartedFlightHeight;
 	float myFlightForce;
 	float myElapsedHoverTime;
+	float myChargeRangedAttackDuration;
+	float myElapsedChargeRangedAttackTime;
+	float myChargeRangedAirBarrageAttackDuration;
+	float myElapsedChargeRangedAirBarrageAttackTime;
+	float myChargeMeleeAttackDuration;
+	float myElapsedChargeMeleeAttackTime;
 	eRevenantState myState;
 
 	bool myIsflying;

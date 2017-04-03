@@ -11,6 +11,10 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 {
 	myFlightForce = 0.0f;
 	myIsflying = false;
+	myElapsedChargeMeleeAttackTime = 0.0f;
+	myElapsedHoverTime = 0.0f;
+	myElapsedChargeRangedAttackTime = 0.0f,
+	myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
 }
 
 CRevenantController::~CRevenantController()
@@ -22,6 +26,9 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	const SRevenantBlueprint* revenantData = static_cast<const SRevenantBlueprint*>(aData);
 	myHoverTime = revenantData->hoverTime;
 	myFlightHeight = revenantData->flightHeight;
+	myChargeMeleeAttackDuration = revenantData->chargeMeleeAttackDuration;
+	myChargeRangedAttackDuration = revenantData->chargeRangedAttackAttackDuration;
+	myChargeRangedAirBarrageAttackDuration = revenantData->chargeAirBarrageAttackDuration;
 	CEnemy::SetEnemyData(aData);
 }
 
