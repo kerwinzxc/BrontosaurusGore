@@ -36,7 +36,7 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
-	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack  && myState != eImpState::eUseMeleeAttack)
+	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack  && myState != eImpState::eUseMeleeAttack && myState != eImpState::eChargingMeleeAttack)
 	{
 		if (WithinAttackRange() == true)
 		{
