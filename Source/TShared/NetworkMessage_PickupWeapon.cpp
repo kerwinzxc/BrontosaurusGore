@@ -11,24 +11,14 @@ CNetworkMessage_PickupWeapon::~CNetworkMessage_PickupWeapon()
 {
 }
 
-void CNetworkMessage_PickupWeapon::SetWeapon(const std::string & aWeaponName)
+void CNetworkMessage_PickupWeapon::SetWeapon(const unsigned short aWeaponID)
 {
-	if (aWeaponName == "Shotgun")
-	{
-		myWeaponPickup = eWeaponPickupType::eShotgun;
-		return;
-	}
-	if (aWeaponName == "PlasmaRifle")
-	{
-		eWeaponPickupType::ePlasmaRifle;
-		return;
-	}
-	eWeaponPickupType::eBFG;
+	myWeaponID = aWeaponID;
 }
 
-const CNetworkMessage_PickupWeapon::eWeaponPickupType CNetworkMessage_PickupWeapon::GetWeaponPickup() const
+const unsigned short CNetworkMessage_PickupWeapon::GetWeaponPickup() const
 {
-	return myWeaponPickup;
+	return myWeaponID;
 }
 
 void CNetworkMessage_PickupWeapon::SetID(const int aId)
@@ -44,4 +34,17 @@ const int CNetworkMessage_PickupWeapon::GetID()
 ePackageType CNetworkMessage_PickupWeapon::GetPackageType() const
 {
 	return ePackageType::ePickupWeapon;
+}
+
+void CNetworkMessage_PickupWeapon::DoSerialize(StreamType& aStream)
+{
+	CNetworkMessage_PickupWeapon::DoSerialize(aStream);
+	serialize(myNetworkID, aStream);
+	serialize(myWeaponID, aStream);
+}
+void CNetworkMessage_PickupWeapon::DoDeserialize(StreamType& aStream)
+{
+	CNetworkMessage_PickupWeapon::DoDeserialize(aStream);
+	myNetworkID = deserialize<int>(aStream);
+	myWeaponID = deserialize<unsigned short>(aStream);
 }
