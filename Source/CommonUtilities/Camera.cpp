@@ -197,7 +197,7 @@ namespace CU
 		CU::Matrix44f inverse = GetInverse();
 		CU::Sphere sphere = aSphere;
 		sphere.myCenterPos = aSphere.myCenterPos * inverse;
-		return myFrustum.IsInside(aSphere);
+		return myFrustum.IsInside(sphere);
 	}
 
 	void Camera::SetPosition(const CU::Vector3f& aPosition)
