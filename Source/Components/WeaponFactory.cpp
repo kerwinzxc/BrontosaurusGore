@@ -206,3 +206,16 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
 		}
 	}
 }
+
+short CWeaponFactory::GetWeaponFactoryWeaponIndex(const char* aWeaponName)
+{
+	for (unsigned short i = 0; i < myWeaponDataList.Size(); i++)
+	{
+		if (myWeaponDataList[i]->name == aWeaponName)
+		{
+			return static_cast<unsigned short>(i);
+		}
+	}
+	DL_PRINT("Couldn't find what weaponIndex to return. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
+	return -1;
+}
