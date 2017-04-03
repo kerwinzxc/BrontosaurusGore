@@ -33,6 +33,7 @@ public:
 	void UnbindOutput();
 	void Clear();
 
+	bool IsInited();
 private:
 	CRenderPackage myDiffuse;
 	CRenderPackage myNormal;

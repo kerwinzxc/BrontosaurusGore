@@ -4,6 +4,7 @@
 
 CGeometryBuffer::CGeometryBuffer()
 {
+	myFramework = nullptr;
 }
 
 CGeometryBuffer::~CGeometryBuffer()
@@ -79,4 +80,9 @@ void CGeometryBuffer::Clear()
 	myRMAO.Clear();
 	myEmissive.Clear();
 	myHighLight.Clear();
+}
+
+bool CGeometryBuffer::IsInited()
+{
+	return myFramework != nullptr;
 }
