@@ -10,6 +10,7 @@ CPollingStation::CPollingStation()
 	ourInstance = this;
 	myKeys.Init(1);
 	myPLayers.Init(2);
+	myUnlockedWeaponIDs.Init(4);
 }
 
 CPollingStation::~CPollingStation()
@@ -31,6 +32,11 @@ void CPollingStation::SetPlayerObject(CGameObject* aPlayerObject)
 CGameObject* CPollingStation::GetPlayerObject()
 {
 	return myPlayerObject;
+}
+
+void  CPollingStation::AddWeapon(const unsigned short aWeaponID)
+{
+	myUnlockedWeaponIDs.Add(aWeaponID);
 }
 
 void CPollingStation::AddKey(const short aKeyId)
