@@ -20,10 +20,10 @@ CModelInstance::CModelInstance(const char* aModelPath)
 	//{
 	//	int br = 0;
 	//}
-	//if (std::string(aModelPath).find("Plasma") != std::string::npos)
-	//{
-	//	int br = 0;
-	//}
+	if (std::string(aModelPath).find("Shotgun") != std::string::npos)
+	{
+		int br = 0;
+	}
 
 	myIsVisible = true;
 	myHighlightIntencity = 0.f;
@@ -316,7 +316,7 @@ void CModelInstance::SetNextAnimation(const eAnimationState aAnimationKey)
 void CModelInstance::SetAnimationLooping(const bool aValue)
 {
 	myAnimationLooping = aValue;
-	myAnimationCounter = 0.0f;
+	//myAnimationCounter = 0.0f;
 }
 
 void CModelInstance::ResetAnimation()
