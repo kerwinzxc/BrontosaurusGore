@@ -5,6 +5,7 @@
 #include "../BrontosaurusEngine/Engine.h"
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "ThreadNamer.h"
 
 
 namespace CU
@@ -34,24 +35,49 @@ namespace CU
 		myPrio = aWork.myPrio;
 		myLogMessage = aWork.myLogMessage;
 		myToWhatLog = aWork.myToWhatLog;
-		myLoopCondition = []()->bool {return false; };
+		myLoopCondition = aWork.myLoopCondition;
+	}
+
+	void Work::SetName(const std::string& aThreadName)
+	{
+		myThreadName = aThreadName;
 	}
 
 	Work::~Work()
 	{
 	}
 
+	std::string Work::GetName()
+	{
+		if(myThreadName == "")
+		{
+			return "Unnamed";
+		}
+		return myThreadName;
+	}
+
 	void Work::DoWork()
 	{
+		SetThreadName(GetName().c_str());
 		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(true);
+		bool loopCondition = false;
+		bool threadpoolRunning = false;
 		do
 		{
 			Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-			CEngine::GetInstance()->GetThreadPool()->LogStart();
+			ThreadPool::GetInstance()->LogStart();
 			myWork();
-			CEngine::GetInstance()->GetThreadPool()->LogEnd();
-		} while (myLoopCondition() == true && CEngine::GetInstance()->GetThreadPool()->IsRunning() == true);
+			ThreadPool::GetInstance()->LogEnd();
+
+			std::this_thread::yield();
+			loopCondition = myLoopCondition();
+			threadpoolRunning = CEngine::GetInstance()->GetThreadPool()->IsRunning();
+		} while (loopCondition && threadpoolRunning == true);
 		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(false);
 	}
 
+	void Work::AddLoopCondition(const std::function<bool()>& aFunction)
+	{
+		myLoopCondition = aFunction;
+	}
 }

@@ -53,7 +53,9 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 
 	myTimerManager = new CU::TimerManager();
 	myTimerH = myTimerManager->CreateTimer();
-	myThreadPool = new CU::ThreadPool();
+	CU::ThreadPool::Create();
+	myThreadPool = CU::ThreadPool::GetInstance();
+	myThreadPool->Init();
 	
 	myWindowsWindow = new CWindowsWindow(aInitEngineParams.myWindowParams);
 	myWindowSize.x = aInitEngineParams.myWindowParams.Width;
@@ -281,7 +283,7 @@ CEngine::~CEngine()
 	SAFE_DELETE(myShaderManager);
 	SAFE_DELETE(myLightManager);
 	SAFE_DELETE(myLineDrawer);
-	SAFE_DELETE(myThreadPool); //TODO: THREAD POOL HAS THREADS IT CANNOT JOIN, don't know if this is true anymore
+	CU::ThreadPool::Destroy();
 	SAFE_DELETE(myParticleEmitterManager);
 	SAFE_DELETE(myFireEmitterManager);
 	SAFE_DELETE(myTextureManager);
