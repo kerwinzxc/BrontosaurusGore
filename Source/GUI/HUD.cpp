@@ -209,7 +209,6 @@ void CHUD::SetAmmoHudRect()
 	}
 
 
-
 	const unsigned immageIndex = myCurrentWeapon + offset;
 
 	const CU::Vector4f &currentRect = myWeaponSprite->GetRect();
@@ -239,7 +238,7 @@ void CHUD::Render()
 		myArmourBar->RenderToGUI(L"healthAndArmour");
 		myHealthNumber.RenderToGUI(L"healthAndArmour");
 		myArmourNumber.RenderToGUI(L"healthAndArmour");
-		myHealthAndArmourHasChanged = false;
+		//myHealthAndArmourHasChanged = false;
 	}
 
 	if (myWeaponHUDHasChanged == true)
@@ -252,7 +251,7 @@ void CHUD::Render()
 
 		myWeaponSprite->RenderToGUI(L"weapon");
 		myAmmoNumber.RenderToGUI(L"weapon");
-		myWeaponHUDHasChanged = false;
+		//myWeaponHUDHasChanged = false;
 	}
 
 	if (myCrosshairHasUpdated == true)
@@ -262,7 +261,7 @@ void CHUD::Render()
 		RENDERER.AddRenderMessage(createOrClearGui);
 
 		myCrosshairSprite->RenderToGUI(L"crosshair");
-		myCrosshairHasUpdated = false;
+		//myCrosshairHasUpdated = false;
 	}
 }
 
