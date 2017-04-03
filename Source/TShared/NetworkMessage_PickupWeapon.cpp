@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NetworkMessage_PickupWeapon.h"
-#include "../Components/GameObject.h"
-#include "../Components/ComponentAnswer.h"
+
 
 CNetworkMessage_PickupWeapon::CNetworkMessage_PickupWeapon()
 {
@@ -12,14 +11,24 @@ CNetworkMessage_PickupWeapon::~CNetworkMessage_PickupWeapon()
 {
 }
 
-void CNetworkMessage_PickupWeapon::SetWeapon(const unsigned short aWeaponID)
+void CNetworkMessage_PickupWeapon::SetWeapon(const std::string & aWeaponName)
 {
-	myWeaponID = aWeaponID;
+	if (aWeaponName == "Shotgun")
+	{
+		myWeaponPickup = eWeaponPickupType::eShotgun;
+		return;
+	}
+	if (aWeaponName == "PlasmaRifle")
+	{
+		eWeaponPickupType::ePlasmaRifle;
+		return;
+	}
+	eWeaponPickupType::eBFG;
 }
 
-const unsigned short CNetworkMessage_PickupWeapon::GetWeaponPickup() const
+const CNetworkMessage_PickupWeapon::eWeaponPickupType CNetworkMessage_PickupWeapon::GetWeaponPickup() const
 {
-	return myWeaponID;
+	return myWeaponPickup;
 }
 
 void CNetworkMessage_PickupWeapon::SetID(const int aId)
@@ -35,17 +44,4 @@ const int CNetworkMessage_PickupWeapon::GetID()
 ePackageType CNetworkMessage_PickupWeapon::GetPackageType() const
 {
 	return ePackageType::ePickupWeapon;
-}
-
-void CNetworkMessage_PickupWeapon::DoSerialize(StreamType& aStream)
-{
-	CImportantNetworkMessage::DoSerialize(aStream);
-	serialize(myWeaponID, aStream);
-	serialize(myNetworkID, aStream);
-}
-void CNetworkMessage_PickupWeapon::DoDeserialize(StreamType& aStream)
-{
-	CImportantNetworkMessage::DoDeserialize(aStream);
-	myWeaponID = deserialize<unsigned short>(aStream);
-	myNetworkID = deserialize<int>(aStream);
 }

@@ -6,11 +6,11 @@
 		<Speed >0</Speed>
 	</Scale>
 	<PxConvexMesh >
-		<Id >1481247136432</Id>
+		<Id >2468739306256</Id>
 		<points > 2.27684 2.17731 -1.25862 2.72206 -2.57075 -1.5981&#x0A;&#x09;&#x09;&#x09;2.37952 -2.09079 -2.92616 2.12718 2.4072 -1.82875&#x0A;&#x09;&#x09;&#x09;0.56743 0.580418 -2.80089 1.62827 -2.34316 -2.93139&#x0A;&#x09;&#x09;&#x09;-1.96017 -1.36651 -2.86467 -1.26805 1.16808 -2.76306&#x0A;&#x09;&#x09;&#x09;2.58691 -2.80849 -1.17053 2.72113 -2.66754 -1.38318&#x0A;&#x09;&#x09;&#x09;2.50552 -1.88838 1.83165 2.33761 -2.11512 1.95363&#x0A;&#x09;&#x09;&#x09;1.94124 -2.77767 1.87785 1.84468 -3.00441 1.6727&#x0A;&#x09;&#x09;&#x09;1.83267 -3.10939 1.42782 0.800044 2.93046 2.16302&#x0A;&#x09;&#x09;&#x09;0.815638 2.90813 2.18472 1.30591 2.46729 2.21716&#x0A;&#x09;&#x09;&#x09;2.16593 1.91192 1.73199 0.953686 3.28451 0.948793&#x0A;&#x09;&#x09;&#x09;-1.25643 -2.21701 -2.4338 0.137631 -3.44067 0.451278&#x0A;&#x09;&#x09;&#x09;-1.92093 -2.6373 2.07185 -2.59071 -2.24634 1.83984&#x0A;&#x09;&#x09;&#x09;-1.95604 -1.82956 -2.55354 0.8806 -1.32397 2.78778&#x0A;&#x09;&#x09;&#x09;-1.7692 3.17463 1.08809 -2.37342 2.23932 1.55802&#x0A;&#x09;&#x09;&#x09;-1.79698 1.79663 2.08159 0.126132 2.42214 2.29775&#x0A;&#x09;&#x09;&#x09;-1.99725 2.5003 -0.85453 -1.72619 2.84301 -1.57269&#x0A;&#x09;&#x09;&#x09;-1.63317 2.54756 -2.40419 -1.93759 1.5773 -2.42677&#x0A;&#x09;&#x09;&#x09;1.66577 -3.00267 -1.43376 1.39779 -2.48514 -2.78919&#x0A;&#x09;&#x09;&#x09;0.29622 -1.70984 2.87984 -0.509281 -1.67494 2.92544&#x0A;&#x09;&#x09;&#x09;2.10934 2.42602 -1.82947 0.912584 2.59672 -2.16385&#x0A;&#x09;&#x09;&#x09;1.50578 2.96602 -1.0963 -2.6379 -2.12467 1.82423&#x0A;&#x09;&#x09;&#x09;-2.62325 -2.1678 1.84107 -1.504 -0.93052 2.62517&#x0A;&#x09;&#x09;&#x09;0.700316 2.5738 -2.23709 0.272587 3.28217 -0.251684&#x0A;&#x09;&#x09;&#x09;-1.71111 2.88714 -1.44734 -2.0848 -1.39865 -2.81784&#x0A;&#x09;&#x09;&#x09;-2.46893 -0.963464 -1.69999 -2.17505 0.0719619 -2.55819&#x0A;&#x09;&#x09;&#x09;-1.63514 3.34201 0.718966 0.0148544 3.4416 0.803986&#x0A;&#x09;&#x09;&#x09;-0.08778 3.45499 0.752463</points>
 	</PxConvexMesh>
 	<PxMaterial >
-		<Id >1481246826448</Id>
+		<Id >2468739258080</Id>
 		<DynamicFriction >0.5</DynamicFriction>
 		<StaticFriction >0.5</StaticFriction>
 		<Restitution >1</Restitution>
@@ -18,7 +18,7 @@
 		<RestitutionCombineMode >eMIN</RestitutionCombineMode>
 	</PxMaterial>
 	<PxMaterial >
-		<Id >1481246826528</Id>
+		<Id >2468739258160</Id>
 		<DynamicFriction >0.2</DynamicFriction>
 		<StaticFriction >0.2</StaticFriction>
 		<Restitution >0.6</Restitution>
@@ -26,7 +26,7 @@
 		<RestitutionCombineMode >eAVERAGE</RestitutionCombineMode>
 	</PxMaterial>
 	<PxRigidStatic >
-		<Id >1481246830816</Id>
+		<Id >2468739294992</Id>
 		<Name >groundPlane</Name>
 		<ActorFlags >eVISUALIZATION</ActorFlags>
 		<DominanceGroup >0</DominanceGroup>
@@ -41,7 +41,7 @@
 				<SimulationFilterData >4294967295 4294967295 4294967295 4294967295</SimulationFilterData>
 				<QueryFilterData >0 0 0 0</QueryFilterData>
 				<Materials >
-					<PxMaterialRef >1481246826448</PxMaterialRef>
+					<PxMaterialRef >2468739258080</PxMaterialRef>
 				</Materials>
 				<ContactOffset >0.025</ContactOffset>
 				<RestOffset >0</RestOffset>
@@ -50,13 +50,13 @@
 			</PxShape>
 		</Shapes>
 	</PxRigidStatic>
-	<PxRigidDynamic >
-		<Id >1481246845760</Id>
-		<Name >C_Rock_5m</Name>
+	<PxRigidStatic >
+		<Id >2468739295168</Id>
+		<Name >M_Rock_5m</Name>
 		<ActorFlags >eVISUALIZATION</ActorFlags>
 		<DominanceGroup >0</DominanceGroup>
 		<OwnerClient >0</OwnerClient>
-		<GlobalPose >0 0 0 1 -3.72529e-009 7.45058e-009 2.23517e-008</GlobalPose>
+		<GlobalPose >0 0 0 1 0 0 0</GlobalPose>
 		<Shapes >
 			<PxShape >
 				<Geometry >
@@ -65,14 +65,14 @@
 							<Scale >1 1 1</Scale>
 							<Rotation >0 0 0 1</Rotation>
 						</Scale>
-						<ConvexMesh >1481247136432</ConvexMesh>
+						<ConvexMesh >2468739306256</ConvexMesh>
 					</PxConvexMeshGeometry>
 				</Geometry>
 				<LocalPose >0 0 0 1 0 0 0</LocalPose>
 				<SimulationFilterData >131074 1 0 0</SimulationFilterData>
 				<QueryFilterData >0 0 0 0</QueryFilterData>
 				<Materials >
-					<PxMaterialRef >1481246826528</PxMaterialRef>
+					<PxMaterialRef >2468739258160</PxMaterialRef>
 				</Materials>
 				<ContactOffset >0.532227</ContactOffset>
 				<RestOffset >0</RestOffset>
@@ -80,23 +80,5 @@
 				<Name >M_Rock_5mRigidBodyShape1</Name>
 			</PxShape>
 		</Shapes>
-		<CMassLocalPose >0.0321555 -0.113659 0.102425 0.987703 0.0465763 -0.083831 -0.090506</CMassLocalPose>
-		<Mass >131.436</Mass>
-		<MassSpaceInertiaTensor >614.07 478.314 561.669</MassSpaceInertiaTensor>
-		<LinearVelocity >0 0 0</LinearVelocity>
-		<AngularVelocity >0 0 0</AngularVelocity>
-		<MinCCDAdvanceCoefficient >0.15</MinCCDAdvanceCoefficient>
-		<MaxDepenetrationVelocity >1e+032</MaxDepenetrationVelocity>
-		<LinearDamping >0</LinearDamping>
-		<AngularDamping >0</AngularDamping>
-		<MaxAngularVelocity >7</MaxAngularVelocity>
-		<SleepThreshold >0.005</SleepThreshold>
-		<StabilizationThreshold >24.059</StabilizationThreshold>
-		<WakeCounter >0.4</WakeCounter>
-		<SolverIterationCounts >
-			<minPositionIters >8</minPositionIters>
-			<minVelocityIters >4</minVelocityIters>
-		</SolverIterationCounts>
-		<ContactReportThreshold >3.40282e+038</ContactReportThreshold>
-	</PxRigidDynamic>
+	</PxRigidStatic>
 </PhysX30Collection>
