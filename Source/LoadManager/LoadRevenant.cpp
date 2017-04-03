@@ -28,6 +28,33 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	{
 		blueprint.walkToMeleeRange = someData.myData.at("WalkToMeleeRange").GetFloat();
 	}
+	if (someData.myData.HasKey("chargeRangedAttackDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.chargeRangedAttackAttackDuration = someData.myData.at("chargeRangedAttackDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.chargeRangedAttackAttackDuration = 2.0f;
+	}
+	if (someData.myData.HasKey("chargeMeleeAttackDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.chargeMeleeAttackDuration = someData.myData.at("chargeMeleeAttackDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.chargeMeleeAttackDuration = 1.0f;
+	}
+	if (someData.myData.HasKey("chargeAirBarrageAttackDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.chargeAirBarrageAttackDuration = someData.myData.at("chargeAirBarrageAttackDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.chargeAirBarrageAttackDuration = 2.0f;
+	}
 
 	blueprint.flightHeight = someData.myData.at("FlightHeight").GetFloat();
 	blueprint.hoverTime = someData.myData.at("HoverDuration").GetFloat();

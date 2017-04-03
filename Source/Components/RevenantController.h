@@ -9,6 +9,8 @@ enum class eRevenantState
 	eFlyAscend,
 	eFlyDescend,
 	eFlyHover,
+	eChargingRangedAttack,
+	eChargingMeleeAttack,
 	eDead
 };
 class CRevenantController : public CEnemy
@@ -25,12 +27,19 @@ private:
 	void ApplyFlightForce();
 	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
+	bool CanChangeState();
 private:
 	float myFlightHeight;
 	float myHoverTime;
 	float myStartedFlightHeight;
 	float myFlightForce;
 	float myElapsedHoverTime;
+	float myChargeRangedAttackDuration;
+	float myElapsedChargeRangedAttackTime;
+	float myChargeRangedAirBarrageAttackDuration;
+	float myElapsedChargeRangedAirBarrageAttackTime;
+	float myChargeMeleeAttackDuration;
+	float myElapsedChargeMeleeAttackTime;
 	eRevenantState myState;
 
 	bool myIsflying;

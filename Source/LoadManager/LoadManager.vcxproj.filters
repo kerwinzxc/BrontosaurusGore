@@ -98,6 +98,7 @@
     <ClInclude Include="LoadWeaponPickupComponent.h">
       <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
     </ClInclude>
+    <ClInclude Include="LoadArenaTrigger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -194,6 +195,7 @@
     <ClCompile Include="LoadWeaponPickupComponent.cpp">
       <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
     </ClCompile>
+    <ClCompile Include="LoadArenaTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">

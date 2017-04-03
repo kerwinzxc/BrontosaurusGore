@@ -15,9 +15,9 @@ CSpawnerManager::~CSpawnerManager()
 	mySpawners.DeleteAll();
 }
 
-CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes& eEnemyType)
+CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes& eEnemyType,  std::thread::id aID)
 {
-	CSpawnerComponent* spawner = new CSpawnerComponent(aWaves, eEnemyType);
+	CSpawnerComponent* spawner = new CSpawnerComponent(aWaves, eEnemyType, aID);
 	CComponentManager::GetInstance().RegisterComponent(spawner);
 	mySpawners.Add(spawner);
 	return spawner;

@@ -88,13 +88,14 @@ CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eE
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 	imp->AddComponent(CollisionController);
 
-
+	DL_PRINT("EnemyNetworkID:");
+	DL_PRINT(std::to_string(controller->GetNetworkID()).c_str());
 
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(aType);
-	message->SetHealth(10);//inläst data sen
+	message->SetHealth(100);//inläst data sen
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 
 	return controller;
 }
@@ -131,7 +132,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	repesention->AddComponent(model);
 
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
-	health->SetMaxHealth(aHealthValue); //ta in
+	health->SetMaxHealth(aHealthValue);
 	health->SetHealth(aHealthValue);
 	repesention->AddComponent(health);
 
@@ -146,6 +147,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	controllerDesc.radius = 0.5f;
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
 	repesention->AddComponent(CollisionController);
+
+	DL_PRINT("EnemyRepesentationNetworkID:");
+	DL_PRINT(std::to_string(enemy->GetNetworkID()).c_str());
 
 	return enemy;
 }

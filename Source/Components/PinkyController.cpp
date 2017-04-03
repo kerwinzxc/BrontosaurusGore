@@ -18,6 +18,7 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myElapsedWindupTime = 0.0f;
 	myIsCharging = false;
 	myGravityForce = 0.0f;
+	myElapsedChargeMeleeAttackTime = 0.0f;
 }
 
 CPinkyController::~CPinkyController()
@@ -31,6 +32,7 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeDamage = pinkyData->chargeDamage;
 	myChargeSpeed = pinkyData->chargeSpeed;
 	myChargeDistance2 = pinkyData->chargeDistance * pinkyData->chargeDistance;
+	myMeleeAttackChargeDuration = pinkyData->chargeMeleeAttackDuration;
 	CEnemy::SetEnemyData(aData);
 }
 
@@ -42,11 +44,11 @@ void CPinkyController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	HandleGrounded();
 
-	if (myIsDead == false && myIsCharging == false)
+	if (myIsDead == false && myIsCharging == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange())
 		{
-			myState = ePinkyState::eUseMeleeAttack;
+			myState = ePinkyState::eChargingMeleeAttack;
 		}
 		else if (WithinWalkToMeleeRange())
 		{
@@ -75,6 +77,7 @@ void CPinkyController::Update(const float aDeltaTime)
 	case ePinkyState::eUseMeleeAttack:
 		ChangeWeapon(0);
 		Attack();
+		myState = ePinkyState::eIdle;
 		break;
 	case ePinkyState::eWindupCharge:
 		myElapsedWindupTime += aDeltaTime;
@@ -96,6 +99,14 @@ void CPinkyController::Update(const float aDeltaTime)
 	case ePinkyState::eChargeCooldown:
 		LookAtPlayer();
 		UpdateChargeCooldown(aDeltaTime);
+		break;
+	case ePinkyState::eChargingMeleeAttack:
+		myElapsedChargeMeleeAttackTime += aDeltaTime;
+		if(myElapsedChargeMeleeAttackTime >= myMeleeAttackChargeDuration)
+		{
+			myElapsedChargeMeleeAttackTime = 0.0f;
+			myState = ePinkyState::eUseMeleeAttack;
+		}
 		break;
 	case ePinkyState::eDead:
 		break;
@@ -171,4 +182,20 @@ void CPinkyController::KeepWithinChargeDist()
 		myStartChargeLocation = CU::Vector3f::Zero;
 		myIsCharging = false;
 	}
+}
+
+bool CPinkyController::CanChangeState()
+{
+	switch (myState)
+	{
+	case ePinkyState::eUseMeleeAttack:
+		return false;
+		break;
+	case ePinkyState::eChargingMeleeAttack:
+		return false;
+		break;
+	default:
+		break;
+	}
+	return true;
 }

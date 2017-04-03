@@ -24,7 +24,7 @@ int LoadSpawnerComponent(KLoader::SLoadedComponentData someData)
 	//loopa igenom dem arrayerna
 	//fyll varje wave lista med fiender från dessa arrayer
 
-	CSpawnerComponent* spawner = loadManager.GetCurrentGameServer().GetSpawnerManager()->CreateSpawnerComponent(waveList, someData.myData.at("EnemyType").GetEnum<eEnemyTypes>());
+	CSpawnerComponent* spawner = loadManager.GetCurrentGameServer().GetSpawnerManager()->CreateSpawnerComponent(waveList, someData.myData.at("EnemyType").GetEnum<eEnemyTypes>(), loadManager.GetCurrentGameServer().GetThreadID());
 
 	return spawner->GetId();
 }

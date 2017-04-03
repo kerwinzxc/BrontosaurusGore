@@ -4,6 +4,7 @@
 #include "../KevinLoader/KLoaderError.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PostOffice.h"
+#include "../Game/PollingStation.h"
 
 //Managers
 #include "../LoadManager/ServerLoadManager.h"
@@ -20,6 +21,7 @@
 #include "../Components/SpawnerManager.h"
 #include "../Game/EnemyFactory.h"
 #include "../Components/CheckPointSystem.h"
+#include "../Game/WaveManager.h"
 
 //temp
 #include "../Components/NetworkComponent.h"
@@ -45,10 +47,13 @@ CGameServer::CGameServer():
 	, myWeaponSystemManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, mySpawnerManager(nullptr)
+	,myWaveManager(nullptr)
 {
 	myIsRunning = false;
 	myTime = 0;
 	myPlayersNetworkComponents.Init(5);
+
+	myThreadID = std::this_thread::get_id();
 }
 
 
@@ -73,7 +78,6 @@ CGameObjectManager & CGameServer::GetGameObjectManager()
 
 void CGameServer::Load(const int aLevelIndex)
 {
-	
 
 	ServerLoadManagerGuard loadManagerGuard(*this);
 
@@ -122,13 +126,17 @@ void CGameServer::ReInit()
 
 void CGameServer::CreateManagersAndFactories()
 {
-	if (Physics::CFoundation::GetInstance() == nullptr) Physics::CFoundation::Create();
-
-	myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
-	myPhysicsScene = myPhysics->CreateScene();
+	if (Physics::CFoundation::GetInstance() == nullptr)
+	{
+		Physics::CFoundation::Create();
+		myPhysics = Physics::CFoundation::GetInstance()->CreatePhysics();
+		myPhysicsScene = myPhysics->CreateScene();
+	}
 
 	CComponentManager::CreateInstance();
 	CNetworkComponentManager::Create();
+	new CPollingStation();
+
 
 	myGameObjectManager = new CGameObjectManager();
 	myMovementComponentManager = new CMovementComponentManager();
@@ -138,6 +146,7 @@ void CGameServer::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 	mySpawnerManager = new CSpawnerManager();
+	myWaveManager = new CWaveManager();
 
 
 	myColliderComponentManager = new CColliderComponentManager();
@@ -157,6 +166,10 @@ void CGameServer::DestroyManagersAndFactories()
 	CHealthComponentManager::GetInstance()->Destroy();
 	CEnemyFactory::Destroy();
 
+	delete CPollingStation::GetInstance();
+
+	myPlayersNetworkComponents.RemoveAll();
+
 	SAFE_DELETE(myGameObjectManager);
 	SAFE_DELETE(myMovementComponentManager);
 
@@ -171,6 +184,8 @@ void CGameServer::DestroyManagersAndFactories()
 
 bool CGameServer::Update(CU::Time aDeltaTime)
 {
+
+
 	//DL_PRINT("In Update");
 	myTime += aDeltaTime.GetMilliseconds();
 
@@ -178,9 +193,12 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	if(myTime > updateFrequecy)
 	{
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
-		mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		//mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		myWaveManager->Update();
 		myTime = 0;
 	}
+
+	CPollingStation* instance = CPollingStation::GetInstance();
 	
 	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
@@ -204,6 +222,11 @@ bool CGameServer::IsLoaded() const
 	return myIsLoaded;
 }
 
+std::thread::id & CGameServer::GetThreadID()
+{
+	return myThreadID;
+}
+
 CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClientID)
 {
 	CGameObject*const gameObject = myGameObjectManager->CreateGameObject();
@@ -220,6 +243,8 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClie
 	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
 	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
+
+	CPollingStation::GetInstance()->AddPlayerObject(gameObject);
 
 	return serverPlayerNetworkComponent;
 }
