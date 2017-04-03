@@ -330,7 +330,11 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	case eComponentQuestionType::eCanShoot :
 	{
 		return myWeapons[myActiveWeaponIndex]->CanShoot();
-		break;
+	}
+	case eComponentQuestionType::eGetWeapons:
+	{
+		aQuestionData.myWeapons = &myWeapons;
+		return true;
 	}
 	case eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon:
 	{
