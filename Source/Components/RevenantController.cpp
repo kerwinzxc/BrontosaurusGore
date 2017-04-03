@@ -39,11 +39,11 @@ void CRevenantController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateFlightForces(aDeltaTime);
 
-	if (myIsDead == false && myIsflying == false)
+	if (myIsDead == false && myIsflying == false && myState != eRevenantState::eChargingRangedAttack  && myState != eRevenantState::eUseRangedAttack  && myState != eRevenantState::eUseMeleeAttack && myState != eRevenantState::eChargingMeleeAttack)
 	{
 		if (WithinAttackRange())
 		{
-			myState = eRevenantState::eUseMeleeAttack;
+			myState = eRevenantState::eChargingMeleeAttack;
 		}
 		else if (WithinWalkToMeleeRange())
 		{
@@ -51,7 +51,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		else if (WithinDetectionRange())
 		{
-			myState = eRevenantState::eUseRangedAttack;
+			myState = eRevenantState::eChargingRangedAttack;
 			if (myToPlayer.y > 2.0f)
 			{
 				myState = eRevenantState::eFlyAscend;
@@ -60,7 +60,10 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		else
 		{
-			myState = eRevenantState::eIdle;
+			if(myIsDead == true)
+			{
+				myState = eRevenantState::eIdle;
+			}
 		}
 	}
 
@@ -76,10 +79,12 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eUseMeleeAttack:
 		ChangeWeapon(2);
 		Attack();
+		myState = eRevenantState::eIdle;
 		break;
 	case eRevenantState::eUseRangedAttack:
 		ChangeWeapon(0);
 		Attack();
+		myState = eRevenantState::eIdle;
 		break;
 	case eRevenantState::eFlyAscend:
 	{
@@ -96,11 +101,17 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		LookAtPlayer();
 		ChangeWeapon(1);
-		Attack();
+		myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
+		if (myElapsedChargeRangedAirBarrageAttackTime >= myChargeRangedAirBarrageAttackDuration)
+		{
+			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+			Attack();
+		}
 
 		myElapsedHoverTime += aDeltaTime;
 		if(myElapsedHoverTime >= myHoverTime)
 		{
+			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
 			myElapsedHoverTime = 0.0f;
 			myState = eRevenantState::eFlyDescend;
 		}
@@ -115,6 +126,30 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			myIsflying = false;
 			myFlightForce = 0.0f;
+		}
+		break;
+	}
+	case eRevenantState::eChargingMeleeAttack:
+	{
+		myElapsedChargeMeleeAttackTime += aDeltaTime;
+		DL_PRINT("Ealpsed melee charge %f", myElapsedChargeMeleeAttackTime);
+		DL_PRINT("melee charge duration %f", myChargeMeleeAttackDuration);
+		if(myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
+		{
+			myElapsedChargeMeleeAttackTime = 0.0f;
+			myState = eRevenantState::eUseMeleeAttack;
+		}
+		break;
+	}
+	case eRevenantState::eChargingRangedAttack:
+	{
+		DL_PRINT("Ealpsed range charge %f", myElapsedChargeRangedAttackTime);
+		DL_PRINT("range charge duration %f", myChargeRangedAttackDuration);
+		myElapsedChargeRangedAttackTime += aDeltaTime;
+		if (myElapsedChargeRangedAttackTime >= myChargeRangedAttackDuration)
+		{
+			myElapsedChargeRangedAttackTime = 0.0f;
+			myState = eRevenantState::eUseRangedAttack;
 		}
 		break;
 	}
