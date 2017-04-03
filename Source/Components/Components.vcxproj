@@ -455,6 +455,7 @@
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="WeaponData.h" />
     <ClInclude Include="WeaponFactory.h" />
+    <ClInclude Include="WeaponPickupComponent.h" />
     <ClInclude Include="WeaponSoundData.h" />
     <ClInclude Include="WeaponSystemComponent.h" />
     <ClInclude Include="WeaponSystemManager.h" />
@@ -545,6 +546,7 @@
     <ClCompile Include="TriggerArenaComponent.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponFactory.cpp" />
+    <ClCompile Include="WeaponPickupComponent.cpp" />
     <ClCompile Include="WeaponSystemComponent.cpp" />
     <ClCompile Include="WeaponSystemManager.cpp" />
   </ItemGroup>

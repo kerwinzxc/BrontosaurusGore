@@ -102,6 +102,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eAddWeapon:
 	{
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		ChangeWeapon(myWeapons.Size() - 1);
+		break;
+	}
+	case eComponentMessageType::eAddWeaponIndex:
+	{
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myInt, GetParent());
 		break;
 	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
@@ -323,6 +329,12 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	case eComponentQuestionType::eCanShoot :
 	{
 		return myWeapons[myActiveWeaponIndex]->CanShoot();
+		break;
+	}
+	case eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon:
+	{
+		aQuestionData.myInt = WeaponFactoryPointer->GetWeaponFactoryWeaponIndex(myWeapons[myActiveWeaponIndex]->GetData()->name.c_str());
+		return true; 
 		break;
 	}
 	default:

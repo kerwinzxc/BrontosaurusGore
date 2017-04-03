@@ -18,6 +18,8 @@ enum class eComponentQuestionType
 	eMovePhysicsController,
 	ePhysicsControllerConstraints,
 	eCanShoot,
+	eGetCurrentWeaponData,
+	eGetWeaponFactoryIndexOfActiveWeapon,
 	eEnemyNetworkID,
 	eLength,
 };
@@ -30,7 +32,7 @@ struct SAmmoLeftData
 };
 struct SComponentQuestionData
 {
-	SComponentQuestionData() : myVector3f() {}
+	SComponentQuestionData();
 
 	union
 	{
@@ -48,3 +50,7 @@ struct SComponentQuestionData
 		CGameObject* myGameObject;
 	};
 };
+
+inline SComponentQuestionData::SComponentQuestionData(): myVector3f()
+{
+}

@@ -174,6 +174,7 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 	std::string path(aMeshColliderData.myPath);
 	if (EffectHelper::FileExists(std::wstring(path.begin(), path.end()).c_str()) == false)
 	{
+		DL_ASSERT((std::string("Mesh collider \"") + aMeshColliderData.myPath + "\" could not be found.").c_str());
 		return nullptr;
 	}
 

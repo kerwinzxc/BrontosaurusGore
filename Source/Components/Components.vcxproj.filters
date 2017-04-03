@@ -229,6 +229,9 @@
     <ClCompile Include="CharacterControllerComponent.cpp">
       <Filter>Collider/Physics</Filter>
     </ClCompile>
+    <ClCompile Include="WeaponPickupComponent.cpp">
+      <Filter>Pickup\Weapon</Filter>
+    </ClCompile>
     <ClCompile Include="TriggerArenaComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -524,6 +527,9 @@
     <ClInclude Include="CharacterControllerComponent.h">
       <Filter>Collider/Physics</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponPickupComponent.h">
+      <Filter>Pickup\Weapon</Filter>
+    </ClInclude>
     <ClInclude Include="TriggerArenaComponent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -637,6 +643,8 @@
     </Filter>
     <Filter Include="TriggerArena">
       <UniqueIdentifier>{594cfbe2-4fd8-45a5-9907-9b5cdf57f397}</UniqueIdentifier>
+<Filter Include="Pickup\Weapon">
+      <UniqueIdentifier>{a8198c9c-8c79-45dd-9404-69bd115e491c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

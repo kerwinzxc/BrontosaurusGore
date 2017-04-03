@@ -55,7 +55,7 @@ void CWeaponFactory::LoadWeapons()
 	CU::CJsonValue enemyLevelsArray = weaponBluePrint.at("Weapons");
 	LoadWeaponsFromJsonValue(enemyLevelsArray);
 }
-void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
+unsigned short CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
 {
 	for(unsigned short i = 0; i < myWeaponDataList.Size(); i++)
 	{
@@ -70,13 +70,30 @@ void CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectT
 			newWeaponMessage.myWeapon = newWeapon;
 			aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem, newWeaponMessage);
 			myWeaponList.Add(newWeapon);
-			return;
+			return i;
 		}
 	}
 	DL_PRINT_WARNING("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
+	return 666;
+}
+void CWeaponFactory::CreateWeapon(unsigned short aWeaponIndex, CGameObject* aObjectToGiveAWeaponTo)
+{
+	if(myWeaponList.HasIndex(aWeaponIndex) == true)
+	{
+		CWeapon* newWeapon = new CWeapon(myWeaponDataList[aWeaponIndex], myPhysicsScene);
+		SAmmoData* newAmmoData = myAmmoDataList[aWeaponIndex];
+		SComponentMessageData newAmmoTypeMessage;
+		newAmmoTypeMessage.myAmmoData = newAmmoData;
+		aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eAddNewAmmoType, newAmmoTypeMessage);
+		SComponentMessageData newWeaponMessage;
+		newWeaponMessage.myWeapon = newWeapon;
+		aObjectToGiveAWeaponTo->NotifyOnlyComponents(eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem, newWeaponMessage);
+		myWeaponList.Add(newWeapon);
+		return;
+	}
+	DL_PRINT("Couldn't find what weapon to give. Check spelling and/or yell at Marcus. The weapons index was %u", aWeaponIndex);
 	return;
 }
-
 void CWeaponFactory::CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo)
 {
 	for (unsigned short i = 0; i < myWeaponDataList.Size(); i++)
@@ -188,4 +205,17 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
 			CProjectileFactory::GetInstance()->CreateNewProjectileBuffer(newProjectileData->projectileModelFilePath, 500);
 		}
 	}
+}
+
+short CWeaponFactory::GetWeaponFactoryWeaponIndex(const char* aWeaponName)
+{
+	for (unsigned short i = 0; i < myWeaponDataList.Size(); i++)
+	{
+		if (myWeaponDataList[i]->name == aWeaponName)
+		{
+			return static_cast<unsigned short>(i);
+		}
+	}
+	DL_PRINT("Couldn't find what weaponIndex to return. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
+	return -1;
 }
