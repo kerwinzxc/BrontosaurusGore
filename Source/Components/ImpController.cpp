@@ -21,6 +21,7 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myElaspedWanderTime = 0.0f;
 	myChargeRangedAttackDuration = 2.0f;
 	myElapsedChargeMeleeAttackTime = 0.0f;
+	myElapsedChargeAttackTime = 0.0f;
 	myChargeMeleeAttackDuration = 1.0f;
 }
 
