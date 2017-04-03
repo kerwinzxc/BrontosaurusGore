@@ -50,10 +50,14 @@ void CNetworkMessage_WeaponChange::DoSerialize(StreamType& aStream)
 {
 	CImportantNetworkMessage::DoSerialize(aStream);
 	SERIALIZE(myWeaponIndex, aStream);
+	SERIALIZE(myShooter, aStream);
+	SERIALIZE(myId, aStream);
 }
 
 void CNetworkMessage_WeaponChange::DoDeserialize(StreamType& aStream)
 {
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	DESERIALIZE(myWeaponIndex, aStream);
+	DESERIALIZE(myShooter, aStream);
+	DESERIALIZE(myId, aStream);
 }
