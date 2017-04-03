@@ -7,7 +7,7 @@ struct SExplosionData;
 class CCreateExplosionMessage : public Postmaster::Message::IMessage
 {
 public:
-	CCreateExplosionMessage(const CU::Vector3f& aPosition, SExplosionData* aExplosionData);
+	CCreateExplosionMessage(const CU::Vector3f& aPosition, SExplosionData* aExplosionData, bool aIsPlayerFriendly);
 	~CCreateExplosionMessage();
 
 	IMessage* Copy() override;
@@ -15,9 +15,11 @@ public:
 
 	inline const CU::Vector3f& GetPosition() const;
 	inline const SExplosionData& GetExplosionData() const;
+	inline const bool GetIsPlayerFriendly() const;
 private:
 	CU::Vector3f myPosition;
 	SExplosionData* myExplosionData;
+	bool myIsPlayerFriendly;
 };
 
 inline const CU::Vector3f& CCreateExplosionMessage::GetPosition() const

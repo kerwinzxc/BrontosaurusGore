@@ -20,6 +20,8 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myWanderAngle = 80;
 	myElaspedWanderTime = 0.0f;
 	myChargeRangedAttackDuration = 2.0f;
+	myElapsedChargeMeleeAttackTime = 0.0f;
+	myChargeMeleeAttackDuration = 1.0f;
 }
 
 CImpController::~CImpController()
@@ -33,11 +35,11 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
-	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack)
+	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack  && myState != eImpState::eUseMeleeAttack)
 	{
 		if (WithinAttackRange() == true)
 		{
-			myState = eImpState::eUseMeleeAttack;	
+			myState = eImpState::eChargingMeleeAttack;	
 		}
 		else if (WithinWalkToMeleeRange() == true)
 		{
@@ -72,7 +74,11 @@ void CImpController::Update(const float aDeltaTime)
 	}
 	case eImpState::eUseMeleeAttack:
 		ChangeWeapon(0);
-		Attack();
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
+		{
+			Attack();
+			InitiateWander();
+		}
 		break;
 	case eImpState::eUseRangedAttack:
 		ChangeWeapon(1);
@@ -110,13 +116,21 @@ void CImpController::Update(const float aDeltaTime)
 	}
 	case eImpState::eChargingRangedAttack:
 	{
-		DL_PRINT("elapsed chargTime %f", myElapsedChargeAttackTime);
-		DL_PRINT("chargTime %f", myChargeRangedAttackDuration);
 		myElapsedChargeAttackTime += aDeltaTime;
 		if(myElapsedChargeAttackTime >= myChargeRangedAttackDuration)
 		{
 			myElapsedChargeAttackTime = 0.0f;
 			myState = eImpState::eUseRangedAttack;
+		}
+		break;
+	}
+	case eImpState::eChargingMeleeAttack:
+	{
+		myElapsedChargeMeleeAttackTime += aDeltaTime;
+		if (myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
+		{
+			myElapsedChargeMeleeAttackTime = 0.0f;
+			myState = eImpState::eUseMeleeAttack;
 		}
 		break;
 	}
@@ -227,6 +241,7 @@ void CImpController::InitiateWander()
 		randomAngles -= myWanderAngle * 0.5f;;
 		float randomRadians = randomAngles * (PI / 180.0f);
 		CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
+		impMatrix.Rotate(PI, CU::Axees::Y);
 		impMatrix.Rotate(randomRadians, CU::Axees::Y);
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
 		myWanderToPosition = impMatrix.GetPosition();	
