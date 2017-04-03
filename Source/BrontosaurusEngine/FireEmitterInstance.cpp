@@ -54,13 +54,12 @@ void CFireEmitterInstance::Init(const SFireEmitterData& aFireEmitterData)
 	myFireEmitter = fireEmitterManager.CreateFireEmitter(aFireEmitterData);
 }
 
-void CFireEmitterInstance::Render()
+void CFireEmitterInstance::Render(CRenderCamera& aRenderCamera)
 {
 	SRenderFireMessage* renderFireMessage = new SRenderFireMessage();
 	renderFireMessage->myToWorldMatrix = myTransformation;
 	renderFireMessage->myFireID = myFireEmitter;
-
-	RENDERER.AddRenderMessage(renderFireMessage);
+	aRenderCamera.AddRenderMessage(renderFireMessage);
 }
 
 #undef self
