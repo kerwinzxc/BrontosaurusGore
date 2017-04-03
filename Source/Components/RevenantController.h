@@ -9,6 +9,8 @@ enum class eRevenantState
 	eFlyAscend,
 	eFlyDescend,
 	eFlyHover,
+	eChargingRangedAttack,
+	eChargingMeleeAttack,
 	eDead
 };
 class CRevenantController : public CEnemy

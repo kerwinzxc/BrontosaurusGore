@@ -44,11 +44,11 @@ void CPinkyController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	HandleGrounded();
 
-	if (myIsDead == false && myIsCharging == false)
+	if (myIsDead == false && myIsCharging == false && myState != ePinkyState::eChargingMeleeAttack && myState != ePinkyState::eUseMeleeAttack)
 	{
 		if (WithinAttackRange())
 		{
-			myState = ePinkyState::eUseMeleeAttack;
+			myState = ePinkyState::eChargingMeleeAttack;
 		}
 		else if (WithinWalkToMeleeRange())
 		{
@@ -77,6 +77,7 @@ void CPinkyController::Update(const float aDeltaTime)
 	case ePinkyState::eUseMeleeAttack:
 		ChangeWeapon(0);
 		Attack();
+		myState = ePinkyState::eIdle;
 		break;
 	case ePinkyState::eWindupCharge:
 		myElapsedWindupTime += aDeltaTime;
@@ -98,6 +99,14 @@ void CPinkyController::Update(const float aDeltaTime)
 	case ePinkyState::eChargeCooldown:
 		LookAtPlayer();
 		UpdateChargeCooldown(aDeltaTime);
+		break;
+	case ePinkyState::eChargingMeleeAttack:
+		myElapsedChargeMeleeAttackTime += aDeltaTime;
+		if(myElapsedChargeMeleeAttackTime >= myMeleeAttackChargeDuration)
+		{
+			myElapsedChargeMeleeAttackTime = 0.0f;
+			myState = ePinkyState::eUseMeleeAttack;
+		}
 		break;
 	case ePinkyState::eDead:
 		break;

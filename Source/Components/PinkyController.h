@@ -10,6 +10,7 @@ enum class ePinkyState
 	eChargeCooldown,
 	eUseMeleeAttack,
 	eWalkIntoMeleeRange,
+	eChargingMeleeAttack,
 	eDead
 };
 class CPinkyController : public CEnemy
