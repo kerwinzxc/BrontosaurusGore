@@ -38,13 +38,13 @@ ePackageType CNetworkMessage_PickupWeapon::GetPackageType() const
 
 void CNetworkMessage_PickupWeapon::DoSerialize(StreamType& aStream)
 {
-	CNetworkMessage_PickupWeapon::DoSerialize(aStream);
+	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myNetworkID, aStream);
 	serialize(myWeaponID, aStream);
 }
 void CNetworkMessage_PickupWeapon::DoDeserialize(StreamType& aStream)
 {
-	CNetworkMessage_PickupWeapon::DoDeserialize(aStream);
+	CImportantNetworkMessage::DoDeserialize(aStream);
 	myNetworkID = deserialize<int>(aStream);
 	myWeaponID = deserialize<unsigned short>(aStream);
 }

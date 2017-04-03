@@ -9,6 +9,7 @@ CPollingStation::CPollingStation()
 	assert(ourInstance == nullptr);
 	ourInstance = this;
 	myKeys.Init(1);
+	myUnlockedWeaponIDs.Init(4);
 }
 
 CPollingStation::~CPollingStation()
@@ -30,6 +31,11 @@ void CPollingStation::SetPlayerObject(CGameObject* aPlayerObject)
 CGameObject* CPollingStation::GetPlayerObject()
 {
 	return myPlayerObject;
+}
+
+void  CPollingStation::AddWeapon(const unsigned short aWeaponID)
+{
+	myUnlockedWeaponIDs.Add(aWeaponID);
 }
 
 void CPollingStation::AddKey(const short aKeyId)
