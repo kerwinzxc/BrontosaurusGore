@@ -198,9 +198,12 @@ void CPlayState::Load()
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
-	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	myScene->AddCamera(CScene::eCameraType::eWeaponCamera);
+	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
+	CRenderCamera& weaponCamera = myScene->GetRenderCamera(CScene::eCameraType::eWeaponCamera);
 
+	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	weaponCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 10.f);
 
 	myWeaponFactory->LoadWeapons();
 
@@ -214,7 +217,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	CreatePlayer(playerCamera); // Hard codes Player!;
+	CreatePlayer(playerCamera.GetCamera()); // Hard codes Player!;
 
 
 	myScene->SetSkybox("default_cubemap.dds");
@@ -259,7 +262,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
-
+	
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
 	myHUD.Update(aDeltaTime);

@@ -19,7 +19,7 @@
 
 
 #define SHADOWBUFFER_DIM /*16384*/1024
-#define USE_SHADOWS
+//#define USE_SHADOWS
 
 
 CScene::CScene()
