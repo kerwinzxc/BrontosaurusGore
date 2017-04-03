@@ -459,7 +459,7 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		return false;
 	}
 
-	const aiScene* scene = aiImportFile(aFilePath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded | aiProcess_Debone);
+	const aiScene* scene = aiImportFile(aFilePath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded /*| aiProcess_Debone*/); //DEBONE GJORDE SÅ VAPNENA INTE FICK NÅGRA BEN
 	aSceneOut.myScene = scene;
 	aSceneOut.myCamera = nullptr;
 
