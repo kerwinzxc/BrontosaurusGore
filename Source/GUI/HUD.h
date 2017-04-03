@@ -66,15 +66,15 @@ private:
 	std::map<std::string, char> myWeaponIndexes;
 	CU::CBitSet<3> myPickedUpWeapons;
 
+	CU::Vector2f myFrameSize;
 	unsigned short myCurrentAmmo;
 	unsigned short myCurrentMaxAmmo;
 
+	unsigned myAmmountOfWeapons;
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
 	volatile bool myCrosshairHasUpdated;
 
-	//test
-	float testValue;
 };
 

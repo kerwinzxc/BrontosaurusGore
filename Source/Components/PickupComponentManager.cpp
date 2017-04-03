@@ -134,7 +134,7 @@ void CPickupComponentManager::DeactivateKeyPickup(const int aId)
 }
 void CPickupComponentManager::DeactivateWeaponPickup(const int aId)
 {
-	myKeyPickups.at(aId)->SetActive(false);
+	myWeaponPickups.at(aId)->SetActive(false);
 }
 
 CPickupComponentManager::CPickupComponentManager()
