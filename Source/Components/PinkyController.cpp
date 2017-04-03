@@ -18,6 +18,7 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myElapsedWindupTime = 0.0f;
 	myIsCharging = false;
 	myGravityForce = 0.0f;
+	myElapsedChargeMeleeAttackTime = 0.0f;
 }
 
 CPinkyController::~CPinkyController()
@@ -31,6 +32,7 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeDamage = pinkyData->chargeDamage;
 	myChargeSpeed = pinkyData->chargeSpeed;
 	myChargeDistance2 = pinkyData->chargeDistance * pinkyData->chargeDistance;
+	myMeleeAttackChargeDuration = pinkyData->chargeMeleeAttackDuration;
 	CEnemy::SetEnemyData(aData);
 }
 

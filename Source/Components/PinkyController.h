@@ -34,6 +34,8 @@ private:
 	float myChargeCooldown;
 	float myElapsedChargeCooldownTime;
 	float myChargeDistance2;
+	float myMeleeAttackChargeDuration;
+	float myElapsedChargeMeleeAttackTime;
 	ePinkyState myState;
 	bool myIsCharging;
 	healthPoint myChargeDamage;
