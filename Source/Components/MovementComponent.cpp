@@ -180,7 +180,8 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 	{
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_UP)
 		{
-			myJumpForce = 0.0f;
+			if(myJumpForce > 0.0f)
+				myJumpForce = 0.0f;
 		}
 		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
 	}
