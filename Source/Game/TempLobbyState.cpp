@@ -172,6 +172,11 @@ void CTempLobbyState::Conect()
 
 void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 {
+	if (myLobbyState == eLobbyState::eConecting)
+	{
+		return;
+	}
+
 	switch (aInputMessage.myKey)
 	{
 	case CU::eKeys::UP:

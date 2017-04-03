@@ -12,6 +12,7 @@
 //Size of a vertex can be found in the FBX loader model, along with all data and number of vertices. 
 
 struct ID3D11PixelShader;
+enum class eAnimationState;
 
 struct SVertexDataCube
 {
@@ -71,7 +72,8 @@ struct SForwardRenderModelParams
 	CU::VectorOnStack<Lights::SPointLight, 8> myPointLightList;
 	unsigned char myNumLights;
 
-	std::string aAnimationState;
+	eAnimationState aAnimationState;
+	eAnimationState aNextAnimationState;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;
@@ -87,8 +89,8 @@ struct SDeferredRenderModelParams
 
 	float myHighlightIntensivity;
 
-	std::string aAnimationState;
-	std::string aNextAnimationState;
+	eAnimationState aAnimationState;
+	eAnimationState aNextAnimationState;
 	float aAnimationLerper = 0.0f;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;
@@ -102,8 +104,8 @@ struct SShadowRenderModelParams
 	CU::Matrix44f myTransform;
 	CU::Matrix44f myTransformLastFrame;
 
-	std::string aAnimationState;
-	std::string aNextAnimationState;
+	eAnimationState aAnimationState;
+	eAnimationState aNextAnimationState;
 	float aAnimationLerper = 0.0f;
 	float aAnimationTime = 0.0f;
 	bool aAnimationLooping = true;

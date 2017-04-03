@@ -58,6 +58,11 @@ int LoadObject(KLoader::SLoadedComponentData someData)
 
 void LinkObject(const int target, const int anOtherComponent)
 {
+	if (anOtherComponent < 0 || target < 0)
+	{
+		return;
+	}
+
 	CComponent* const objectComponent = CComponentManager::GetInstance().GetComponent(target);
 	CGameObject* const gameObject = (objectComponent->IsGameObject()) ? static_cast<CGameObject*>(objectComponent) : nullptr;
 

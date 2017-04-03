@@ -921,7 +921,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 
 		model->Render(params);
-		//++aDrawCallCount;
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eSetRTV:
@@ -937,7 +937,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eRenderCameraQueue:
 	{
 		SRenderCameraQueueMessage* msg = static_cast<SRenderCameraQueueMessage*>(aRenderMesage);
-		CU::Camera previousCam = myCamera;;
+		CU::Camera previousCam = myCamera;
 		myCamera = msg->myCamera;
 		UpdateBuffer();
 
@@ -1035,17 +1035,10 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		params.myTransform = msg->myToWorld;
 		params.myTransformLastFrame = msg->myToWorld; //don't blur  GUI, atm fullösning deluxe.
 		params.myRenderToDepth = false;
-		params.aAnimationState = nullptr;
-
-		//if (model->HasConstantBuffer(CModel::eShaderStage::ePixel) == true)
-		//{
-		//	msg->myPixelConstantBufferStruct.myCameraPosition = myCamera.GetPosition();
-		//	//model->UpdateConstantBuffer(CModel::eShaderStage::ePixel, &msg->myPixelConstantBufferStruct, sizeof(msg->myPixelConstantBufferStruct));
-		//}
 
 		model->Render(params);
 
-		//++aDrawCallCount;
+		++aDrawCallCount;
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1057,7 +1050,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderSpriteMessage* msg = static_cast<SRenderSpriteMessage*>(aRenderMesage);
 		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRect, msg->myColor);
-		//++aDrawCallCount;
+		++aDrawCallCount;
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1068,7 +1061,12 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderTextMessage* msg = static_cast<SRenderTextMessage*>(aRenderMesage);
 		msg->myText->Render(msg->myStrings, msg->myPosition, msg->myColor, msg->myAlignement, myGUIRenderer.GetCurrentPackage().GetSize());
-		//aDrawCallCount += msg->myStrings.Size();
+#ifndef _RETAIL_BUILD
+		for (std::wstring& row : msg->myStrings)
+		{
+			aDrawCallCount += static_cast<int>(row.size());
+		}
+#endif // !_RETAIL_BUILD
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
@@ -1092,14 +1090,14 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		SRenderSkyboxMessage* msg = static_cast<SRenderSkyboxMessage*>(aRenderMesage);
 		msg->mySkybox->Render(myCamera);
-		//++aDrawCallCount;
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderParticles:
 	{
 		myParticleRenderer.AddRenderMessage(static_cast<SRenderParticlesMessage*>(aRenderMesage));
 
-		//++aDrawCallCount;
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eActivateRenderPackage:
@@ -1125,7 +1123,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 			msg->myRect,
 			msg->useDepthResource ? msg->myRenderPackage.GetDepthResource() : msg->myRenderPackage.GetResource());
 
-		//++aDrawCallCount;
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderFullscreenEffect:
@@ -1144,7 +1142,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 			c1 ? p1.GetDepthResource() : p1.GetResource(),
 			c2 ? p2.GetDepthResource() : p2.GetResource());
 
-		//++aDrawCallCount;
+		++aDrawCallCount;
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderStreak:
