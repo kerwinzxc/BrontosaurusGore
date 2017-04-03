@@ -32,6 +32,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
 	myFrameLastPositionY = -110000000.0f;
 	myIsNotFalling = false;
+	myElapsedFallCheckTime = 0.0f;
+	myFallCheckCooldown = 0.5f;
 
 	myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
 }
@@ -236,14 +238,19 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
+	myElapsedFallCheckTime += aDeltaTime.GetSeconds();
 	if (myFrameLastPositionY == GetParent()->GetWorldPosition().y)
 	{
 		myIsNotFalling = true;
 	}
 	else
 	{
-		myIsNotFalling = false;
-	}
+		if (myElapsedFallCheckTime >= myFallCheckCooldown)
+		{
+			myElapsedFallCheckTime = 0.0f;
+			myIsNotFalling = false;
+		}
+	}	
 
 	myFrameLastPositionY = GetParent()->GetWorldPosition().y;
 }
