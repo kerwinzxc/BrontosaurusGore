@@ -17,6 +17,7 @@ CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene
 	myUser = nullptr;
 	myWeaponObject = nullptr;
 	myPhysicsScene = aPhysicsScene;
+	mySoundDirection = { 0.0f, 0.0f, 1.0f };
 	if (Audio::CAudioInterface::GetInstance() != nullptr)
 	{
 		myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
@@ -121,7 +122,7 @@ void CWeapon::Update(float aDeltaTime)
 	if (myAudioId != 0)
 	{
 		const CU::Matrix44f transform = myUser->GetToWorldTransform();
-		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition() + mySoundDirection, mySoundDirection);
+		Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioId, transform.GetPosition() + mySoundDirection, mySoundDirection.GetNormalized());
 	}
 	if(myElapsedFireTimer < myWeaponData->fireRate)
 	{
