@@ -202,7 +202,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
 		myAmmoDataList.Add(newAmmoData);
 		if (CProjectileFactory::GetInstance() != nullptr)
 		{
-			CProjectileFactory::GetInstance()->CreateNewProjectileBuffer(newProjectileData->projectileModelFilePath, 500);
+			CProjectileFactory::GetInstance()->CreateNewProjectileBuffer(newProjectileData->projectileModelFilePath, 1000);
 		}
 	}
 }

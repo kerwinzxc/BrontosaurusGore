@@ -300,7 +300,7 @@ void CModel::RenderInstanced(const bool aRenderDepth)
 	const unsigned int drawCalls = myInstanceBufferData.Size() / ourMaxInstances + 1u;
 	for (unsigned int i = 0; i < drawCalls; ++i)
 	{
-		UpdateInstanceBuffer(i * ourMaxInstances);
+		UpdateInstanceBuffer(i * (ourMaxInstances - 1));
 		unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
 		unsigned int offsets[2] = { 0, 0 };
 

@@ -108,7 +108,7 @@ bool CAmmoComponent::Answer(const eComponentQuestionType aQuestionType, SCompone
 		aQuestionData.myAmmoLeftData->maxAmmo = myGeneralAmmoDataList[mySelectedAmmoType]->ammoTypeData->maxAmmo;
 		return true;
 	}
-	case eComponentQuestionType::eGetCurrentWeaponData:
+	case eComponentQuestionType::eGetCurrentAmmoData:
 	{
 		aQuestionData.myAmmoLeftData->weaponName = myGeneralAmmoDataList.At(mySelectedAmmoType)->ammoTypeData->ammoForWeaponName.c_str();
 		aQuestionData.myAmmoLeftData->ammoLeft = myGeneralAmmoDataList.At(mySelectedAmmoType)->currentAmmoAmount;
