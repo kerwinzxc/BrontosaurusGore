@@ -69,12 +69,11 @@ private:
 	unsigned short myCurrentAmmo;
 	unsigned short myCurrentMaxAmmo;
 
+	unsigned myAmmountOfWeapons;
 	//crosshair
 	SHUDElement myCrosshairElement;
 	CSpriteInstance* myCrosshairSprite;
 	volatile bool myCrosshairHasUpdated;
 
-	//test
-	float testValue;
 };
 

@@ -10,23 +10,24 @@
 #include "Game/PollingStation.h"
 #include "Components/ComponentAnswer.h"
 #include "Components/GameObject.h"
+#include "Components/Weapon.h"
+#include "Components/WeaponData.h"
 
 
 CHUD::CHUD() : myHealthAndArmorSprite(nullptr),
-myCurrentHealth(0), 
-myCurrentMaxHealth(0), 
-myCurrentArmour(0), 
-myCurrentMaxArmour(0), 
-myHealthBar(nullptr), 
-myArmourBar(nullptr), 
-myHealthAndArmourHasChanged(true), 
-myWeaponSprite(nullptr), 
-myCurrentWeapon(0), 
-myTransitionLength(0), 
-myWeaponHUDHasChanged(true), 
-myCrosshairSprite(nullptr), 
-myCrosshairHasUpdated(true), 
-testValue(0.f)
+myCurrentHealth(0),
+myCurrentMaxHealth(0),
+myCurrentArmour(0),
+myCurrentMaxArmour(0),
+myHealthBar(nullptr),
+myArmourBar(nullptr),
+myHealthAndArmourHasChanged(true),
+myWeaponSprite(nullptr),
+myCurrentWeapon(0),
+myTransitionLength(0),
+myWeaponHUDHasChanged(true),
+myCrosshairSprite(nullptr),
+myCrosshairHasUpdated(true)
 {
 }
 
@@ -67,13 +68,13 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 {
 	myWeaponElement = LoadElement(aJsonValue);
 
-	const CU::CJsonValue & spretsheeValue = aJsonValue.at("spritesheet");
+	const CU::CJsonValue& spretsheeValue = aJsonValue.at("spritesheet");
 
 	const std::string spritePath = spretsheeValue.at("file").GetString();
 
 	myWeaponSprite = new CSpriteInstance(spritePath.c_str());
 
-	const CU::CJsonValue & frameSizeValue = spretsheeValue.at("frameSize");
+	const CU::CJsonValue& frameSizeValue = spretsheeValue.at("frameSize");
 	const float frameWidth = frameSizeValue.at("width").GetFloat();
 	const float frameHeight = frameSizeValue.at("height").GetFloat();
 
@@ -82,7 +83,7 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 	myWeaponSprite->SetRect({ 0,0, frameWidth / mySpriteSize.x, frameHeight / mySpriteSize.y });
 	myWeaponSprite->SetSize({ 1.f,1.f });
 
-	const CU::CJsonValue & weaponIndexValue = spretsheeValue.at("weaponTypes");
+	const CU::CJsonValue& weaponIndexValue = spretsheeValue.at("weaponTypes");
 
 	for (int i = 0; i < weaponIndexValue.Size(); ++i)
 	{
@@ -151,7 +152,7 @@ void CHUD::UpdateWeapon()
 {
 	SComponentQuestionData ammoQuestion;
 	ammoQuestion.myAmmoLeftData = new SAmmoLeftData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetCurrentWeaponData, ammoQuestion);
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetCurrentAmmoData, ammoQuestion);
 
 	if (ammoQuestion.myAmmoLeftData->ammoLeft != myCurrentAmmo || ammoQuestion.myAmmoLeftData->maxAmmo != myCurrentMaxAmmo)
 	{
@@ -165,11 +166,29 @@ void CHUD::UpdateWeapon()
 		myWeaponHUDHasChanged = true;
 	}
 
-	/*if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)
+	if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)
 	{
-		
-	}*/
+		myCurrentWeapon = myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName);
+	}
 	delete ammoQuestion.myAmmoLeftData;
+
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetWeapons, ammoQuestion);
+
+	if (myAmmountOfWeapons != ammoQuestion.myWeapons->Size())
+	{
+		for (int i = 0; i < ammoQuestion.myWeapons->Size(); ++i)
+		{
+			const std::string weaponName = ammoQuestion.myWeapons->At(i)->GetData()->name;
+			const int weaponIndex = myWeaponIndexes.at(weaponName);
+
+			myAmmountOfWeapons = ammoQuestion.myWeapons->Size();
+
+			if (weaponIndex > 0)
+			{
+				myPickedUpWeapons[weaponIndex - 1] = true;
+			}
+		}
+	}
 }
 
 void CHUD::Update(CU::Time aDeltaTime)
@@ -180,41 +199,122 @@ void CHUD::Update(CU::Time aDeltaTime)
 
 void CHUD::SetAmmoHudRect()
 {
-	unsigned offset = 0;
+	unsigned imageIndex = 0;
 
-	switch (myPickedUpWeapons.GetBits())
+	/*switch (myPickedUpWeapons.GetBits())
 	{
 	case 1 << 1:
-		offset = 1;
+		imageIndex = 1 + myCurrentWeapon;
 		break;
 	case 1 << 2:
-		offset = 3;
+		imageIndex = 3;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += 1;
+		}
 		break;
 	case 1 << 3:
-		offset = 5;
+		imageIndex = 5;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += 1;
+		}
 		break;
 	case 1 << 1 | 1 << 2:
-		offset = 7;
+		imageIndex = 7;
 		break;
 	case 1 << 1 | 1 << 3:
-		offset = 10;
+		imageIndex = 10;
+
+		if (myCurrentWeapon > 1)
+		{
+			imageIndex += 2;
+		}
+		else
+		{
+			imageIndex += myCurrentWeapon;
+		}
 		break;
 	case 1 << 2 | 1 << 3:
-		offset = 13;
+		imageIndex = 13;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += myCurrentWeapon - 1;
+		}
 		break;
 	case 1 << 1 | 1 << 2 | 1 << 3:
-		offset = 16;
+		imageIndex = 16 + myCurrentWeapon;
 		break;
 	default: break;
+	}*/
+	//TODO: create a simple way to use a bitset in a switch :smile:
+
+	if (myPickedUpWeapons.All())
+	{
+		imageIndex = 16 + myCurrentWeapon;
 	}
+	else if (myPickedUpWeapons[1] && myPickedUpWeapons[2])
+	{
+		imageIndex = 13;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += myCurrentWeapon - 1;
+		}
+	}
+	else if (myPickedUpWeapons[0] && myPickedUpWeapons[2])
+	{
+		imageIndex = 10;
+
+		if (myCurrentWeapon > 1)
+		{
+			imageIndex += 2;
+		}
+		else
+		{
+			imageIndex += myCurrentWeapon;
+		}
+	}
+	else if (myPickedUpWeapons[0] && myPickedUpWeapons[1])
+	{
+		imageIndex = 7;
+	}
+	else if (myPickedUpWeapons[0])
+	{
+		imageIndex = 1 + myCurrentWeapon;
+	}
+	else if (myPickedUpWeapons[1])
+	{
+		imageIndex = 3;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += 1;
+		}
+	}
+	else if (myPickedUpWeapons[2])
+	{
+		imageIndex = 5;
+
+		if (myCurrentWeapon > 0)
+		{
+			imageIndex += 1;
+		}
+	}
+	
+	
+	
 
 
-	const unsigned immageIndex = myCurrentWeapon + offset;
+	//const unsigned immageIndex = myCurrentWeapon + offset;
 
 	const CU::Vector4f &currentRect = myWeaponSprite->GetRect();
 	const CU::Vector2f frameSize = CU::Vector2f(currentRect.z - currentRect.x, currentRect.w - currentRect.y);
 
-	const float newX = frameSize.x * immageIndex;
+	const float newX = frameSize.x * imageIndex;
 	const int newRow = newX;
 
 	const int largeX = newX * 1000;
