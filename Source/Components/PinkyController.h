@@ -27,7 +27,9 @@ private:
 	void HandleGrounded();
 	void UpdateChargeCooldown(const float aDeltaTime);
 	void KeepWithinChargeDist();
+	bool CanChangeState();
 
+private:
 	float myWindupChargeTime;
 	float myElapsedWindupTime;
 	float myChargeSpeed;

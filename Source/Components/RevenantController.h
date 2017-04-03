@@ -27,6 +27,7 @@ private:
 	void ApplyFlightForce();
 	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
+	bool CanChangeState();
 private:
 	float myFlightHeight;
 	float myHoverTime;

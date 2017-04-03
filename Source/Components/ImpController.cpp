@@ -36,7 +36,7 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
-	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack  && myState != eImpState::eUseMeleeAttack && myState != eImpState::eChargingMeleeAttack)
+	if(myIsDead == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange() == true)
 		{
@@ -264,4 +264,29 @@ void CImpController::InitiateWander()
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
 		myWanderToPosition = impMatrix.GetPosition();	
 	}
+}
+
+bool CImpController::CanChangeState()
+{
+	switch (myState)
+	{
+	case eImpState::eUseMeleeAttack:
+		return false;
+		break;
+	case eImpState::eChargingMeleeAttack:
+		return false;
+		break;
+	case eImpState::eChargingRangedAttack:
+		return false;
+		break;
+	case eImpState::eUseRangedAttack:
+		return false;
+		break;
+	case eImpState::eRunAfterShooting:
+		return false;
+		break;
+	default:
+		break;
+	}
+	return true;
 }

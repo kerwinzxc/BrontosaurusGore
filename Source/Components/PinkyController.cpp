@@ -44,7 +44,7 @@ void CPinkyController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	HandleGrounded();
 
-	if (myIsDead == false && myIsCharging == false && myState != ePinkyState::eChargingMeleeAttack && myState != ePinkyState::eUseMeleeAttack)
+	if (myIsDead == false && myIsCharging == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange())
 		{
@@ -182,4 +182,20 @@ void CPinkyController::KeepWithinChargeDist()
 		myStartChargeLocation = CU::Vector3f::Zero;
 		myIsCharging = false;
 	}
+}
+
+bool CPinkyController::CanChangeState()
+{
+	switch (myState)
+	{
+	case ePinkyState::eUseMeleeAttack:
+		return false;
+		break;
+	case ePinkyState::eChargingMeleeAttack:
+		return false;
+		break;
+	default:
+		break;
+	}
+	return true;
 }
