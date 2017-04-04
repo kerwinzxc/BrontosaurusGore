@@ -9,7 +9,7 @@
 //Lights
 #include "PointLightInstance.h"
 #include "Intersection.h"
-#define HIGH_ENUF 8
+#define HIGH_ENUF 2
 
 #include "../TShared/AnimationState.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
@@ -227,7 +227,7 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 	params.myTransformLastFrame = myLastFrame;
 	params.myHighlightColor = myHighlightColor;
 	params.myHighlightIntensivity = myHighlightIntencity;
-	params.myRenderToDepth = false;
+	params.myRenderToDepth = aRenderToCamera.GetIsShadowCamera();
 	params.aHighlightIntencity = myHighlightIntencity;
 	if (myHasAnimations == true)
 	{
