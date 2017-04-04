@@ -28,6 +28,15 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 	{
 		blueprint.walkToMeleeRange = someData.myData.at("WalkToMeleeRange").GetFloat();
 	}
+	if (someData.myData.HasKey("chargeMeleeAttackDuration") == true)
+	{
+		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
+		blueprint.chargeMeleeAttackDuration = someData.myData.at("chargeMeleeAttackDuration").GetFloat();
+	}
+	else
+	{
+		blueprint.chargeMeleeAttackDuration = 1.0f;
+	}
 
 	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
 	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();

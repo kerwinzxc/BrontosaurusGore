@@ -23,6 +23,7 @@ public:
 	inline void SetUser(CGameObject* aUser);
 	inline void SetWeaponObject(CGameObject* aWeaponObject);
 	inline SWeaponData* GetData();
+	inline const SWeaponData* GetData()const;
 	bool CanShoot();
 
 	void CosmeticShoot(const CU::Vector3f& aDirection); // Alex

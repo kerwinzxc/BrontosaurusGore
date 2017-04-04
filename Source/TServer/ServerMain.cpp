@@ -13,6 +13,7 @@
 #include "../TShared/NetworkMessage_PickupAmmo.h"
 #include "../TShared/Networkmessage_PickupArmor.h"
 #include "../TShared/NetworkMessage_PickupKey.h"
+#include "../TShared/NetworkMessage_PickupWeapon.h"
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 
 
@@ -539,6 +540,12 @@ bool CServerMain::Update()
 			case ePackageType::ePickupKey:
 			{
 				CNetworkMessage_PickupKey* pickup = currentMessage->CastTo<CNetworkMessage_PickupKey>();
+				SendTo(pickup);
+			}
+			break;
+			case ePackageType::ePickupWeapon:
+			{
+				CNetworkMessage_PickupWeapon* pickup = currentMessage->CastTo<CNetworkMessage_PickupWeapon>();
 				SendTo(pickup);
 			}
 			break;

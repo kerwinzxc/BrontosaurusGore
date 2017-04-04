@@ -4,6 +4,7 @@
 
 CNetworkMessage_DoorMessage::CNetworkMessage_DoorMessage()
 {
+	myKeyID = -1;
 }
 
 
@@ -26,6 +27,16 @@ void CNetworkMessage_DoorMessage::SetDoorAction(const eDoorAction aDoorAction)
 	myDoorAction = aDoorAction;
 }
 
+void CNetworkMessage_DoorMessage::SetKeyID(const short aKeyID)
+{
+	myKeyID = aKeyID;
+}
+
+const short CNetworkMessage_DoorMessage::GetKeyID() const
+{
+	return myKeyID;
+}
+
 const unsigned char CNetworkMessage_DoorMessage::GetNetworkID() const
 {
 	return myNetworkID;
@@ -41,6 +52,7 @@ void CNetworkMessage_DoorMessage::DoSerialize(StreamType & aStream)
 	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myDoorAction, aStream);
 	serialize(myNetworkID, aStream);
+	serialize(myKeyID, aStream);
 }
 
 void CNetworkMessage_DoorMessage::DoDeserialize(StreamType & aStream)
@@ -48,4 +60,5 @@ void CNetworkMessage_DoorMessage::DoDeserialize(StreamType & aStream)
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myDoorAction = deserialize<eDoorAction>(aStream);
 	myNetworkID = deserialize<unsigned char>(aStream);
+	myKeyID = deserialize<short>(aStream);
 }

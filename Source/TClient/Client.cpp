@@ -47,6 +47,7 @@
 #include "../TShared/NetWorkMessage_PickupAmmo.h"
 #include "../TShared/NetWorkmessage_PickupArmor.h"
 #include "../TShared/Networkmessage_pickupkey.h"
+#include "../TShared/NetWorkmessage_PickupWeapon.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
@@ -76,14 +77,14 @@
 #include "../TShared/NetworkMessage_WeaponChange.h"
 
 
-CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0)
+CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0), myCurrentTime(0), myPositionWaitTime(0)
 {
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 	CClientMessageManager::CreateInstance(*this);
 
-	myIsRunning = false;
+	myIsRunning = true;
 	myCanQuit = false;
 }
 
@@ -91,7 +92,7 @@ CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0)
 CClient::~CClient()
 {
 	myIsRunning = false;
-	while (!myCanQuit)
+	while (CEngine::GetInstance()->GetThreadPool()->IsRunning() == true)
 	{
 		continue;
 	}
@@ -115,7 +116,13 @@ bool CClient::StartClient()
 {
 	myNetworkWrapper.Init(0, CClientMessageManager::GetInstance());
 	myMainTimer = myTimerManager.CreateTimer();
-	CEngine::GetInstance()->GetThreadPool()->AddWork(CU::Work(std::bind(&CClient::Update, this)));
+	CU::Work work(std::bind(&CClient::Update, this));
+	work.SetName("ClientUpdate");
+	std::function<bool(void)> condition;
+	condition = std::bind(&CClient::IsRunning, this);
+	//condition = []()->bool{return true; };
+	work.AddLoopCondition(condition);
+	CEngine::GetInstance()->GetThreadPool()->AddWork(work);
 	return true;
 }
 
@@ -158,25 +165,12 @@ void CClient::Ping()
 
 void CClient::Update()
 {
-	float currentTime = 0.f;
-	CU::Time positionWaitTime(0);
 
-	CU::SetThreadName("ClientUpdate");
-	myIsRunning = true;
-
-	while (myIsRunning)
-	{
-		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-
-		if (myTimerManager.Size() == 0)
-		{
-			break;
-		}
 		myTimerManager.UpdateTimers();
-		currentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
+		myCurrentTime += myTimerManager.GetTimer(myMainTimer).GetDeltaTime().GetSeconds();
 		const CU::Time deltaTime = myTimerManager.GetTimer(myMainTimer).GetDeltaTime();
 		
-		positionWaitTime += deltaTime;
+		myPositionWaitTime += deltaTime;
 		myServerPingTime += deltaTime;
 		CNetworkMessage* currentMessage = myNetworkWrapper.Recieve(nullptr, nullptr);
 
@@ -343,20 +337,54 @@ void CClient::Update()
 				CPollingStation::GetInstance()->AddKey(pickup->GetLockID());
 			}
 			break;
+			case ePackageType::ePickupWeapon:
+			{
+				CNetworkMessage_PickupWeapon* pickup = currentMessage->CastTo<CNetworkMessage_PickupWeapon>();
+				CPickupComponentManager::GetInstance()->DeactivateWeaponPickup(pickup->GetID());
+				CPollingStation::GetInstance()->AddWeapon(pickup->GetWeaponPickup());
+
+				SComponentMessageData data;
+				data.myInt = pickup->GetWeaponPickup();
+
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddWeaponIndex, data);
+			}
+			break;
 			case ePackageType::eDoorMessage:
 			{
 				CNetworkMessage_DoorMessage* doorMesssage = currentMessage->CastTo<CNetworkMessage_DoorMessage>();
 				switch (doorMesssage->GetDoorAction())
 				{
 				case eDoorAction::eClose:
+					if (doorMesssage->GetKeyID() != -1)
+					{
+						CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
+						break;
+					}
 					CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eOpen:
+					if (doorMesssage->GetKeyID() != -1)
+					{
+						CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
+						break;
+					}
 					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eUnlock:
+					if (doorMesssage->GetKeyID() != -1)
+					{
+						CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
+						break;
+					}
 					CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
 					break;
+				case eDoorAction::eLock:
+					if (doorMesssage->GetKeyID() != -1)
+					{
+						CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
+						break;
+					}
+					CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
 				default:
 					break;
 				}
@@ -427,7 +455,9 @@ void CClient::Update()
 			case  ePackageType::eSpawnEnemyRepresentation:
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
-				CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(),enemyRep->GetEnemyType())->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate,SComponentMessageData());
+				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType());
+				DL_PRINT("EnemyRepSpawned");
+				//enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eSetRepesentationActive:
@@ -435,9 +465,11 @@ void CClient::Update()
 				CNetworkMessage_SetIsRepesentationActive* setmessage = currentMessage->CastTo<CNetworkMessage_SetIsRepesentationActive>();
 				if (setmessage->GetActive() == Ja)
 				{
+					DL_PRINT("Representation Activated");
 					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 					break;
 				}
+				DL_PRINT("Representation Deactivated");
 				CEnemyClientRepresentationManager::GetInstance().GetRepresentation(setmessage->GetNetworkID()).GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
 			break;
@@ -446,6 +478,11 @@ void CClient::Update()
 				CNetworkMessage_WeaponChange* changeMessage = currentMessage->CastTo<CNetworkMessage_WeaponChange>();
 				SComponentMessageData data;
 				data.myInt = changeMessage->GetWeaponIndex();
+				if (changeMessage->GetShooter() == CNetworkMessage_WeaponChange::Shooter::Enemy)
+				{
+					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(changeMessage->GetId()).GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
+					break;
+				}
 				myNetworkRecieverComponents.at(changeMessage->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
 				}
 				break;
@@ -460,10 +497,10 @@ void CClient::Update()
 		
 
 
-		if (currentTime > 1.f)
+		if (myCurrentTime > 1.f)
 		{
 			Ping();
-			currentTime = 0.f;
+			myCurrentTime = 0.f;
 
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CNetworkDebugInfo(myNetworkWrapper.GetAndClearDataSent(), myRoundTripTime));
 		}
@@ -477,7 +514,7 @@ void CClient::Update()
 			}
 		}
 
-		if (positionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)
+		if (myPositionWaitTime.GetMilliseconds() > 32 && myPlayerPositionUpdated == true)
 		{
 			CNetworkMessage_PlayerPositionMessage * message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerPositionMessage>("__All");
 
@@ -487,11 +524,8 @@ void CClient::Update()
 
 			Send(message);
 			myPlayerPositionUpdated = false;
-			positionWaitTime = 0;
+			myPositionWaitTime = 0;
 		}
-
-		std::this_thread::yield();
-	}
 
 	myCanQuit = true;
 }
@@ -564,4 +598,9 @@ eMessageReturn CClient::DoEvent(const CChangeLevel& aChangeLevelMessage)
 {
 	myNetworkRecieverComponents.clear();
 	return eMessageReturn::eContinue;
+}
+
+bool CClient::IsRunning()
+{
+	return myIsRunning;
 }

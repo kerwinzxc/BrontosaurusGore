@@ -5,6 +5,7 @@ enum class eDoorAction
 {
 	eOpen,
 	eClose,
+	eLock,
 	eUnlock
 };
 
@@ -20,14 +21,17 @@ public:
 	void SetID(const unsigned char aNetworkID);
 	void SetDoorAction(const eDoorAction aDoorAction);
 
+	void SetKeyID(const short aKeyID);
+
+	const short GetKeyID() const;
 	const unsigned char GetNetworkID() const;
 	const eDoorAction GetDoorAction() const;
 
 private:
 	eDoorAction myDoorAction;
 
+	short myKeyID;
 	unsigned char myNetworkID;
-
 
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;

@@ -21,6 +21,7 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myElaspedWanderTime = 0.0f;
 	myChargeRangedAttackDuration = 2.0f;
 	myElapsedChargeMeleeAttackTime = 0.0f;
+	myElapsedChargeAttackTime = 0.0f;
 	myChargeMeleeAttackDuration = 1.0f;
 }
 
@@ -35,7 +36,7 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 
-	if(myIsDead == false && myState != eImpState::eRunAfterShooting && myState != eImpState::eChargingRangedAttack  && myState != eImpState::eUseRangedAttack  && myState != eImpState::eUseMeleeAttack)
+	if(myIsDead == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange() == true)
 		{
@@ -58,6 +59,13 @@ void CImpController::Update(const float aDeltaTime)
 		else
 		{
 			myState = eImpState::eIdle;
+		}
+	}
+	else
+	{
+		if (myIsDead == true)
+		{
+			myState = eImpState::eDead;
 		}
 	}
 
@@ -183,6 +191,8 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 	myWanderDistance = impData->wanderDistance;
 	myWanderDuration = impData->wanderDuration;
 	myAttacksUntillRunningAway = impData->attacksUntillRunningAway;
+	myChargeMeleeAttackDuration = impData->chargeMeleeAttackDuration;
+	myChargeRangedAttackDuration = impData->chargeAttackDuration;
 	CEnemy::SetEnemyData(aData);
 }
 
@@ -199,11 +209,19 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
+	{
 		myState = eImpState::eIdle;
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		break;
+	}
+	case eComponentMessageType::eDeactivate:
+		myIsDead = true;
+		break;
+	case eComponentMessageType::eActivate:
+		myIsDead = false;
 		break;
 	}
 }
@@ -246,4 +264,29 @@ void CImpController::InitiateWander()
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
 		myWanderToPosition = impMatrix.GetPosition();	
 	}
+}
+
+bool CImpController::CanChangeState()
+{
+	switch (myState)
+	{
+	case eImpState::eUseMeleeAttack:
+		return false;
+		break;
+	case eImpState::eChargingMeleeAttack:
+		return false;
+		break;
+	case eImpState::eChargingRangedAttack:
+		return false;
+		break;
+	case eImpState::eUseRangedAttack:
+		return false;
+		break;
+	case eImpState::eRunAfterShooting:
+		return false;
+		break;
+	default:
+		break;
+	}
+	return true;
 }

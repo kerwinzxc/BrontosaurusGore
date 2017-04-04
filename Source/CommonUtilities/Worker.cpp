@@ -4,6 +4,8 @@
 #include "TimerManager.h"
 #include "ThreadNamer.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../BrontosaurusEngine/Engine.h"
+#include "../TServer/GameServer.h"
 
 namespace CU
 {
@@ -11,6 +13,7 @@ namespace CU
 	{
 		myPool = nullptr;
 		myThread = nullptr;
+
 	}
 
 	Worker::~Worker()
@@ -41,8 +44,10 @@ namespace CU
 
 	void Worker::Update()
 	{
+
+		ThreadPool::GetInstance()->LogCreateThread();
 		bool isInited = false;
-		while (true)
+		while (myPool->isStopped == false)
 		{
 			{
 				std::unique_lock<std::mutex> lock(myPool->myQueueMutex);
@@ -71,7 +76,9 @@ namespace CU
 
 				if (myPool->isStopped == true)
 				{
-					return;
+
+					
+					break;
 				}
 				isActive = true;
 				std::queue<Work>* workQueue = nullptr;
@@ -113,5 +120,8 @@ namespace CU
 			CU::SetThreadName("Worker thread");
 			std::this_thread::yield();
 		}
+		ThreadPool::GetInstance()->LogDestroyThread();
+
 	}
+
 }

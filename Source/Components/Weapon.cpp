@@ -260,6 +260,11 @@ CU::Vector3f CWeapon::RandomizedDirection(const CU::Vector3f& aDirection)
 
 }
 
+const SWeaponData* CWeapon::GetData() const
+{
+	return myWeaponData;
+}
+
 bool CWeapon::CanShoot()
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)

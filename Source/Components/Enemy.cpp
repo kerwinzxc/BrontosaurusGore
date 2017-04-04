@@ -19,6 +19,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRang
 	myActiveWeaponIndex = 0;
 	myNetworkPositionUpdateCoolDown = 1.0f / 60.0f;
 	myElapsedWaitingToSendMessageTime = 0.0f;
+	myShouldNotReset = false;
 	myType = aType;
 }
 
@@ -94,9 +95,12 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
-		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
-		break;
+		if (myShouldNotReset == false)
+		{
+			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+			break;
+		}
 	}
 	case eComponentMessageType::eObjectDone:
 		break;
@@ -114,6 +118,23 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eActivate:
 		myIsDead = nej;
 	}
+}
+
+bool CEnemy::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eEnemyNetworkID:
+		aQuestionData.myInt = myServerId;
+		return true;
+		break;
+	}
+	return false;
+}
+
+void CEnemy::KillEverythingThenResetItAgain(const bool aFlag)
+{
+	myShouldNotReset = aFlag;
 }
 
 void CEnemy::SetPlayerObject(CGameObject* aPlayerObj)

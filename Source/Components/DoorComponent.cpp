@@ -93,6 +93,11 @@ void CDoorComponent::Update(const CU::Time & aDeltaTime)
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
 		return;
 	}
+	else
+	{
+		GetParent()->SetWorldPosition(myResetToPosition.GetPosition());
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 }
 
 const CU::Vector2f CDoorComponent::GetOpenDirection() const
@@ -145,7 +150,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 			}
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
-		if (aMessageData.myGameObject != GetParent())
+		if (aMessageData.myGameObject != GetParent() && aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{
 			if (myIsLocked == false)
 			{

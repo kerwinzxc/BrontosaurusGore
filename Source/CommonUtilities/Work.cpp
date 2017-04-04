@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "Work.h"
 #include "DL_Debug.h"
+#include "ThreadPool.h"
+#include "../BrontosaurusEngine/Engine.h"
+#include "../ThreadedPostmaster/PostOffice.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "ThreadNamer.h"
 
 
 namespace CU
@@ -11,6 +16,9 @@ namespace CU
 		myPrio = aPrio;
 		myLogMessage = "";
 		myToWhatLog = DL_Debug::eLogTypes::eThreadPool;
+
+		myLoopCondition = []()->bool {return false; };
+		myFinishedCallback = []() {};
 	}
 
 	Work::Work(std::function<void()> aFunction, DL_Debug::eLogTypes aToWhatLog, const char* aLogMessage, ePriority aPrio)
@@ -19,6 +27,7 @@ namespace CU
 		myPrio = aPrio;
 		myToWhatLog = aToWhatLog;
 		myLogMessage = aLogMessage;
+		myLoopCondition = []()->bool {return false; };
 	}
 
 	Work::Work(const Work& aWork)
@@ -27,15 +36,58 @@ namespace CU
 		myPrio = aWork.myPrio;
 		myLogMessage = aWork.myLogMessage;
 		myToWhatLog = aWork.myToWhatLog;
+		myLoopCondition = aWork.myLoopCondition;
+		myFinishedCallback = aWork.myFinishedCallback;
+		myThreadName = aWork.myThreadName;
+	}
+
+	void Work::SetName(const std::string& aThreadName)
+	{
+		myThreadName = aThreadName;
 	}
 
 	Work::~Work()
 	{
 	}
 
-	void Work::DoWork()
+	std::string Work::GetName()
 	{
-		myWork();
+		if(myThreadName == "")
+		{
+			return "Unnamed";
+		}
+		return myThreadName;
 	}
 
+	void Work::DoWork()
+	{
+		CU::SetThreadName(GetName().c_str());
+		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(true);
+		bool loopCondition = false;
+		bool threadpoolRunning = false;
+		do
+		{
+			Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+			ThreadPool::GetInstance()->LogStart();
+			myWork();
+			ThreadPool::GetInstance()->LogEnd();
+
+			std::this_thread::yield();
+			loopCondition = myLoopCondition();
+			threadpoolRunning = CEngine::GetInstance()->GetThreadPool()->IsRunning();
+
+		} while (loopCondition && threadpoolRunning == true);
+		myFinishedCallback();
+		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(false);
+	}
+
+	void Work::AddLoopCondition(const std::function<bool()>& aFunction)
+	{
+		myLoopCondition = aFunction;
+	}
+
+	void Work::SetFinishedCallback(const std::function<void()>& aCallback)
+	{
+		myFinishedCallback = aCallback;
+	}
 }

@@ -60,6 +60,7 @@ namespace CU
 		int GetInt() const;
 		unsigned int GetUInt() const;
 		const unsigned char GetUchar() const;
+		short GetShort() const;
 
 		template<typename T>
 		T GetEnum();

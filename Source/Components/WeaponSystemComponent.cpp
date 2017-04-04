@@ -14,6 +14,7 @@
 #include "../FontEngine/FontEngineFacade.h"
 #include "../TServer/ServerMessageManager.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
+#include "../TServer/ServerMessageManager.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -98,6 +99,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myWeapons[myActiveWeaponIndex]->CosmeticShoot(aMessageData.myVector3f);
 		break;
 	}
+	case eComponentMessageType::eAddWeaponWithoutChangingToIt:
+	{
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		ChangeWeapon2(myWeapons.Size() - 1);
+	}
+	break;
 	case eComponentMessageType::eAddWeapon:
 	{
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
@@ -107,6 +114,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eAddWeaponIndex:
 	{
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myInt, GetParent());
+		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
@@ -280,8 +288,20 @@ void CWeaponSystemComponent::ChangeWeapon(unsigned aIndex)
 {
 	ChangeWeaponLocal(aIndex);
 	
-	CNetworkMessage_WeaponChange* changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>("__All");
+	CNetworkMessage_WeaponChange* changeMessage;
+	if (CClientMessageManager::GetInstance() != nullptr) //kollar om det är på clienten och då är det en spelare om den finns
+	{
+		changeMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>(ID_ALL);
+		changeMessage->SetWeapon(myActiveWeaponIndex);
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
+		return;
+	}
+	changeMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponChange>(ID_ALL);
 	changeMessage->SetWeapon(myActiveWeaponIndex);
+	changeMessage->SetShooter(CNetworkMessage_WeaponChange::Shooter::Enemy);
+	SComponentQuestionData question;
+	if (GetParent()->AskComponents(eComponentQuestionType::eEnemyNetworkID, question) == true)
+		changeMessage->SetShooterId(question.myInt);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(changeMessage));
 }
 
@@ -294,6 +314,11 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 {
 	myWeapons.Add(aWeapon);
 	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
+}
+
+void CWeaponSystemComponent::ChangeWeapon2(unsigned int aIndex)
+{
+	ChangeWeaponLocal(aIndex);
 }
 
 void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
@@ -316,7 +341,11 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	case eComponentQuestionType::eCanShoot :
 	{
 		return myWeapons[myActiveWeaponIndex]->CanShoot();
-		break;
+	}
+	case eComponentQuestionType::eGetWeapons:
+	{
+		aQuestionData.myWeapons = &myWeapons;
+		return true;
 	}
 	case eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon:
 	{

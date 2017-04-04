@@ -21,6 +21,7 @@
 #include "LoadCollider.h"
 #include "LoadDoorComponent.h"
 #include "LoadKeyPickupComponent.h"
+#include "LoadWeaponPickupComponent.h"
 
 #include "LoadAmmoPickupComponent.h"
 #include "LoadHealthPackComponent.h"
@@ -77,6 +78,8 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("AmmoPickupComponent", LoadAmmoPickupComponent);
 	loader.RegisterComponentLoadFunction("HealthPackComponent", LoadHealthPackComponent);
 	loader.RegisterComponentLoadFunction("ArmorPickupComponent", LoadArmorPackComponent);
+	loader.RegisterComponentLoadFunction("KeyPickupComponent", LoadKeyPickupComponent);
+	loader.RegisterComponentLoadFunction("WeaponPickupComponent",LoadWeaponPickupkComponent);
 	loader.RegisterComponentLoadFunction("ParticleSystem", LoadParticleEmitterComponent);
 	loader.RegisterComponentLoadFunction("CheckpointComponent", LoadCheckpointComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
@@ -88,7 +91,6 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("ScriptComponent", LoadScriptComponent);
 	loader.RegisterComponentLoadFunction("DamageOnCollisionComponent", LoadDamageOnCollisionComponent);
 	loader.RegisterComponentLoadFunction("DoorComponent", LoadDoorComponent);
-	loader.RegisterComponentLoadFunction("KeyPickupComponent", LoadKeyPickupComponent);
 	loader.RegisterComponentLoadFunction("HighlightComponent",LoadHighlightComponent);
 	loader.RegisterComponentLoadFunction("ImpController", ClientLoadImp);
 	loader.RegisterComponentLoadFunction("RevenantController", ClientLoadRevenant);

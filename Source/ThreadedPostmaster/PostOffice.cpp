@@ -3,6 +3,9 @@
 #include "Postmaster.h"
 
 
+#include "../CommonUtilities/DL_Debug.h"
+
+
 Postmaster::Threaded::CPostOffice::~CPostOffice()
 {
 	myMessageQueue.DeleteAll();
@@ -83,6 +86,10 @@ void Postmaster::Threaded::CPostOffice::HandleBroadcastMessages()
 	{
 		Message::IMessage* message = myMessageQueue.Pop();
 		const std::array<std::vector<ISubscriber*>, 1>::value_type& subscribers = mySubscribers[static_cast<unsigned>(message->GetType())];
+		if (message->GetType() == eMessageType::eSpawnWave)
+		{
+			DL_PRINT("SpawnWavePostamster");
+		}
 		for (int i = 0; i < subscribers.size(); ++i)
 		{
 			message->DoEvent(*subscribers[i]);

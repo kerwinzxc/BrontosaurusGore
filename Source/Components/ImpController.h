@@ -29,6 +29,7 @@ private:
 	void UpdateJumpForces(const float aDeltaTime);
 
 	void InitiateWander();
+	bool CanChangeState();
 private:
 	CU::Vector3f myWanderToPosition;
 

@@ -18,7 +18,9 @@ public:
 	static void Destroy();
 	static CEnemyFactory* GetInstance();
 
-	CEnemy* CreateEnemy(const SEnemyBlueprint* aBluePrint, const eEnemyTypes& aType, const CU::Vector3f& aPosition);
+	void LoadBluePrints(const std::string& alevel);
+
+	CEnemy* CreateEnemy(const eEnemyTypes& aType, const CU::Vector3f& aPosition);
 	CEnemy* CreateImp(const SImpBlueprint* aData,const CU::Vector3f& aPosition);
 	CEnemy* CreateRevenant(const SRevenantBlueprint* aData);
 	CEnemy* CreatePinky(const SPinkyBlueprint* aData); // skapar ett lill finger
@@ -28,6 +30,10 @@ public:
 private:
 	CEnemyFactory(CEnemyComponentManager& aEnemyManager, CGameObjectManager& aGameObjectManger, CWeaponSystemManager& aWeaponSystemManager, CColliderComponentManager& aColliderManager);
 	~CEnemyFactory();
+
+	SImpBlueprint myImpBluePrint;
+	SRevenantBlueprint myRevenantBluePrint;
+	SPinkyBlueprint myPinkyBluePrint;
 
 	CEnemyComponentManager& myEnemyManager;
 	CGameObjectManager& myGameObjectManager;

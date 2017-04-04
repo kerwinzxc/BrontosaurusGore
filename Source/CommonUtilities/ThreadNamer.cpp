@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <thread>
 #include <map>
+#include "../BrontosaurusEngine/Engine.h"
+#include "ThreadPool.h"
 
 static std::map<uint32_t, std::string> locThreadNames;
 static std::string locUnNamedThread("UnNamed");
@@ -44,6 +46,7 @@ namespace CU
 	}
 	void SetThreadName(const char* threadName)
 	{
+		ThreadPool::GetInstance()->LogName(threadName);
 		SetThreadName(GetCurrentThreadId(), threadName);
 	}
 

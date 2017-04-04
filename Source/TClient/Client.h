@@ -39,6 +39,9 @@ public:
 	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
 	eMessageReturn DoEvent(const COtherPlayerSpawned& aMassage)override;
 	eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage) override;
+
+
+	bool IsRunning();
 private:
 
 	//CChat myChat;
@@ -65,4 +68,6 @@ private:
 	bool myPlayerPositionUpdated;
 
 	int myRoundTripTime;
+	float myCurrentTime;
+	CU::Time myPositionWaitTime;
 };

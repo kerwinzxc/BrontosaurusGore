@@ -13,6 +13,7 @@ class CWeaponSystemManager;
 class CWeaponFactory;
 class CMovementComponentManager;
 class CSpawnerManager;
+class CWaveManager;
 
 class CGameServer
 {
@@ -34,6 +35,7 @@ public:
 	bool Update(CU::Time aDeltaTime);
 
 	bool IsLoaded() const;
+	std::thread::id& GetThreadID();
 	CServerPlayerNetworkComponent* AddPlayer(const unsigned short aClientID);
 	CEnemyComponentManager* GetEnemyComponentManager();
 	CWeaponSystemManager* GetCWeaponSystemManager();
@@ -50,11 +52,14 @@ private:
 	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 	CSpawnerManager* mySpawnerManager;
 	CCheckPointSystem* myCheckPointSystem;
+	CWaveManager* myWaveManager;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
-	CU::ThreadPool myThreadPool;
+	CU::ThreadPool* myThreadPool;
+
+	std::thread::id myThreadID;
 
 
 
