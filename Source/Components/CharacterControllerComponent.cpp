@@ -52,8 +52,8 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 		//CU::Vector3f worldPos = myData.center;
 		//transformation.SetPosition(transformation.GetPosition() + worldPos);
 		myController->SetPosition(transformation.myPosition);
-	break;
-	{
+		break;
+	}
 	case eComponentMessageType::eActivate:
 	{
 		myController->SetIsActive(true);
