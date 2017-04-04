@@ -59,12 +59,8 @@ void CRenderCamera::Render()
 {
 	SRenderCameraQueueMessage * camqueueMsg = new SRenderCameraQueueMessage();
 	camqueueMsg->myRenderCamera = *this;
-	//camqueueMsg->myCamera = myCamera;
-	//camqueueMsg->CameraRenderPackage = myRenderPackage;
-	//camqueueMsg->CameraRenderQueue = myRenderQueue;
-	//camqueueMsg->RenderDepth = myIsShadowCamera;
 	RENDERER.AddRenderMessage(camqueueMsg);
-	myRenderQueue.RemoveAll(); // these are deleted on the render thread
+	myRenderQueue.RemoveAll();
 }
 
 ID3D11PixelShader* CRenderCamera::GetShadowShader()

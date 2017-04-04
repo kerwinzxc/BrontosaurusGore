@@ -308,8 +308,6 @@ void CDXFramework::Render()
 	{
 		mySwapchain->Present(0, 0);
 	}
-
-
 }
 
 void CDXFramework::Shutdown()
