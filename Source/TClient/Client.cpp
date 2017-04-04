@@ -351,38 +351,34 @@ void CClient::Update()
 				case eDoorAction::eClose:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
-						int lol = 10;
+						CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					//CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
+					CDoorManager::GetInstance()->CloseDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eOpen:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
-						int lol = 10;
+						CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					//CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
+					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eUnlock:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
-						int lol = 10;
+						CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					//CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
+					CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eLock:
 					if (doorMesssage->GetKeyID() != -1)
 					{
-						//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
-						int lol = 10;
+						CDoorManager::GetInstance()->LockDoor(doorMesssage->GetKeyID());
 						break;
 					}
-					//CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
+					CDoorManager::GetInstance()->LockDoor(doorMesssage->GetNetworkID());
 				default:
 					break;
 				}
