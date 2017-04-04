@@ -32,6 +32,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myDoubleJumpHeight = playerControls["SecondJumpHeight"].GetFloat();
 	myFrameLastPositionY = -110000000.0f;
 	myIsNotFalling = false;
+	myElapsedFallCheckTime = 0.0f;
+	myFallCheckCooldown = 1.0f;
 
 	myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
 }
@@ -198,6 +200,8 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		{
 			if (myJumpForce < 0)
 			{
+				myLastGroundedPositionY = GetParent()->GetWorldPosition().y;
+				myElapsedFallCheckTime = 0.0f;
 				myCanDoubleJump = true;
 				myJumpForce = 0.0f;
 			}
@@ -236,14 +240,25 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
+	myElapsedFallCheckTime += aDeltaTime.GetSeconds();
 	if (myFrameLastPositionY == GetParent()->GetWorldPosition().y)
 	{
 		myIsNotFalling = true;
 	}
 	else
 	{
-		myIsNotFalling = false;
-	}
+		if (myElapsedFallCheckTime >= myFallCheckCooldown)
+		{
+			myIsNotFalling = false;
+		}
+		else
+		{
+			if ((myLastGroundedPositionY - GetParent()->GetWorldPosition().y > -1.0f && (myLastGroundedPositionY - GetParent()->GetWorldPosition().y) < 0.0f))
+			{
+				myIsNotFalling = true;
+			}
+		}
+	}	
 
 	myFrameLastPositionY = GetParent()->GetWorldPosition().y;
 }
@@ -325,8 +340,15 @@ void CMovementComponent::KeyPressed(const ePlayerControls aPlayerControl)
 
 	if (aPlayerControl == ePlayerControls::eJump )
 	{
+		float difference = myLastGroundedPositionY - GetParent()->GetWorldPosition().y;
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN || myIsNotFalling == true)
 		{
+			myElapsedFallCheckTime = 0.0f;
+			if(myIsNotFalling == true)
+			{
+				myElapsedFallCheckTime = 10000.0f;
+				myIsNotFalling = false;
+			}
 			ApplyJumpForce(myJumpHeight);
 		}
 		else
