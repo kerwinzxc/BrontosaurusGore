@@ -16,9 +16,7 @@ public:
 		eRMAO		= (1 << 2),
 		eEmissive	= (1 << 3),
 		eDepth		= (1 << 4),
-		eHighlight	= (1 << 5),
-
-		eALL		= (1 << 6) - 1
+		eALL		= (1 << 5) - 1
 	};
 
 public:
@@ -39,6 +37,5 @@ private:
 	CRenderPackage myNormal;
 	CRenderPackage myRMAO;
 	CRenderPackage myEmissive;
-	CRenderPackage myHighLight;
 	CDXFramework* myFramework;
 };

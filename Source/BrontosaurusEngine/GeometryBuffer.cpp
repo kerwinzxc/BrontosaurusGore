@@ -24,7 +24,6 @@ void CGeometryBuffer::Init(const CU::Vector2ui & aSize, CDXFramework* aFramework
 	myNormal.Init(aSize, aTexture, aFormat);
 	myRMAO.Init(aSize, aTexture, aFormat);
 	myEmissive.Init(aSize, aTexture, aFormat);
-	myHighLight.Init(aSize, aTexture, aFormat);
 }
 
 void CGeometryBuffer::BindInput(const EGeometryPackages aMask)
@@ -45,20 +44,18 @@ void CGeometryBuffer::BindOutput(const EGeometryPackages aMask)
 	rtvs[1] = (aMask & EGeometryPackage::eNormal)		? myNormal.GetRenderTargetView() : nullptr;
 	rtvs[2] = (aMask & EGeometryPackage::eRMAO)			? myRMAO.GetRenderTargetView() : nullptr;
 	rtvs[3] = (aMask & EGeometryPackage::eEmissive)		? myEmissive.GetRenderTargetView() : nullptr;
-	rtvs[4] = (aMask & EGeometryPackage::eHighlight)	? myHighLight.GetRenderTargetView() : nullptr;
-	myFramework->GetDeviceContext()->OMSetRenderTargets(5, rtvs, myDiffuse.GetDepthStencilView());
+	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, myDiffuse.GetDepthStencilView());
 }
 
 void CGeometryBuffer::UnbindInput()
 {
-	ID3D11ShaderResourceView* srvs[6];
+	ID3D11ShaderResourceView* srvs[5];
 	srvs[0] = nullptr;
 	srvs[1] = nullptr;
 	srvs[2] = nullptr;
 	srvs[3] = nullptr;
 	srvs[4] = nullptr;
-	srvs[5] = nullptr;
-	myFramework->GetDeviceContext()->PSSetShaderResources(1, 6, srvs);
+	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
 }
 
 void CGeometryBuffer::UnbindOutput()
@@ -79,7 +76,6 @@ void CGeometryBuffer::Clear()
 	myNormal.Clear();
 	myRMAO.Clear();
 	myEmissive.Clear();
-	myHighLight.Clear();
 }
 
 bool CGeometryBuffer::IsInited()
