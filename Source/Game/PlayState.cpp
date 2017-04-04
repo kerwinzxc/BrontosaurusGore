@@ -240,6 +240,8 @@ void CPlayState::Load()
 
 	myIsLoaded = true;
 	
+	CEnemyFactory::GetInstance()->LoadBluePrints(levelsArray.at(myLevelIndex).GetString());
+
 	// Get time to load the level:
 	loadPlaystateTimer.Update();
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
