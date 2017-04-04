@@ -9,7 +9,7 @@
 //Lights
 #include "PointLightInstance.h"
 #include "Intersection.h"
-#define HIGH_ENUF 8
+#define HIGH_ENUF 2
 
 #include "../TShared/AnimationState.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
@@ -214,45 +214,46 @@ void CModelInstance::RenderDeferred()
 
 void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 {
-	SRenderMessage* message = nullptr;
-	if (aRenderToCamera.GetIsShadowCamera())
+	if (!ShouldRender())
 	{
-		message = new SRenderModelShadowMessage();
-		SRenderModelShadowMessage* msg = reinterpret_cast<SRenderModelShadowMessage*>(message);
-		msg->myModelID = myModel;
-		msg->myRenderParams.myTransform = myTransformation;
-		msg->myRenderParams.myTransformLastFrame = myLastFrame;
-		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
-		if (myHasAnimations == true)
-		{
-			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
-			msg->myRenderParams.aAnimationState = myCurrentAnimation;
-			msg->myRenderParams.aNextAnimationState = myNextAnimation;
-			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
-			msg->myRenderParams.aAnimationTime = myAnimationCounter;
-		}
-		msg->myRenderParams.aPixelshader = aRenderToCamera.GetShadowShader();
+		return;
+	}
+
+	CModelManager* modelManager = MODELMGR;
+	int modelRefCount = modelManager->GetModelRefCount(myModel);
+
+	SDeferredRenderModelParams params;
+	params.myTransform = myTransformation;
+	params.myTransformLastFrame = myLastFrame;
+	params.myHighlightColor = myHighlightColor;
+	params.myHighlightIntensivity = myHighlightIntencity;
+	params.myRenderToDepth = aRenderToCamera.GetIsShadowCamera();
+	params.aHighlightIntencity = myHighlightIntencity;
+	if (myHasAnimations == true)
+	{
+		params.aAnimationLooping = myAnimationLooping;
+		params.aAnimationState = myCurrentAnimation;
+		params.aNextAnimationState = myNextAnimation;
+		params.aAnimationLerper = myAnimationLerpie;
+		params.aAnimationTime = myAnimationCounter;
+	}
+
+	SRenderMessage* msg = nullptr;
+	if (!myHasAnimations && modelRefCount > HIGH_ENUF)
+	{
+		SRenderModelInstancedMessage* instancedMsg = new SRenderModelInstancedMessage();
+		instancedMsg->myModelID = myModel;
+		instancedMsg->myRenderParams = params;
+		msg = instancedMsg;
 	}
 	else
 	{
-		message = new SRenderModelDeferredMessage();
-		SRenderModelDeferredMessage* msg = reinterpret_cast<SRenderModelDeferredMessage*>(message);
-		msg->myModelID = myModel;
-		msg->myRenderParams.myHighlightColor = myHighlightColor;
-		msg->myRenderParams.myHighlightIntensivity = myHighlightIntencity;
-		msg->myRenderParams.myTransform = myTransformation;
-		msg->myRenderParams.myTransformLastFrame = myLastFrame;
-		msg->myRenderParams.aHighlightIntencity = myHighlightIntencity;
-		if (myHasAnimations == true)
-		{
-			msg->myRenderParams.aAnimationLooping = myAnimationLooping;
-			msg->myRenderParams.aAnimationState = myCurrentAnimation;
-			msg->myRenderParams.aNextAnimationState = myNextAnimation;
-			msg->myRenderParams.aAnimationLerper = myAnimationLerpie;
-			msg->myRenderParams.aAnimationTime = myAnimationCounter;
-		}
+		SRenderModelDeferredMessage* lonelyMsg = new SRenderModelDeferredMessage();
+		lonelyMsg->myModelID = myModel;
+		lonelyMsg->myRenderParams = params;
+		msg = lonelyMsg;
 	}
-	aRenderToCamera.AddRenderMessage(message);
+	aRenderToCamera.AddRenderMessage(msg);
 }
 
 void CModelInstance::Update(const CU::Time aDeltaTime)
@@ -287,8 +288,10 @@ CU::Sphere CModelInstance::GetModelBoundingSphere()
 
 	sphere.myCenterPos = myTransformation.GetPosition();
 	sphere.myRadius = MODELMGR->GetModel(myModel)->GetRadius();
-	sphere.myRadius *= myTransformation.m11;
 
+	float maxScale = max(myTransformation.myForwardVector.Length2(), myTransformation.myRightVector.Length2());
+	maxScale = max(maxScale, myTransformation.myUpVector.Length2());
+	sphere.myRadius *= sqrt(maxScale);
 	return sphere;
 }
 

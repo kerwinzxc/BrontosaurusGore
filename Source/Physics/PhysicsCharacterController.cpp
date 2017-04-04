@@ -42,6 +42,11 @@ namespace Physics
 		SetCollisionFlags((uint8_t)flags);
 	}
 
+	void CPhysicsCharacterController::SetIsActive(const bool aIsActive)
+	{
+		myController->getActor()->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
+	}
+
 	void CPhysicsCharacterController::Resize(const float aHeight)
 	{
 		myController->resize(aHeight);

@@ -107,13 +107,17 @@ struct SComponentMessageData
 			eComponentType myComponentTypeAdded;
 		};
 		
+		struct  
+		{
+			bool myPhysicsUpdated;
+			bool myBool;
+		};
 		CGameObject* myGameObject;
 		struct SComponentMessageCallback* myComponentMessageCallback;
 		ePlayerControls myPlayerControl;
 		int myInt;
 		unsigned short myUShort;
 		unsigned char myUChar;
-		bool myBool;
 		const char* myString;
 		float myFloat;
 		CU::Vector2f myVector2f;

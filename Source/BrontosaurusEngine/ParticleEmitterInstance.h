@@ -10,6 +10,7 @@ namespace CU
 }
 
 class CParticleEmitter;
+class CRenderCamera;
 
 typedef unsigned int ParticleEmitterID;
 
@@ -17,14 +18,12 @@ class CParticleEmitterInstance
 {
 public:
 	CParticleEmitterInstance(const SEmitterData& aEmitterData);
-
 	~CParticleEmitterInstance();
 
 	void Update(const CU::Time& aDeltaTime);
-	void Render(const CU::Camera& aCamera); // needs the camera to sort by
+	void Render(CRenderCamera& aRenderCamera); // needs the camera to sort by
 	void Activate();
 	void Deactivate();
-	static void DistanceSort(CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, const CU::Camera & aCamera);
 	inline void SetPosition(CU::Vector3f aPosition);
 	inline void SetVisibility(bool);
 	inline bool IsVisible() const;
@@ -37,6 +36,7 @@ public:
 private:
 	void Init();
 	void EmitParticle();
+	static void DistanceSort(CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, const CU::Camera & aCamera);
 
 
 private:

@@ -49,6 +49,9 @@ CGameServer::CGameServer():
 	, mySpawnerManager(nullptr)
 	,myWaveManager(nullptr)
 {
+	CU::ThreadPool::Create();
+	myThreadPool = CU::ThreadPool::GetInstance();
+	myThreadPool->Init();
 	myIsRunning = false;
 	myTime = 0;
 	myPlayersNetworkComponents.Init(5);
@@ -60,6 +63,7 @@ CGameServer::CGameServer():
 CGameServer::~CGameServer()
 {
 	CNetworkComponentManager::Destroy();
+	CU::ThreadPool::Destroy();
 }
 
 void CGameServer::Init()

@@ -187,7 +187,7 @@ bool CDXFramework::Initialize(const int aWidth, const int aHeight, const bool aI
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = numDenum.y;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.OutputWindow = aHWND;
-	swapChainDesc.SampleDesc.Count = 1; // MSAA * 4 asball?
+	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0; // 
 	swapChainDesc.Windowed = !aIsFullScreen;
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -308,8 +308,6 @@ void CDXFramework::Render()
 	{
 		mySwapchain->Present(0, 0);
 	}
-
-
 }
 
 void CDXFramework::Shutdown()

@@ -219,7 +219,7 @@ void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 	}
 }
 
-void CParticleEmitterInstance::Render(const CU::Camera& aCamera)
+void CParticleEmitterInstance::Render(CRenderCamera& aRenderCamera)
 {
 	if (myParticles.Size() > 0)
 	{
@@ -228,8 +228,8 @@ void CParticleEmitterInstance::Render(const CU::Camera& aCamera)
 		msg.toWorld = myToWorldSpace;
 		msg.particleList = myParticles;
 		msg.myType = SRenderMessage::eRenderMessageType::eRenderParticles;
-		DistanceSort(msg.particleList, aCamera);
-		RENDERER.AddRenderMessage(new SRenderParticlesMessage(msg));
+		DistanceSort(msg.particleList, aRenderCamera.GetCamera());
+		aRenderCamera.AddRenderMessage(new SRenderParticlesMessage(msg));
 	}
 }
 

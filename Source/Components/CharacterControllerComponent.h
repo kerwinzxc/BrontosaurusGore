@@ -15,9 +15,8 @@ public:
 	~CCharacterControllerComponent();
 
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
-
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
-
+	
 	void OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther) override;
 	void OnTriggerExit(Physics::CPhysicsCallbackActor* aOther) override;
 	void OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther) override;

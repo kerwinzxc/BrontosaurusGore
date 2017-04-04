@@ -67,6 +67,11 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 {
 	CU::CJsonValue value;
 	value.Parse("Json/Spawner/EnemyStats.json");
+	if (value.Count(alevel) <= 0)
+	{
+		DL_PRINT("Didn't find your level in EnemyStats.json, please add your level to the dokument or ask Alex for help");
+		return;
+	}
 	CU::CJsonValue impstats = value.at(alevel).at("imp");
 
 	myImpBluePrint.Health = impstats.at("Health").GetInt();

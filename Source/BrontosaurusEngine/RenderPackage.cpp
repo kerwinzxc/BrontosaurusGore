@@ -64,12 +64,12 @@ void CRenderPackage::ReInit(const CU::Vector2ui& aSize, ID3D11Texture2D* aTextur
 	Init(aSize, aTexture, aFormat);
 }
 
-void CRenderPackage::Clear()
+void CRenderPackage::Clear(const float aDepthValue)
 {
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
 	float clearColour[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	context->ClearRenderTargetView(myTarget, clearColour);
-	context->ClearDepthStencilView(myDepth, D3D11_CLEAR_DEPTH, 1.f, 0);
+	context->ClearDepthStencilView(myDepth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, aDepthValue, 0);
 }
 
 void CRenderPackage::Activate()
@@ -157,26 +157,31 @@ void CRenderPackage::SaveToFile(const char* aPath)
 	DirectX::SaveDDSTextureToFile(DEVICE_CONTEXT, myTexture, path.c_str());
 }
 
-void CRenderPackage::operator=(const CRenderPackage& aLeft)
+void CRenderPackage::operator=(const CRenderPackage& aRight)
 {
-	myTexture = aLeft.myTexture;
+	SAFE_RELEASE(myTexture);
+	myTexture = aRight.myTexture;
 	SAFE_ADD_REF(myTexture);
 
-	myDepthResource = aLeft.myDepthResource;
+	SAFE_RELEASE(myDepthResource);
+	myDepthResource = aRight.myDepthResource;
 	SAFE_ADD_REF(myDepthResource);
 
-	myResource = aLeft.myResource;
+	SAFE_RELEASE(myResource);
+	myResource = aRight.myResource;
 	SAFE_ADD_REF(myResource);
 
-	myTarget = aLeft.myTarget;
+	SAFE_RELEASE(myTarget);
+	myTarget = aRight.myTarget;
 	SAFE_ADD_REF(myTarget);
 
-	myDepth = aLeft.myDepth;
+	SAFE_RELEASE(myDepth);
+	myDepth = aRight.myDepth;
 	SAFE_ADD_REF(myDepth);
 
 	SAFE_DELETE(myViewport);
-	if (aLeft.myViewport != nullptr)
-		myViewport = new D3D11_VIEWPORT(*aLeft.myViewport);
+	if (aRight.myViewport != nullptr)
+		myViewport = new D3D11_VIEWPORT(*aRight.myViewport);
 }
 
 
@@ -191,8 +196,8 @@ void CRenderPackage::CreateTexture2D(const int aWidth, const int aHeight, DXGI_F
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = aFormat;
-	textureDesc.SampleDesc.Count = 1;  //MSAA coolio   Count = 4;  
-	textureDesc.SampleDesc.Quality = 0;//MSAA coolio   Quality = 1;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	textureDesc.CPUAccessFlags = 0;

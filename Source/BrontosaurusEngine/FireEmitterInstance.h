@@ -4,6 +4,7 @@
 using FireEmitterID = int;
 
 struct SFireEmitterData;
+class CRenderCamera;
 
 class CFireEmitterInstance
 {
@@ -17,7 +18,7 @@ public:
 	CFireEmitterInstance& operator=(CFireEmitterInstance&& aTemporary);
 
 	void Init(const SFireEmitterData& aFireEmitterData);
-	void Render();
+	void Render(CRenderCamera& aRenderCamera);
 
 	inline CU::Matrix44f& GetTransformation();
 	inline void SetPosition(const CU::Vector3f& aPosition);

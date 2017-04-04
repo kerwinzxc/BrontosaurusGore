@@ -23,6 +23,7 @@ enum class eBlendState
 enum class eDepthStencilState
 {
 	eDefault,
+	eLesser,
 	eReadOnly,
 	eDisableDepth,
 	eSize,

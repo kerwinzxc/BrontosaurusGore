@@ -9,6 +9,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TServer/ServerMessageManager.h"
+#include "../Game/PollingStation.h"
 
 CWaveManager::CWaveManager()
 {
@@ -91,7 +92,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
 	myNumberOfWavesToSpawn = aPlayerEnteredArena.GetWaveAmount();
 
-	if (myPlayersInsideArena >= myNumberOfPlayers)
+	if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
 		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eClose);

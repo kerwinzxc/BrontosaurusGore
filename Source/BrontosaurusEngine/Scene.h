@@ -30,7 +30,9 @@ public:
 	{
 		ePlayerOneCamera,
 		eGUICamera,
-		eLength
+		eShadowCamera,
+		eWeaponCamera,
+		eLength,
 	};
 
 	CScene();
@@ -54,7 +56,7 @@ public:
 
 	CModelInstance* GetModelAt(const InstanceID aModelID);
 	CFireEmitterInstance& GetFireEmitter(const InstanceID aFireEmitterID);
-	CU::Camera& GetCamera(const eCameraType aCameraType);
+	CRenderCamera& GetRenderCamera(const eCameraType aCameraType);
 	CParticleEmitterInstance* GetParticleEmitterInstance(const InstanceID aParticleEmitterID);
 	CPointLightInstance* GetPointLightInstance(const InstanceID aID);
 	
@@ -65,7 +67,7 @@ public:
 	inline unsigned int GetModelListSize()   {return myModels.Size();}
 	inline unsigned int GetLightListSize()   {return myPointLights.Size();}
 	inline unsigned int GetEmitterListSize() {return myParticleEmitters.Size();}
-	inline unsigned int GetCameraListSize()  {return myCameras.Size();}
+	inline unsigned int GetCameraListSize()  {return myRenderCameras.Size();}
 
 	void DeleteParticleEmitterInstance(const InstanceID anID);
 	void RemovePointLightInstance(const InstanceID anID);
@@ -89,7 +91,7 @@ private:
 	
 	CU::GrowingArray<CFireEmitterInstance, InstanceID> myFireEmitters;
 
-	CU::StaticArray<CU::Camera, static_cast<int>(eCameraType::eLength)> myCameras;
+	CU::StaticArray<CRenderCamera, static_cast<int>(eCameraType::eLength)> myRenderCameras;
 	Lights::SDirectionalLight myDirectionalLight; //make array
 
 	CSkybox* mySkybox;
@@ -98,7 +100,7 @@ private:
 	float myFogStart;
 	float myFogEnd;
 
-	CRenderCamera myShadowCamera;
+	//CRenderCamera myShadowCamera;
 };
 
 inline CSkybox& CScene::GetSkybox()

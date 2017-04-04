@@ -36,6 +36,7 @@ void CBackgroundLoadingManager::CreateStateToLoad(StateStack& aStateStack, const
 	myCurrentPlayState = new CPlayState(aStateStack, aLevelIndex);
 
 	CU::Work myWork(std::bind(&CPlayState::Load, myCurrentPlayState));
+	myWork.SetName("Load thread");
 	CEngine::GetInstance()->GetThreadPool()->AddWork(myWork);
 }
 

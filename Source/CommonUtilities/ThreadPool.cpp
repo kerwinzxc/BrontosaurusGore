@@ -7,27 +7,16 @@
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 
+CU::ThreadPool* CU::ThreadPool::ourInstance = nullptr;
+
 namespace CU
 {
 	ThreadPool::ThreadPool()
 	{
-		const static std::string name = "ThreadPool Worker: ";
 		myTimerMgr = new TimerManager();
 		isStopped = false;
-		unsigned concurentThreadsSupported = std::thread::hardware_concurrency();
-		for (std::size_t i = 0; i < concurentThreadsSupported; ++i)
-		{
-
-			TimerHandle handle = myTimerMgr->CreateTimer();
-			Worker *worker = new Worker();
-			worker->Init(*this, handle);
-			myWorkers.push_back(worker);
-
-			//so very windows
-			std::string threadName = name + std::to_string(i);
-			SetThreadName(*worker->myThread,threadName.c_str());
-
-		}
+		myConcurentThreadsSupported = std::thread::hardware_concurrency();
+		
 
 #ifndef RETAIL
 		TCHAR szExeFileName[MAX_PATH];
@@ -45,7 +34,44 @@ namespace CU
 
 		CreateDirectoryRecursive(myLogPath);
 #endif
+	}
 
+	void ThreadPool::Create()
+	{
+		ourInstance = new ThreadPool;
+	}
+
+	void ThreadPool::Destroy()
+	{
+		SAFE_DELETE(ourInstance);
+	}
+
+	ThreadPool* ThreadPool::GetInstance()
+	{
+		if(ourInstance == nullptr)
+		{
+			DL_ASSERT("Threadpool has not yet been created.");
+		}
+		return ourInstance;
+	}
+
+	void ThreadPool::Init()
+	{
+		const static std::string name = "ThreadPool Worker: ";
+
+		for (std::size_t i = 0; i < myConcurentThreadsSupported; ++i)
+		{
+
+			TimerHandle handle = myTimerMgr->CreateTimer();
+			Worker *worker = new Worker();
+			worker->Init(*this, handle);
+			myWorkers.push_back(worker);
+
+			//so very windows
+			std::string threadName = name + std::to_string(i);
+			SetThreadName(*worker->myThread, threadName.c_str());
+
+		}
 	}
 
 	ThreadPool::~ThreadPool()
@@ -114,6 +140,24 @@ namespace CU
 	bool ThreadPool::IsRunning() const
 	{
 		return isStopped == false;
+	}
+
+	void ThreadPool::LogCreateThread()
+	{
+		std::ofstream output = GetLogStream();
+		output << "#LogCreate\n";
+		output << GetEpochTicks();
+		output << "\n";
+		output.close();
+	}
+
+	void ThreadPool::LogDestroyThread()
+	{
+		std::ofstream output = GetLogStream();
+		output << "#LogDestroy\n";
+		output << GetEpochTicks();
+		output << "\n";
+		output.close();
 	}
 
 	unsigned long long ThreadPool::GetEpochTicks()
