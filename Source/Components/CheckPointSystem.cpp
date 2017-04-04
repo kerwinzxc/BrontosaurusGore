@@ -25,8 +25,6 @@ eMessageReturn CCheckPointSystem::DoEvent(const CAddToCheckPointResetList& aAddT
 	if(myObjectsToReset.Find(aAddToCheckPointResetList.GetObjectToReset()) == myObjectsToReset.FoundNone)
 	{
 		myObjectsToReset.Add(aAddToCheckPointResetList.GetObjectToReset());
-		DL_PRINT("Added Thing to checkpoint");
-	
 	}
 	return eMessageReturn::eContinue;
 }
