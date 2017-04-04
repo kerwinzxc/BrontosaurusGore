@@ -29,9 +29,10 @@ namespace Physics
 		mySimulationTimer += aDeltaTime.GetSeconds();
 		if (mySimulationTimer >= ourSimulationFrequensy)
 		{
-			mySimulationTimer -= ourSimulationFrequensy;
-			myPxScene->simulate(ourSimulationFrequensy);
-			myPxScene->fetchResults(); // vi kanske borde fixa den här krashen någon gång. // Ja tack! mvh Alex
+			myPxScene->simulate(mySimulationTimer);
+
+			mySimulationTimer = 0;
+			myPxScene->fetchResults(); // vi kanske borde fixa den här krashen någon gång. // Ja tack! mvh Alex // Den här? Det finns typ 10 ><
 			return true;
 		}
 		return false;

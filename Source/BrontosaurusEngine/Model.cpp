@@ -300,7 +300,7 @@ void CModel::RenderInstanced(const bool aRenderDepth)
 	const unsigned int drawCalls = myInstanceBufferData.Size() / ourMaxInstances + 1u;
 	for (unsigned int i = 0; i < drawCalls; ++i)
 	{
-		UpdateInstanceBuffer(i * ourMaxInstances);
+		UpdateInstanceBuffer(i * (ourMaxInstances - 1));
 		unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
 		unsigned int offsets[2] = { 0, 0 };
 
@@ -423,7 +423,7 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 		{
 			ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 			DEVICE_CONTEXT->Map(myBoneBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubResource);
-			memcpy(mappedSubResource.pData, &finalBones->front(), bytesToCopy);
+			memcpy(mappedSubResource.pData, finalBones->data(), bytesToCopy);
 			DEVICE_CONTEXT->Unmap(myBoneBuffer, 0);
 			DEVICE_CONTEXT->VSSetConstantBuffers(3, 1, &myBoneBuffer);
 		}

@@ -22,6 +22,8 @@ public:
 	void SetAnimation(const eAnimationState aAnimationKey);
 	void SetNextAnimation(const eAnimationState aAnimationKey);
 	void SetAnimationLerpValue(const float aLerpValue);
+	void SetAnimationLooping(const bool aIsLooping);
+	void ResetAnimation();
 	void SetIgnoreDepth(bool aShouldIgnoreDepth);
 
 private:

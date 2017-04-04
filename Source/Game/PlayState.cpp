@@ -90,6 +90,7 @@
 #include "TextInstance.h"
 #include "GameObject.h"
 #include "ComponentAnswer.h"
+#include "AnimationComponent.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -296,6 +297,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
 	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
 
+	CAnimationComponent::UpdateAnimations(aDeltaTime);
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
 	{
