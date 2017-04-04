@@ -19,7 +19,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRang
 	myActiveWeaponIndex = 0;
 	myNetworkPositionUpdateCoolDown = 1.0f / 60.0f;
 	myElapsedWaitingToSendMessageTime = 0.0f;
-	myShouldNotReset = false;
+	myShouldNotReset = nej;
 	myType = aType;
 }
 
@@ -95,6 +95,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
@@ -102,16 +103,22 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 			break;
 		}
 	}
+	break;
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eCheckPointReset:
 	{
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		break;
+		if (myShouldNotReset == false)
+		{
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eDeactivate:
 		myIsDead = ja;
 		break;

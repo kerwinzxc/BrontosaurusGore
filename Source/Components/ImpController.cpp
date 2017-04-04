@@ -204,19 +204,29 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 		myState = eImpState::eDead;
 		myIsDead = true;
-		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
-		break;
+		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		if (myShouldNotReset == false)
+		{
+			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eCheckPointReset:
 	{
-		myState = eImpState::eIdle;
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		break;
+		if (myShouldNotReset == false)
+		{
+			myState = eImpState::eIdle;
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;
 		break;

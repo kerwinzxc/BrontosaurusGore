@@ -124,11 +124,16 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
-		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		myState = ePinkyState::eDead;
-		break;
+		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		if (myShouldNotReset == false)
+		{
+			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		if(myIsCharging == true)
@@ -140,12 +145,17 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		myState = ePinkyState::eIdle;
-		break;
+		if (myShouldNotReset == false)
+		{
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			myState = ePinkyState::eIdle;
+			break;
+		}
+	break;
 	}
 }
 
