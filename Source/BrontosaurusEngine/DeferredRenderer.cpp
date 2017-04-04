@@ -18,9 +18,11 @@
 #include "TextureManager.h"
 #include "Engine.h"
 
+#ifdef _ENABLE_RENDERMODES
 #include <../CommonUtilities/InputWrapper.h>
 #include "WindowsWindow.h"
 #include "EKeyboardKeys.h"
+#endif
 
 CDeferredRenderer::CDeferredRenderer()
 {
@@ -145,10 +147,12 @@ void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 		}
 		case SRenderMessage::eRenderMessageType::eChangeStates:
 		{
-			SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
-			aRenderer.SetStates(msg);
+			//SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
+			//aRenderer.SetStates(msg);
 			break;
 		}
+		default:
+			break;
 		}
 	}
 
@@ -196,7 +200,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		changeStateMessage.myBlendState = eBlendState::eMulBlend;
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		aRenderer.SetStates(&changeStateMessage);
-
 		DoSSAO(aFullscreenHelper);
 	}
 	SChangeStatesMessage changeStateMessage = {};
@@ -231,9 +234,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		break;
 	case ERenderMode::eSSAO:
 		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.myRMAO);
-		break;
-	case ERenderMode::eHighlight:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
 		break;
 	case ERenderMode::eIntermediate:
 		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
@@ -361,7 +361,7 @@ void CDeferredRenderer::DoHighlight(CFullScreenHelper& aFullscreenHelper, CRende
 	changeStateMessage.myBlendState = eBlendState::eOverlay;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myEmissive);
 }
 
 void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)

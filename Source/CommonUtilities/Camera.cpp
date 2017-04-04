@@ -37,7 +37,9 @@ namespace CU
 		myProjectionInverse = myProjection.GetInverted();
 
 		//myFrustum.SetFrustum(aFar, aNear, aFov, aProjectionWidth, aProjectionHeight);
-		myFrustum.SetFrustum(myProjectionInverse);
+		CU::Matrix44f carlsProjection = myProjection.CreateProjectionMatrixLH(aNear, aFar * 0.25f, aProjectionWidth, aProjectionHeight, (aFov));
+		carlsProjection.Invert();
+		myFrustum.SetFrustum(carlsProjection);
 
 		myTransformation = Matrix44f::Identity;
 		myFar = aFar;
