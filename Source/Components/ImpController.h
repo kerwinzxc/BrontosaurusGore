@@ -46,8 +46,8 @@ private:
 
 	bool myIsJumping;
 	unsigned char myWanderAngle;
-	char myAttacksUntillRunningAway;
-	char myUsedAttackSinceLastRunning;
+	short myAttacksUntillRunningAway;
+	short myUsedAttackSinceLastRunning;
 };
 
 inline bool CImpController::ShouldJumpAfterPlayer()
