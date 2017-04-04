@@ -44,6 +44,7 @@ private:
 
 	CU::Vector3f myDirection;
 	int myNumCascades;
+	int myCurrentCascade;
 };
 
 inline void CCascadeShadowMap::SetDirection(const CU::Vector3f& aDirection)
