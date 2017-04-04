@@ -193,11 +193,11 @@ void CScene::Render()
 	RENDERER.AddRenderMessage(interMSG);
 
 	//DRAW SHADOWBUFFER
-	SRenderToIntermediate * interMSG2 = new SRenderToIntermediate();
-	interMSG2->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
-	interMSG2->useDepthResource = false;
-	interMSG2->myRenderPackage = myShadowMap->GetShadowMap();
-	RENDERER.AddRenderMessage(interMSG2);
+	//SRenderToIntermediate * interMSG2 = new SRenderToIntermediate();
+	//interMSG2->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
+	//interMSG2->useDepthResource = false;
+	//interMSG2->myRenderPackage = myShadowMap->GetShadowMap();
+	//RENDERER.AddRenderMessage(interMSG2);
 	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
 
