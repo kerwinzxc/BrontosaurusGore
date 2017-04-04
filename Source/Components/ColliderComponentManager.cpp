@@ -50,8 +50,6 @@ CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aC
 			if(collider == nullptr)
 			{
 				return nullptr;
-				
-				
 			}
 			myColliderComponents.Add(collider);
 		}

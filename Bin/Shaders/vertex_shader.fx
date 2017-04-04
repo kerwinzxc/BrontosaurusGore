@@ -55,9 +55,9 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTex(PosNormBinormTanTex_InputV
 	return output;
 }
 
-PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputVertex input)
+PosNormBinormTanTexInstanced_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputVertex input)
 {
-	PosNormBinormTanTex_InputPixel output;
+	PosNormBinormTanTexInstanced_InputPixel output;
 	float3x3 rotation = (float3x3) input.toWorldInstance;
 
 	output.normals = float4(mul(rotation, normalize(input.normals.xyz)), 1.0f);
@@ -76,7 +76,7 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTexInstanced(PosNormBinormTanT
 	output.position = mul(projectionSpace, output.position);
 
 	output.worldPosLastFrame = mul(cameraSpaceInversed, output.worldPosLastFrame);
-
+	output.highlight = input.highlight;
 	return output;
 
 }

@@ -57,7 +57,7 @@ private:
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 
-	CU::ThreadPool myThreadPool;
+	CU::ThreadPool* myThreadPool;
 
 	std::thread::id myThreadID;
 

@@ -43,15 +43,14 @@ struct PixelOutput
 	float4 normal				: SV_TARGET1;
 	float4 RMAO					: SV_TARGET2;
 	float4 emissive				: SV_TARGET3;
-	float4 HighLight			: SV_TARGET4;
 };
 
 //**********************************************//
 //					FRAGMENT					//
 //**********************************************//
 
-float3 PS_ObjectNormal(PosNormBinormTanTex_InputPixel input);
-float4 GetHighlight(PosNormBinormTanTex_InputPixel input, float3 normal);
+float3 PS_ObjectNormal(float2 uv, float4 biTan, float4 tan, float4 norm);
+float4 GetHighlight(float3 normal, float4 aHighlightColor);
 float3 NormalFromTexture(float3 normal);
 
 PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
@@ -62,32 +61,51 @@ PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
 	{
 		discard;
 	}
+	
+	output.normal = float4(PS_ObjectNormal(input.uv, input.biTangent, input.tangent, input.normals), 1.0f);
 
-	output.normal = float4(PS_ObjectNormal(input), 1.0f);
 	output.RMAO = RMAO.Sample(samplerWrap, input.uv);
-	output.emissive = float4(emissive.Sample(samplerWrap, input.uv).xyz,1.f);
-	output.HighLight = GetHighlight(input, output.normal.xyz);
+
+	float4 emissivecol = emissive.Sample(samplerWrap, input.uv);
+	emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
+	output.emissive = emissivecol + GetHighlight(output.normal.xyz, highlightColor);
+	output.emissive = saturate(output.emissive);
 	return output;
 }
-
 
 PixelOutput PS_PosNormBinormTanTexBones(PosNormBinormTanTex_InputPixel input)
 {
 	return PS_PosNormBinormTanTex(input);
 }
 
-PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTex_InputPixel input)
+//PS_PosNormBinormTanTexInstanced
+PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputPixel input)
 {
-	return PS_PosNormBinormTanTex(input);
+	PixelOutput output;
+	output.diffuse = diffuse.Sample(samplerWrap, input.uv);
+	if (output.diffuse.a <= ALPHA_THRESHOLD)
+	{
+		discard;
+	}
+	
+	output.normal = float4(PS_ObjectNormal(input.uv, input.biTangent, input.tangent, input.normals), 1.0f);
+	
 
+	output.RMAO = RMAO.Sample(samplerWrap, input.uv);
+
+	float4 emissivecol = emissive.Sample(samplerWrap, input.uv);
+	emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
+	output.emissive = emissivecol + GetHighlight(output.normal.xyz, input.highlight);
+	output.emissive = saturate(output.emissive);
+	return output;
 }
 
-float3 PS_ObjectNormal(PosNormBinormTanTex_InputPixel input)
+float3 PS_ObjectNormal(float2 uv, float4 biTan, float4 tan, float4 norm)
 {
-	float3 normal = normalMap.Sample(samplerWrap, input.uv).xyz;
+	float3 normal = normalMap.Sample(samplerWrap, uv).xyz;
 	normal = NormalFromTexture(normal);
 	normal = normalize(normal);
-	float3x3 tangentSpaceMatrix = float3x3(normalize(input.biTangent.xyz), normalize(input.tangent.xyz), normalize(input.normals.xyz));
+	float3x3 tangentSpaceMatrix = float3x3(normalize(biTan.xyz), normalize(tan.xyz), normalize(norm.xyz));
 	normal = mul(normal, tangentSpaceMatrix);
 	// Make the normal 0.0 - 1.0
 	normal += float3(1.0f, 1.f, 1.f);
@@ -98,25 +116,25 @@ float3 PS_ObjectNormal(PosNormBinormTanTex_InputPixel input)
 	return output;
 }
 
-float4 GetHighlight(PosNormBinormTanTex_InputPixel input, float3 normal)
+float4 GetHighlight(float3 normal, float4 aHighlightColor)
 {
 
 	const float3 cameraDirWorld = mul(float3(0,0,-1),(float3x3)cameraSpaceInversed);
 
 	const float fresnelValue = abs(dot(NormalFromTexture(normal),cameraDirWorld));
 
-	const float lol = fresnelValue / highlightColor.a;
+	const float lol = fresnelValue / aHighlightColor.a;
 	const float alphaValue = saturate(1 - lol * lol * lol);
 
 	
-	const float3 HighLight = highlightColor.rgb;
+	const float3 HighLight = aHighlightColor.rgb;
 
 	// if(fresnelValue < 0.25)
 	// {
 	// 	HighLight.a = 1.f;
 	// }
 
-	return float4(HighLight, alphaValue * highlightColor.a);
+	return float4(HighLight, alphaValue * aHighlightColor.a);
 }
 
 float3 NormalFromTexture(float3 normal)

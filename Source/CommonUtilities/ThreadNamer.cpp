@@ -46,7 +46,7 @@ namespace CU
 	}
 	void SetThreadName(const char* threadName)
 	{
-		CEngine::GetInstance()->GetThreadPool()->LogName(threadName);
+		ThreadPool::GetInstance()->LogName(threadName);
 		SetThreadName(GetCurrentThreadId(), threadName);
 	}
 

@@ -53,7 +53,9 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 
 	myTimerManager = new CU::TimerManager();
 	myTimerH = myTimerManager->CreateTimer();
-	myThreadPool = new CU::ThreadPool();
+	CU::ThreadPool::Create();
+	myThreadPool = CU::ThreadPool::GetInstance();
+	myThreadPool->Init();
 	
 	myWindowsWindow = new CWindowsWindow(aInitEngineParams.myWindowParams);
 	myWindowSize.x = aInitEngineParams.myWindowParams.Width;
@@ -113,17 +115,9 @@ void CEngine::Render()
 
 void CEngine::ThreadedRender()
 {
-	myRendererIsRunning = true;
-	CU::SetThreadName("Render thread");
-	while (myRenderer->GetIsRunning() == true)
-	{
+
 		Render();
-		std::this_thread::yield();
-	}
-
-
-	myRendererIsRunning = false;
-	CU::SetThreadName("ThreadPool Worker");
+	
 
 }
 
@@ -152,7 +146,13 @@ void CEngine::OnResize(const unsigned int aWidth, const unsigned int aHeight)
 		{
 			ThreadedRender();
 		};
-		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
+		CU::Work work(renderThread, CU::ePriority::eHigh);
+		std::function<bool(void)> condition = [this]()->bool{return myRenderer->GetIsRunning(); };
+		work.AddLoopCondition(condition);
+		work.SetName("Render thread");
+		std::function<void(void)> callback = [this]() {myRendererIsRunning = false; };
+		work.SetFinishedCallback(callback);
+		myThreadPool->AddWork(work);
 	}
 
 }
@@ -175,8 +175,14 @@ void CEngine::Start()
 		auto renderThread = [this]()
 		{
 			ThreadedRender();
-		};
-		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
+		}; 
+		CU::Work work(renderThread, CU::ePriority::eHigh);
+		std::function<bool(void)> condition = [this]()->bool {return myRenderer->GetIsRunning(); };
+		work.AddLoopCondition(condition);
+		work.SetName("Render thread");
+		std::function<void(void)> callback = [this]() {myRendererIsRunning = false; };
+		work.SetFinishedCallback(callback);
+		myThreadPool->AddWork(work);
 	}
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
@@ -281,7 +287,7 @@ CEngine::~CEngine()
 	SAFE_DELETE(myShaderManager);
 	SAFE_DELETE(myLightManager);
 	SAFE_DELETE(myLineDrawer);
-	SAFE_DELETE(myThreadPool); //TODO: THREAD POOL HAS THREADS IT CANNOT JOIN, don't know if this is true anymore
+	CU::ThreadPool::Destroy();
 	SAFE_DELETE(myParticleEmitterManager);
 	SAFE_DELETE(myFireEmitterManager);
 	SAFE_DELETE(myTextureManager);

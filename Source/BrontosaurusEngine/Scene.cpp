@@ -14,8 +14,12 @@
 #include "CascadeShadowMap.h"
 
 #define Intify(A_ENUM_CLASS) static_cast<int>(A_ENUM_CLASS)
+#define PlayerOneCamera myRenderCameras[Intify(eCameraType::ePlayerOneCamera)]
+#define WeaponCamera myRenderCameras[Intify(eCameraType::eWeaponCamera)]
+
+
 #define SHADOWBUFFER_DIM /*16384*/1024
-//#define USE_SHADOWS
+#define USE_SHADOWS
 
 
 CScene::CScene()
@@ -25,20 +29,9 @@ CScene::CScene()
 	myParticleEmitters.Init(8);
 	myFireEmitters.Init(8);
 	mySkybox = nullptr;
-
 	myCubemap = nullptr;
-	myShadowCamera.InitOrthographic(8, 8, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
-	myShadowCamera.ShadowInit();
 
-	myShadowMap = new CCascadeShadowMap(0, 0.1f, 500.f);
-
-
-	for(int i = 0; i < 20; ++i)
-	{
-		myFreeParticleEmitters.Push(myParticleEmitters.Size());
-		myParticleEmitters.Add(nullptr);
-	}
-
+	myShadowMap = new CCascadeShadowMap(0, 0.1f, 250.f);
 	CParticleEmitterComponentManager::GetInstance().SetScene(this);
 }
 
@@ -70,60 +63,46 @@ void CScene::Render()
 	if(myCubemap)
 		myCubemap->SetShaderResource();
 
-	SSetCameraMessage cameraMsg;
-	cameraMsg.myCamera = myCameras[Intify(eCameraType::ePlayerOneCamera)];
-	RENDERER.AddRenderMessage(new SSetCameraMessage(cameraMsg));
+	WeaponCamera.GetCamera() = PlayerOneCamera.GetCamera();
 
 	SChangeStatesMessage statemsg;
-
 	if (mySkybox)
 	{
 		statemsg.myBlendState = eBlendState::eNoBlend;
 		statemsg.myRasterizerState = eRasterizerState::eNoCulling;
 		statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
 		statemsg.mySamplerState = eSamplerState::eWrap;
-
-		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+		PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 		SRenderSkyboxMessage* msg = new SRenderSkyboxMessage();
 		mySkybox->AddRef();
 		msg->mySkybox = mySkybox;
-		RENDERER.AddRenderMessage(msg);
+		PlayerOneCamera.AddRenderMessage(msg);
 	}
 
-
 #ifdef USE_SHADOWS
-	myShadowMap->ComputeShadowProjection(myCameras[Intify(eCameraType::ePlayerOneCamera)]);
+	myShadowMap->ComputeShadowProjection(PlayerOneCamera.GetCamera());
 	myShadowMap->Render(myModels);
 #endif
+
 	statemsg.myRasterizerState = eRasterizerState::eDefault;
 	statemsg.myDepthStencilState = eDepthStencilState::eDefault;
 	statemsg.myBlendState = eBlendState::eNoBlend;
-	statemsg.mySamplerState = eSamplerState::eClamp;
+	statemsg.mySamplerState = eSamplerState::eDeferred;
+	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
-	RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
-	myShadowCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
-
-	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
+	/*for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
 		if (myPointLights[i].GetIsActive() == false)
 		{
 			continue;
 		}
-
-		CU::Sphere lightSphere;
-		lightSphere.myCenterPos = myPointLights[i].GetPosition();
-		lightSphere.myRadius = myPointLights[i].GetRange();
-
-		//if (myShadowCamera.GetCamera().IsInside(lightSphere) == false)
-		//{
-		//	continue;
-		//}
-
+	
 		SRenderPointLight pointlightMessage;
 		pointlightMessage.pointLight = myPointLights[i].GetData();
-		RENDERER.AddRenderMessage(new SRenderPointLight(pointlightMessage));
-	}
+		PlayerOneCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
+		WeaponCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
+	}*/
 
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{
@@ -131,23 +110,24 @@ void CScene::Render()
 		{
 			continue;
 		}
-
-		//if (myCameras[Intify(eCameraType::ePlayerOneCamera)].IsInside(myModels[i]->GetModelBoundingSphere()) == false)
-		//{
-		//	continue;
-		//}
+	
 		if (myModels[i]->GetIgnoreDepth() == false)
 		{
-			myModels[i]->RenderDeferred();
+			if (PlayerOneCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingSphere()) == false)
+			{
+				continue;
+			}
+	
+			myModels[i]->RenderDeferred(PlayerOneCamera);
 		}
 	}
-	RENDERER.AddRenderMessage(new SRenderModelBatches());
+	PlayerOneCamera.AddRenderMessage(new SRenderModelBatches());
 
-	//statemsg.myRasterizerState = eRasterizerState::eDefault;
-	//statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	//statemsg.myBlendState = eBlendState::eNoBlend;
-	//statemsg.mySamplerState = eSamplerState::eDeferred;
-	//RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+	statemsg.myRasterizerState = eRasterizerState::eDefault;
+	statemsg.myDepthStencilState = eDepthStencilState::eDefault;
+	statemsg.myBlendState = eBlendState::eNoBlend;
+	statemsg.mySamplerState = eSamplerState::eDeferred;
+	WeaponCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 	for (CModelInstance* model : myModels)
 	{
@@ -157,35 +137,22 @@ void CScene::Render()
 		}
 		if (model->GetIgnoreDepth() == true)
 		{
-			model->RenderDeferred();
+			model->RenderDeferred(WeaponCamera);
 		}
 	}
-
-
+	WeaponCamera.AddRenderMessage(new SRenderModelBatches());
 
 	SRenderDirectionalLight light;
 	light.directionalLight = myDirectionalLight;
-	RENDERER.AddRenderMessage(new SRenderDirectionalLight(light));
+	PlayerOneCamera.AddRenderMessage(new SRenderDirectionalLight(light));
+	WeaponCamera.AddRenderMessage(new SRenderDirectionalLight(light));
 
-	SChangeStatesMessage* changeStateMessage = new SChangeStatesMessage();
-	changeStateMessage->myBlendState = eBlendState::eAlphaBlend;
-	changeStateMessage->myDepthStencilState = eDepthStencilState::eReadOnly; //don't know what to do here
-	changeStateMessage->myRasterizerState = eRasterizerState::eNoCullingClockwise;
-	changeStateMessage->mySamplerState = eSamplerState::eClamp0Wrap1;
-	RENDERER.AddRenderMessage(changeStateMessage);
-
-	for (CFireEmitterInstance& fireEmitter : myFireEmitters)
-	{
-		fireEmitter.GetTransformation().LookAt(myCameras[Intify(eCameraType::ePlayerOneCamera)].GetPosition());
-		fireEmitter.Render();
-	}
 
 	statemsg.myBlendState = eBlendState::eAlphaBlend;
 	statemsg.myRasterizerState = eRasterizerState::eDefault;
 	statemsg.myDepthStencilState = eDepthStencilState::eReadOnly;
 	statemsg.mySamplerState = eSamplerState::eClamp;
-
-	RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 	for (unsigned int i = 0; i < myParticleEmitters.Size(); ++i)
 	{
@@ -194,15 +161,44 @@ void CScene::Render()
 			continue;
 		}
 
-		myParticleEmitters[i]->Render(GetCamera(eCameraType::ePlayerOneCamera));
+		myParticleEmitters[i]->Render(PlayerOneCamera);
 	}
-	//// DRAW SHADOWBUFFER
-	//SRenderToIntermediate * interMSG = new SRenderToIntermediate();
-	//interMSG->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
-	//interMSG->useDepthResource = false;
-	//interMSG->myRenderPackage = myShadowMap->GetShadowMap();
-	//RENDERER.AddRenderMessage(interMSG);
-	//RENDERER.AddRenderMessage(new SActivateRenderToMessage());
+	
+	PlayerOneCamera.Render();
+	WeaponCamera.Render();
+
+	statemsg.myBlendState = eBlendState::eAlphaBlend;
+	statemsg.myRasterizerState = eRasterizerState::eDefault;
+	statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	statemsg.mySamplerState = eSamplerState::eClamp;
+	RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+
+	SActivateRenderPackageMessage* activateMsg = new SActivateRenderPackageMessage();
+	activateMsg->myRenderPackage = PlayerOneCamera.GetRenderPackage();
+	activateMsg->unbindShadowBuffer = true;
+	RENDERER.AddRenderMessage(activateMsg);
+
+	SRenderFullscreenEffectMessage* fullscreenEffect = new SRenderFullscreenEffectMessage();
+	fullscreenEffect->myEffectType = CFullScreenHelper::eEffectType::eCopy;
+	fullscreenEffect->myFirstPackage = WeaponCamera.GetRenderPackage();
+	fullscreenEffect->myRect = { 0.0f, 0.0f, 1.0f, 1.0f };
+	fullscreenEffect->myFirstUseDepthResource = false;
+	RENDERER.AddRenderMessage(fullscreenEffect);	
+	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
+
+	SRenderToIntermediate * interMSG = new SRenderToIntermediate();
+	interMSG->myRect = { 0.0f, 0.0f, 1.0f, 1.0f };
+	interMSG->useDepthResource = false;
+	interMSG->myRenderPackage = PlayerOneCamera.GetRenderPackage();
+	RENDERER.AddRenderMessage(interMSG);
+
+	//DRAW SHADOWBUFFER
+	SRenderToIntermediate * interMSG2 = new SRenderToIntermediate();
+	interMSG2->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
+	interMSG2->useDepthResource = false;
+	interMSG2->myRenderPackage = myShadowMap->GetShadowMap();
+	RENDERER.AddRenderMessage(interMSG2);
+	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
 
 InstanceID CScene::AddModelInstance(CModelInstance* aModelInstance)
@@ -271,7 +267,7 @@ InstanceID CScene::AddFireEmitters(const CFireEmitterInstance& aFireEmitter)
 
 void CScene::AddCamera(const eCameraType aCameraType)
 {
-	myCameras[static_cast<int>(aCameraType)] = CU::Camera(); //TODO: maybe not have add
+	myRenderCameras[static_cast<int>(aCameraType)] = CRenderCamera(); //TODO: maybe not have add
 }
 
 void CScene::SetSkybox(const char* aPath)
@@ -325,9 +321,9 @@ CFireEmitterInstance& CScene::GetFireEmitter(const InstanceID aFireEmitterID)
 	return myFireEmitters[aFireEmitterID];
 }
 
-CU::Camera& CScene::GetCamera(const eCameraType aCameraType)
+CRenderCamera& CScene::GetRenderCamera(const eCameraType aCameraType)
 {
-	return myCameras[static_cast<int>(aCameraType)];
+	return myRenderCameras[static_cast<int>(aCameraType)];
 }
 
 CParticleEmitterInstance* CScene::GetParticleEmitterInstance(const InstanceID aParticleEmitterID)

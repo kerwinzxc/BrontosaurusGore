@@ -92,7 +92,7 @@ namespace CU
 	void Plane<TYPE>::SetWith3Points(const Point3<TYPE> &aFirstPoint, const Point3<TYPE> &aSecondPoint, const Point3<TYPE> &aThirdPoint)
 	{
 		myPoint = aFirstPoint;
-		myNormal = -(aThirdPoint - aFirstPoint).Cross(aSecondPoint - aFirstPoint).Normalize();
+		myNormal = (aThirdPoint - aFirstPoint).Cross(aSecondPoint - aFirstPoint).Normalize();
 		//myNormal = Vector3<TYPE>::Cross(aThirdPoint - aFirstPoint, aSecondPoint - aFirstPoint);
 	}
 
