@@ -19,7 +19,7 @@
 
 
 #define SHADOWBUFFER_DIM /*16384*/1024
-//#define USE_SHADOWS
+#define USE_SHADOWS
 
 
 CScene::CScene()
@@ -29,12 +29,9 @@ CScene::CScene()
 	myParticleEmitters.Init(8);
 	myFireEmitters.Init(8);
 	mySkybox = nullptr;
-
 	myCubemap = nullptr;
-	//myShadowCamera.InitOrthographic(8, 8, 200, 0.5f, SHADOWBUFFER_DIM, SHADOWBUFFER_DIM);
-	//myShadowCamera.ShadowInit();
 
-	myShadowMap = new CCascadeShadowMap(0, 0.1f, 500.f);
+	myShadowMap = new CCascadeShadowMap(0, 0.1f, 250.f);
 	CParticleEmitterComponentManager::GetInstance().SetScene(this);
 }
 
@@ -94,19 +91,18 @@ void CScene::Render()
 	statemsg.mySamplerState = eSamplerState::eDeferred;
 	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
-
-	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
+	/*for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
 		if (myPointLights[i].GetIsActive() == false)
 		{
 			continue;
 		}
-
+	
 		SRenderPointLight pointlightMessage;
 		pointlightMessage.pointLight = myPointLights[i].GetData();
 		PlayerOneCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
 		WeaponCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
-	}
+	}*/
 
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{
@@ -114,15 +110,14 @@ void CScene::Render()
 		{
 			continue;
 		}
-
-		CU::Sphere modelSphere = myModels[i]->GetModelBoundingSphere();
-		if (PlayerOneCamera.GetCamera().IsInside(modelSphere) == false)
-		{
-			continue;
-		}
-
+	
 		if (myModels[i]->GetIgnoreDepth() == false)
 		{
+			if (PlayerOneCamera.GetCamera().IsInside(myModels[i]->GetModelBoundingSphere()) == false)
+			{
+				continue;
+			}
+	
 			myModels[i]->RenderDeferred(PlayerOneCamera);
 		}
 	}
@@ -147,28 +142,11 @@ void CScene::Render()
 	}
 	WeaponCamera.AddRenderMessage(new SRenderModelBatches());
 
-
-
-
-
 	SRenderDirectionalLight light;
 	light.directionalLight = myDirectionalLight;
 	PlayerOneCamera.AddRenderMessage(new SRenderDirectionalLight(light));
 	WeaponCamera.AddRenderMessage(new SRenderDirectionalLight(light));
 
-
-	//SChangeStatesMessage* changeStateMessage = new SChangeStatesMessage();
-	//changeStateMessage->myBlendState = eBlendState::eAlphaBlend;
-	//changeStateMessage->myDepthStencilState = eDepthStencilState::eReadOnly; //don't know what to do here
-	//changeStateMessage->myRasterizerState = eRasterizerState::eNoCullingClockwise;
-	//changeStateMessage->mySamplerState = eSamplerState::eClamp0Wrap1;
-	//PlayerOneCamera.AddRenderMessage(changeStateMessage);
-
-	for (CFireEmitterInstance& fireEmitter : myFireEmitters)
-	{
-		fireEmitter.GetTransformation().LookAt(PlayerOneCamera.GetCamera().GetPosition());
-		fireEmitter.Render(PlayerOneCamera);
-	}
 
 	statemsg.myBlendState = eBlendState::eAlphaBlend;
 	statemsg.myRasterizerState = eRasterizerState::eDefault;
@@ -215,11 +193,11 @@ void CScene::Render()
 	RENDERER.AddRenderMessage(interMSG);
 
 	//DRAW SHADOWBUFFER
-	//SRenderToIntermediate * interMSG2 = new SRenderToIntermediate();
-	//interMSG2->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
-	//interMSG2->useDepthResource = false;
-	//interMSG2->myRenderPackage = myShadowMap->GetShadowMap();
-	//RENDERER.AddRenderMessage(interMSG2);
+	SRenderToIntermediate * interMSG2 = new SRenderToIntermediate();
+	interMSG2->myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
+	interMSG2->useDepthResource = false;
+	interMSG2->myRenderPackage = myShadowMap->GetShadowMap();
+	RENDERER.AddRenderMessage(interMSG2);
 	RENDERER.AddRenderMessage(new SActivateRenderToMessage());
 }
 
