@@ -20,6 +20,7 @@ public:
 	virtual void Update(const float aDeltaTime) = 0;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
+	void KillEverythingThenResetItAgain(const bool aFlag);
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
 	inline void SetType(const eEnemyTypes aType);
@@ -64,6 +65,7 @@ protected:
 	eEnemyTypes myType;
 	bool myIsDead;
 	bool myIsAttacking;
+	bool myShouldNotReset;
 	char myControllerConstraints;
 };
 
