@@ -4,6 +4,7 @@
 
 CNetworkMessage_WeaponChange::CNetworkMessage_WeaponChange(): myWeaponIndex(-1)
 {
+	myShooter = Shooter::Player;
 }
 
 

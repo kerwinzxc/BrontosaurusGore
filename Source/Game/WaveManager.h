@@ -15,6 +15,7 @@ public:
 
 	eMessageReturn DoEvent(const CAddEnemyToWave & aAddEnemyToWave) override;
 	eMessageReturn DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena) override;
+	eMessageReturn DoEvent(const CResetToCheckPointMessage & aResetToCheckpointMessage) override;
 
 private:
 
@@ -26,5 +27,6 @@ private:
 	unsigned char myWaveCount;
 	unsigned char myNumberOfPlayers;
 	unsigned char myNumberOfWavesToSpawn;
+	unsigned char myResetToWaveCount;
 };
 
