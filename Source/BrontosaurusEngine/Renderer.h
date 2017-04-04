@@ -52,8 +52,6 @@ public:
 	inline bool GetIsRunning();
 	inline SRendererSettings& GetSettings();
 	const CU::Camera& GetCamera();
-	//inline const CU::Camera& GetCamera();
-
 	void SetStates(const SChangeStatesMessage* aState);
 private:
 	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);

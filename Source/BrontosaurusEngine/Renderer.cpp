@@ -181,7 +181,6 @@ void CRenderer::Render()
 	};
 
 	DEVICE_CONTEXT->PSSetShaderResources(0u, 2u, srvs);
-
 }
 
 void CRenderer::SwapWrite()
@@ -719,6 +718,7 @@ void CRenderer::CreateDepthStencilStates()
 	HRESULT result;
 	ID3D11DepthStencilState* depthStencilState = nullptr;
 
+	// GREATER!
 	{
 		D3D11_DEPTH_STENCIL_DESC depthStencilEnabledDesc;
 		ZeroMemory(&depthStencilEnabledDesc, sizeof(depthStencilEnabledDesc));
@@ -740,6 +740,30 @@ void CRenderer::CreateDepthStencilStates()
 		CHECK_RESULT(result, "Failed to create Depth Stencil State.");
 		myDepthStencilStates[static_cast<int>(eDepthStencilState::eDefault)] = depthStencilState;
 	}
+
+	// Lesser!
+	{
+		D3D11_DEPTH_STENCIL_DESC depthStencilEnabledDesc;
+		ZeroMemory(&depthStencilEnabledDesc, sizeof(depthStencilEnabledDesc));
+		depthStencilEnabledDesc.DepthEnable = true;
+		depthStencilEnabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilEnabledDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthStencilEnabledDesc.StencilEnable = true;
+		depthStencilEnabledDesc.StencilReadMask = 0xFF;
+		depthStencilEnabledDesc.StencilWriteMask = 0xFF;
+		depthStencilEnabledDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilEnabledDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		depthStencilEnabledDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilEnabledDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilEnabledDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilEnabledDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		depthStencilEnabledDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		depthStencilEnabledDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		result = DEVICE->CreateDepthStencilState(&depthStencilEnabledDesc, &depthStencilState);
+		CHECK_RESULT(result, "Failed to create Depth Stencil State.");
+		myDepthStencilStates[static_cast<int>(eDepthStencilState::eLesser)] = depthStencilState;
+	}
+
 
 	{
 		depthStencilState = nullptr;
@@ -1205,11 +1229,8 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
 	float clearColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	float depth = msg->myRenderCamera.GetIsShadowCamera() ? 0.0f : 1.0f;
-	context->ClearRenderTargetView(msg->myRenderCamera.myRenderPackage.GetRenderTargetView(), clearColour);
-	context->ClearDepthStencilView(msg->myRenderCamera.myRenderPackage.GetDepthStencilView(), D3D11_CLEAR_DEPTH, depth, 0);
-
-	msg->myRenderCamera.myRenderPackage.Clear();
+	float depth = msg->myRenderCamera.GetIsShadowCamera() ? 1.0f : 0.0f;
+	msg->myRenderCamera.myRenderPackage.Clear(depth);
 	msg->myRenderCamera.myRenderPackage.Activate();
 
 	for (unsigned int i = 0; i < msg->myRenderCamera.myRenderQueue.Size(); ++i)
@@ -1219,11 +1240,11 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 
 	myDeferredRenderer.SetGeometryBuffer(*msg->myRenderCamera.myGbuffer);
 	SChangeStatesMessage changeStateMessage = {};
-	/*changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
+	changeStateMessage.myDepthStencilState = msg->myRenderCamera.GetIsShadowCamera() ? eDepthStencilState::eLesser : eDepthStencilState::eDefault;
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	SetStates(&changeStateMessage);*/
+	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.DoRenderQueue(*this);
 
@@ -1234,7 +1255,6 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
-
 	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
 	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 
@@ -1247,8 +1267,7 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 	msg->myRenderCamera.GetRenderPackage().Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
-
-	renderTo->Activate();
+	//renderTo->Activate();
 }
 
 void CRenderer::DoColorGrading()
