@@ -16,8 +16,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	{
 		DL_PRINT_WARNING("Could not load %s, using default values", errorMessage.c_str());
 
-		myAcceleration = 20000.f;
-		myDeceleration = 20000.f;
+		myAcceleration = 200000.f;
+		myDeceleration = 200000.f;
 		myMaxSpeed = 1500.f;
 		return;
 	}
