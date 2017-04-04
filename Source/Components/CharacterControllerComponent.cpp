@@ -53,6 +53,16 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 		//transformation.SetPosition(transformation.GetPosition() + worldPos);
 		myController->SetPosition(transformation.myPosition);
 	break;
+	{
+	case eComponentMessageType::eActivate:
+	{
+		myController->SetIsActive(true);
+		break;
+	}
+	case eComponentMessageType::eDeactivate:
+	{
+		myController->SetIsActive(false);
+		break;
 	}
 	case eComponentMessageType::eSetControllerPosition:
 	{

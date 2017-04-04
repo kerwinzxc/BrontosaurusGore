@@ -57,7 +57,6 @@ namespace Physics
 		}
 	}
 
-
 	void CPhysicsActor::SetTransformation(const CU::Matrix44f & aTransformation)
 	{
 		physx::PxTransform transformation;
