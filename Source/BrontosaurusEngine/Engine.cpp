@@ -115,17 +115,9 @@ void CEngine::Render()
 
 void CEngine::ThreadedRender()
 {
-	myRendererIsRunning = true;
-	CU::SetThreadName("Render thread");
-	while (myRenderer->GetIsRunning() == true)
-	{
+
 		Render();
-		std::this_thread::yield();
-	}
-
-
-	myRendererIsRunning = false;
-	CU::SetThreadName("ThreadPool Worker");
+	
 
 }
 
@@ -154,7 +146,13 @@ void CEngine::OnResize(const unsigned int aWidth, const unsigned int aHeight)
 		{
 			ThreadedRender();
 		};
-		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
+		CU::Work work(renderThread, CU::ePriority::eHigh);
+		std::function<bool(void)> condition = [this]()->bool{return myRenderer->GetIsRunning(); };
+		work.AddLoopCondition(condition);
+		work.SetName("Render thread");
+		std::function<void(void)> callback = [this]() {myRendererIsRunning = false; };
+		work.SetFinishedCallback(callback);
+		myThreadPool->AddWork(work);
 	}
 
 }
@@ -177,8 +175,14 @@ void CEngine::Start()
 		auto renderThread = [this]()
 		{
 			ThreadedRender();
-		};
-		myThreadPool->AddWork(CU::Work(renderThread, CU::ePriority::eHigh));
+		}; 
+		CU::Work work(renderThread, CU::ePriority::eHigh);
+		std::function<bool(void)> condition = [this]()->bool {return myRenderer->GetIsRunning(); };
+		work.AddLoopCondition(condition);
+		work.SetName("Render thread");
+		std::function<void(void)> callback = [this]() {myRendererIsRunning = false; };
+		work.SetFinishedCallback(callback);
+		myThreadPool->AddWork(work);
 	}
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());

@@ -33,9 +33,11 @@ namespace CU
 		void DoWork();
 		inline ePriority GetPriority();
 		void AddLoopCondition(const std::function<bool()>& aFunction);
+		void SetFinishedCallback(const std::function<void()>& aCallback);
 		std::string myLogMessage;
 		DL_Debug::eLogTypes myToWhatLog;
 	private:
+		std::function<void()> myFinishedCallback;
 		std::string myThreadName;
 
 		std::function<bool(void)> myLoopCondition;

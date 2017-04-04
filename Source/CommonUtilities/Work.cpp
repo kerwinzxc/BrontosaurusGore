@@ -18,6 +18,7 @@ namespace CU
 		myToWhatLog = DL_Debug::eLogTypes::eThreadPool;
 
 		myLoopCondition = []()->bool {return false; };
+		myFinishedCallback = []() {};
 	}
 
 	Work::Work(std::function<void()> aFunction, DL_Debug::eLogTypes aToWhatLog, const char* aLogMessage, ePriority aPrio)
@@ -36,6 +37,8 @@ namespace CU
 		myLogMessage = aWork.myLogMessage;
 		myToWhatLog = aWork.myToWhatLog;
 		myLoopCondition = aWork.myLoopCondition;
+		myFinishedCallback = aWork.myFinishedCallback;
+		myThreadName = aWork.myThreadName;
 	}
 
 	void Work::SetName(const std::string& aThreadName)
@@ -58,7 +61,7 @@ namespace CU
 
 	void Work::DoWork()
 	{
-		SetThreadName(GetName().c_str());
+		CU::SetThreadName(GetName().c_str());
 		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(true);
 		bool loopCondition = false;
 		bool threadpoolRunning = false;
@@ -72,12 +75,19 @@ namespace CU
 			std::this_thread::yield();
 			loopCondition = myLoopCondition();
 			threadpoolRunning = CEngine::GetInstance()->GetThreadPool()->IsRunning();
+
 		} while (loopCondition && threadpoolRunning == true);
+		myFinishedCallback();
 		Postmaster::Threaded::CPostmaster::GetInstance().SetOfficeActive(false);
 	}
 
 	void Work::AddLoopCondition(const std::function<bool()>& aFunction)
 	{
 		myLoopCondition = aFunction;
+	}
+
+	void Work::SetFinishedCallback(const std::function<void()>& aCallback)
+	{
+		myFinishedCallback = aCallback;
 	}
 }
