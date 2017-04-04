@@ -151,7 +151,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	}
 	break;
 	}
-	controller->KillEverythingThenResetItAgain(true);
+	controller->KillEverythingThenResetItAgain(false);
 	imp->AddComponent(controller);
 	imp->AddComponent(health);
 
