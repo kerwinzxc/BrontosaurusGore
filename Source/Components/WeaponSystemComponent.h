@@ -23,6 +23,7 @@ private:
 	void HandleKeyReleased(const SComponentMessageData& aMessageData);
 
 	void ChangeWeapon(unsigned int aIndex);
+	void ChangeWeapon2(unsigned int aIndex);
 	void ChangeWeaponLocal(unsigned int aIndex);
 
 	CU::GrowingArray<CWeapon*> myWeapons;

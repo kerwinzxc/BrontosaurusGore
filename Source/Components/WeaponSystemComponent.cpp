@@ -99,6 +99,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myWeapons[myActiveWeaponIndex]->CosmeticShoot(aMessageData.myVector3f);
 		break;
 	}
+	case eComponentMessageType::eAddWeaponWithoutChangingToIt:
+	{
+		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
+		ChangeWeapon2(myWeapons.Size() - 1);
+	}
+	break;
 	case eComponentMessageType::eAddWeapon:
 	{
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
@@ -308,6 +314,11 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 {
 	myWeapons.Add(aWeapon);
 	myTemporaryAmmoDataList.Add(aTemporaryAmmoData);
+}
+
+void CWeaponSystemComponent::ChangeWeapon2(unsigned int aIndex)
+{
+	ChangeWeaponLocal(aIndex);
 }
 
 void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
