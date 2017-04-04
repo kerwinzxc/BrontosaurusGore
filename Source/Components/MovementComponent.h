@@ -46,6 +46,7 @@ private:
 	float myFrameLastPositionY;
 	float myElapsedFallCheckTime;
 	float myFallCheckCooldown;
+	float myLastGroundedPositionY;
 
 	char myControllerConstraints;
 	bool myCanDoubleJump;
