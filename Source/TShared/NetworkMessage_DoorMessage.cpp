@@ -52,6 +52,7 @@ void CNetworkMessage_DoorMessage::DoSerialize(StreamType & aStream)
 	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myDoorAction, aStream);
 	serialize(myNetworkID, aStream);
+	serialize(myKeyID, aStream);
 }
 
 void CNetworkMessage_DoorMessage::DoDeserialize(StreamType & aStream)
@@ -59,4 +60,5 @@ void CNetworkMessage_DoorMessage::DoDeserialize(StreamType & aStream)
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myDoorAction = deserialize<eDoorAction>(aStream);
 	myNetworkID = deserialize<unsigned char>(aStream);
+	myKeyID = deserialize<short>(aStream);
 }

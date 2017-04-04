@@ -7,6 +7,8 @@ struct SEnemyBlueprint
 	float startAttackRange;
 	float stopAttackRange;
 	float walkToMeleeRange;
+	float chargeMeleeAttackDuration;
+	healthPoint Health;
 };
 
 struct SImpBlueprint : public SEnemyBlueprint
@@ -15,7 +17,6 @@ struct SImpBlueprint : public SEnemyBlueprint
 	float wanderDistance;
 	float wanderDuration;
 	float chargeAttackDuration;
-	float chargeMeleeAttackDuration;
 	unsigned char wanderAngle;
 	char attacksUntillRunningAway;
 };
@@ -24,7 +25,6 @@ struct SRevenantBlueprint : public SEnemyBlueprint
 {
 	float flightHeight;
 	float hoverTime;
-	float chargeMeleeAttackDuration;
 	float chargeRangedAttackAttackDuration;
 	float chargeAirBarrageAttackDuration;
 };
@@ -35,6 +35,5 @@ struct SPinkyBlueprint : public SEnemyBlueprint
 	float chargeSpeed;
 	float chargeCooldown;
 	float chargeDistance;
-	float chargeMeleeAttackDuration;
 	healthPoint chargeDamage;
 };

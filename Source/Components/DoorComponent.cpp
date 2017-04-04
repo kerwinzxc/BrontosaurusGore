@@ -93,6 +93,11 @@ void CDoorComponent::Update(const CU::Time & aDeltaTime)
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
 		return;
 	}
+	else
+	{
+		GetParent()->SetWorldPosition(myResetToPosition.GetPosition());
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 }
 
 const CU::Vector2f CDoorComponent::GetOpenDirection() const

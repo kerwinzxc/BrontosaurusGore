@@ -16,6 +16,7 @@
 #include "../TServer/ServerMessageManager.h"
 #include "../Components/EnemyClientRepresentation.h"
 #include "../Components/EnemyClientRepresentationManager.h"
+#include "../CommonUtilities/JsonValue.h"
 
 
 #include "TShared/NetworkMessage_SpawnEnemyRepesention.h"
@@ -62,19 +63,92 @@ CEnemyFactory * CEnemyFactory::GetInstance()
 	return ourInstance;
 }
 
-CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eEnemyTypes & aType, const CU::Vector3f & aPosition)
+void CEnemyFactory::LoadBluePrints(const std::string & alevel)
+{
+	CU::CJsonValue value;
+	value.Parse("Json/Spawner/EnemyStats.json");
+	CU::CJsonValue impstats = value.at(alevel).at("imp");
+
+	myImpBluePrint.Health = impstats.at("Health").GetInt();
+	myImpBluePrint.speed = impstats.at("Speed").GetFloat();
+	myImpBluePrint.jumpHeight = impstats.at("JumpHeight").GetFloat();
+	myImpBluePrint.detectionRange = impstats.at("DetectionRange").GetFloat();
+	myImpBluePrint.walkToMeleeRange = impstats.at("TryToMeleeRange").GetFloat();
+	myImpBluePrint.startAttackRange = impstats.at("MeleeRange").GetFloat();
+	myImpBluePrint.chargeMeleeAttackDuration = impstats.at("ChargeMeleeAttackDuration").GetFloat();
+	myImpBluePrint.chargeAttackDuration = impstats.at("ChargeRangeAttackDuration").GetFloat();
+	myImpBluePrint.attacksUntillRunningAway = impstats.at("NumberOfAttacksBeforeRunning").GetFloat();
+	myImpBluePrint.wanderDuration = impstats.at("FleeDuration").GetFloat();
+	myImpBluePrint.wanderDistance = impstats.at("FleeDistance").GetFloat();
+	myImpBluePrint.wanderAngle = impstats.at("FleeAngle").GetFloat();
+
+
+	CU::CJsonValue revenantStats = value.at(alevel).at("Revenant");
+	myRevenantBluePrint.Health = revenantStats.at("Health").GetInt();
+	myRevenantBluePrint.speed = revenantStats.at("Speed").GetFloat();
+	myRevenantBluePrint.detectionRange = revenantStats.at("DetectionRange").GetFloat();
+	myRevenantBluePrint.walkToMeleeRange = revenantStats.at("TryToMeleeRange").GetFloat();
+	myRevenantBluePrint.startAttackRange = revenantStats.at("MeleeRange").GetFloat();
+	myRevenantBluePrint.hoverTime = revenantStats.at("HoverDuration").GetFloat();
+	myRevenantBluePrint.flightHeight = revenantStats.at("FlightHeight").GetFloat();
+	myRevenantBluePrint.chargeAirBarrageAttackDuration = revenantStats.at("ChargeBarrageAttackDuration").GetFloat();
+	myRevenantBluePrint.chargeMeleeAttackDuration = revenantStats.at("ChargeMeleeAttackDuration").GetFloat();
+	myRevenantBluePrint.chargeRangedAttackAttackDuration = revenantStats.at("ChargeRangedAttackDuration").GetFloat();
+	
+	CU::CJsonValue pinkyStats = value.at(alevel).at("Pinky");
+
+	myPinkyBluePrint.Health = pinkyStats.at("Health").GetInt();
+	myPinkyBluePrint.speed = pinkyStats.at("Speed").GetFloat();
+	myPinkyBluePrint.detectionRange = pinkyStats.at("DetectionRange").GetFloat();
+	myPinkyBluePrint.walkToMeleeRange = pinkyStats.at("TryToMeleeRange").GetFloat();
+	myPinkyBluePrint.startAttackRange = pinkyStats.at("MeleeRange").GetFloat();
+	myPinkyBluePrint.chargeMeleeAttackDuration = pinkyStats.at("ChargeMeleeAttackDuration").GetFloat();
+	myPinkyBluePrint.chargeCooldown = pinkyStats.at("ChargeCooldown").GetFloat();
+	myPinkyBluePrint.chargeDistance = pinkyStats.at("ChargeDistance").GetFloat();
+	myPinkyBluePrint.chargeSpeed = pinkyStats.at("ChargeSpeed").GetFloat();
+	myPinkyBluePrint.windupChargeTime = pinkyStats.at("ChargingChargeDuration").GetFloat();
+	myPinkyBluePrint.chargeDamage = pinkyStats.at("ChargeDamage").GetFloat();
+}
+
+CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3f & aPosition)
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->SetWorldPosition(aPosition);
 
-	CEnemy* controller = myEnemyManager.CreateComponent(aBluePrint, aType);
-	imp->AddComponent(controller);
-
+	CEnemy* controller;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
-	health->SetMaxHealth(100);
-	health->SetHealth(100);
+	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
+	message->SetEnemyType(aType);
+	switch (aType)
+	{
+	case eEnemyTypes::eImp:
+	{
+		controller = myEnemyManager.CreateComponent(&myImpBluePrint, aType);
+		health->SetMaxHealth(myImpBluePrint.Health);
+		health->SetHealth(myImpBluePrint.Health);
+		message->SetHealth(myImpBluePrint.Health);
+	}
+	break;
+	case eEnemyTypes::eRevenant:
+	{
+		controller = myEnemyManager.CreateComponent(&myRevenantBluePrint, aType);
+		health->SetMaxHealth(myRevenantBluePrint.Health);
+		health->SetHealth(myRevenantBluePrint.Health);
+		message->SetHealth(myRevenantBluePrint.Health);
+	}
+	break;
+	case eEnemyTypes::ePinky:
+	{
+		controller = myEnemyManager.CreateComponent(&myPinkyBluePrint, aType);
+		health->SetMaxHealth(myPinkyBluePrint.Health);
+		health->SetHealth(myPinkyBluePrint.Health);
+		message->SetHealth(myPinkyBluePrint.Health);
+	}
+	break;
+	}
+	controller->KillEverythingThenResetItAgain(true);
+	imp->AddComponent(controller);
 	imp->AddComponent(health);
-	//set health
 
 	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
 
@@ -91,9 +165,6 @@ CEnemy * CEnemyFactory::CreateEnemy(const SEnemyBlueprint * aBluePrint, const eE
 	DL_PRINT("EnemyNetworkID:");
 	DL_PRINT(std::to_string(controller->GetNetworkID()).c_str());
 
-	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
-	message->SetEnemyType(aType);
-	message->SetHealth(100);//inläst data sen
 
 	Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 

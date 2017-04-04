@@ -3,6 +3,7 @@
 #include "PollingStation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/PlayerEnteredArena.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 CTriggerArenaComponent::CTriggerArenaComponent(const unsigned char aNumberOfWaves, const short aKeyId)
 {
@@ -20,6 +21,8 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eAddComponent:
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 	case eComponentMessageType::eOnTriggerEnter:
 		DL_PRINT("On Trigger enter arenaaaa");
 		for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); ++i)
@@ -44,6 +47,11 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 			}
 		}
 		break;
+	case eComponentMessageType::eCheckPointReset:
+	{
+		myPlayersInTrigger = 0;
+	}
+	break;
 	default:
 		break;
 	}
