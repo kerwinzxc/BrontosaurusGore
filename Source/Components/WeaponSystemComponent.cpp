@@ -5,7 +5,6 @@
 #include "PlayerControls.h"
 #include "AmmoReplenishData.h"
 #include "AmmoData.h"
-#include "TextInstance.h"
 #include "WeaponData.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
@@ -25,14 +24,6 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myIsShooting = false;
 	myTemporaryAmmoDataList.Init(5);
 
-	if(CFontEngineFacade::GetIsCreated() == true)
-	{
-		myActiveWeaponAmmoLeftText = new CTextInstance();
-		myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
-		myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
-		myActiveWeaponAmmoLeftText->SetText(L"");
-		myActiveWeaponAmmoLeftText->Init();
-	}
 	myIsActive = true;
 }
 
@@ -232,10 +223,8 @@ void CWeaponSystemComponent::Update(float aDelta)
 				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
 				ammoLeftText += "/";
 				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
-
-				myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
 			}
-			myActiveWeaponAmmoLeftText->Render();
+
 		}
 		
 	}

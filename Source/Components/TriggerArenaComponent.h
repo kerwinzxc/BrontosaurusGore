@@ -14,7 +14,7 @@ private:
 private:
 	short myKeyIdToLock;
 	unsigned char myNumberOfWaves;
-	unsigned char myPlayersInTrigger;
+	char myPlayersInTrigger;
 
 };
 

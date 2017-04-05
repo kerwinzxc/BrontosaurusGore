@@ -2,6 +2,7 @@
 #include "AnimationComponent.h"
 #include "ModelComponent.h"
 
+#include "../CommonUtilities/JsonValue.h"
 #include "../TShared/AnimationState.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
@@ -17,17 +18,20 @@ struct CAnimationComponent::SAnimation
 	bool myIsLooping = true;
 };
 
-CAnimationComponent::SAnimation idleState;
-CAnimationComponent::SAnimation shotState;
+static CAnimationComponent::SAnimation idleState;
+static CAnimationComponent::SAnimation shotState;
 
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
 	, myModelComponent(aModelCompoent)
 	, myMainTimer(0.f)
 {
+
+	//CU::CJsonValue animationStates("Models/Animations/AnimationStates.json");
+
 	myType = eComponentType::eAnimationComponent;
 
-	idleState.myAnimationKey = eAnimationState::idle01;
+	idleState.myAnimationKey = eAnimationState::shot01;
 	idleState.myNextAnimationKey = eAnimationState::none;
 
 	shotState.myAnimationKey = eAnimationState::shot01;
@@ -52,75 +56,66 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 {
 	myMainTimer += aDeltaTime.GetSeconds();
 
-	if (myAnimationStack.GetLast().myBlendTime > 0.f)
+	//if (myAnimationStack.GetLast().myBlendTime > 0.f)
+	//{
+	//	if (myAnimationStack.GetLast().myBlendTime < myAnimationStack.GetLast().myAnimationBlend)
+	//	{
+	//		myAnimationStack.GetLast().myAnimationBlend += aDeltaTime.GetSeconds();
+	//	}
+	//}
+
+
+	//myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
+	//myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
+	//myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myBlendTime);
+	//myModelComponent.SetAnimationLooping(myAnimationStack.GetLast().myIsLooping);
+
+
+	//if (myMainTimer >= myAnimationStack.GetLast().myLifeTime)
+	//{
+	//	if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::none)
+	//	{
+	//		myAnimationStack.Pop();
+	//	}
+	//	else
+	//	{
+	//		switch (myAnimationStack.GetLast().myNextAnimationKey)
+	//		{
+	//		case eAnimationState::idle01:
+	//			//break;
+	//		case eAnimationState::walk01:
+	//			//break;
+	//		case eAnimationState::run01:
+	//			//break;
+	//		case eAnimationState::shot01:
+	//			//break;
+	//		default:
+	//			DL_PRINT_WARNING("Error in animation, trying to change to animation %s but it is not available", SAnimationState::AnimationStates[(int)myAnimationStack.GetLast().myNextAnimationKey]);
+	//			myAnimationStack.Pop();
+	//			break;
+	//		}
+	//	}
+	//}
+
+	if (myMainTimer < 4.f)
 	{
-		if (myAnimationStack.GetLast().myBlendTime < myAnimationStack.GetLast().myAnimationBlend)
-		{
-			myAnimationStack.GetLast().myAnimationBlend += aDeltaTime.GetSeconds();
-		}
+		myModelComponent.SetAnimation(eAnimationState::idle01);
+		myModelComponent.SetNextAnimation(eAnimationState::walk01);
+		myModelComponent.SetAnimationLerpValue(myMainTimer / 4.f);
+	}
+	else if (myMainTimer < 8.f)
+	{
+		myModelComponent.SetAnimation(eAnimationState::walk01);
+		myModelComponent.SetNextAnimation(eAnimationState::idle01);
+		myModelComponent.SetAnimationLerpValue((myMainTimer - 4.f) / 4.f);
+	}
+	else
+	{
+		myMainTimer = 0.f;
 	}
 
-
-	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
-	myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
-	myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myBlendTime);
-	myModelComponent.SetAnimationLooping(myAnimationStack.GetLast().myIsLooping);
-
-
-	if (myMainTimer >= myAnimationStack.GetLast().myLifeTime)
-	{
-		if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::none)
-		{
-			myAnimationStack.Pop();
-		}
-		else
-		{
-			switch (myAnimationStack.GetLast().myNextAnimationKey)
-			{
-			case eAnimationState::idle01:
-				//break;
-			case eAnimationState::walk01:
-				//break;
-			case eAnimationState::run01:
-				//break;
-			case eAnimationState::shot01:
-				//break;
-			default:
-				DL_PRINT_WARNING("Error in animation, trying to change to animation %s but it is not available", SAnimationState::AnimationStates[(int)myAnimationStack.GetLast().myNextAnimationKey]);
-				myAnimationStack.Pop();
-				break;
-			}
-		}
-	}
-
-	//if (myMainTimer < 0.5f)
-	//{
-	//	myModelComponent.SetAnimation(eAnimationState::idle01);
-	//	myModelComponent.SetNextAnimation(eAnimationState::walk01);
-	//	myModelComponent.SetAnimationLerpValue(myMainTimer / 0.5f);
-	//}
-	//else if (myMainTimer < 1.f)
-	//{
-	//	myModelComponent.SetAnimation(eAnimationState::walk01);
-	//	myModelComponent.SetNextAnimation(eAnimationState::run01);
-	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 0.5f) / 0.5f);
-	//}
-	//else if (myMainTimer < 1.5f)
-	//{
-	//	myModelComponent.SetAnimation(eAnimationState::run01);
-	//	myModelComponent.SetNextAnimation(eAnimationState::walk01);
-	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 1.f) / 0.5f);
-	//}
-	//else if (myMainTimer < 2.f)
-	//{
-	//	myModelComponent.SetAnimation(eAnimationState::walk01);
-	//	myModelComponent.SetNextAnimation(eAnimationState::idle01);
-	//	myModelComponent.SetAnimationLerpValue((myMainTimer - 1.5f) / 0.5f);
-	//}
-	//else
-	//{
-	//	myMainTimer = 0.f;
-	//}
+	myModelComponent.SetAnimation(eAnimationState::shot01);
+	myModelComponent.SetNextAnimation(eAnimationState::none);
 }
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
@@ -143,12 +138,12 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	case eComponentMessageType::eShoot:
 		DL_PRINT("shot in animation component");
 		//myModelComponent.SetAnimation(eAnimationState::shot01);
-		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::shot01)
-		{
-			myAnimationStack.Add(shotState);
-			myModelComponent.ResetAnimation();
-			myMainTimer = 0.f;
-		}
+		//if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::shot01)
+		//{
+		//	myAnimationStack.Add(shotState);
+		//	myModelComponent.ResetAnimation();
+		//	myMainTimer = 0.f;
+		//}
 		//play shoot animation (if this is the real shoot message?)
 		break;
 	}

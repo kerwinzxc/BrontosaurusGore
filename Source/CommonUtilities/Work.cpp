@@ -74,7 +74,7 @@ namespace CU
 
 			std::this_thread::yield();
 			loopCondition = myLoopCondition();
-			threadpoolRunning = CEngine::GetInstance()->GetThreadPool()->IsRunning();
+			threadpoolRunning = CU::ThreadPool::GetInstance()->IsRunning();
 
 		} while (loopCondition && threadpoolRunning == true);
 		myFinishedCallback();

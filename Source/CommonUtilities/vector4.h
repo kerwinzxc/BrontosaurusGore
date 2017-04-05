@@ -54,6 +54,9 @@ namespace CU
 		__forceinline bool operator==(const Vector4& aRight) const;
 		__forceinline bool operator!=(const Vector4& aRight) const;
 
+		Vector4 Lerp(const Vector4& aInterpolateToVector, const TYPE aInterpolatingSpeed) const;
+		Vector4& Lerp(const Vector4& aInterpolateToVector, const TYPE aInterpolatingSpeed);
+
 		TYPE Length() const;
 		TYPE Length2() const;
 		TYPE Dot(const Vector4& aRight) const;
@@ -398,6 +401,24 @@ namespace CU
 	__forceinline bool Vector4<TYPE>::operator!=(const Vector4& aRight) const
 	{
 		return !(self == aRight);
+	}
+
+	template<typename TYPE>
+	Vector4<TYPE> Vector4<TYPE>::Lerp(const Vector4& aInterpolateToVector, const TYPE aInterpolatingSpeed) const
+	{
+		Vector3 copy = self;
+		copy.Lerp(aInterpolateToVector, aInterpolatingSpeed);
+		return copy;
+	}
+
+	template<typename TYPE>
+	Vector4<TYPE>& Vector4<TYPE>::Lerp(const Vector4& aInterpolateToVector, const TYPE aInterpolatingSpeed)
+	{
+		x = x + aInterpolatingSpeed * (aInterpolateToVector.x - x);
+		y = y + aInterpolatingSpeed * (aInterpolateToVector.y - y);
+		z = z + aInterpolatingSpeed * (aInterpolateToVector.z - z);
+		w = w + aInterpolatingSpeed * (aInterpolateToVector.w - w);
+		return self;
 	}
 
 	template<typename TYPE>

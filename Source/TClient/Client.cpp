@@ -92,7 +92,7 @@ CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0)
 CClient::~CClient()
 {
 	myIsRunning = false;
-	while (CEngine::GetInstance()->GetThreadPool()->IsRunning() == true)
+	while (myCanQuit == false)
 	{
 		continue;
 	}
@@ -122,6 +122,8 @@ bool CClient::StartClient()
 	condition = std::bind(&CClient::IsRunning, this);
 	//condition = []()->bool{return true; };
 	work.AddLoopCondition(condition);
+	std::function<void()> callback = [this]() {myCanQuit = true;  };
+	work.SetFinishedCallback(callback);
 	CEngine::GetInstance()->GetThreadPool()->AddWork(work);
 	return true;
 }
@@ -527,7 +529,6 @@ void CClient::Update()
 			myPositionWaitTime = 0;
 		}
 
-	myCanQuit = true;
 }
 
 void CClient::Send(CNetworkMessage* aNetworkMessage)
@@ -547,9 +548,10 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 
 	myNetworkWrapper.Send(message, anIp, SERVER_PORT);
 
+	DL_PRINT("wait Connecting");
 	while (myState == eClientState::CONECTING)
 	{
-		DL_PRINT("wait Connecting");
+		
 	}
 
 	return  true;

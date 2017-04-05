@@ -5,7 +5,6 @@
 class CWeapon;
 class CWeaponFactory;
 struct SAmmoData;
-class CTextInstance;
 class CWeaponSystemComponent : public CComponent
 {
 public:
@@ -29,7 +28,6 @@ private:
 	CU::GrowingArray<CWeapon*> myWeapons;
 	CU::GrowingArray<SAmmoData*> myTemporaryAmmoDataList;
 	CWeaponFactory* WeaponFactoryPointer;
-	CTextInstance* myActiveWeaponAmmoLeftText;
 	unsigned short myActiveWeaponIndex;
 	bool myIsShooting;
 	bool myIsActive;
