@@ -59,7 +59,7 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 
 void CTriggerArenaComponent::OnPlayerEnter()
 {
-	if (myPlayersInTrigger < CPollingStation::GetInstance()->GetNumberOfPlayers())
+	if (myPlayersInTrigger <= CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
 	myPlayersInTrigger++;
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerEnteredArena(1,myNumberOfWaves,myKeyIdToLock));
@@ -68,7 +68,7 @@ void CTriggerArenaComponent::OnPlayerEnter()
 
 void CTriggerArenaComponent::OnPlayerExit()
 {
-	if (myPlayersInTrigger < CPollingStation::GetInstance()->GetNumberOfPlayers())
+	if (myPlayersInTrigger <= CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
 		myPlayersInTrigger--;
 		if (myPlayersInTrigger < 0)
