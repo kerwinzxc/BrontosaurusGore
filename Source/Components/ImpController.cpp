@@ -32,9 +32,9 @@ CImpController::~CImpController()
 void CImpController::Update(const float aDeltaTime)
 {
 	UpdateBaseMemberVars(aDeltaTime);
+	UpdateJumpForces(aDeltaTime);
 	myVelocity.y = myJumpForce;
 	SendTransformationToServer();
-	UpdateJumpForces(aDeltaTime);
 	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
 	if(myIsDead == false && CanChangeState() == true)
 	{
@@ -165,19 +165,19 @@ void CImpController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = transform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
+	//CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	//CU::Matrix44f rotation = transform.GetRotation();
+	//rotation.myForwardVector.y = 0.f;
 
 
-	SComponentQuestionData data;
-	data.myVector4f = myVelocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		transform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	}
+	//SComponentQuestionData data;
+	//data.myVector4f = myVelocity * rotation * aDeltaTime;
+	//data.myVector4f.w = aDeltaTime;
+	//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	//{
+	//	transform.SetPosition(data.myVector3f);
+	//	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	//}
 
 	CheckForNewTransformation(aDeltaTime);
 }

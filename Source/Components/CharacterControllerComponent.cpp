@@ -6,6 +6,7 @@
 CCharacterControllerComponent::CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const float aHalfHeight, const float aRadius, const CU::Vector3f& aCenter)
 {
 	myCenter = aCenter;
+	myRadius = aRadius;
 	myCenter.y += ((aHalfHeight * 2) - (aRadius / 2));
 	myController = aController;
 	myController->SetCallbackData(this);
@@ -68,8 +69,7 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 	{
 		//transformation.SetScale({ 1.0f, 1.0f, 1.0f });
 		//transformation.SetPosition(transformation.GetPosition() + myCenter);
-		myController->SetPosition(aMessageData.myVector3f + myCenter);
-		
+		myController->SetPosition(aMessageData.myVector3f - myCenter);
 		break;
 	}
 

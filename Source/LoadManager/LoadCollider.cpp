@@ -253,9 +253,9 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	data.skinWidth = someData.myData.at("skinWidth").GetFloat();
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
-	//data.center.x *= -1;
-	//data.center.z *= -1; // ska vara med?
-	//data.center = data.center * parent->GetToWorldTransform().GetRotation();
+	////data.center.x *= -1;
+	////data.center.z *= -1; // ska vara med?
+	////data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
