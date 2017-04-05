@@ -389,11 +389,12 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
-
+#ifdef _DEBUG
 	if (myFilePath.find("lasma") != std::string::npos)
 	{
 		int br = 0;
 	}
+#endif
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none) /*&& (aParamObj.aAnimationState[0] != '\0')*/)

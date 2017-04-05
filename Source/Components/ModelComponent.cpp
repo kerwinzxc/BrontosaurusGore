@@ -74,7 +74,11 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 		SetVisibility(aData.myBool);
 		break;
 	case eComponentMessageType::eSetHighlight:
-		myModel.SetHighlightIntencity(aData.myFloat);
+		{
+		CHighlightComponent* component = static_cast<CHighlightComponent*>(aData.myComponent);
+
+		myModel.SetHighlight(component->GetColor(), component->GetIntensity());
+		}
 		break;
 	case eComponentMessageType::eDied:
 		if (!GetParent()->AskComponents(eComponentQuestionType::eHasDeathAnimation, SComponentQuestionData()))

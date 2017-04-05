@@ -48,11 +48,13 @@
 #include "../Components/ComponentMessage.h"
 #include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
+#include "../CommonUtilities/ThreadNamer.h"
 
-std::thread* locLoadingThread = nullptr;
 
-CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr)
+
+CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeId(ID_FREE), myServerState(eServerState::eWaitingForClients), myGameServer(nullptr), myFinishedLoading(false), myIsClosed(false)
 {
+	CU::ThreadPool::Create();
 	KLoader::CKevinLoader::CreateInstance();
 	CServerMessageManager::CreateInstance(*this);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -76,11 +78,12 @@ CServerMain::CServerMain() : myTimerHandle(0), myImportantCount(0), currentFreeI
 
 CServerMain::~CServerMain()
 {
-	myIsRunning = false;
+	CU::ThreadPool::Destroy();
 	while (!myCanQuit) continue;
 
 	KLoader::CKevinLoader::DestroyInstance();
 	CServerMessageManager::DestroyInstance();
+	myIsClosed = true;
 }
 
 void CServerMain::StartServer()
@@ -350,8 +353,12 @@ bool CServerMain::Update()
 	float currentTime = 0.f;
 
 	myIsRunning = true;
+	
+	CU::ThreadPool::GetInstance()->LogCreateThread();
+	CU::SetThreadName("Server update");
 	while (myIsRunning)
 	{
+		CU::ThreadPool::GetInstance()->LogStart();
 		Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
 		myTimerManager.UpdateTimers();
@@ -494,8 +501,13 @@ bool CServerMain::Update()
 					myServerState = eServerState::eLoadingLevel;
 					CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
 					myGameServer->CreateManagersAndFactories();
-					locLoadingThread = new std::thread(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
 
+					std::function<void()> workFuction = std::bind(&CGameServer::Load, myGameServer, loadLevelMessage->myLevelIndex);
+					CU::Work work(workFuction, CU::ePriority::eHigh);
+					work.SetName("Load thread");
+					myFinishedLoading = false;
+					work.SetFinishedCallback([this]() {this->myFinishedLoading = true; });
+					CU::ThreadPool::GetInstance()->AddWork(work);
 
 					SendTo(loadLevelMessage);
 
@@ -618,14 +630,13 @@ bool CServerMain::Update()
 			{
 				if (CheckIfClientsReady() == true)
 				{
-					if (locLoadingThread != nullptr)
+					//TODO: Make this better. Condition var?
+					while(myFinishedLoading == false)
 					{
-						locLoadingThread->join();
-						delete locLoadingThread;
-						locLoadingThread = nullptr;
-
-						StartGame();
+						std::this_thread::sleep_for(std::chrono::milliseconds(5));
 					}
+					StartGame();
+					
 				}
 			}
 		}
@@ -634,9 +645,11 @@ bool CServerMain::Update()
 		{
 			myGameServer->Update(deltaTime);
 		}
+		CU::ThreadPool::GetInstance()->LogEnd();
 		std::this_thread::yield();
 	}
 
+	CU::ThreadPool::GetInstance()->LogDestroyThread();
 	myCanQuit = true;
 
 	return false;
@@ -673,4 +686,14 @@ void CServerMain::PrintDebugInfo()
 		clientData += CU::StringHelper::ToWStringWithPrecision(client.second.ResponseTime.GetMilliseconds(), 1);
 		DL_PRINT(clientData.c_str());
 	}
+}
+
+void CServerMain::Shutdown()
+{
+	myIsRunning = false;
+}
+
+bool CServerMain::IsClosed()
+{
+	return myIsClosed;
 }

@@ -1,9 +1,10 @@
 #pragma once
 #include "Component.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 typedef short lockID;
 
-class CDoorComponent : public CComponent
+class CDoorComponent : public CComponent, public Postmaster::ISubscriber
 {
 public:
 	CDoorComponent();
@@ -33,6 +34,8 @@ public:
 	const bool GetIsLocked() const;
 	const unsigned char GetNetworkID() const;
 
+	
+	eMessageReturn DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage) override;
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 

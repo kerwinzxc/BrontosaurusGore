@@ -7,20 +7,22 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "HighlightComponent.h"
 
 #define nej false
 #define ja true
 
+
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 
-CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myIsAttacking(false)
+CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myWalkToMeleeRange2(0), myIsAttacking(false), myControllerConstraints(0), myHighlightTimer(0), myDoingHighlight(false)
 {
 	myIsDead = false;
 	myServerId = aId;
 	myActiveWeaponIndex = 0;
 	myNetworkPositionUpdateCoolDown = 1.0f / 60.0f;
 	myElapsedWaitingToSendMessageTime = 0.0f;
-	myShouldNotReset = false;
+	myShouldNotReset = nej;
 	myType = aType;
 }
 
@@ -37,6 +39,8 @@ void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
 	myPos = GetParent()->GetWorldPosition();
 	myToPlayer = myClosestPlayerPos - myPos;
 	myDistToPlayer = myToPlayer.Length2();
+
+	DoDamageHighlight(aDeltaTime);
 }
 
 void CEnemy::SendTransformationToServer()
@@ -52,6 +56,41 @@ void CEnemy::SendTransformationToServer()
 		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 		myElapsedWaitingToSendMessageTime = 0.0f;
 	}
+}
+
+static const float HighlightDuration = .25f;
+
+void CEnemy::DoDamageHighlight(const float aDeltaTime)
+{
+	static const float MaxIntensity = 0.75f;
+	static const float MaxAlpha = 0.5f;
+	static const float Periods = 1.f;
+	if(myHighlightTimer > 0)
+	{
+		myHighlightTimer -= aDeltaTime;
+		myDoingHighlight = true;
+		const float t = 1.f - myHighlightTimer / HighlightDuration;
+		const float angle = (2 * PI * t * Periods);
+		const float curveVal = (-cos(angle) + 1.f) / 2;
+		const float intersity = MaxIntensity * curveVal;
+		const float alpha = MaxAlpha * curveVal;
+		SetHighlight(CU::Vector4f(1, 0, 0, curveVal), intersity);
+	}
+	else if(myDoingHighlight == true)
+	{
+		myDoingHighlight = false;
+		SetHighlight(CU::Vector4f(0, 0, 0, 0), 0.f);
+	}
+}
+
+void CEnemy::SetHighlight(const CU::Vector4f& aColor, float aIntensity)
+{
+	CHighlightComponent highlight;
+	highlight.SetColor(aColor);
+	highlight.SetIntensity(aIntensity);
+	SComponentMessageData messageData;
+	messageData.myComponent = &highlight;
+	GetParent()->NotifyComponents(eComponentMessageType::eSetHighlight, messageData);
 }
 
 void CEnemy::CheckForNewTransformation(const float aDeltaTime)
@@ -89,6 +128,11 @@ void CEnemy::Attack()
 }
 
 
+void CEnemy::StartHighlight()
+{
+	myHighlightTimer = HighlightDuration;
+}
+
 void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
@@ -96,6 +140,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
@@ -103,16 +148,25 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 			break;
 		}
 	}
+	break;
 	case eComponentMessageType::eObjectDone:
+		break;
+	case eComponentMessageType::eTakeDamage:
+		StartHighlight();
 		break;
 	case eComponentMessageType::eCheckPointReset:
 	{
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		break;
+		if (myShouldNotReset == false)
+		{
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eDeactivate:
 		myIsDead = ja;
 		break;

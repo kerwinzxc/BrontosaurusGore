@@ -7,6 +7,7 @@ public:
 	static void Create();
 	static void Destroy();
 	static CEnemyClientRepresentationManager& GetInstance();
+	inline static bool CheckIfCreated();
 	CEnemyClientRepresentation& CreateAndRegister();
 	CEnemyClientRepresentation& GetRepresentation(unsigned short aId);
 	void Update(const CU::Time& aDeltaTime);
@@ -19,3 +20,7 @@ protected:
 	~CEnemyClientRepresentationManager();
 };
 
+inline bool CEnemyClientRepresentationManager::CheckIfCreated()
+{
+	return ourInstance != nullptr;
+}
