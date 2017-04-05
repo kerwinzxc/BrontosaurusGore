@@ -67,6 +67,7 @@ public:
 		myScene = nullptr;
 		myLOD_DistStart = myLOD_DistEnd = -1.0f;
 		myLODLevel = -1;
+		myIsAlphaMesh = false;
 	}
 	~CLoaderMesh() { delete[] myVerticies; myVerticies = nullptr; }
 	std::vector<unsigned int> myIndexes;

@@ -159,7 +159,7 @@ void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aMode
 
 	CModel* mdl = GetModel(aModelId);
 	const aiScene* scene = mdl->GetScene();
-
+	
 	if (mdl != nullptr && /*scene->HasAnimations()*/mdl->HasBones())
 	{
 		mdl->myBindposeSceneAnimator = new CSceneAnimator();
@@ -211,8 +211,20 @@ void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aMode
 
 		if (mdl->mySceneAnimator)
 		{
-			mdl->mySceneAnimator->PlayAnimationForward();
+			if (mdl->mySceneAnimator->CurrentAnimIndex != -1)
+			{
+				mdl->mySceneAnimator->PlayAnimationForward();
+			}
+			else
+			{
+				mdl->mySceneAnimator = nullptr;
+			}
 		}
+	}
+	else
+	{
+		int i = mdl->myVertexSize;
+		int br = 0;
 	}
 }
 
