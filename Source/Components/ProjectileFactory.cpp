@@ -114,13 +114,13 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	sphereColliderDesc.myCollideAgainst = static_cast<Physics::ECollisionLayer>(collideWith);
 
 	
-	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc);
+	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc,newProjectileObject->GetId());
 	newProjectileObject->AddComponent(projectileSphereCollider);
 	
 	SRigidBodyData rigidbodyData;
 	rigidbodyData.isKinematic = false;
 	rigidbodyData.useGravity = false;
-	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData);
+	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData, newProjectileObject->GetId());
 	
 	newProjectileObject->AddComponent(projectileRigidBodyCollider);
 

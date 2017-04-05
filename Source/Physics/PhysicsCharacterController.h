@@ -1,5 +1,6 @@
 #pragma once
 #include "PhysicsCallbackActor.h"
+#include "../Components/AmmoComponent.h"
 
 namespace physx
 {
@@ -51,7 +52,8 @@ namespace Physics
 		IPhysicsCallback* GetCallbackData() override;
 		void SetCallbackData(IPhysicsCallback* aCallbacker) override;
 
-		inline const EActorType GetType() const override { return EActorType::eController; };
+		inline const EActorType GetType() const override { return EActorType::eController; }
+		void SetParentId(ComponentId aNId);;
 
 	private:
 		void SetCollisionFlags(const uint8_t flags);
@@ -62,5 +64,6 @@ namespace Physics
 		physx::PxController* myController;
 		EControllerConstraintsFlags myCollisionFlags;
 		bool myIsGrounded;
+		ComponentId myParentId;
 	};
 }

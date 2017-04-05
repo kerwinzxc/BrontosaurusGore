@@ -546,7 +546,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.minMoveDistance = 0.00001f;
 		controllerDesc.halfHeight = 1.0f;
 		controllerDesc.slopeLimit = 45.0f;
-		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc,playerObject->GetId());
 		playerObject->AddComponent(controller);
 
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
@@ -571,6 +571,13 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		playerObject->AddComponent(playerHealthComponent);
 
+		/*SBoxColliderData data;
+		data.myHalfExtent = CU::Vector3f(0.25, 0.9, 0.25);
+		data.center = CU::Vector3f(0.f, 0.9f, 0.f);
+		data.myType = SColliderData::eColliderType::eBox;
+		data.material = CU::Vector3f(0, 1, 0);
+		data.IsTrigger = false;
+		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data ,playerObject->GetId());*/
 
 		
 

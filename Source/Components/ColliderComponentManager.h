@@ -21,7 +21,7 @@ class CColliderComponentManager
 public:
 	CColliderComponentManager();
 	~CColliderComponentManager();
-	CColliderComponent* CreateComponent(SColliderData* aColliderData);
+	CColliderComponent* CreateComponent(SColliderData* aColliderData, ComponentId anId);
 	void Update();
 
 	inline void SetPhysicsScene(Physics::CPhysicsScene* aScene) { myScene = aScene; }
@@ -29,14 +29,14 @@ public:
 	void InitControllerManager();
 	void RemoveActorFromScene(Physics::CPhysicsActor* aActor);
 
-	CCharacterControllerComponent* CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams);
+	CCharacterControllerComponent* CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams, ComponentId anId);
 
 private:
-	CColliderComponent* CreateBoxCollider(const SBoxColliderData& aBoxColliderData);
-	CColliderComponent* CreateSphereCollider(const SSphereColliderData& aBoxColliderData);
-	CColliderComponent* CreateCapsuleCollider(const SCapsuleColliderData& aBoxColliderData);
-	CColliderComponent* CreateMeshCollider(const SMeshColliderData& aBoxColliderData);
-	CColliderComponent* CreateRigidbody(const SRigidBodyData& aBoxColliderData);
+	CColliderComponent* CreateBoxCollider(const SBoxColliderData& aBoxColliderData, ComponentId anId);
+	CColliderComponent* CreateSphereCollider(const SSphereColliderData& aBoxColliderData, ComponentId anId);
+	CColliderComponent* CreateCapsuleCollider(const SCapsuleColliderData& aBoxColliderData, ComponentId anId);
+	CColliderComponent* CreateMeshCollider(const SMeshColliderData& aBoxColliderData, ComponentId anId);
+	CColliderComponent* CreateRigidbody(const SRigidBodyData& aBoxColliderData, ComponentId anId);
 
 
 private:

@@ -31,22 +31,22 @@ CColliderComponentManager::~CColliderComponentManager()
 	myControllerManager= nullptr;
 }
 
-CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aColliderData)
+CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aColliderData, ComponentId anId)
 {
 	switch (aColliderData->myType)
 	{
 	case SColliderData::eColliderType::eBox:
-		myColliderComponents.Add(CreateBoxCollider(*reinterpret_cast<SBoxColliderData*>(aColliderData)));
+		myColliderComponents.Add(CreateBoxCollider(*reinterpret_cast<SBoxColliderData*>(aColliderData),anId));
 		break;
 	case SColliderData::eColliderType::eSphere:
-		myColliderComponents.Add(CreateSphereCollider(*reinterpret_cast<SSphereColliderData*>(aColliderData)));
+		myColliderComponents.Add(CreateSphereCollider(*reinterpret_cast<SSphereColliderData*>(aColliderData),anId));
 		break;
 	case SColliderData::eColliderType::eCapsule:
-		myColliderComponents.Add(CreateCapsuleCollider(*reinterpret_cast<SCapsuleColliderData*>(aColliderData)));
+		myColliderComponents.Add(CreateCapsuleCollider(*reinterpret_cast<SCapsuleColliderData*>(aColliderData),anId));
 		break;
 	case SColliderData::eColliderType::eMesh:
 		{
-		CColliderComponent* collider = CreateMeshCollider(*reinterpret_cast<SMeshColliderData*>(aColliderData));
+		CColliderComponent* collider = CreateMeshCollider(*reinterpret_cast<SMeshColliderData*>(aColliderData),anId);
 			if(collider == nullptr)
 			{
 				return nullptr;
@@ -55,7 +55,7 @@ CColliderComponent* CColliderComponentManager::CreateComponent(SColliderData* aC
 		}
 		break;
 	case SColliderData::eColliderType::eRigidbody:
-		myColliderComponents.Add(CreateRigidbody(*reinterpret_cast<SRigidBodyData*>(aColliderData)));
+		myColliderComponents.Add(CreateRigidbody(*reinterpret_cast<SRigidBodyData*>(aColliderData),anId));
 		break;
 	default:
 		break;
@@ -87,15 +87,16 @@ void CColliderComponentManager::RemoveActorFromScene(Physics::CPhysicsActor* aAc
 	myScene->RemoveActor(aActor);
 }
 
-CCharacterControllerComponent* CColliderComponentManager::CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams)
+CCharacterControllerComponent* CColliderComponentManager::CreateCharacterControllerComponent(const Physics::SCharacterControllerDesc& aParams, ComponentId anId)
 {
-	Physics::CPhysicsCharacterController* controller = myControllerManager->CreateCharacterController(aParams);
+	Physics::CPhysicsCharacterController* controller = myControllerManager->CreateCharacterController(aParams, anId);
+	controller->SetParentId(anId);
 	CCharacterControllerComponent* component = new CCharacterControllerComponent(controller, aParams.center);
 	CComponentManager::GetInstance().RegisterComponent(component);
 	return component;
 }
 
-CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColliderData& aBoxColliderData)
+CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColliderData& aBoxColliderData, ComponentId anId)
 {
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateBoxShape(aBoxColliderData.myHalfExtent, material);
@@ -107,6 +108,7 @@ CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColli
 	}
 
 	shape->SetCollisionLayers(aBoxColliderData.myLayer, aBoxColliderData.myCollideAgainst);
+	shape->SetObjectId(anId);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aBoxColliderData.IsTrigger);
 	if (!actor)
@@ -119,7 +121,7 @@ CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColli
 	return component;
 }
 
-CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSphereColliderData& aSphereColliderData)
+CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSphereColliderData& aSphereColliderData, ComponentId anId)
 {
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateSphereShape(aSphereColliderData.myRadius, material);
@@ -131,6 +133,7 @@ CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSpher
 	}
 
 	shape->SetCollisionLayers(aSphereColliderData.myLayer, aSphereColliderData.myCollideAgainst);
+	shape->SetObjectId(anId);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aSphereColliderData.IsTrigger);
 	if (!actor)
@@ -143,11 +146,11 @@ CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSpher
 	return component;
 }
 
-CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCapsuleColliderData& aCapsuleColliderData)
+CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCapsuleColliderData& aCapsuleColliderData, ComponentId anId)
 {
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateCapsuleShape(aCapsuleColliderData.myRadius, aCapsuleColliderData.myHeight / 2.0f, material);
-
+	shape->SetObjectId(0);
 	if (!shape)
 	{
 		DL_ASSERT("Failed to create BoxShape");
@@ -155,7 +158,7 @@ CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCaps
 	}
 
 	shape->SetCollisionLayers(aCapsuleColliderData.myLayer, aCapsuleColliderData.myCollideAgainst);
-
+	shape->SetObjectId(anId);
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aCapsuleColliderData.IsTrigger);
 	if (!actor)
 	{
@@ -167,7 +170,7 @@ CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCaps
 	return component;
 }
 
-CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshColliderData& aMeshColliderData)
+CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshColliderData& aMeshColliderData, ComponentId anId)
 {
 	std::string path(aMeshColliderData.myPath);
 	if (EffectHelper::FileExists(std::wstring(path.begin(), path.end()).c_str()) == false)
@@ -178,7 +181,6 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 
 	Physics::SMaterialData material;
 	Physics::CShape* shape = myPhysics->CreateMeshShape(aMeshColliderData.myPath, material);
-
 	if (!shape)
 	{
 		DL_ASSERT("Failed to create BoxShape");
@@ -186,6 +188,7 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 	}
 
 	shape->SetCollisionLayers(aMeshColliderData.myLayer, aMeshColliderData.myCollideAgainst);
+	shape->SetObjectId(anId);
 
 	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aMeshColliderData.IsTrigger);
 	if (!actor)
@@ -198,7 +201,7 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 	return component;
 }
 
-CColliderComponent* CColliderComponentManager::CreateRigidbody(const SRigidBodyData& aRigidbodyData)
+CColliderComponent* CColliderComponentManager::CreateRigidbody(const SRigidBodyData& aRigidbodyData, ComponentId anId)
 {
 	Physics::SMaterialData material;
 	Physics::CShape* shape = nullptr;
@@ -209,6 +212,12 @@ CColliderComponent* CColliderComponentManager::CreateRigidbody(const SRigidBodyD
 		aRigidbodyData.mass, 
 		aRigidbodyData.isKinematic, 
 		aRigidbodyData.useGravity));
+
+	if(shape != nullptr)
+	{	
+		shape->SetCollisionLayers(aRigidbodyData.myLayer, aRigidbodyData.myCollideAgainst);
+		shape->SetObjectId(anId);
+	}
 
 	actor->SetRotationLock(aRigidbodyData.freezedRotationAxiees);
 	myScene->AddActor(actor);
