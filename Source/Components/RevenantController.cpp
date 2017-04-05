@@ -62,7 +62,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			if(myIsDead == true)
 			{
-				myState = eRevenantState::eIdle;
+				myState = eRevenantState::eDead;
 			}
 		}
 	}
