@@ -15,6 +15,7 @@ public:
 	inline const eEnemyTypes GetEnemyType() const;
 	inline void SetEnemyType(const eEnemyTypes aType);
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
+	void CheckIfOutOfBounds();
 protected:
 	unsigned myComponentId;
 	CU::Matrix44f myFutureMatrix;
