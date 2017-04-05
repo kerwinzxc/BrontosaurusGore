@@ -9,11 +9,10 @@
 #include "Renderer.h"
 #include "..\CommonUtilities\Sphere.h"
 
-#define SHADOWMAP_SIZE 2048u
-#define SHADOWBUFFER_SIZE 1024u
-#define LAMBDA 0.8f // Strenght of correction
-#define NUM_CASCADES 4
-#define NUM_FRUSTUM_CORNERS 8 // I guess, shuld it ever be something else?
+#define SHADOWMAP_SIZE 2048u / 2u
+#define SHADOWBUFFER_SIZE 1024u / 2u
+#define LAMBDA 0.98f // Strenght of correction
+#define NUM_FRUSTUM_CORNERS 8 // I guess, should it ever be something else?
 
 #ifndef TO_RADIAN
 #define TO_RADIAN(DEGREE) ((3.1415/180)  * DEGREE)
@@ -32,18 +31,18 @@ CCascadeShadowMap::CCascadeShadowMap(const int /*aNumOfCascades*/, const float a
 	myNumCascades = NUM_CASCADES;
 	myDirection = { 0.5f, 0.5f, 0.0f };
 	
-	myCascadeBuffer.myCascades[0].myRect = { 0.0f, 0.0f, 0.5f, 0.5f };
-	myCascadeBuffer.myCascades[1].myRect = { 0.5f, 0.0f, 1.0f, 0.5f };
-	myCascadeBuffer.myCascades[2].myRect = { 0.0f, 0.5f, 0.5f, 1.0f };
-	myCascadeBuffer.myCascades[3].myRect = { 0.5f, 0.5f, 1.0f, 1.0f };
+	myCascadeBuffer.myCascades[0].myRect = { 0.0f, 0.0f, 1.0f, 0.5f };
+	//myCascadeBuffer.myCascades[1].myRect = { 0.5f, 0.0f, 1.0f, 0.5f };
+	myCascadeBuffer.myCascades[1].myRect = { 0.0f, 0.5f, 0.5f, 1.0f };
+	myCascadeBuffer.myCascades[2].myRect = { 0.5f, 0.5f, 1.0f, 1.0f };
 
 	const float ends[] =
 	{
 		aNear,
-		aFar / 16.0f,
-		aFar / 8.0f,
-		aFar / 2.0f,
-		aFar
+		(aFar - aNear) / 8,
+		(aFar - aNear) / 4,
+		(aFar - aNear) / 2,
+		(aFar - aNear) / 1,
 	};
 
 	//for more information myNumCascades this wierd ass equation http://developer.download.nvidia.com/SDK/10/opengl/src/cascaded_shadow_maps/doc/cascaded_shadow_maps.pdf
@@ -52,7 +51,7 @@ CCascadeShadowMap::CCascadeShadowMap(const int /*aNumOfCascades*/, const float a
 		float end = LAMBDA * aNear * (pow(abs(aFar / aNear), ((float)i / (float)myNumCascades)));
 		end += (1.0f - LAMBDA) * (aNear + ((float)i / (float)myNumCascades) * (aFar - aNear));
 		myCascadeBuffer.myCascadeEnds[i] = ends[i];// end;
-		DL_PRINT("Frustum Sclice %d: %f", i, end);
+		DL_PRINT("Frustum Sclice %d: %f", i, myCascadeBuffer.myCascadeEnds[i]);
 	}
 }
 
@@ -62,8 +61,8 @@ CCascadeShadowMap::~CCascadeShadowMap()
 
 void CCascadeShadowMap::ComputeShadowProjection(const CU::Camera& aCamera)
 {
-	myCurrentCascade++;
-	myCurrentCascade %= myNumCascades;
+	//myCurrentCascade++;
+	//myCurrentCascade %= myNumCascades;
 
 	CU::Matrix44f projection = aCamera.GetProjection();
 	CU::Matrix44f toWorld = aCamera.GetTransformation();
@@ -77,8 +76,10 @@ void CCascadeShadowMap::ComputeShadowProjection(const CU::Camera& aCamera)
 	float tanHalfHFOV = tanf(TO_RADIAN(aCamera.GetFOV() / 2.0f));
 	float tanHalfVFOV = tanf(TO_RADIAN((aCamera.GetFOV() * aspectRatio) / 2.0f));
 
-	//for (unsigned int i = 0; i < NUM_CASCADES; ++i)
+	for (unsigned int i = 0; i < NUM_CASCADES; ++i)
 	{
+		myCurrentCascade = i;
+
 		float xn = myCascadeBuffer.myCascadeEnds[myCurrentCascade]		* tanHalfHFOV;
 		float xf = myCascadeBuffer.myCascadeEnds[myCurrentCascade + 1]	* tanHalfHFOV;
 		float yn = myCascadeBuffer.myCascadeEnds[myCurrentCascade]		* tanHalfVFOV;
@@ -145,7 +146,7 @@ void CCascadeShadowMap::ComputeShadowProjection(const CU::Camera& aCamera)
 		myCascadeBuffer.myCascades[myCurrentCascade].InitProjection(
 			-radiusSquared, radiusSquared,
 			radiusSquared, -radiusSquared,
-			radiusSquared * 2.0f, -radiusSquared * 2.0f);
+			radiusSquared * 3.0f, -radiusSquared * 3.0f);
 	}
 }
 
@@ -153,16 +154,16 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 {
 	SChangeStatesMessage statemsg;
 
-	//for (SCascade& cascade : myCascadeBuffer.myCascades)
+	for (SCascade& cascade : myCascadeBuffer.myCascades)
 	{
-		statemsg.myRasterizerState = eRasterizerState::eNoCulling;
+		statemsg.myRasterizerState = eRasterizerState::eCullFront;
 		statemsg.myDepthStencilState = eDepthStencilState::eDefault;
 		statemsg.myBlendState = eBlendState::eNoBlend;
-		statemsg.mySamplerState = eSamplerState::eClamp;
-		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
+		statemsg.mySamplerState = eSamplerState::eDeferred;
+		myRenderCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 		myRenderCamera.GetCamera().ReInit(
-			myCascadeBuffer.myCascades[myCurrentCascade].myOrthoProjection, 
-			myCascadeBuffer.myCascades[myCurrentCascade].myTransformation);
+			cascade.myOrthoProjection,
+			cascade.myTransformation);
 
 		for (CModelInstance* modelInstance: aModelList)
 		{
@@ -171,12 +172,22 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 				continue;
 			}
 
-		/*	if (myRenderCamera.GetCamera().IsInside(modelInstance->GetModelBoundingSphere()) == false)
-			{
+			if (modelInstance->GetIgnoreDepth() == true)
 				continue;
-			}*/
+
+
+			//if (myRenderCamera.GetCamera().IsInside(modelInstance->GetModelBoundingSphere()) == false)
+			//{
+			//	continue;
+			//}
+
+
 			modelInstance->RenderDeferred(myRenderCamera);
 		}
+		SRenderModelBatches batchMessage;
+		batchMessage.myPixelShader = myRenderCamera.GetShadowShader();
+		batchMessage.myRenderToDepth = true;
+
 		myRenderCamera.AddRenderMessage(new SRenderModelBatches());
 		myRenderCamera.Render();
 
@@ -185,7 +196,7 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 		statemsg.myRasterizerState = eRasterizerState::eDefault;
 		statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
 		statemsg.mySamplerState = eSamplerState::eClamp;
-
+		
 		RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 		SActivateRenderPackageMessage * activateMsg = new SActivateRenderPackageMessage();
@@ -193,23 +204,30 @@ void CCascadeShadowMap::Render(const CU::GrowingArray<CModelInstance*, InstanceI
 		RENDERER.AddRenderMessage(activateMsg);
 
 		SRenderFullscreenEffectMessage * msg = new SRenderFullscreenEffectMessage();
-		msg->myRect = myCascadeBuffer.myCascades[myCurrentCascade].myRect;
+		msg->myRect = cascade.myRect;
 		msg->myFirstPackage = myRenderCamera.GetRenderPackage();
 		msg->myEffectType = CFullScreenHelper::eEffectType::eCopyR;
-		msg->myFirstUseDepthResource = true;
+		msg->myFirstUseDepthResource = false;
 		RENDERER.AddRenderMessage(msg);
 		RENDERER.AddRenderMessage(new SActivateRenderToMessage());
-
 	}
+
+
+	statemsg.myBlendState = eBlendState::eNoBlend;
+	statemsg.myRasterizerState = eRasterizerState::eDefault;
+	statemsg.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	statemsg.mySamplerState = eSamplerState::eClamp;
+
+	RENDERER.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 	SSetShadowBuffer *shadowMSG = new SSetShadowBuffer();
 	shadowMSG->cascadeBuffer = myCascadeBuffer;
 	//shadowMSG->myCameraProjection = myRenderCamera.GetCamera().GetProjection();
 	//shadowMSG->myCameraTransformation = myRenderCamera.GetCamera().GetInverse();
 	shadowMSG->myShadowBuffer = myShadowMap;
-	//for (SCascade& cascade : shadowMSG->cascadeBuffer.myCascades)
+	for (SCascade& cascade : shadowMSG->cascadeBuffer.myCascades)
 	{
-		myCascadeBuffer.myCascades[myCurrentCascade].myTransformation.Invert();
+		cascade.myTransformation.Invert();
 	}
 
 	RENDERER.AddRenderMessage(shadowMSG);
@@ -224,5 +242,10 @@ const SCascade& CCascadeShadowMap::GetCascade(const int aIndex)
 CRenderPackage& CCascadeShadowMap::GetShadowMap()
 {
 	return myShadowMap;
+}
+
+void CCascadeShadowMap::DumpToFile(const char* aPath)
+{
+	myShadowMap.SaveToFile(aPath);
 }
 
