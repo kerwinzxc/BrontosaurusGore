@@ -89,7 +89,7 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.shootingRange = blueprint.detectionRange;
+		blueprint.shootingRange = blueprint.detectionRange-1;
 	}
 
 	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();

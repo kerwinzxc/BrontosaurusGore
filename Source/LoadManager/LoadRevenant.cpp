@@ -62,7 +62,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.shootingRange = blueprint.detectionRange;
+		blueprint.shootingRange = blueprint.detectionRange-1;
 	}
 
 	blueprint.flightHeight = someData.myData.at("FlightHeight").GetFloat();

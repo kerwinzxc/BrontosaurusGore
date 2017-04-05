@@ -44,7 +44,7 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.shootingRange = blueprint.detectionRange;
+		blueprint.shootingRange = blueprint.detectionRange-1;
 	}
 
 	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
