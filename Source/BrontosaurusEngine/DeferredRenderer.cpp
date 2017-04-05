@@ -140,15 +140,15 @@ void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 				model = modelManager->GetModel(id);
 				if (!model) continue;
 
-				model->RenderInstanced(msg->myRenderToDepth);
+				model->RenderInstanced(msg->myRenderToDepth, msg->myPixelShader);
 			}
 			myBatchedModelIds.RemoveAll();
 			break;
 		}
 		case SRenderMessage::eRenderMessageType::eChangeStates:
 		{
-			//SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
-			//aRenderer.SetStates(msg);
+			SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
+			aRenderer.SetStates(msg);
 			break;
 		}
 		default:

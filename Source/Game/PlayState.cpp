@@ -220,7 +220,7 @@ void CPlayState::Load()
 	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
 	CRenderCamera& weaponCamera = myScene->GetRenderCamera(CScene::eCameraType::eWeaponCamera);
 
-	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 250.f);
+	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 500.f);
 	weaponCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 10.f);
 
 	myWeaponFactory->LoadWeapons();
@@ -545,7 +545,10 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
 		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.slopeLimit = 45.0f;
+		float rad = 45.f;
+		DEGREES_TO_RADIANS(rad);
+		controllerDesc.slopeLimit = rad;
+		controllerDesc.stepOffset = 1.0f;
 		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
 		playerObject->AddComponent(controller);
 

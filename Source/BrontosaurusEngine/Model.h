@@ -75,10 +75,10 @@ public:
 
 	void Render(SForwardRenderModelParams& aParamObj);
 	void Render(SDeferredRenderModelParams& aParamObj);
-	void Render(SShadowRenderModelParams& aParamObj);
+	//void Render(SShadowRenderModelParams& aParamObj);
 
 
-	void RenderInstanced(const bool aRenderDepth);
+	void RenderInstanced(const bool aRenderDepth, ID3D11PixelShader* aDepthShader);
 	void AddInstanceToRenderBuffer(const SDeferredRenderModelParams& aParamObj);
 
 	inline bool GetInitialized() const;
@@ -107,7 +107,7 @@ private:
 	bool InitBuffers(const CLoaderMesh * aLoadedMesh);
 	void UpdateCBuffer(SForwardRenderModelParams& aParamObj);
 	void UpdateCBuffer(SDeferredRenderModelParams& aParamObj);
-	void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
+	//void UpdateCBuffer(SShadowRenderModelParams& aParamObj);
 
 	void UpdateInstanceBuffer(const unsigned int aStartIndex);
 

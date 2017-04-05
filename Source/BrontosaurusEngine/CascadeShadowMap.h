@@ -36,6 +36,7 @@ public:
 
 	CRenderPackage& GetShadowMap();
 
+	void DumpToFile(const char* aPath);
 private:
 	CRenderCamera myRenderCamera;
 	CRenderPackage myShadowMap;

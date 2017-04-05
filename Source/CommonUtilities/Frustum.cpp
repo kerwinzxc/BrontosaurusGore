@@ -89,16 +89,16 @@ namespace CU
 
 		CU::Vector3f frustumPoints[8] =
 		{
-			//Far plane
-			CU::Vector3f /*topFarLeft		*/(-1.0f, 1.0f, 1.0f),
-			CU::Vector3f /*topFarRight		*/(1.0f, 1.0f, 1.0f),
-			CU::Vector3f /*bottomFarLeft	*/(-1.0f, -1.0f, 1.0f),
-			CU::Vector3f /*bottomFarRight	*/(1.0f, -1.0f, 1.0f),
-			//Near Plane
+			//Far Plane
 			CU::Vector3f /*topNearLeft		*/(-1.0f, 1.0f, 0.0f),
 			CU::Vector3f /*topNearRight		*/(1.0f, 1.0f, 0.0f),
 			CU::Vector3f /*bottomNearLeft	*/(-1.0f, -1.0f, 0.0f),
-			CU::Vector3f /*bottomNearRight	*/(1.0f, -1.0f, 0.0f)
+			CU::Vector3f /*bottomNearRight	*/(1.0f, -1.0f, 0.0f),
+			//near plane
+			CU::Vector3f /*topFarLeft		*/(-1.0f, 1.0f, 1.0f),
+			CU::Vector3f /*topFarRight		*/(1.0f, 1.0f,	1.0f),
+			CU::Vector3f /*bottomFarLeft	*/(-1.0f, -1.0f,1.0f),
+			CU::Vector3f /*bottomFarRight	*/(1.0f, -1.0f, 1.0f)
 		};
 		
 		for (CU::Vector3f& point : frustumPoints)

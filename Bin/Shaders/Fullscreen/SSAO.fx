@@ -116,7 +116,7 @@ PixelOutput PS_PosTex(PixelInput input)
 	ao /= (float) iterations * 4.0;
 //**END**//
 
-	output.RMAO.rg = 0.0f;
+	output.RMAO.rg = 1.0f;
 	output.RMAO.b = ao;
 	output.RMAO.a = 1.0f;
 
