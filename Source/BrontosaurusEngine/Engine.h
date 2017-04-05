@@ -80,7 +80,7 @@ public:
 	void Start();
 	void Shutdown();
 
-	bool GetIsRunning();
+	static bool GetIsRunning();
 	void ClearBackbuffer();
 
 	inline CRenderer& GetRenderer();
@@ -140,6 +140,7 @@ private:
 	CDXFramework* myDXFramework;
 	CU::ThreadPool* myThreadPool;
 	CFontEngineFacade myFontEngine;
+	bool myIsRunning;
 	static CEngine* myInstance;
 
 	CRenderer* myRenderer;

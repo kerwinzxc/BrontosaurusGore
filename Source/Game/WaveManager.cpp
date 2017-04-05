@@ -10,6 +10,9 @@
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TServer/ServerMessageManager.h"
 #include "../Game/PollingStation.h"
+#include "../Components/Enemy.h"
+#include "../Components/GameObject.h"
+#include "../Components/ComponentMessage.h"
 
 CWaveManager::CWaveManager()
 {
@@ -41,8 +44,8 @@ void CWaveManager::StartWave()
 	if (myWaveCount < myNumberOfWavesToSpawn)
 	{
 		myWaveCount++;
-		//DL_PRINT("Wave:");
-		//DL_PRINT(std::to_string(myWaveCount).c_str());
+		DL_PRINT("Wave:");
+		DL_PRINT(std::to_string(myWaveCount).c_str());
 		//DL_PRINT("BroadCast StartWave");
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CStartWaveMessage(myWaveCount));
 	}
@@ -78,7 +81,7 @@ void CWaveManager::Update()
 
 eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 {
-	//DL_PRINT("EnemyAdded");
+	DL_PRINT("EnemyAdded");
 	myEnemiesInWave.Add(aAddEnemyToWave.GetEnemy());
 
 	return eMessageReturn::eContinue;
@@ -88,7 +91,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 {
 
 	//DL_PRINT("WaveManager: PlayerEntered");
-	myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
+    myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
 	myNumberOfWavesToSpawn = aPlayerEnteredArena.GetWaveAmount();
 
@@ -112,6 +115,13 @@ eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToC
 {
 	myWaveCount = myResetToWaveCount;
 	myNumberOfPlayers = 0;
+
+	for (int i = 0; i < myEnemiesInWave.Size(); i++)
+	{
+		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
+	}
+
+	myEnemiesInWave.RemoveAll();
 
 	return eMessageReturn::eContinue;
 }

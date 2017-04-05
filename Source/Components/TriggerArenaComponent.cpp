@@ -71,6 +71,10 @@ void CTriggerArenaComponent::OnPlayerExit()
 	if (myPlayersInTrigger < CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
 		myPlayersInTrigger--;
+		if (myPlayersInTrigger < 0)
+		{
+			myPlayersInTrigger = 0;
+		}
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerEnteredArena(-1, myNumberOfWaves, myKeyIdToLock));
 	}
 }
