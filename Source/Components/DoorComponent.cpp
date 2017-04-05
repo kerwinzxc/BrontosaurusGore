@@ -135,6 +135,12 @@ const unsigned char CDoorComponent::GetNetworkID() const
 	return myNetworkID;
 }
 
+eMessageReturn CDoorComponent::DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage)
+{
+	SnapShotDoorState();
+	return eMessageReturn::eContinue;
+}
+
 void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
@@ -152,6 +158,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myGameObject != GetParent() && aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
 		{
+			CU::Vector3f pas = GetParent()->GetWorldPosition();
 			if (myIsLocked == false)
 			{
 				SetIsClosed(false);
