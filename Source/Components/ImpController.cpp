@@ -42,6 +42,7 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eChargingMeleeAttack;	
 			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		else if (WithinWalkToMeleeRange() == true)
 		{
@@ -56,6 +57,7 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		else
 		{
@@ -78,7 +80,8 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eWalkIntoMeleeRange:
 	{
 		LookAtPlayer();
-		myVelocity.z = mySpeed;
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		myVelocity.z = -mySpeed;
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -110,13 +113,14 @@ void CImpController::Update(const float aDeltaTime)
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 		GetParent()->GetLocalTransform().LookAt(myWanderToPosition);
-		myVelocity.z = mySpeed;
+		myVelocity.z = -mySpeed;
 		CU::Vector3f distance = myWanderToPosition - GetParent()->GetWorldPosition();
 		if(distance.Length() < 0.5f)
 		{
 			myState = eImpState::eIdle;
 			myElaspedWanderTime = 0.0f;
 			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		myElaspedWanderTime += aDeltaTime;
 		if(myElaspedWanderTime >= myWanderDuration)
@@ -124,6 +128,7 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eIdle;
 			myElaspedWanderTime = 0.0f;
 			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		break;
 	}
@@ -222,6 +227,20 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	}
+	case eComponentMessageType::eOnCollisionEnter:
+	{
+		switch (myState)
+		{
+		case eImpState::eWalkIntoMeleeRange:
+			myState = eImpState::eJump;
+			break;
+		case eImpState::eRunAfterShooting:
+			InitiateWander();
+			break;
+		default:
+			break;
+		}
+	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;
 		break;
@@ -265,8 +284,8 @@ void CImpController::InitiateWander()
 		float randomAngles = rand() % (myWanderAngle);
 		randomAngles -= myWanderAngle * 0.5f;;
 		float randomRadians = randomAngles * (PI / 180.0f);
-		impMatrix.Rotate(PI, CU::Axees::Y);
 		impMatrix.Rotate(randomRadians, CU::Axees::Y);
+		impMatrix.Rotate(PI, CU::Axees::Y);
 	}
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
 		myWanderToPosition = impMatrix.GetPosition();	
