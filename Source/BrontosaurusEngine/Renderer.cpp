@@ -718,14 +718,13 @@ void CRenderer::CreateDepthStencilStates()
 	HRESULT result;
 	ID3D11DepthStencilState* depthStencilState = nullptr;
 
-	// GREATER!
 	{
 		D3D11_DEPTH_STENCIL_DESC depthStencilEnabledDesc;
 		ZeroMemory(&depthStencilEnabledDesc, sizeof(depthStencilEnabledDesc));
 		depthStencilEnabledDesc.DepthEnable = true;
 		depthStencilEnabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilEnabledDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-		depthStencilEnabledDesc.StencilEnable = true;
+		depthStencilEnabledDesc.DepthFunc = D3D11_COMPARISON_LESS;
+		depthStencilEnabledDesc.StencilEnable = FALSE;
 		depthStencilEnabledDesc.StencilReadMask = 0xFF;
 		depthStencilEnabledDesc.StencilWriteMask = 0xFF;
 		depthStencilEnabledDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
@@ -1228,9 +1227,7 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 	UpdateBuffer();
 
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
-	float clearColour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	float depth = msg->myRenderCamera.GetIsShadowCamera() ? 1.0f : 0.0f;
-	msg->myRenderCamera.myRenderPackage.Clear(depth);
+	msg->myRenderCamera.myRenderPackage.Clear();
 	msg->myRenderCamera.myRenderPackage.Activate();
 
 	for (unsigned int i = 0; i < msg->myRenderCamera.myRenderQueue.Size(); ++i)
@@ -1241,22 +1238,24 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 	myDeferredRenderer.SetGeometryBuffer(*msg->myRenderCamera.myGbuffer);
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
-	changeStateMessage.myDepthStencilState = msg->myRenderCamera.GetIsShadowCamera() ? eDepthStencilState::eLesser : eDepthStencilState::eDefault;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
 
 	myDeferredRenderer.DoRenderQueue(*this);
 
-	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
-	changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
-	changeStateMessage.mySamplerState = eSamplerState::eClamp;
-	SetStates(&changeStateMessage);
-
-	myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
-	myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
-	myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
+	if (msg->myRenderCamera.GetIsShadowCamera() == false)
+	{
+		changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
+		changeStateMessage.myDepthStencilState = eDepthStencilState::eDefault;
+		changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+		changeStateMessage.mySamplerState = eSamplerState::eClamp;
+		SetStates(&changeStateMessage);
+		myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
+		myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
+		myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
+	}
 
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
@@ -1265,9 +1264,16 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 	SetStates(&changeStateMessage);
 
 	msg->myRenderCamera.GetRenderPackage().Activate();
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
-	//renderTo->Activate();
+
+	if (msg->myRenderCamera.GetIsShadowCamera() == false)
+	{
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
+	}
+	else
+	{
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, myDeferredRenderer.GetDepthResource());
+	}
 }
 
 void CRenderer::DoColorGrading()
