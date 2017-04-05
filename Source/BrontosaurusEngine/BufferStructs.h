@@ -96,19 +96,6 @@ struct SDeferredRenderModelParams
 	bool aAnimationLooping = true;
 	float aHighlightIntencity = 0.f;
 
+	ID3D11PixelShader* aPixelshader = nullptr;
 	bool myRenderToDepth = false;
-};
-
-struct SShadowRenderModelParams
-{
-	CU::Matrix44f myTransform;
-	CU::Matrix44f myTransformLastFrame;
-
-	eAnimationState aAnimationState;
-	eAnimationState aNextAnimationState;
-	float aAnimationLerper = 0.0f;
-	float aAnimationTime = 0.0f;
-	bool aAnimationLooping = true;
-	float aHighlightIntencity = 0.f;
-	ID3D11PixelShader* aPixelshader;
 };

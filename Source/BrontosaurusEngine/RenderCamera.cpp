@@ -6,12 +6,14 @@
 #include "RenderMessages.h"
 
 #include "GeometryBuffer.h"
+#include "EModelBluePrint.h"
 
 CRenderCamera::CRenderCamera(const bool aDeferred /*= true*/)
 {
 	myRenderQueue.Init(32);
 	myIsShadowCamera = false;
 	myShadowPS = nullptr;
+	myShadowPSInstanced = nullptr;
 	myGbuffer = nullptr;
 
 	if (aDeferred == true)
@@ -27,8 +29,8 @@ CRenderCamera::~CRenderCamera()
 
 void CRenderCamera::InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D* aTexture , DXGI_FORMAT aFormat /*= DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM*/)
 {
-	myCamera.Init(aFov, aWidth, aHeight, aNear, aFar);
-	CU::Vector2ui size(aWidth, aHeight);
+	myCamera.Init(aFov, aWidth, aHeight, aFar, aNear);
+ 	CU::Vector2ui size(aWidth, aHeight);
 	InitRenderPackages(size, aTexture, aFormat);
 }
 
@@ -43,6 +45,8 @@ void CRenderCamera::ShadowInit()
 {
 	myIsShadowCamera = true;
 	myShadowPS = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3);
+	myShadowPSInstanced = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3 | EModelBluePrint_Instance);
+
 }
 
 void CRenderCamera::SetViewport(const CU::Vector4f& aRect)

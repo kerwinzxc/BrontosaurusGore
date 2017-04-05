@@ -351,6 +351,7 @@
     <ClInclude Include="LoadDamageOnCollisionComponent.h" />
     <ClInclude Include="LoadDoorComponent.h" />
     <ClInclude Include="LoadEnemy.h" />
+    <ClInclude Include="LoadEnemyRunTowardsComponent.h" />
     <ClInclude Include="LoadFireComponent.h" />
     <ClInclude Include="LoadHealthComponent.h" />
     <ClInclude Include="LoadHealthPackComponent.h" />
@@ -389,6 +390,7 @@
     <ClCompile Include="LoadDamageOnCollisionComponent.cpp" />
     <ClCompile Include="LoadDoorComponent.cpp" />
     <ClCompile Include="LoadEnemy.cpp" />
+    <ClCompile Include="LoadEnemyRunTowardsComponent.cpp" />
     <ClCompile Include="LoadFireComponent.cpp" />
     <ClCompile Include="LoadHealthComponent.cpp" />
     <ClCompile Include="LoadHealthPackComponent.cpp" />

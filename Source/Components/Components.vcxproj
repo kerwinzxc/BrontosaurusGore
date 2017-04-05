@@ -396,6 +396,7 @@
     <ClInclude Include="EnemyClientRepresentation.h" />
     <ClInclude Include="EnemyClientRepresentationManager.h" />
     <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="EnemyRunTowardsComponent.h" />
     <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="ExplosionBufferData.h" />
     <ClInclude Include="ExplosionComponent.h" />
@@ -490,6 +491,7 @@
     <ClCompile Include="EnemyClientRepresentation.cpp" />
     <ClCompile Include="EnemyClientRepresentationManager.cpp" />
     <ClCompile Include="EnemyComponentManager.cpp" />
+    <ClCompile Include="EnemyRunTowardsComponent.cpp" />
     <ClCompile Include="ExplosionComponent.cpp" />
     <ClCompile Include="ExplosionComponentManager.cpp" />
     <ClCompile Include="ExplosionFactory.cpp" />

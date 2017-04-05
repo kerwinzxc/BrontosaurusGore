@@ -228,13 +228,14 @@ struct SRenderModelInstancedMessage : SRenderMessage
 struct SRenderModelBatches : SRenderMessage
 {
 	SRenderModelBatches();
-	bool myRenderToDepth;
+	bool myRenderToDepth = false;
+	ID3D11PixelShader* myPixelShader = nullptr;
 };
 
 struct SRenderModelShadowMessage : SRenderMessage
 {
 	SRenderModelShadowMessage();
-	SShadowRenderModelParams myRenderParams;
+	SDeferredRenderModelParams myRenderParams;
 	int myModelID;
 };
 

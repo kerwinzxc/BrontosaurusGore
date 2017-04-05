@@ -8,6 +8,7 @@ struct SEnemyBlueprint
 	float stopAttackRange;
 	float walkToMeleeRange;
 	float chargeMeleeAttackDuration;
+	float shootingRange;
 	healthPoint Health;
 };
 

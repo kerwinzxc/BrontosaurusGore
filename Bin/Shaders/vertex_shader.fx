@@ -51,7 +51,6 @@ PosNormBinormTanTex_InputPixel VS_PosNormBinormTanTex(PosNormBinormTanTex_InputV
 	output.position = mul(projectionSpace ,output.position);
 
 	output.worldPosLastFrame = mul(cameraSpaceInversed, output.worldPosLastFrame);
-
 	return output;
 }
 

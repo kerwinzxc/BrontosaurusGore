@@ -53,11 +53,15 @@ void CImpController::Update(const float aDeltaTime)
 			}
 
 		}
-		else if (WithinDetectionRange() == true)
+		else if (WithinShootRange() == true)
 		{
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		}
+		else if (WithinDetectionRange() == true)
+		{
+			myState = eImpState::eChase;
 		}
 		else
 		{
@@ -82,6 +86,10 @@ void CImpController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -109,6 +117,17 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eJump:
 		ApplyJumpForce(myJumpHeight);
 		break;
+	case eImpState::eChase:
+	{
+		LookAtPlayer();
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
+	}
+	break;
 	case eImpState::eRunAfterShooting:
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;

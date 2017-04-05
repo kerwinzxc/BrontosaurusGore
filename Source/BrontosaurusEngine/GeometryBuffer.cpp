@@ -78,6 +78,25 @@ void CGeometryBuffer::Clear()
 	myEmissive.Clear();
 }
 
+CRenderPackage& CGeometryBuffer::GetRenderPackage(const EGeometryPackage aPackageType)
+{
+	switch (aPackageType)
+	{
+	case EGeometryPackage::eDiffuse:
+		return myDiffuse;
+	case EGeometryPackage::eNormal:
+		return myNormal;
+	case EGeometryPackage::eRMAO:
+		return myRMAO;
+	case EGeometryPackage::eEmissive:
+		
+	case EGeometryPackage::eDepth:
+		break;
+	default:
+		break;
+	}
+}
+
 bool CGeometryBuffer::IsInited()
 {
 	return myFramework != nullptr;

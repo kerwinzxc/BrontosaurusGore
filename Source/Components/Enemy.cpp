@@ -14,6 +14,7 @@
 
 
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
+CU::GrowingArray<CEnemyRunTowardsComponent*> CEnemy::ourEnemyRunTowardsComponents;
 
 CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myWalkToMeleeRange2(0), myIsAttacking(false), myControllerConstraints(0), myHighlightTimer(0), myDoingHighlight(false)
 {
@@ -273,4 +274,13 @@ bool CEnemy::GetIfSidesAreColliding()
 		}
 	}
 	return false;
+}
+
+void CEnemy::AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTowardsComponent)
+{
+	if (ourEnemyRunTowardsComponents.IsInitialized() == false)
+	{
+		ourEnemyRunTowardsComponents.Init(4);
+	}
+	ourEnemyRunTowardsComponents.Add(aEnemyRunTowardsComponent);
 }
