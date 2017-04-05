@@ -123,7 +123,7 @@ CPlayState::~CPlayState()
 {
 	CParticleEmitterComponentManager::Destroy();
 
-	SAFE_DELETE(myGameObjectManager);
+
 	SAFE_DELETE(myScene);
 
 	SAFE_DELETE(myModelComponentManager);
@@ -150,6 +150,7 @@ CPlayState::~CPlayState()
 	CEnemyFactory::Destroy();
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
+	SAFE_DELETE(myGameObjectManager);
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
 

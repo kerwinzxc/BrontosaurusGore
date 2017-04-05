@@ -5,7 +5,7 @@
 
 CU::Matrix44f& CGameObject::GetLocalTransform()
 {
-	return myManager.GetTransform(*this);
+	return myManager->GetTransform(*this);	
 }
 
 CU::Matrix44f CGameObject::GetToWorldTransform()
@@ -115,7 +115,7 @@ bool CGameObject::AskComponents(const eComponentQuestionType aQuestionType, SCom
 
 void CGameObject::MarkForDestruction()
 {
-	myManager.AddObjectForDestruction(this);
+	myManager->AddObjectForDestruction(this);
 }
 
 bool CGameObject::IsGameObject()
@@ -148,7 +148,7 @@ void CGameObject::Destroy()
 		myComponents[i] = nullptr;
 	}
 
-	myManager.DestroyObject(this);
+	myManager->DestroyObject(this);
 }
 
 void CGameObject::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -187,7 +187,7 @@ bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQ
 	return false;
 }
 
-CGameObject::CGameObject(CGameObjectManager &aManager) : myTransformId(0), myManager(aManager)
+CGameObject::CGameObject(CGameObjectManager &aManager) : myTransformId(0), myManager(&aManager)
 {
 	myType = eComponentType::eGameObject;
 	myComponents.Init(4);

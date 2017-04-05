@@ -52,7 +52,7 @@ private:
 
 	ComponentId myTransformId;
 	CU::GrowingArray<CComponent*> myComponents;
-	CGameObjectManager& myManager;
+	CGameObjectManager* myManager;
 	std::string myName;
 };
 
