@@ -178,11 +178,13 @@ void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aMode
 				continue;
 			}
 
+			if (animationScene->mNumMaterials > 1)
+			{
+				DL_MESSAGE_BOX("More than one material found in animation fbx scene\n%s", aPath.c_str());
+			}
+
 			mdl->mySceneAnimators[static_cast<eAnimationState>(i)] = CSceneAnimator();
 			mdl->mySceneAnimators[static_cast<eAnimationState>(i)].Init(animationScene);
-
-			//mdl->mySceneAnimators[animationName] = CSceneAnimator();
-			//mdl->mySceneAnimators[animationName].Init(animationScene);
 
 			//mdl->mySceneAnimators[animationName].CarlSave(modelName + animationName + ".animation");
 			//mdl->mySceneAnimators[animationName].CarlLoad(modelName + animationName + ".animation");
@@ -217,14 +219,10 @@ void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aMode
 			}
 			else
 			{
+				DL_MESSAGE_BOX("No animation found in %s", aPath.c_str());
 				mdl->mySceneAnimator = nullptr;
 			}
 		}
-	}
-	else
-	{
-		int i = mdl->myVertexSize;
-		int br = 0;
 	}
 }
 

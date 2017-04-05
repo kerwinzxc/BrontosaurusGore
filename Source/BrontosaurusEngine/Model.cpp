@@ -44,7 +44,7 @@ CModel::CModel()
 {
 }
 
-CModel::CModel(const CModel & aCopy)
+CModel::CModel(const CModel& aCopy)
 	: CModel()
 {
 	(*this) = aCopy;
@@ -52,8 +52,6 @@ CModel::CModel(const CModel & aCopy)
 
 CModel::~CModel()
 {
-
-	//TODO Fix this so overloaded = operator can be removed. mebe?
 	myFramework = nullptr;
 
 	for (unsigned int i = 0; i < myLODModels.Size(); ++i)
@@ -312,15 +310,6 @@ void CModel::RenderInstanced(const bool aRenderDepth)
 		context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, instanceCount, 0, 0, 0);
 	}
 
-	//UpdateInstanceBuffer();
-	//ID3D11DeviceContext* context = DEVICE_CONTEXT;
-	//unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
-	//unsigned int offsets[2] = { 0, 0 };
-	//ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
-	//context->IASetVertexBuffers(0, 2, buffers, strides, offsets);	
-	//context->IASetIndexBuffer(myLODModels.GetLast().myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	//context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, min(myInstanceBufferData.Size(), ourMaxInstances), 0, 0, 0);
-
 	myInstanceBufferData.RemoveAll();
 }
 
@@ -368,7 +357,6 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams& aParamObj)
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 		Lights::SLightsBuffer updatedLights;
-		//updatedLights.myCameraPos = RENDERER.GetCamera().GetPosition();
 		updatedLights.myDirectionalLight = aParamObj.myDirectionalLight;
 
 		for (unsigned int i = 0; i < aParamObj.myPointLightList.Size(); ++i)
@@ -401,6 +389,11 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
+
+	if (myFilePath.find("lasma") != std::string::npos)
+	{
+		int br = 0;
+	}
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none) /*&& (aParamObj.aAnimationState[0] != '\0')*/)

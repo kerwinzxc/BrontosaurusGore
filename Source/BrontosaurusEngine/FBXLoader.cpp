@@ -476,6 +476,11 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		return false;
 	}
 
+	if (scene->mNumMaterials > 1)
+	{
+		DL_MESSAGE_BOX("fbx scene contains more than one material, this will split the mesh which the engine does not support\n%s", aFilePath);
+	}
+
 	CU::GrowingArray<aiNode*> nodes(4);
 	LoadMeshChildren(root, nodes);
 	for (unsigned int i = 0; i < nodes.Size(); ++i)
