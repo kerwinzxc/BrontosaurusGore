@@ -27,8 +27,8 @@ CRenderCamera::~CRenderCamera()
 
 void CRenderCamera::InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D* aTexture , DXGI_FORMAT aFormat /*= DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM*/)
 {
-	myCamera.Init(aFov, aWidth, aHeight, aNear, aFar);
-	CU::Vector2ui size(aWidth, aHeight);
+	myCamera.Init(aFov, aWidth, aHeight, aFar, aNear);
+ 	CU::Vector2ui size(aWidth, aHeight);
 	InitRenderPackages(size, aTexture, aFormat);
 }
 
