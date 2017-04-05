@@ -12,7 +12,6 @@ CSpawnerManager::CSpawnerManager()
 
 CSpawnerManager::~CSpawnerManager()
 {
-	mySpawners.DeleteAll();
 }
 
 CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes& eEnemyType,  std::thread::id aID)
