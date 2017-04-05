@@ -207,6 +207,27 @@ void CWeaponSystemComponent::Update(float aDelta)
 	{
 		myWeapons[i]->Update(aDelta);
 	}
+	SComponentQuestionData ammoLeftQuestionData;
+	SAmmoLeftData ammoLeftData;
+
+	if (CFontEngineFacade::GetIsCreated() == true)
+	{
+		if(WeaponIndexValid() == true)
+		{
+			ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
+			ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
+			if (GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString, ammoLeftQuestionData) == true)
+			{
+				std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
+				ammoLeftText += ": ";
+				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
+				ammoLeftText += "/";
+				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
+			}
+
+		}
+		
+	}
 }
 
 void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMessageData)
