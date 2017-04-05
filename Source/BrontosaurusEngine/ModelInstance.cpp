@@ -227,8 +227,11 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 	params.myTransformLastFrame = myLastFrame;
 	params.myHighlightColor = myHighlightColor;
 	params.myHighlightIntensivity = myHighlightIntencity;
-	params.myRenderToDepth = aRenderToCamera.GetIsShadowCamera();
 	params.aHighlightIntencity = myHighlightIntencity;
+
+	params.aPixelshader = aRenderToCamera.GetShadowShader();
+	params.myRenderToDepth = aRenderToCamera.GetIsShadowCamera();
+	
 	if (myHasAnimations == true)
 	{
 		params.aAnimationLooping = myAnimationLooping;
