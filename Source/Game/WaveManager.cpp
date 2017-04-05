@@ -13,6 +13,7 @@
 #include "../Components/Enemy.h"
 #include "../Components/GameObject.h"
 #include "../Components/ComponentMessage.h"
+#include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
 
 CWaveManager::CWaveManager()
 {
@@ -116,9 +117,14 @@ eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToC
 	myWaveCount = myResetToWaveCount;
 	myNumberOfPlayers = 0;
 
+	SComponentMessageData data; data.myInt = 10000;
 	for (int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
-		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
+		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
+		CNetworkMessage_SetIsRepesentationActive* deactivate = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
+		deactivate->SetActive(false);
+		deactivate->SetNetworkID(myEnemiesInWave[i]->GetNetworkID());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(deactivate));
 	}
 
 	myEnemiesInWave.RemoveAll();
