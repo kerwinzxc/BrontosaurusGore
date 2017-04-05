@@ -10,6 +10,8 @@
 #include "Physics\PhysicsCharacterController.h"
 #include "CharacterControllerComponent.h"
 
+#define TO_RADIANS(x) (x) * (3.1415f / 180.f)
+
 CGameObject* GetCurrentObject()
 {
 	int id = KLoader::CKevinLoader::GetInstance().GetCurrentObjectIndex();
@@ -246,11 +248,14 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	CColliderComponentManager* colliderMan = loadManager.GetCurrentGameServer().GetColliderComponentManager();
 	Physics::SCharacterControllerDesc data;
 
-	data.slopeLimit = someData.myData.at("slopeLimit").GetFloat();
+	data.slopeLimit = TO_RADIANS(someData.myData.at("slopeLimit").GetFloat());
 	data.stepOffset = someData.myData.at("stepOffset").GetFloat();
 	data.skinWidth = someData.myData.at("skinWidth").GetFloat();
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
+	//data.center.x *= -1;
+	//data.center.z *= -1; // ska vara med?
+	//data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
