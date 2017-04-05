@@ -5,6 +5,7 @@
 #include "../PostMaster/SendNetworkMessage.h"
 #include "../TShared/NetworkMessage_Position.h"
 #include "../Audio/AudioInterface.h"
+#include "../BrontosaurusEngine/TextInstance.h"
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
@@ -36,6 +37,11 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myFallCheckCooldown = 1.0f;
 
 	myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
+
+	myTextInstance = new CTextInstance();
+	myTextInstance->Init();
+	myTextInstance->SetPosition({ 0.5f, 0.2f });
+
 }
 
 CMovementComponent::~CMovementComponent()
@@ -66,6 +72,20 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 {
 #ifndef _RETAIL_BUILD
 	SwapMovementMode();
+
+	//Prints the player pos
+	/*CU::Vector3f temp = GetParent()->GetWorldPosition();
+	std::wstring message = L"Position ";
+	message += L"X: ";
+	message += std::to_wstring(temp.x);
+	message += L"Y: ";
+	message += std::to_wstring(temp.y);
+	message += L"Z: ";
+	message += std::to_wstring(temp.z);
+	myTextInstance->SetText(message);
+	myTextInstance->Render();*/
+
+
 	switch(myMovementMode)
 	{
 	case MovementMode::Default: 
