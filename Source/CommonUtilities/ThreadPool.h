@@ -15,16 +15,23 @@ namespace CU
 	class ThreadPool
 	{
 	public:
+		static void Create();
+		static void Destroy();
+		static ThreadPool* GetInstance();
 
-
-		ThreadPool();
-		~ThreadPool();
+		void Init();
 		void AddWork(Work aTask);
 		void LogStart();
 		void LogEnd();
 		void LogName(const std::string& aThreadName);
 		bool IsRunning() const;
+		void LogCreateThread();
+		void LogDestroyThread();
 	private:
+		static ThreadPool* ourInstance;
+
+		ThreadPool();
+		~ThreadPool();
 
 		unsigned long long GetEpochTicks();
 		void CreateDirectoryRecursive(const std::string& aPath);
@@ -41,6 +48,7 @@ namespace CU
 		std::atomic_bool isStopped;
 		TimerManager* myTimerMgr;
 		std::string myLogPath;
+		unsigned myConcurentThreadsSupported;
 	};
 
 }

@@ -47,25 +47,25 @@ void CEnemyComponentManager::InitWeaponSystem(CEnemy * aEnemy, CWeaponSystemMana
 	case eEnemyTypes::eImp:
 	{
 		addWeaponData.myString = "ImpMeleeAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		addWeaponData.myString = "ImpRangedAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		break;
 	}
 	case eEnemyTypes::eRevenant:
 	{
 		addWeaponData.myString = "RevenantRangedAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		addWeaponData.myString = "RevenantFlyingRangedAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		addWeaponData.myString = "RevenantMeleeAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		break;
 	}
 	case eEnemyTypes::ePinky:
 	{
 		addWeaponData.myString = "PinkyMeleeAttack";
-		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addWeaponData);
+		aEnemy->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 		break;
 	}
 	default:

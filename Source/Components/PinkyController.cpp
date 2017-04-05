@@ -127,6 +127,7 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		myState = ePinkyState::eDead;
+		myIsCharging = false;
 		break;
 	}
 	case eComponentMessageType::eOnCollisionEnter:

@@ -22,7 +22,6 @@ Texture2D shadowBuffer          : register(t8);
 
 SamplerState samplerClamp       : register(s0);
 SamplerState samplerWrap        : register(s1);
-SamplerState samplerClampPoint	: register(s2);
 
 
 //**********************************************//
@@ -137,7 +136,7 @@ float Visibility(float3 lightDirection, float3 normal, float roughness, float3 c
 
 float3 Normal(float2 uv)
 {
-	float3 normal = deferred_normal.Sample(samplerClampPoint, uv).xyz;
+	float3 normal = deferred_normal.Sample(samplerClamp, uv).xyz;
 	normal = (normal * 2.0f);
 	normal -= float3(1.0f, 1.0f, 1.0f);
 	return normal;
@@ -221,10 +220,6 @@ float4 GetCascadeProjectionSpacePosition(uint cascadeIndex, float3 worldPosition
 	return pixelCascadePos;
 }
 
-
-
-
-
 float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 {
 	float output = 1.0f;
@@ -259,7 +254,7 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 	float shadowDepth = lerp(shadowMapDepth, shadowMapDepth2, normalizedDepth);
 	float pixelShadowDepth = lerp(pixelPosCascade.z, pixelPosCascade2.z, normalizedDepth);
 
-	float3 normal = deferred_normal.SampleLevel(samplerClampPoint, uv, 0).xyz;
+	float3 normal = deferred_normal.SampleLevel(samplerClamp, uv, 0).xyz;
 	float bias = dot(directionalLight.direction, normal);
 	//bias = 1.0f - bias;
 	bias = clamp(bias , 0.0075, 0.03);
@@ -276,10 +271,11 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 {
 	Output output;
 	
+	
 	float2 uv = inputPixel.tex;
-	float1 depth = deferred_depth.Sample(samplerClampPoint, uv).x;
+	float1 depth = deferred_depth.Sample(samplerClamp, uv).x;
 
-	float4 fullAlbedo = deferred_diffuse.Sample(samplerClampPoint, uv).rgba;
+	float4 fullAlbedo = deferred_diffuse.Sample(samplerClamp, uv).rgba;
 
 	//if (depth >= DEPTH_BIAS)
 	//{
@@ -293,7 +289,7 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 
 	float3 normal = Normal(uv);
 
-	float4 RMAO = deferred_RMAO.Sample(samplerClampPoint, uv);
+	float4 RMAO = deferred_RMAO.Sample(samplerClamp, uv);
 	float3 metalness = RMAO.yyy;
 
 	float3 metalnessAlbedo = albedo - (albedo * metalness);

@@ -14,7 +14,7 @@ int LoadCamera(KLoader::SLoadedComponentData /*someData*/)
 {
 	GET_LOADMANAGER(loadManager);
 
-	CU::Camera& playerCamera = loadManager.GetCurrentScene().GetCamera(CScene::eCameraType::ePlayerOneCamera);
+	CU::Camera& playerCamera = loadManager.GetCurrentScene().GetRenderCamera(CScene::eCameraType::ePlayerOneCamera).GetCamera();
 
 	CCameraComponent* cameraComponent = new CCameraComponent();
 	CComponentManager::GetInstance().RegisterComponent(cameraComponent);

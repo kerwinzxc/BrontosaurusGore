@@ -45,7 +45,7 @@ void CSpawnerComponent::Update(const float aDeltaTime)
 
 void CSpawnerComponent::SpawnEnemy()
 {
-	DL_PRINT("Spawning Enemy");
+	//DL_PRINT("Spawning Enemy");
 	/*myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eCheckPointReset, SComponentMessageData());
 
 	myEnemy->GetParent()->NotifyComponents(eComponentMessageType::eActivate,SComponentMessageData());*/
@@ -56,47 +56,7 @@ void CSpawnerComponent::SpawnEnemy()
 	//activeMessage->SetNetworkID(myEnemy->GetNetworkID());
 	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
 
-
-
-	switch (myEnemyType)
-	{
-	case eEnemyTypes::eImp:
-	{
-		SImpBlueprint aData;
-		aData.speed = 1.0f;
-		aData.jumpHeight = 4.0f;
-		aData.detectionRange = 30.0f;
-		aData.walkToMeleeRange = 10.f;
-		aData.startAttackRange = 4.0f;
-		aData.stopAttackRange = 5.0f;
-		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-	}
-	break;
-	case eEnemyTypes::ePinky:
-	{
-		SPinkyBlueprint aData;
-		aData.speed = 10.0f;
-		aData.detectionRange = 30.0f;
-		aData.walkToMeleeRange = 0.f;
-		aData.startAttackRange = 0.0f;
-		aData.stopAttackRange = 1.0f;
-		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-	}
-	break;
-	case eEnemyTypes::eRevenant:
-	{
-		SRevenantBlueprint aData;
-		aData.speed = 10.0f;
-		aData.detectionRange = 30.0f;
-		aData.walkToMeleeRange = 0.f;
-		aData.startAttackRange = 0.0f;
-		aData.stopAttackRange = 1.0f;
-		myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(&aData, myEnemyType, GetParent()->GetWorldPosition());
-	}
-	break;
-	default:
-		break;
-	}
+	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetWorldPosition());
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddEnemyToWave(myEnemy));
 }
@@ -117,7 +77,6 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 
 eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMessage)
 {
-	DL_PRINT("hej");
 	for (int i = 0; i < myWaves.Size(); i++)
 	{
 		if (myWaves[i] == aStartWaveMessage.GetWave())

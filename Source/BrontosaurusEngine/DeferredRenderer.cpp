@@ -18,9 +18,11 @@
 #include "TextureManager.h"
 #include "Engine.h"
 
+#ifdef _ENABLE_RENDERMODES
 #include <../CommonUtilities/InputWrapper.h>
 #include "WindowsWindow.h"
 #include "EKeyboardKeys.h"
+#endif
 
 CDeferredRenderer::CDeferredRenderer()
 {
@@ -28,7 +30,7 @@ CDeferredRenderer::CDeferredRenderer()
 	myFramework = CEngine::GetInstance()->GetFramework();
 	CU::Vector2ui windowSize = CEngine::GetInstance()->GetWindowSize();
 
-	myGbuffer.Init(windowSize, myFramework, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	//myGbuffer.Init(windowSize, myFramework, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myIntermediatePackage.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mySSAORandomTexture = &CEngine::GetInstance()->GetTextureManager().LoadTexture("SSAORandomTexture.dds");
@@ -86,27 +88,13 @@ void CDeferredRenderer::InitPointLightModel()
 	myLightModel->Init(effect, mesh);
 }
 
-void CDeferredRenderer::DoRenderMessage(SRenderMessage* aRenderMessage)
-{
-	switch (aRenderMessage->myType)
-	{
-	case SRenderMessage::eRenderMessageType::eRenderModelDeferred:
-	{
-		SRenderModelDeferredMessage* msg = static_cast<SRenderModelDeferredMessage*>(aRenderMessage);
-		CModelManager* modelManager = CEngine::GetInstance()->GetModelManager();
-		if (!modelManager) break;
-		CModel* model = modelManager->GetModel(msg->myModelID);
-		if (!model) break;
-		model->Render(msg->myRenderParams);
-		break;
-	}
-	default:
-		break;
-	}
-}
-
 void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 {
+	if (myGbuffer.IsInited() == false)
+	{
+		myRenderMessages.RemoveAll();
+		return;
+	}
 	myGbuffer.Clear();	
 	myGbuffer.UnbindInput();
 	myGbuffer.BindOutput();
@@ -159,10 +147,12 @@ void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 		}
 		case SRenderMessage::eRenderMessageType::eChangeStates:
 		{
-			SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
-			aRenderer.SetStates(msg);
+			//SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(myRenderMessages[i]);
+			//aRenderer.SetStates(msg);
 			break;
 		}
+		default:
+			break;
 		}
 	}
 
@@ -196,6 +186,7 @@ void CDeferredRenderer::UpdateCameraBuffer(const CU::Matrix44f & aCameraSpace, c
 
 void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer)
 {
+	if (myGbuffer.IsInited() == false) return;
 	SetCBuffer();
 
 	//SSAO
@@ -209,7 +200,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		changeStateMessage.myBlendState = eBlendState::eMulBlend;
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		aRenderer.SetStates(&changeStateMessage);
-
 		DoSSAO(aFullscreenHelper);
 	}
 	SChangeStatesMessage changeStateMessage = {};
@@ -244,9 +234,6 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		break;
 	case ERenderMode::eSSAO:
 		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.myRMAO);
-		break;
-	case ERenderMode::eHighlight:
-		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
 		break;
 	case ERenderMode::eIntermediate:
 		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
@@ -297,6 +284,7 @@ ID3D11ShaderResourceView* CDeferredRenderer::GetDepthResource()
 
 void CDeferredRenderer::ActivateIntermediate()
 {
+
 	myGbuffer.UnbindOutput();
 	myIntermediatePackage.Clear();
 	myIntermediatePackage.Activate();
@@ -373,7 +361,7 @@ void CDeferredRenderer::DoHighlight(CFullScreenHelper& aFullscreenHelper, CRende
 	changeStateMessage.myBlendState = eBlendState::eOverlay;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myHighLight);
+	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.myEmissive);
 }
 
 void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)
@@ -385,6 +373,11 @@ void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)
 
 	myFramework->GetDeviceContext()->PSSetShaderResources(6, 1, mySSAORandomTexture->GetShaderResourceViewPointer());
 	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eSSAO);
+}
+
+void CDeferredRenderer::SetGeometryBuffer(CGeometryBuffer& aGeometryBuffer)
+{
+	myGbuffer = aGeometryBuffer;
 }
 
 #ifdef _ENABLE_RENDERMODES

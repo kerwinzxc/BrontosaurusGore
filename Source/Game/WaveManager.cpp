@@ -9,6 +9,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_DoorMessage.h"
 #include "../TServer/ServerMessageManager.h"
+#include "../Game/PollingStation.h"
 
 CWaveManager::CWaveManager()
 {
@@ -20,9 +21,11 @@ CWaveManager::CWaveManager()
 	myWaveCount = 0;
 	myNumberOfPlayers = 0;
 	myNumberOfWavesToSpawn = 0;
+	myResetToWaveCount = 0;
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::ePlayerEnterArena);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddEnemyToWave);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 
 }
 
@@ -33,19 +36,20 @@ CWaveManager::~CWaveManager()
 
 void CWaveManager::StartWave()
 {
-	DL_PRINT("TotalWaves:");
-	DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
+	//DL_PRINT("TotalWaves:");
+	//DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
 	if (myWaveCount < myNumberOfWavesToSpawn)
 	{
 		myWaveCount++;
-		DL_PRINT("Wave:");
-		DL_PRINT(std::to_string(myWaveCount).c_str());
-		DL_PRINT("BroadCast StartWave");
+		//DL_PRINT("Wave:");
+		//DL_PRINT(std::to_string(myWaveCount).c_str());
+		//DL_PRINT("BroadCast StartWave");
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CStartWaveMessage(myWaveCount));
 	}
 	else
 	{
-		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
+		myResetToWaveCount = myWaveCount;
+ 		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eUnlock);
 		door->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door));
@@ -74,7 +78,7 @@ void CWaveManager::Update()
 
 eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 {
-	DL_PRINT("EnemyAdded");
+	//DL_PRINT("EnemyAdded");
 	myEnemiesInWave.Add(aAddEnemyToWave.GetEnemy());
 
 	return eMessageReturn::eContinue;
@@ -83,19 +87,31 @@ eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena)
 {
 
-	DL_PRINT("WaveManager: PlayerEntered");
+	//DL_PRINT("WaveManager: PlayerEntered");
 	myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
 	myNumberOfWavesToSpawn = aPlayerEnteredArena.GetWaveAmount();
 
-	if (myPlayersInsideArena >= myNumberOfPlayers)
+	if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
 		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eClose);
 		door->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door));
+		CNetworkMessage_DoorMessage* door2 = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
+		door2->SetDoorAction(eDoorAction::eLock);
+		door2->SetKeyID(myKeyIDToUnlock);
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
 		StartWave();
 	}
+
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToCheckpointMessage)
+{
+	myWaveCount = myResetToWaveCount;
+	myNumberOfPlayers = 0;
 
 	return eMessageReturn::eContinue;
 }

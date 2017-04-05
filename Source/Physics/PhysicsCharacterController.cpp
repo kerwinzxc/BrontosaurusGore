@@ -37,9 +37,14 @@ namespace Physics
 		controllerFilters.mFilterData = &filterData;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
 
-		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y - 1000.0f * aDeltaTime.GetSeconds(), aDisplacement.z }; //TODO: om knas kanske här
+		physx::PxVec3 displacement = { aDisplacement.x, aDisplacement.y - 1000.0f * aDeltaTime.GetSeconds(), aDisplacement.z }; //TODO: om knas kanske här //Ja det ligger något i det. MvH Alex
 		physx::PxControllerCollisionFlags flags = myController->move(displacement, myData.minMoveDistance, aDeltaTime.GetSeconds(), controllerFilters);
 		SetCollisionFlags((uint8_t)flags);
+	}
+
+	void CPhysicsCharacterController::SetIsActive(const bool aIsActive)
+	{
+		myController->getActor()->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
 	}
 
 	void CPhysicsCharacterController::Resize(const float aHeight)

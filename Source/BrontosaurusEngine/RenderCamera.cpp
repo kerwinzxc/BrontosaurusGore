@@ -7,7 +7,7 @@
 
 #include "GeometryBuffer.h"
 
-CRenderCamera::CRenderCamera(const bool aDeferred /*= false*/)
+CRenderCamera::CRenderCamera(const bool aDeferred /*= true*/)
 {
 	myRenderQueue.Init(32);
 	myIsShadowCamera = false;
@@ -58,12 +58,9 @@ void CRenderCamera::AddRenderMessage(SRenderMessage * aRenderMessage)
 void CRenderCamera::Render()
 {
 	SRenderCameraQueueMessage * camqueueMsg = new SRenderCameraQueueMessage();
-	camqueueMsg->myCamera = myCamera;
-	camqueueMsg->CameraRenderPackage = myRenderPackage;
-	camqueueMsg->CameraRenderQueue = myRenderQueue;
-	camqueueMsg->RenderDepth = myIsShadowCamera;
+	camqueueMsg->myRenderCamera = *this;
 	RENDERER.AddRenderMessage(camqueueMsg);
-	myRenderQueue.RemoveAll(); // these are deleted on the render thread
+	myRenderQueue.RemoveAll();
 }
 
 ID3D11PixelShader* CRenderCamera::GetShadowShader()

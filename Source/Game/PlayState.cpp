@@ -215,9 +215,12 @@ void CPlayState::Load()
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
-	CU::Camera& playerCamera = myScene->GetCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.Init(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 1000.f);
+	myScene->AddCamera(CScene::eCameraType::eWeaponCamera);
+	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
+	CRenderCamera& weaponCamera = myScene->GetRenderCamera(CScene::eCameraType::eWeaponCamera);
 
+	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 250.f);
+	weaponCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 10.f);
 
 	myWeaponFactory->LoadWeapons();
 
@@ -231,7 +234,7 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
-	CreatePlayer(playerCamera); // Hard codes Player!;
+	CreatePlayer(playerCamera.GetCamera()); // Hard codes Player!;
 
 
 	myScene->SetSkybox("default_cubemap.dds");
@@ -241,6 +244,8 @@ void CPlayState::Load()
 
 	myIsLoaded = true;
 	
+	CEnemyFactory::GetInstance()->LoadBluePrints(levelsArray.at(myLevelIndex).GetString());
+
 	// Get time to load the level:
 	loadPlaystateTimer.Update();
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
@@ -276,7 +281,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
-
+	
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
 	myHUD.Update(aDeltaTime);
@@ -421,7 +426,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	SComponentMessageData giveAmmoData;
 
 	addHandGunData.myString = "BFG";
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 	SAmmoReplenishData tempAmmoReplensihData;
 	tempAmmoReplensihData.ammoType = "BFG";
 	tempAmmoReplensihData.replenishAmount = 100;
@@ -429,21 +434,21 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 	addHandGunData.myString = "Shotgun";
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 	tempAmmoReplensihData.ammoType = "Shotgun";
 	tempAmmoReplensihData.replenishAmount = 100;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 	addHandGunData.myString = "PlasmaRifle";
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 	tempAmmoReplensihData.ammoType = "PlasmaRifle";
 	tempAmmoReplensihData.replenishAmount = 1000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 	addHandGunData.myString = "MeleeWeapon";
-	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 	tempAmmoReplensihData.ammoType = "MeleeWeapon";
 	tempAmmoReplensihData.replenishAmount = 1000000;
 	giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
@@ -503,7 +508,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		SComponentMessageData giveAmmoData;
 
 		addHandGunData.myString = "BFG";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 		SAmmoReplenishData tempAmmoReplensihData;
 		tempAmmoReplensihData.ammoType = "BFG";
 		tempAmmoReplensihData.replenishAmount = 100;
@@ -511,21 +516,21 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		addHandGunData.myString = "Shotgun";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 		tempAmmoReplensihData.ammoType = "Shotgun";
 		tempAmmoReplensihData.replenishAmount = 100;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		addHandGunData.myString = "PlasmaRifle";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 		tempAmmoReplensihData.ammoType = "PlasmaRifle";
 		tempAmmoReplensihData.replenishAmount = 1000;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		addHandGunData.myString = "MeleeWeapon";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeapon, addHandGunData);
+		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 		tempAmmoReplensihData.ammoType = "MeleeWeapon";
 		tempAmmoReplensihData.replenishAmount = 1000000;
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
