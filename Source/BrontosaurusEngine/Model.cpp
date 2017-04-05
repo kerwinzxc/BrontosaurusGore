@@ -175,9 +175,9 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	CHECK_RESULT(result, "Failed to create instanceBuffer.");
 	///////////////////////////////////////////////////////
 
-
+	
 	//ANIMATION BUFFER
-	if (aLoadedMesh->myScene != nullptr && aLoadedMesh->myScene->myScene->mNumAnimations > 0)
+	if (aLoadedMesh->myScene != nullptr && /*aLoadedMesh->myScene->myScene->mNumAnimations*/(aLoadedMesh->myShaderType & EModelBluePrint_Bones) > 0)
 	{
 		SAnimationBoneStruct boneBuffer;
 		myBoneBuffer = BSR::CreateCBuffer<SAnimationBoneStruct>(&boneBuffer);
@@ -455,12 +455,18 @@ void CModel::UpdateInstanceBuffer(const unsigned int aStartIndex)
 	DEVICE_CONTEXT->Unmap(myInstanceBuffer, 0);
 }
 
+#include "../Physics/PhysXHelper.h"
+
 void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut)
 {
 	for (size_t i = 0; i < aBlendFrom.size(); ++i)
 	{
+		CU::Matrix44f lerpedid = aBlendFrom[i].Lerp(aBlendTo[i].GetRotation(), aLerpValue);
+		CU::Matrix44f slerped = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
+		CU::Matrix44f difference = lerpedid - slerped;
+		aBlendOut[i] = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
 		//aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
-		aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
+		//aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
 		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
 	}
 }
@@ -477,11 +483,8 @@ std::vector<mat4>& CModel::GetBones(float aTime, const eAnimationState aAnimatio
 
 		return mySceneAnimator->GetTransforms(aTime, aAnimationLooping);
 	}
-	static std::vector<mat4> locNullBones;
-	if (locNullBones.empty())
-	{
-		locNullBones.push_back(mat4());
-	}
+
+	static std::vector<mat4> locNullBones = { mat4::Identity };
 
 	return locNullBones;
 }

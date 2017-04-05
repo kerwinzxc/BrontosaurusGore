@@ -36,6 +36,9 @@ namespace Physics
 
 		void Move(const CU::Vector3f& aDisplacement, const CU::Time aDeltaTime);
 
+
+		void SetIsActive(const bool aIsActive);
+
 		void Resize(const float aHeight);		
 		CU::Vector3f GetFootPosition();
 

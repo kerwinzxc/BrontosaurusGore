@@ -31,15 +31,12 @@ public:
 	friend class CModelComponent;
 
 public:
-	CModelInstance(const char* aModelPath);
+	CModelInstance(const std::string& aModelPath);
+	CModelInstance(const CModelInstance& aCopy) = delete;
 	~CModelInstance();
 
 	bool ShouldRender();
 	CU::Sphere GetModelBoundingSphere();
-	inline const CU::Matrix44f& GetTransformation() const;
-	inline const CU::Matrix44f& GetLastFrameTransformation() const;
-	void SetVisibility(const bool aFlag);
-	inline bool GetVisibility() { return myIsVisible; }
 
 	void RenderDeferred();
 	void RenderDeferred(CRenderCamera & aRenderToCamera);
@@ -60,17 +57,18 @@ public:
 	eAnimationState GetAnimationState() const;
 	float GetAnimationCounter() const;
 
-	
-	inline ModelId GetModelID();
 	void SetHighlightIntencity(const float aHighlightIntencity);
-
 	void SetHighlight(const CU::Vector4f& aColor, float anIntensivit);
 
+	inline const CU::Matrix44f& GetTransformation() const;
+	inline const CU::Matrix44f& GetLastFrameTransformation() const;
+	inline void SetVisibility(const bool aIsVisible);
+	inline bool GetVisibility();
+	inline ModelId GetModelID();
 	inline void SetIgnoreDepth(const bool aShouldIgnore);
 	inline bool GetIgnoreDepth() const;
 
 private:
-
 	CU::Matrix44f myTransformation;
 	CU::Matrix44f myLastFrame;
 
@@ -101,16 +99,15 @@ inline const CU::Matrix44f& CModelInstance::GetLastFrameTransformation() const
 	return myLastFrame;
 }
 
-inline void CModelInstance::SetVisibility(const bool aFlag)
+inline void CModelInstance::SetVisibility(const bool aIsVisible)
 {
-	myIsVisible = aFlag;
+	myIsVisible = aIsVisible;
 }
 
 inline int CModelInstance::GetModelID()
 {
 	return myModel;
 }
-
 
 inline void CModelInstance::SetIgnoreDepth(const bool aShouldIgnore)
 {
@@ -120,4 +117,9 @@ inline void CModelInstance::SetIgnoreDepth(const bool aShouldIgnore)
 inline bool CModelInstance::GetIgnoreDepth() const
 {
 	return myIgnoreDepth;
+}
+
+inline bool CModelInstance::GetVisibility()
+{
+	return myIsVisible;
 }

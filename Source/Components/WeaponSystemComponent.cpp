@@ -5,7 +5,6 @@
 #include "PlayerControls.h"
 #include "AmmoReplenishData.h"
 #include "AmmoData.h"
-#include "TextInstance.h"
 #include "WeaponData.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
@@ -25,14 +24,6 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myIsShooting = false;
 	myTemporaryAmmoDataList.Init(5);
 
-	if(CFontEngineFacade::GetIsCreated() == true)
-	{
-		myActiveWeaponAmmoLeftText = new CTextInstance();
-		myActiveWeaponAmmoLeftText->SetColor(CTextInstance::Red);
-		myActiveWeaponAmmoLeftText->SetPosition(CU::Vector2f(0.2f, 0.3f));
-		myActiveWeaponAmmoLeftText->SetText(L"");
-		myActiveWeaponAmmoLeftText->Init();
-	}
 	myIsActive = true;
 }
 
@@ -215,29 +206,6 @@ void CWeaponSystemComponent::Update(float aDelta)
 	for(unsigned short i = 0; i < myWeapons.Size(); i++)
 	{
 		myWeapons[i]->Update(aDelta);
-	}
-	SComponentQuestionData ammoLeftQuestionData;
-	SAmmoLeftData ammoLeftData;
-
-	if (CFontEngineFacade::GetIsCreated() == true)
-	{
-		if(WeaponIndexValid() == true)
-		{
-			ammoLeftData.weaponName = myWeapons[myActiveWeaponIndex]->GetData()->name.c_str();
-			ammoLeftQuestionData.myAmmoLeftData = &ammoLeftData;
-			if (GetParent()->AskComponents(eComponentQuestionType::eGetAmmoLeftString, ammoLeftQuestionData) == true)
-			{
-				std::string ammoLeftText = ammoLeftQuestionData.myAmmoLeftData->weaponName;
-				ammoLeftText += ": ";
-				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->ammoLeft);
-				ammoLeftText += "/";
-				ammoLeftText += std::to_string(ammoLeftQuestionData.myAmmoLeftData->maxAmmo);
-
-				myActiveWeaponAmmoLeftText->SetText(CU::StringToWString(ammoLeftText));
-			}
-			myActiveWeaponAmmoLeftText->Render();
-		}
-		
 	}
 }
 
