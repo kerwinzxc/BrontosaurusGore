@@ -92,8 +92,13 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	newProjectileObject->GetLocalTransform().Scale(CU::Vector3f(0.1, 0.1, 0.1));
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	newProjectileObject->AddComponent(tempProjectileComponent);
-	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
-	newProjectileObject->AddComponent(modelComponent);
+	if (!myPassiveProjectiles[aIndex]->projectileName.empty())
+	{
+		//BUGG: carl did this, don't know if it causes problems
+		CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
+		newProjectileObject->AddComponent(modelComponent);
+	}
+
 	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
