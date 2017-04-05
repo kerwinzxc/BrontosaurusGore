@@ -31,6 +31,8 @@ public:
 	void UnbindOutput();
 	void Clear();
 
+	CRenderPackage& GetRenderPackage(const EGeometryPackage aPackageType);
+
 	bool IsInited();
 private:
 	CRenderPackage myDiffuse;
