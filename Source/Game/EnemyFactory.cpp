@@ -151,7 +151,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	}
 	break;
 	}
-	controller->KillEverythingThenResetItAgain(false);
+	controller->KillEverythingThenResetItAgain(true);
 	imp->AddComponent(controller);
 	imp->AddComponent(health);
 
@@ -182,6 +182,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	CEnemyClientRepresentation* enemy = &CEnemyClientRepresentationManager::GetInstance().CreateAndRegister();
 	enemy->SetEnemyType(aType);
+	enemy->KillEverythingThenResetItAgain(true);
 	repesention->AddComponent(enemy);
 
 	CModelComponent* model;
