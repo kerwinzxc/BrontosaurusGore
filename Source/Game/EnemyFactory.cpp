@@ -182,6 +182,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	CEnemyClientRepresentation* enemy = &CEnemyClientRepresentationManager::GetInstance().CreateAndRegister();
 	enemy->SetEnemyType(aType);
+	enemy->KillEverythingThenResetItAgain(true);
 	repesention->AddComponent(enemy);
 
 	CModelComponent* model;
