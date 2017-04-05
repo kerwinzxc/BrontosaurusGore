@@ -79,6 +79,8 @@ public:
 	eMessageReturn DoEvent(const CSendNetworkMessageMessage& aSendNetowrkMessageMessage) override;
 
 	void PrintDebugInfo();
+	void Shutdown();
+	bool IsClosed();
 private:
 
 	CU::TimerManager myTimerManager;
@@ -107,6 +109,7 @@ private:
 	float myPlayerRespawnTime;
 	bool myIsRunning;
 	bool myCanQuit;
-
+	bool myFinishedLoading;
+	bool myIsClosed;
 };
 
