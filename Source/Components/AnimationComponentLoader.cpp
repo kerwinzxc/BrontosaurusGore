@@ -43,7 +43,10 @@ namespace AnimationComponentLoader
 			}
 
 			CU::CJsonValue rootObject(jsonPath);
-
+			if (!rootObject.HasKey("states"))
+			{
+				return;
+			}
 			CU::CJsonValue statesObject = rootObject["states"];
 
 			//if (statesObject.HasKey("idle"))

@@ -19,10 +19,6 @@ CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 
 	AnimationComponentLoader::LoadAnimations(myModelComponent, myAnimationStates);
 
-	if (myAnimationStates.find("shoot") == myAnimationStates.end())
-	{
-		int br = 0;
-	}
 	myAnimationStack.Add(myAnimationStates["idle"]);
 
 	ourAnimations.Add(this);
