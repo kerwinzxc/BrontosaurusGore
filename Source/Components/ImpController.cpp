@@ -216,25 +216,21 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CImpController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
+	CEnemy::Receive(aMessageType, aMessageData);
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
 	{
 		myState = eImpState::eDead;
-		myIsDead = true;
-		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
 	{
 		myState = eImpState::eIdle;
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		break;
 	}
+	case eComponentMessageType::eTakeDamage:
+		StartHighlight();
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		switch (myState)
@@ -249,12 +245,7 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 			break;
 		}
 	}
-	case eComponentMessageType::eDeactivate:
-		myIsDead = true;
-		break;
-	case eComponentMessageType::eActivate:
-		myIsDead = false;
-		break;
+
 	}
 }
 
