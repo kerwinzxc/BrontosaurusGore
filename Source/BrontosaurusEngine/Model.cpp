@@ -220,6 +220,7 @@ void CModel::Render(SForwardRenderModelParams& aParamObj)
 		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
 	}
 }
+
 void CModel::Render(SDeferredRenderModelParams& aParamObj)
 {
 	if (aParamObj.myRenderToDepth == true)
@@ -248,49 +249,50 @@ void CModel::Render(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
 	
 }
-void CModel::Render(SShadowRenderModelParams& aParamObj)
-{
-	myForwardEffect->ActivateForDepth(aParamObj.aPixelshader);
 
-	if (mySurface != nullptr)
-	{
-		mySurface->Activate();
-	}
+//
+//void CModel::Render(SShadowRenderModelParams& aParamObj)
+//{
+//	myForwardEffect->ActivateForDepth(aParamObj.aPixelshader);
+//
+//	if (mySurface != nullptr)
+//	{
+//		mySurface->Activate();
+//	}
+//
+//	UpdateCBuffer(aParamObj);
+//
+//	UINT stride = myVertexSize;
+//	UINT offset = 0;
+//
+//	SLodData& currentLodModel = GetCurrentLODModel(aParamObj.myTransform.GetPosition());
+//
+//	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
+//	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+//
+//	if (myLODModels.GetLast().myIndexBuffer == nullptr)
+//	{
+//		DEVICE_CONTEXT->Draw(currentLodModel.myVertexCount, 0);
+//	}
+//	else
+//	{
+//		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
+//	}
+//}
 
-	UpdateCBuffer(aParamObj);
-
-	UINT stride = myVertexSize;
-	UINT offset = 0;
-
-	SLodData& currentLodModel = GetCurrentLODModel(aParamObj.myTransform.GetPosition());
-
-	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
-	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	if (myLODModels.GetLast().myIndexBuffer == nullptr)
-	{
-		DEVICE_CONTEXT->Draw(currentLodModel.myVertexCount, 0);
-	}
-	else
-	{
-		DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
-	}
-}
-
-void CModel::RenderInstanced(const bool aRenderDepth)
+void CModel::RenderInstanced(const bool aRenderDepth, ID3D11PixelShader* aDepthShader)
 {
 	if (aRenderDepth)
 	{
-		myDeferredEffect->ActivateForDepth(nullptr, true);
+		myDeferredEffect->ActivateForDepth(aDepthShader, true);
 	}
 	else
 	{
 		myDeferredEffect->Activate(true);
-	}
-
-	if (mySurface != nullptr)
-	{
-		mySurface->Activate();
+		if (mySurface != nullptr)
+		{
+			mySurface->Activate();
+		}
 	}
 
 	ID3D11DeviceContext* context = DEVICE_CONTEXT;
@@ -429,20 +431,20 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 		}
 	}
 }
-void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
-{
-	SDeferredRenderModelParams params;
-	params.aAnimationLooping = aParamObj.aAnimationLooping;
-	params.aAnimationState = aParamObj.aAnimationState;
-	params.aNextAnimationState = aParamObj.aNextAnimationState;
-	params.aAnimationLerper = aParamObj.aAnimationLerper;
-	params.aAnimationTime = aParamObj.aAnimationTime;
-	params.aHighlightIntencity = aParamObj.aHighlightIntencity;
-	params.myTransform = aParamObj.myTransform;
-	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
-	params.myRenderToDepth = false;
-	UpdateCBuffer(params);
-}
+//void CModel::UpdateCBuffer(SShadowRenderModelParams& aParamObj)
+//{
+//	SDeferredRenderModelParams params;
+//	params.aAnimationLooping = aParamObj.aAnimationLooping;
+//	params.aAnimationState = aParamObj.aAnimationState;
+//	params.aNextAnimationState = aParamObj.aNextAnimationState;
+//	params.aAnimationLerper = aParamObj.aAnimationLerper;
+//	params.aAnimationTime = aParamObj.aAnimationTime;
+//	params.aHighlightIntencity = aParamObj.aHighlightIntencity;
+//	params.myTransform = aParamObj.myTransform;
+//	params.myTransformLastFrame = aParamObj.myTransformLastFrame;
+//	params.myRenderToDepth = false;
+//	UpdateCBuffer(params);
+//}
 
 void CModel::UpdateInstanceBuffer(const unsigned int aStartIndex)
 {
