@@ -42,6 +42,7 @@ protected:
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange();
+	virtual inline bool WithinShootRange();
 	virtual inline bool WithinAttackRange();
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
@@ -63,6 +64,7 @@ protected:
 
 	float mySpeed;
 	float myDetectionRange2;
+	float myWeaponRange2;
 	float myStartAttackRange2;
 	float myStopAttackRange2;
 	float myWalkToMeleeRange2;
@@ -86,11 +88,17 @@ inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
 	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
 	myWalkToMeleeRange2 = aData->walkToMeleeRange *  aData->walkToMeleeRange;
+	myWeaponRange2 = aData->shootingRange * aData->shootingRange;
 }
 
 inline bool  CEnemy::WithinDetectionRange()
 {
 	return myDistToPlayer < myDetectionRange2;
+}
+
+inline bool CEnemy::WithinShootRange()
+{
+	return myDistToPlayer < myWeaponRange2;
 }
 
 inline bool CEnemy::WithinAttackRange()

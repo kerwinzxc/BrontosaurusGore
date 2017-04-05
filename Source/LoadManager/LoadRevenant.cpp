@@ -56,6 +56,15 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 		blueprint.chargeAirBarrageAttackDuration = 2.0f;
 	}
 
+	if (someData.myData.HasKey("ShootingRange") == true)
+	{
+		blueprint.shootingRange = someData.myData.at("ShootingRange").GetFloat();
+	}
+	else
+	{
+		blueprint.shootingRange = blueprint.detectionRange;
+	}
+
 	blueprint.flightHeight = someData.myData.at("FlightHeight").GetFloat();
 	blueprint.hoverTime = someData.myData.at("HoverDuration").GetFloat();
 

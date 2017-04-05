@@ -49,7 +49,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
 		}
-		else if (WithinDetectionRange())
+		else if (WithinShootRange())
 		{
 			myState = eRevenantState::eChargingRangedAttack;
 			if (myToPlayer.y > 2.0f)
@@ -57,6 +57,10 @@ void CRevenantController::Update(const float aDeltaTime)
 				myState = eRevenantState::eFlyAscend;
 				ApplyFlightForce();
 			}
+		}
+		else if (WithinDetectionRange())
+		{
+			myState = eRevenantState::eChase;
 		}
 		else
 		{
@@ -86,6 +90,9 @@ void CRevenantController::Update(const float aDeltaTime)
 		Attack();
 		myState = eRevenantState::eIdle;
 		break;
+	case eRevenantState::eChase:
+		LookAtPlayer();
+		myVelocity.z = mySpeed;
 	case eRevenantState::eFlyAscend:
 	{
 		LookAtPlayer();

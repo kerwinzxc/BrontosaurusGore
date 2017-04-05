@@ -54,10 +54,14 @@ void CPinkyController::Update(const float aDeltaTime)
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
-		else if (WithinDetectionRange())
+		else if (WithinShootRange())
 		{
 			myState = ePinkyState::eWindupCharge;
 			myWindupChargeTime = 0.0f;
+		}
+		else if(WithinDetectionRange() == true)
+		{
+			myState = ePinkyState::eChase;
 		}
 		else
 		{
@@ -78,6 +82,10 @@ void CPinkyController::Update(const float aDeltaTime)
 		ChangeWeapon(0);
 		Attack();
 		myState = ePinkyState::eIdle;
+		break;
+	case ePinkyState::eChase:
+		LookAtPlayer(); //impl. turn rate?
+		myVelocity.z = mySpeed;
 		break;
 	case ePinkyState::eWindupCharge:
 		myElapsedWindupTime += aDeltaTime;
