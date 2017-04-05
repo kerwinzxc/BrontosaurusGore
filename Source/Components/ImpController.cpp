@@ -130,6 +130,14 @@ void CImpController::Update(const float aDeltaTime)
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
+		if(GetIfSidesAreColliding() == true)
+		{
+			if (myIsJumping == true)
+			{
+				InitiateWander();
+			}
+			ApplyJumpForce(myJumpHeight);
+		}
 		break;
 	}
 	case eImpState::eChargingRangedAttack:
@@ -232,7 +240,7 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		switch (myState)
 		{
 		case eImpState::eWalkIntoMeleeRange:
-			myState = eImpState::eJump;
+			ApplyJumpForce(myJumpHeight);
 			break;
 		case eImpState::eRunAfterShooting:
 			InitiateWander();
