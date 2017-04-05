@@ -2,6 +2,7 @@
 #include "AnimationComponent.h"
 #include "ModelComponent.h"
 
+#include "../CommonUtilities/JsonValue.h"
 #include "../TShared/AnimationState.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
@@ -25,6 +26,9 @@ CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	, myModelComponent(aModelCompoent)
 	, myMainTimer(0.f)
 {
+
+	//CU::CJsonValue animationStates("Models/Animations/AnimationStates.json");
+
 	myType = eComponentType::eAnimationComponent;
 
 	idleState.myAnimationKey = eAnimationState::shot01;

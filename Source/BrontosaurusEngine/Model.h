@@ -118,7 +118,6 @@ private:
 	std::string myFilePath;
 #endif // _DEBUG
 
-	std::map<std::string, CSceneAnimator> mySceneAnimatorsOld;
 	std::map<eAnimationState, CSceneAnimator> mySceneAnimators;
 
 	CU::GrowingArray<SLodData> myLODModels;
