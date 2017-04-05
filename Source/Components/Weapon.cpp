@@ -170,14 +170,11 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 			if (CProjectileFactory::GetInstance() != nullptr)
 			{
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
-				if (myWeaponObject != nullptr)
-				{
-					shootPosition = myWeaponObject->GetWorldPosition();
-					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
-					localWeaponMatrix.Move(shootDisplacment);
-					shootPosition = localWeaponMatrix.GetPosition();
-
-				}
+			
+				shootPosition = myUser->GetWorldPosition();
+				CU::Matrix44f localWeaponMatrix = myUser->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				shootPosition = localWeaponMatrix.GetPosition();
 
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
