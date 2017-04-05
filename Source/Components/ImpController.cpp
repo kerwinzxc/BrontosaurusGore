@@ -32,9 +32,9 @@ CImpController::~CImpController()
 void CImpController::Update(const float aDeltaTime)
 {
 	UpdateBaseMemberVars(aDeltaTime);
-	UpdateJumpForces(aDeltaTime);
 	myVelocity.y = myJumpForce;
 	SendTransformationToServer();
+	UpdateJumpForces(aDeltaTime);
 	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
 	if(myIsDead == false && CanChangeState() == true)
 	{
@@ -53,11 +53,15 @@ void CImpController::Update(const float aDeltaTime)
 			}
 
 		}
-		else if (WithinDetectionRange() == true)
+		else if (WithinShootRange() == true)
 		{
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		}
+		else if (WithinDetectionRange() == true)
+		{
+			myState = eImpState::eChase;
 		}
 		else
 		{
@@ -82,6 +86,10 @@ void CImpController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -109,6 +117,17 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eJump:
 		ApplyJumpForce(myJumpHeight);
 		break;
+	case eImpState::eChase:
+	{
+		LookAtPlayer();
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
+	}
+	break;
 	case eImpState::eRunAfterShooting:
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
@@ -165,19 +184,19 @@ void CImpController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	//CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	//CU::Matrix44f rotation = transform.GetRotation();
-	//rotation.myForwardVector.y = 0.f;
+	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
+	CU::Matrix44f rotation = transform.GetRotation();
+	rotation.myForwardVector.y = 0.f;
 
 
-	//SComponentQuestionData data;
-	//data.myVector4f = myVelocity * rotation * aDeltaTime;
-	//data.myVector4f.w = aDeltaTime;
-	//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	//{
-	//	transform.SetPosition(data.myVector3f);
-	//	NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
-	//}
+	SComponentQuestionData data;
+	data.myVector4f = myVelocity * rotation * aDeltaTime;
+	data.myVector4f.w = aDeltaTime;
+	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+	{
+		transform.SetPosition(data.myVector3f);
+		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+	}
 
 	CheckForNewTransformation(aDeltaTime);
 }

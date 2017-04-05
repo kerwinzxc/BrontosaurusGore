@@ -6,6 +6,7 @@
 #include "../CommonUtilities/vector4.h"
 
 class CGameObject;
+class CEnemyRunTowardsComponent;
 
 class CEnemy : public CComponent, public Postmaster::ISubscriber
 {
@@ -17,6 +18,7 @@ public:
 	void UpdateBaseMemberVars(const float aDeltaTime);
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
+	static void AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTowardsComponent);
 
 	virtual void Attack();
 	virtual void Update(const float aDeltaTime) = 0;
@@ -42,6 +44,7 @@ protected:
 	virtual	void MoveForward(const float aMovAmount);
 
 	virtual inline bool WithinDetectionRange();
+	virtual inline bool WithinShootRange();
 	virtual inline bool WithinAttackRange();
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
@@ -49,6 +52,7 @@ protected:
 	bool GetIfSidesAreColliding();
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
+	static CU::GrowingArray<CEnemyRunTowardsComponent*> ourEnemyRunTowardsComponents;
 
 	CU::Vector3f myVelocity;
 	CU::Vector3f myClosestPlayerPos;
@@ -63,6 +67,7 @@ protected:
 
 	float mySpeed;
 	float myDetectionRange2;
+	float myWeaponRange2;
 	float myStartAttackRange2;
 	float myStopAttackRange2;
 	float myWalkToMeleeRange2;
@@ -86,11 +91,17 @@ inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
 	myStartAttackRange2 = aData->startAttackRange * aData->startAttackRange;
 	myStopAttackRange2 = aData->stopAttackRange * aData->stopAttackRange;
 	myWalkToMeleeRange2 = aData->walkToMeleeRange *  aData->walkToMeleeRange;
+	myWeaponRange2 = aData->shootingRange * aData->shootingRange;
 }
 
 inline bool  CEnemy::WithinDetectionRange()
 {
 	return myDistToPlayer < myDetectionRange2;
+}
+
+inline bool CEnemy::WithinShootRange()
+{
+	return myDistToPlayer < myWeaponRange2;
 }
 
 inline bool CEnemy::WithinAttackRange()

@@ -17,8 +17,6 @@
 #define PlayerOneCamera myRenderCameras[Intify(eCameraType::ePlayerOneCamera)]
 #define WeaponCamera myRenderCameras[Intify(eCameraType::eWeaponCamera)]
 
-
-#define SHADOWBUFFER_DIM /*16384*/1024
 #define USE_SHADOWS
 
 
@@ -88,7 +86,7 @@ void CScene::Render()
 	statemsg.myRasterizerState = eRasterizerState::eDefault;
 	statemsg.myDepthStencilState = eDepthStencilState::eDefault;
 	statemsg.myBlendState = eBlendState::eNoBlend;
-	statemsg.mySamplerState = eSamplerState::eDeferred;
+	statemsg.mySamplerState = eSamplerState::eClamp;
 	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
 	/*for (unsigned int i = 0; i < myPointLights.Size(); ++i)
@@ -222,7 +220,7 @@ InstanceID CScene::AddModelInstance(CModelInstance* aModelInstance)
 InstanceID CScene::AddDirectionalLight(const Lights::SDirectionalLight & aDirectionalLight)
 {
 	myDirectionalLight = aDirectionalLight;
-	myShadowMap->SetDirection(aDirectionalLight.direction);
+	myShadowMap->SetDirection(aDirectionalLight.direction.GetNormalized());
 	return 0;
 }
 

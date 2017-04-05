@@ -9,6 +9,7 @@ struct ID3D11PixelShader;
 class CRenderCamera
 {
 public:
+	friend class CScene;
 	friend class CRenderer;
 	CRenderCamera(const bool deferred = true);
 	~CRenderCamera();
@@ -37,6 +38,8 @@ private:
 	CRenderPackage myRenderPackage;
 	CU::GrowingArray<SRenderMessage*, unsigned int, false> myRenderQueue;
 	ID3D11PixelShader* myShadowPS;
+	ID3D11PixelShader* myShadowPSInstanced;
+
 	bool myIsShadowCamera;
 };
 
