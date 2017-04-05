@@ -99,8 +99,6 @@ void CCharacterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor
 		data.myComponent = static_cast<CComponent*>(compPtr);
 		GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerExit, data);
 		DL_PRINT("TriggerExit");
-	
-	
 }
 
 void CCharacterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
