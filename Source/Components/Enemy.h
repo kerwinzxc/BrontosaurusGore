@@ -40,6 +40,7 @@ protected:
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
 	void LookAtPlayer();
+	bool GetIfSidesAreColliding();
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 
