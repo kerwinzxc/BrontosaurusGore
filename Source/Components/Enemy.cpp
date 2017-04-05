@@ -6,6 +6,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../Physics/PhysicsCharacterController.h"
 
 #define nej false
 #define ja true
@@ -204,4 +205,18 @@ void CEnemy::Init()
 	SComponentMessageData healData;
 	healData.myInt = 1000000;
 	GetParent()->NotifyComponents(eComponentMessageType::eHeal, healData);
+}
+
+bool CEnemy::GetIfSidesAreColliding()
+{
+	SComponentQuestionData groundeddata;
+	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
+	{
+		myControllerConstraints = groundeddata.myChar;
+		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_SIDES)
+		{
+			return true;
+		}
+	}
+	return false;
 }
