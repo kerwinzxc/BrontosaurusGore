@@ -53,11 +53,15 @@ void CImpController::Update(const float aDeltaTime)
 			}
 
 		}
-		else if (WithinDetectionRange() == true)
+		else if (WithinShootRange() == true)
 		{
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		}
+		else if (WithinDetectionRange() == true)
+		{
+			myState = eImpState::eChase;
 		}
 		else
 		{
@@ -82,6 +86,10 @@ void CImpController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -109,6 +117,17 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eJump:
 		ApplyJumpForce(myJumpHeight);
 		break;
+	case eImpState::eChase:
+	{
+		LookAtPlayer();
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
+	}
+	break;
 	case eImpState::eRunAfterShooting:
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
@@ -293,19 +312,22 @@ bool CImpController::CheckIfInAir()
 void CImpController::InitiateWander()
 {
 
-	CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
-	if (myWanderAngle > 0)
-	{
-		myUsedAttackSinceLastRunning = 0;
-		myState = eImpState::eRunAfterShooting;
-		float randomAngles = rand() % (myWanderAngle);
-		randomAngles -= myWanderAngle * 0.5f;;
-		float randomRadians = randomAngles * (PI / 180.0f);
-		impMatrix.Rotate(randomRadians, CU::Axees::Y);
-		impMatrix.Rotate(PI, CU::Axees::Y);
-	}
-		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
-		myWanderToPosition = impMatrix.GetPosition();	
+	//CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
+	//if (myWanderAngle > 0)
+	//{
+	//	myUsedAttackSinceLastRunning = 0;
+	//	myState = eImpState::eRunAfterShooting;
+	//	float randomAngles = rand() % (myWanderAngle);
+	//	randomAngles -= myWanderAngle * 0.5f;;
+	//	float randomRadians = randomAngles * (PI / 180.0f);
+	//	impMatrix.Rotate(randomRadians, CU::Axees::Y);
+	//	impMatrix.Rotate(PI, CU::Axees::Y);
+	//}
+	//	impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
+	//	myWanderToPosition = impMatrix.GetPosition();
+	myState = eImpState::eRunAfterShooting;
+	myUsedAttackSinceLastRunning = 0;
+	myWanderToPosition = GetNearestJumpPosition();
 }
 
 bool CImpController::CanChangeState()

@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUM_CASCADES 4
+#define NUM_CASCADES 3
 
 struct SCascade
 {

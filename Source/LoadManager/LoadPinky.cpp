@@ -38,6 +38,15 @@ int LoadPinky(KLoader::SLoadedComponentData someData)
 		blueprint.chargeMeleeAttackDuration = 1.0f;
 	}
 
+	if (someData.myData.HasKey("ChargeRange") == true)
+	{
+		blueprint.shootingRange = someData.myData.at("ChargeRange").GetFloat();
+	}
+	else
+	{
+		blueprint.shootingRange = blueprint.detectionRange-1;
+	}
+
 	blueprint.chargeDamage = static_cast<healthPoint>(someData.myData.at("ChargeDamage").GetFloat());
 	blueprint.chargeSpeed = someData.myData.at("ChargeSpeed").GetFloat();
 	blueprint.chargeDistance = someData.myData.at("ChargeDistance").GetFloat();

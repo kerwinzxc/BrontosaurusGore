@@ -31,6 +31,7 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 
 	DoDamageHighlight(aDeltaTime);
+	CheckIfOutOfBounds();
 }
 
 void  CEnemyClientRepresentation::Init()
@@ -47,5 +48,25 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	case eComponentMessageType::eTookDamage:
 		StartHighlight();
 		break;
+	}
+}
+
+void CEnemyClientRepresentation::CheckIfOutOfBounds()
+{
+	if (GetParent()->GetWorldPosition().y < -100.0f)
+	{
+		SComponentMessageData takeDamageData;
+		takeDamageData.myInt = 10000;
+		GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);
+		//Teleport stuff back code
+		//CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+		////parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
+		//SComponentQuestionData data;
+		//data.myVector4f = (teleportPosition - parentTransform.GetPosition()) ;
+		//data.myVector4f.w = aDeltaTime.GetSeconds();
+		//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
+		//{
+		//	parentTransform.SetPosition(data.myVector3f);
+		//}
 	}
 }

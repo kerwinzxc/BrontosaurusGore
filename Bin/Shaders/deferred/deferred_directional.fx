@@ -1,7 +1,7 @@
 #include <..\Fullscreen\structs.fx>
 #include <..\oncePerFrame.fx>
 
-#define NUM_CASCADES 4
+#define NUM_CASCADES 3
 
 //**********************************************//
 //					TEXTURES					//
@@ -220,51 +220,47 @@ float4 GetCascadeProjectionSpacePosition(uint cascadeIndex, float3 worldPosition
 	return pixelCascadePos;
 }
 
+#define SHADOWMAP_TEXTURESIZE 2048.f * 4.f
+#define LOOP_SNURR 3
+static float2 shadowmapTexelSize = 1.0f / SHADOWMAP_TEXTURESIZE;
+
 float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 {
 	float output = 1.0f;
-	float2 texCoord;
-	uint cascadeIndex1 = GetCascadeIndex(depth);
-	uint cascadeIndex2 = cascadeIndex1;
 
-	float4 pixelPosCascade = GetCascadeProjectionSpacePosition(cascadeIndex1, worldPosition);
-	texCoord = GetShadowMapUV(cascadeIndex1, pixelPosCascade.xy);
+	uint cascadeIndex = GetCascadeIndex(depth);
+	float4 pixelPosCascade = GetCascadeProjectionSpacePosition(cascadeIndex, worldPosition);
+
+	float2 texCoord = GetShadowMapUV(cascadeIndex, pixelPosCascade.xy);
+
 	float shadowMapDepth = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
-
-	float4 pixelPosCascade2 = pixelPosCascade;
-	float shadowMapDepth2 = shadowMapDepth;
-	
-	float normalizedDepth = 0.0f;
-
-	if (cascadeIndex2 + 1 < NUM_CASCADES + 1)
-	{
-		cascadeIndex2 += 1;
-		normalizedDepth = depth;
-		normalizedDepth /= cascadeEnds[cascadeIndex2].x - cascadeEnds[cascadeIndex1];
-		normalizedDepth = 1.0f - normalizedDepth;
-	}
-	
-	if(normalizedDepth > 0.9f)
-	{
-		pixelPosCascade2 = GetCascadeProjectionSpacePosition(cascadeIndex2, worldPosition);
-		texCoord = GetShadowMapUV(cascadeIndex2, pixelPosCascade2.xy);
-		shadowMapDepth2 = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
-	}
-
-	float shadowDepth = lerp(shadowMapDepth, shadowMapDepth2, normalizedDepth);
-	float pixelShadowDepth = lerp(pixelPosCascade.z, pixelPosCascade2.z, normalizedDepth);
 
 	float3 normal = deferred_normal.SampleLevel(samplerClamp, uv, 0).xyz;
 	float bias = dot(directionalLight.direction, normal);
-	//bias = 1.0f - bias;
-	bias = clamp(bias , 0.0075, 0.03);
+				//max(0.05 * (1.0 - dot(normal, directionalLight.direction)), 0.005);
+	bias = clamp(bias , 0.008f, 0.04f);
 
-	if (shadowMapDepth < pixelPosCascade.z - bias && shadowDepth != 0.f)
+
+	if (shadowMapDepth < pixelPosCascade.z - bias && shadowMapDepth != 0.f)
 	{
 		output = 0.0f;
 	}
 	
-	return output;
+	float shadow = 0.0f;
+	float samples = 0.0f;
+
+	for (int x = -LOOP_SNURR; x <= LOOP_SNURR; ++x)
+	{
+		for (int y = -LOOP_SNURR; y <= LOOP_SNURR; ++y)
+		{
+			float pcfDepth = shadowBuffer.SampleLevel(samplerClamp, texCoord + float2(x, y) * shadowmapTexelSize /** ((float)(cascadeIndex + 1) / (float)NUM_CASCADES)*/, 0).x;
+			shadow += pixelPosCascade.z - bias > pcfDepth ? 0.0 : 1.0;
+			samples += 1.0f;
+		}
+	}
+
+	shadow /= samples;
+	return shadow;
 }
 
 Output PS_PosTex(PosTex_InputPixel inputPixel)
@@ -330,9 +326,7 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	
 	float1 pixelCamDepth = length(worldPosition - cameraPosition);
 
-	float shadow = ShadowBuffer(worldPosition, pixelCamDepth, uv);
-	//shadow += ShadowBuffer(worldPosition, cascadeIndex + 1);
-	//shadow = saturate(shadow);
+	float shadow = ShadowBuffer(worldPosition, pixelCamDepth, uv); // * lambert; ?? Cool? nee kommer bli bajs
 
 	float3 finalColor = (directionDiffuse + directionSpecularity);
 	finalColor *= directionalLight.intensity * shadow;

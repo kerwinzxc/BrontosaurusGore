@@ -8,12 +8,14 @@
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Physics/PhysicsCharacterController.h"
 #include "HighlightComponent.h"
+#include "EnemyRunTowardsComponent.h"
 
 #define nej false
 #define ja true
 
 
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
+CU::GrowingArray<CEnemyRunTowardsComponent*> CEnemy::ourEnemyRunTowardsComponents;
 
 CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myWalkToMeleeRange2(0), myIsAttacking(false), myControllerConstraints(0), myHighlightTimer(0), myDoingHighlight(false)
 {
@@ -273,4 +275,37 @@ bool CEnemy::GetIfSidesAreColliding()
 		}
 	}
 	return false;
+}
+
+void CEnemy::AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTowardsComponent)
+{
+	if (ourEnemyRunTowardsComponents.IsInitialized() == false)
+	{
+		ourEnemyRunTowardsComponents.Init(4);
+	}
+	ourEnemyRunTowardsComponents.Add(aEnemyRunTowardsComponent);
+}
+
+const CU::Vector3f CEnemy::GetNearestJumpPosition()
+{
+	const CU::Vector3f position = GetParent()->GetWorldPosition();
+
+	if (ourEnemyRunTowardsComponents.IsInitialized() == false || ourEnemyRunTowardsComponents.Size() == 0)
+	{
+		return position;
+	}
+
+	CU::Vector3f playerPos = ourEnemyRunTowardsComponents[0]->GetParent()->GetWorldPosition();
+	for (int i = 0; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	{
+		CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
+		const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
+
+		if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+		{
+			playerPos = newPlayerPos;
+		}
+	}
+
+	return playerPos;
 }

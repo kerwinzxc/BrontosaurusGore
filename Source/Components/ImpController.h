@@ -10,6 +10,7 @@ enum class eImpState
 	eRunAfterShooting,
 	eChargingRangedAttack,
 	eChargingMeleeAttack,
+	eChase,
 	eDead
 };
 class CImpController : public CEnemy

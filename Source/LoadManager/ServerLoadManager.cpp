@@ -13,6 +13,7 @@
 #include "LoadHealthComponent.h"
 #include "LoadSpawner.h"
 #include "LoadArenaTrigger.h"
+#include "LoadEnemyRunTowardsComponent.h"
 
 CServerLoadManager* CServerLoadManager::ourInstance = nullptr;
 
@@ -72,6 +73,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("CharacterController", LoadCharacterControllerServer);
 	loader.RegisterComponentLoadFunction("HealthComponent", LoadHealthComponent);
 	loader.RegisterComponentLoadFunction("ArenaTrigger", LoadArenaTrigger);
+	loader.RegisterComponentLoadFunction("EnemyJumpTargetComponent", LoadEnemyRunTowardsComponent);
 
 	//loader.RegisterComponentLoadFunction("MeshFilter", LoadMeshFilter);
 	//loader.RegisterComponentLoadFunction("Camera", LoadCamera);

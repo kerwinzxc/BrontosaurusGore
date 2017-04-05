@@ -99,6 +99,7 @@
       <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
     </ClInclude>
     <ClInclude Include="LoadArenaTrigger.h" />
+    <ClInclude Include="LoadEnemyRunTowardsComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -196,6 +197,7 @@
       <Filter>LoadThings\LoadWeaponPickupComponent</Filter>
     </ClCompile>
     <ClCompile Include="LoadArenaTrigger.cpp" />
+    <ClCompile Include="LoadEnemyRunTowardsComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
@@ -296,6 +298,9 @@
     </Filter>
     <Filter Include="LoadThings\LoadWeaponPickupComponent">
       <UniqueIdentifier>{fa4869d4-ff5e-47fa-a19c-3c00dfb507d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadThings\LoadEnemyRunTowardsComponent">
+      <UniqueIdentifier>{f1f4d383-3150-462f-8358-c2517bcd4156}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

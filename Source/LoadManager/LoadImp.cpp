@@ -83,6 +83,15 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 		blueprint.chargeMeleeAttackDuration = 1.0f;
 	}
 
+	if (someData.myData.HasKey("ShootingRange") == true)
+	{
+		blueprint.shootingRange = someData.myData.at("ShootingRange").GetFloat();
+	}
+	else
+	{
+		blueprint.shootingRange = blueprint.detectionRange-1;
+	}
+
 	blueprint.jumpHeight = someData.myData.at("JumpHeight").GetFloat();
 
 	CComponent* component = enemyComponentManager->CreateComponentAbstract(&blueprint, eEnemyTypes::eImp);
