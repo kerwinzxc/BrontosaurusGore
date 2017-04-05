@@ -79,7 +79,7 @@
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0), myCurrentTime(0), myPositionWaitTime(0)
 {
-
+	myCanUpdateEnemytransfromation = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 	CClientMessageManager::CreateInstance(*this);
@@ -217,6 +217,7 @@ void CClient::Update()
 			case ePackageType::eServerReady:
 			{
 				CNetworkMessage_ServerReady* serverReady = currentMessage->CastTo<CNetworkMessage_ServerReady>();
+				myCanUpdateEnemytransfromation = true;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CServerReadyMessage(serverReady->GetNumberOfPlayers()));
 			}
 			break;
@@ -247,10 +248,6 @@ void CClient::Update()
 					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
 					myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 				}
-				
-
-
-
 			}
 			break;
 			case ePackageType::eSpawnOtherPlayer:
@@ -276,7 +273,7 @@ void CClient::Update()
 			{
 				myNetworkRecieverComponents.clear();
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
-
+				myCanUpdateEnemytransfromation = false;
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(loadLevelMessage->myLevelIndex));
 			}
 			break;
@@ -422,10 +419,13 @@ void CClient::Update()
 			break;
 			case ePackageType::eEnemyTransformaion:
 			{
-				CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
-				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
-				target.SetFutureMatrix(message->GetTransformation());
-				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				if (CEnemyClientRepresentationManager::CheckIfCreated() && myCanUpdateEnemytransfromation)
+				{
+					CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
+					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
+					target.SetFutureMatrix(message->GetTransformation());
+					target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				}
 			}
 			break;
 			case ePackageType::eTakeDamage:
@@ -598,6 +598,7 @@ eMessageReturn CClient::DoEvent(const COtherPlayerSpawned& aMassage)
 
 eMessageReturn CClient::DoEvent(const CChangeLevel& aChangeLevelMessage)
 {
+	myCanUpdateEnemytransfromation = false;
 	myNetworkRecieverComponents.clear();
 	return eMessageReturn::eContinue;
 }

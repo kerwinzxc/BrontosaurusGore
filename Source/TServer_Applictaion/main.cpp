@@ -31,7 +31,6 @@ BOOL WINAPI HandleShutdown(DWORD type)
 
 int main(int argc, char* argv[])
 {
-	Postmaster::Threaded::CPostmaster::Create();
 	//CommandLineManager::CreateInstance(argc, argv);
 	DL_Debug::Debug::CreateInstance();
 	//PostMaster::CreateInstance();

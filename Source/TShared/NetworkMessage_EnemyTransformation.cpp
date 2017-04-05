@@ -2,7 +2,7 @@
 #include "NetworkMessage_EnemyTransformation.h"
 
 
-CNetworkMessage_EnemyTransformation::CNetworkMessage_EnemyTransformation()
+CNetworkMessage_EnemyTransformation::CNetworkMessage_EnemyTransformation(): myEnemyId(0)
 {
 }
 

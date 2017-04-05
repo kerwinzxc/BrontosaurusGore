@@ -61,6 +61,7 @@ private:
 
 	std::atomic_bool myIsRunning;
 	std::atomic_bool myCanQuit;
+	std::atomic_bool myCanUpdateEnemytransfromation;
 
 	CU::Matrix44f myLatestPlayerTransform;
 

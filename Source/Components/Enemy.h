@@ -3,6 +3,7 @@
 #include "EnemyBlueprint.h"
 #include "EnemyTypes.h"
 #include "../ThreadedPostmaster/Subscriber.h"
+#include "../CommonUtilities/vector4.h"
 
 class CGameObject;
 
@@ -12,12 +13,14 @@ public:
 	CEnemy(unsigned int aId, eEnemyTypes aType);
 	~CEnemy();
 
+	
 	void UpdateBaseMemberVars(const float aDeltaTime);
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
 
 	virtual void Attack();
 	virtual void Update(const float aDeltaTime) = 0;
+	void StartHighlight();
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 	void KillEverythingThenResetItAgain(const bool aFlag);
@@ -29,7 +32,10 @@ public:
 	virtual void Init();
 	inline const bool GetIsDead() const; 
 	inline const unsigned short GetNetworkID() const;
+	
+	void DoDamageHighlight(const float aDeltaTime);
 protected:
+	void SetHighlight(const CU::Vector4f& aColor, float aIntensity);
 	void CheckForNewTransformation(const float aDeltaTime);
 	void SendTransformationToServer();
 	virtual CU::Vector3f ClosestPlayerPosition();
@@ -68,6 +74,9 @@ protected:
 	bool myIsAttacking;
 	bool myShouldNotReset;
 	char myControllerConstraints;
+private:
+	float myHighlightTimer;
+	bool myDoingHighlight;
 };
 
 inline void CEnemy::SetEnemyData(const SEnemyBlueprint* aData)
