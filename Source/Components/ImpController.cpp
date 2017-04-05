@@ -275,7 +275,7 @@ void CImpController::InitiateWander()
 		float randomAngles = rand() % (myWanderAngle);
 		randomAngles -= myWanderAngle * 0.5f;;
 		float randomRadians = randomAngles * (PI / 180.0f);
-		//impMatrix.Rotate(PI, CU::Axees::Y);
+		impMatrix.Rotate(PI, CU::Axees::Y);
 		impMatrix.Rotate(randomRadians, CU::Axees::Y);
 	}
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
