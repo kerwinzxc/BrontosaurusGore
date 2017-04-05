@@ -23,6 +23,8 @@ CDoorComponent::CDoorComponent()
 	myOriginPosition = CU::Vector2f::Zero;
 	myType = eComponentType::eDoor;
 	myResetToPosition = CU::Matrix44f::Identity;
+
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 }
 
 
