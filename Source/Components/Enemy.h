@@ -6,6 +6,7 @@
 #include "../CommonUtilities/vector4.h"
 
 class CGameObject;
+class CEnemyRunTowardsComponent;
 
 class CEnemy : public CComponent, public Postmaster::ISubscriber
 {
@@ -17,6 +18,7 @@ public:
 	void UpdateBaseMemberVars(const float aDeltaTime);
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
+	static void AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTowardsComponent);
 
 	virtual void Attack();
 	virtual void Update(const float aDeltaTime) = 0;
@@ -50,6 +52,7 @@ protected:
 	bool GetIfSidesAreColliding();
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
+	static CU::GrowingArray<CEnemyRunTowardsComponent*> ourEnemyRunTowardsComponents;
 
 	CU::Vector3f myVelocity;
 	CU::Vector3f myClosestPlayerPos;
