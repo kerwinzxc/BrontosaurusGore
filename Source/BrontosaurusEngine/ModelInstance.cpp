@@ -30,7 +30,7 @@ CModelInstance::CModelInstance(const std::string& aModelPath)
 	myAnimationLooping = true;
 	myIgnoreDepth = false;
 
-	if (aModelPath.find("Plasma") != std::string::npos)
+	if (aModelPath.find("lasma") != std::string::npos)
 	{
 		int br = 0;
 	}
