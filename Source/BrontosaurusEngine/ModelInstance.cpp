@@ -14,41 +14,41 @@
 #include "../TShared/AnimationState.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
-CModelInstance::CModelInstance(const char* aModelPath)
+CModelInstance::CModelInstance(const std::string& aModelPath)
 {
-	//if (std::string(aModelPath).find("MindControlled") != std::string::npos)
-	//{
-	//	int br = 0;
-	//}
-	if (std::string(aModelPath).find("Shotgun") != std::string::npos)
+	myCurrentAnimation = eAnimationState::idle01;
+	myNextAnimation = eAnimationState::none;
+
+	myModel = -1;
+
+	myAnimationLerpie = 0.f;
+	myAnimationCounter = 0.f;
+	myHighlightIntencity = 0.f;
+
+	myIsVisible = true;
+	myHasAnimations = false;
+	myAnimationLooping = true;
+	myIgnoreDepth = false;
+
+	if (aModelPath.find("Plasma") != std::string::npos)
 	{
 		int br = 0;
 	}
 
-	myIsVisible = true;
-	myHighlightIntencity = 0.f;
-	myAnimationCounter = 0.f;
-
 	CModelManager* modelManager = MODELMGR;
 	myModel = modelManager->LoadModel(aModelPath);
 	CModel* model = modelManager->GetModel(myModel);
-	if (model != nullptr)
-	{
-		myHasAnimations = model->HasAnimations();
-	}
-	myCurrentAnimation = eAnimationState::idle01;
-	myNextAnimation = eAnimationState::none;
-	myAnimationLerpie = 0.f;
-	myAnimationLooping = true;
-	myIgnoreDepth = false;
-}
 
+	myHasAnimations = model != nullptr && model->HasAnimations();
+}
 
 CModelInstance::~CModelInstance()
 {
-	if (myModel != NULL_MODEL)
+	CModel* model = MODELMGR->GetModel(myModel);
+	if (model)
 	{
-		MODELMGR->GetModel(myModel)->RemoveRef();
+		model->RemoveRef();
+		model = nullptr;
 		myModel = NULL_MODEL;
 	}
 }
@@ -192,24 +192,7 @@ void CModelInstance::RenderDeferred()
 		msg = lonelyMsg;
 	}
 
-	//SRenderModelDeferredMessage msg;
-	//msg.myModelID = myModel;
-	//msg.myRenderParams.myTransform = myTransformation;
-	//msg.myRenderParams.myTransformLastFrame = myLastFrame;
-	//msg.myRenderParams.myHighlightColor = myHighlightColor;
-	//msg.myRenderParams.myHighlightIntensivity = myHighlightIntencity;
-	//msg.myRenderParams.myRenderToDepth = false;
-	//msg.myRenderParams.aHighlightIntencity = myHighlightIntencity;
-	//if(myHasAnimations == true)
-	//{
-	//	msg.myRenderParams.aAnimationLooping = myAnimationLooping;
-	//	msg.myRenderParams.aAnimationState = myCurrentAnimation;
-	//	msg.myRenderParams.aNextAnimationState = myNextAnimation;
-	//	msg.myRenderParams.aAnimationLerper = myAnimationLerpie;
-	//	msg.myRenderParams.aAnimationTime = myAnimationCounter;
-	//}
-
-	RENDERER.AddRenderMessage(/*new SRenderModelDeferredMessage*/(msg));
+	RENDERER.AddRenderMessage(msg);
 }
 
 void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
@@ -309,6 +292,7 @@ void CModelInstance::SetAnimation(const eAnimationState aAnimationKey)
 void CModelInstance::SetAnimationLerpie(const float aLerpValue)
 {
 	myAnimationLerpie = aLerpValue;
+	CLAMP(myAnimationLerpie, 0.f, 1.f);
 }
 
 void CModelInstance::SetNextAnimation(const eAnimationState aAnimationKey)

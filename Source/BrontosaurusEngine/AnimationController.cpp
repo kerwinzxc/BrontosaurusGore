@@ -439,7 +439,8 @@ void CSceneAnimator::Init(const aiScene* pScene)
 	Skeleton = CreateBoneTree( pScene->mRootNode, NULL);
 	ExtractAnimations(pScene);
 	
-	for (unsigned int i = 0; i < pScene->mNumMeshes;++i)
+	unsigned int i = pScene->mNumMeshes - 1; i = 0;
+	//for (unsigned int i = 0; i < pScene->mNumMeshes && i < 1;++i)
 	{
 		const aiMesh* mesh = pScene->mMeshes[i];
 		
