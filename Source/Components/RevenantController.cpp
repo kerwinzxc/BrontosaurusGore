@@ -36,6 +36,14 @@ void CRevenantController::Update(const float aDeltaTime)
 {
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myFlightForce;
+	if(myIsflying == false)
+	{
+		myFlightForce -= gravityAcceleration * aDeltaTime;
+		if (CheckIfInAir() == false)
+		{
+			myFlightForce = 0.0f;
+		}
+	}
 	SendTransformationToServer();
 	UpdateFlightForces(aDeltaTime);
 
@@ -79,6 +87,10 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eWalkIntoMeleeRange:
 		LookAtPlayer();
 		myVelocity.z = mySpeed;
+		if (myToPlayer.y > 2.0f)
+		{
+			ApplyFlightForce();
+		}
 	break;
 	case eRevenantState::eUseMeleeAttack:
 		ChangeWeapon(2);
@@ -93,6 +105,10 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eChase:
 		LookAtPlayer();
 		myVelocity.z = mySpeed;
+		if (myToPlayer.y > 2.0f)
+		{
+			ApplyFlightForce();
+		}
 	case eRevenantState::eFlyAscend:
 	{
 		LookAtPlayer();

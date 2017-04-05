@@ -86,6 +86,10 @@ void CImpController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -118,6 +122,10 @@ void CImpController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
+		if (ShouldJumpAfterPlayer() == true)
+		{
+			myState = eImpState::eJump;
+		}
 	}
 	break;
 	case eImpState::eRunAfterShooting:
