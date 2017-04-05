@@ -41,83 +41,83 @@ void InitAudio();
 
 void Init(int argc, char* argv[])
 {
-	
+
 
 	Postmaster::Threaded::CPostmaster::Create();
 	CommandLineManager::CreateInstance(argc, argv);
 
-	
+
 
 	DL_Debug::Debug::CreateInstance();
 	InitAudio();
 	PostMaster::CreateInstance();
 
 	{
-		CGame game;
-		
-		SInitEngineParams engineParams;
-		engineParams.myWindowParams.Width = 1920;
-		engineParams.myWindowParams.Height = 1080;
-		engineParams.myWindowParams.Name = L"HighDoom";
-		engineParams.myWindowParams.Title = L"HighDoom";
-		engineParams.myWindowParams.Fullscreen = false;
-		engineParams.myThreadRender = true;
-		engineParams.myUseVsync = false;
+	CGame game;
 
-		int Iwidth;
-		int Iheight;
-		bool Bfullscreen = true;
+	SInitEngineParams engineParams;
+	engineParams.myWindowParams.Width = 1920;
+	engineParams.myWindowParams.Height = 1080;
+	engineParams.myWindowParams.Name = L"HighDoom";
+	engineParams.myWindowParams.Title = L"HighDoom";
+	engineParams.myWindowParams.Fullscreen = false;
+	engineParams.myThreadRender = true;
+	engineParams.myUseVsync = false;
 
-		if (CommandLineManager::GetInstance()->HasParameter("-width") == true)
-		{
-			std::string width;
-			width = CommandLineManager::GetInstance()->GetArgument("-width");
-			Iwidth = std::atoi(width.c_str());
-			engineParams.myWindowParams.Width = static_cast<unsigned short>(Iwidth);
-		}
-		if (CommandLineManager::GetInstance()->HasParameter("-height") == true)
-		{
-			std::string height;
-			height = CommandLineManager::GetInstance()->GetArgument("-height");
-			Iheight = std::atoi(height.c_str());
-			engineParams.myWindowParams.Height = static_cast<unsigned short>(Iheight);
-		}
-		if (CommandLineManager::GetInstance()->HasParameter("-fullscreen") == true)
-		{
-			std::string fullscreen;
-			fullscreen = CommandLineManager::GetInstance()->GetArgument("-fullscreen");
-			if (fullscreen == "False")
-			{
-				Bfullscreen = false;
-				//std::cout << "false" << std::endl;
-			}
-			else if (fullscreen == "True")
-			{
-				Bfullscreen = true;
-				//std::cout << "True" << std::endl;
-			}
-			engineParams.myWindowParams.Fullscreen = Bfullscreen;
-		}
-		if (CommandLineManager::GetInstance()->HasParameter("-noThreadRender") == true)
-		{
-			std::string fullscreen;
-			fullscreen = CommandLineManager::GetInstance()->GetArgument("-noThreadRender");
+	int Iwidth;
+	int Iheight;
+	bool Bfullscreen = true;
 
-			engineParams.myThreadRender = false;
-		}
-
-
-
-		engineParams.myInitCallbackFunction = std::bind(&CGame::Init, &game);
-		engineParams.myUpdateCallbackFunction = std::bind(&CGame::Update, &game, std::placeholders::_1);
-		engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
-		engineParams.myDebugFlags = DebugDrawerFlags();
-
-		
-		CEngine::GetInstance()->Init(engineParams);
-		//Physics::CPhysXManager::Create();
-		CEngine::GetInstance()->Start();
+	if (CommandLineManager::GetInstance()->HasParameter("-width") == true)
+	{
+		std::string width;
+		width = CommandLineManager::GetInstance()->GetArgument("-width");
+		Iwidth = std::atoi(width.c_str());
+		engineParams.myWindowParams.Width = static_cast<unsigned short>(Iwidth);
 	}
+	if (CommandLineManager::GetInstance()->HasParameter("-height") == true)
+	{
+		std::string height;
+		height = CommandLineManager::GetInstance()->GetArgument("-height");
+		Iheight = std::atoi(height.c_str());
+		engineParams.myWindowParams.Height = static_cast<unsigned short>(Iheight);
+	}
+	if (CommandLineManager::GetInstance()->HasParameter("-fullscreen") == true)
+	{
+		std::string fullscreen;
+		fullscreen = CommandLineManager::GetInstance()->GetArgument("-fullscreen");
+		if (fullscreen == "False")
+		{
+			Bfullscreen = false;
+			//std::cout << "false" << std::endl;
+		}
+		else if (fullscreen == "True")
+		{
+			Bfullscreen = true;
+			//std::cout << "True" << std::endl;
+		}
+		engineParams.myWindowParams.Fullscreen = Bfullscreen;
+	}
+	if (CommandLineManager::GetInstance()->HasParameter("-noThreadRender") == true)
+	{
+		std::string fullscreen;
+		fullscreen = CommandLineManager::GetInstance()->GetArgument("-noThreadRender");
+
+		engineParams.myThreadRender = false;
+	}
+
+
+
+	engineParams.myInitCallbackFunction = std::bind(&CGame::Init, &game);
+	engineParams.myUpdateCallbackFunction = std::bind(&CGame::Update, &game, std::placeholders::_1);
+	engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
+	engineParams.myDebugFlags = DebugDrawerFlags();
+
+
+	CEngine::GetInstance()->Init(engineParams);
+	//Physics::CPhysXManager::Create();
+	CEngine::GetInstance()->Start();
+}
 
 	Audio::CAudioInterface::Destroy();
 	CEngine::DestroyInstance();
@@ -126,6 +126,7 @@ void Init(int argc, char* argv[])
 	CommandLineManager::DestroyInstance();
 
 	Postmaster::Threaded::CPostmaster::Destroy();
+	PostQuitMessage(0);
 	//DumpMemoryLeeks();
 }
 

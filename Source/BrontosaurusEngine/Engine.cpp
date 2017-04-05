@@ -186,9 +186,12 @@ void CEngine::Start()
 	}
 
 	SetForegroundWindow(myWindowsWindow->GetHWND());
+	GetThreadPool()->GetInstance()->LogCreateThread();
 
-	while (GetIsRunning())
+	CU::SetThreadName("Game loop");
+	while (GetWindow()->GetIsWindowOpen())
 	{
+		GetThreadPool()->GetInstance()->LogEnd();
 		myTimerManager->UpdateTimers();
 		myInputManager->Update();
 
@@ -223,13 +226,16 @@ void CEngine::Start()
 		{
 			Render();
 		}
+		GetThreadPool()->GetInstance()->LogEnd();
 		std::this_thread::yield();
 	}
+
+	GetThreadPool()->GetInstance()->LogDestroyThread();
 }
 
 bool CEngine::GetIsRunning()
 {
-	return myWindowsWindow->GetIsWindowOpen();
+	return myInstance != nullptr && myInstance->myIsRunning == true;
 }
 
 void CEngine::ClearBackbuffer()
@@ -262,12 +268,15 @@ CEngine::CEngine()
 	, myParticleEmitterManager(nullptr)
 	, myFireEmitterManager(nullptr)
 	, myConsole(nullptr)
-	, myRendererIsRunning(false)
+	, myRendererIsRunning(true)
+	, myIsRunning(true)
 {
 }
 
 CEngine::~CEngine()
 {
+
+	CU::ThreadPool::Destroy();
 	if (myThreadRender == true)
 	{
 		myRenderer->Shutdown();
@@ -287,7 +296,6 @@ CEngine::~CEngine()
 	SAFE_DELETE(myShaderManager);
 	SAFE_DELETE(myLightManager);
 	SAFE_DELETE(myLineDrawer);
-	CU::ThreadPool::Destroy();
 	SAFE_DELETE(myParticleEmitterManager);
 	SAFE_DELETE(myFireEmitterManager);
 	SAFE_DELETE(myTextureManager);
@@ -296,6 +304,7 @@ CEngine::~CEngine()
 	myFontEngine.DestroyInstance();
 
 	Audio::CAudioInterface::Destroy();
+	myIsRunning = true;
 }
 
 

@@ -105,7 +105,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 
 	SSphereColliderData sphereColliderDesc;
-	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.myRadius = .1f;
 	sphereColliderDesc.IsTrigger = false;
 
 	unsigned int collideWith = Physics::CollideEverything;
