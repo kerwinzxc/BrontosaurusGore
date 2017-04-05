@@ -1,650 +1,184 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Precompiled</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSourceComponent.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSourceComponentManager.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraComponent.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraManager.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionComponent.cpp">
-      <Filter>Collisions</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionComponentManager.cpp">
-      <Filter>Collisions</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEmitterComponent.cpp">
-      <Filter>Particles</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEmitterComponentManager.cpp">
-      <Filter>Particles</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelComponent.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelComponentManager.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentManager.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectManager.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="StreakEmitterComponent.cpp">
-      <Filter>Particles</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptComponent.cpp">
-      <Filter>ScriptComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptComponentManager.cpp">
-      <Filter>ScriptComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentMessageTypeToLua.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="FireComponent.cpp">
-      <Filter>FireComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSourceComponentManager.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="StreakEmitterComponent.cpp">
-      <Filter>Particles</Filter>
-    </ClCompile>
-    <ClCompile Include="PointLightComponent.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="PointLightComponentManager.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponSystemComponent.cpp">
-      <Filter>Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="AmmoComponent.cpp">
-      <Filter>Ammo</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectileComponent.cpp">
-      <Filter>Projectile</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectileFactory.cpp">
-      <Filter>Projectile</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponFactory.cpp">
-      <Filter>Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponSystemManager.cpp">
-      <Filter>Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="InputComponent.cpp">
-      <Filter>InputComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="MovementComponent.cpp">
-      <Filter>MovementComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Precompiled</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectileComponentManager.cpp">
-      <Filter>Projectile</Filter>
-    </ClCompile>
-    <ClCompile Include="AmmoComponentManager.cpp">
-      <Filter>Ammo</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyComponentManager.cpp">
-      <Filter>Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkComponent.cpp">
-      <Filter>NetworkComponent</Filter>
-    </ClCompile>
+    <ClCompile Include="AmmoComponent.cpp" />
+    <ClCompile Include="AmmoComponentManager.cpp" />
+    <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="ArmorPickupComponent.cpp" />
+    <ClCompile Include="AudioSourceComponent.cpp" />
+    <ClCompile Include="AudioSourceComponentManager.cpp" />
+    <ClCompile Include="BoxColliderComponent.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="CapsuleColliderComponent.cpp" />
+    <ClCompile Include="CharacterControllerComponent.cpp" />
+    <ClCompile Include="CheckpointComponentManager.cpp" />
+    <ClCompile Include="CheckPointComponent.cpp" />
+    <ClCompile Include="CheckPointSystem.cpp" />
+    <ClCompile Include="ColliderComponent.cpp" />
+    <ClCompile Include="ColliderComponentManager.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
+    <ClCompile Include="CollisionComponentManager.cpp" />
+    <ClCompile Include="ComponentMessageTypeToLua.cpp" />
+    <ClCompile Include="DamageOnCollisionComponent.cpp" />
+    <ClCompile Include="DamageOnCollisionComponentManager.cpp" />
+    <ClCompile Include="DoorComponent.cpp" />
+    <ClCompile Include="DoorManager.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyClientRepresentation.cpp" />
+    <ClCompile Include="EnemyClientRepresentationManager.cpp" />
+    <ClCompile Include="EnemyComponentManager.cpp" />
+    <ClCompile Include="ExplosionComponent.cpp" />
+    <ClCompile Include="ExplosionComponentManager.cpp" />
+    <ClCompile Include="ExplosionFactory.cpp" />
+    <ClCompile Include="FireComponent.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="HealthComponentManager.cpp" />
+    <ClCompile Include="HealthPickupComponent.cpp" />
+    <ClCompile Include="ImpController.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
+    <ClCompile Include="IPickupComponent.cpp" />
+    <ClCompile Include="KeyPickupComponent.cpp" />
+    <ClCompile Include="MeshColliderComponent.cpp" />
+    <ClCompile Include="MovementComponent.cpp" />
+    <ClCompile Include="MovementComponentManager.cpp" />
+    <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkComponentManager.cpp" />
     <ClCompile Include="NetworkPlayerReciverComponent.cpp" />
-    <ClCompile Include="PlayerNetworkComponent.cpp">
-      <Filter>PlayerNetwork</Filter>
-    </ClCompile>
+    <ClCompile Include="AmmoPickupComponent.cpp" />
+    <ClCompile Include="PickupComponentManager.cpp" />
+    <ClCompile Include="PinkyController.cpp" />
+    <ClCompile Include="PlayerNetworkComponent.cpp" />
+    <ClCompile Include="PointLightComponent.cpp" />
+    <ClCompile Include="PointLightComponentManager.cpp" />
+    <ClCompile Include="ProjectileComponent.cpp" />
+    <ClCompile Include="ProjectileComponentManager.cpp" />
+    <ClCompile Include="ProjectileFactory.cpp" />
+    <ClCompile Include="RevenantController.cpp" />
+    <ClCompile Include="RigidBodyComponent.cpp" />
+    <ClCompile Include="ScriptComponent.cpp" />
+    <ClCompile Include="ScriptComponentManager.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
+    <ClCompile Include="ModelComponentManager.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="ParticleEmitterComponent.cpp" />
+    <ClCompile Include="ParticleEmitterComponentManager.cpp" />
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
-    <ClCompile Include="HealthComponent.cpp">
-      <Filter>Health</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ColliderComponentManager.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MovementComponentManager.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBodyComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckPointComponent.cpp">
-      <Filter>CheckPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationComponent.cpp" />
-    <ClCompile Include="SphereColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="CapsuleColliderComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyClientRepresentation.cpp">
-      <Filter>Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyClientRepresentationManager.cpp">
-      <Filter>Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplosionComponent.cpp">
-      <Filter>Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplosionFactory.cpp">
-      <Filter>Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckPointSystem.cpp">
-      <Filter>CheckPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="HealthComponentManager.cpp" />
-    <ClCompile Include="IPickupComponent.cpp">
-      <Filter>Pickup</Filter>
-    </ClCompile>
-    <ClCompile Include="PickupComponentManager.cpp">
-      <Filter>Pickup\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="ArmorPickupComponent.cpp">
-      <Filter>Pickup\Armor</Filter>
-    </ClCompile>
-    <ClCompile Include="AmmoPickupComponent.cpp">
-      <Filter>Pickup\Ammo</Filter>
-    </ClCompile>
-    <ClCompile Include="HealthPickupComponent.cpp">
-      <Filter>Pickup\Health</Filter>
-    </ClCompile>
-    <ClCompile Include="DamageOnCollisionComponent.cpp">
-      <Filter>DamageOnCollisionComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="DoorManager.cpp">
-      <Filter>DoorComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="DoorComponent.cpp">
-      <Filter>DoorComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyPickupComponent.cpp">
-      <Filter>Pickup\Key</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckPointSystem.cpp">
-      <Filter>CheckPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="DamageOnCollisionComponentManager.cpp">
-      <Filter>DamageOnCollisionComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="ExplosionComponentManager.cpp">
-      <Filter>Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="CheckpointComponentManager.cpp">
-      <Filter>CheckPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="ImpController.cpp">
-      <Filter>Enemy\Imp</Filter>
-    </ClCompile>
-    <ClCompile Include="RevenantController.cpp">
-      <Filter>Enemy\Revenant</Filter>
-    </ClCompile>
-    <ClCompile Include="PinkyController.cpp">
-      <Filter>Enemy\Pinky</Filter>
-    </ClCompile>
-    <ClCompile Include="Spawner.cpp">
-      <Filter>EnemySpawner</Filter>
-    </ClCompile>
+    <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SpawnerManager.cpp" />
-    <ClCompile Include="ServerPlayerNetworkComponent.cpp">
-      <Filter>ServerPlayerNetwork</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterControllerComponent.cpp">
-      <Filter>Collider/Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponPickupComponent.cpp">
-      <Filter>Pickup\Weapon</Filter>
-    </ClCompile>
+    <ClCompile Include="SphereColliderComponent.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="StreakEmitterComponent.cpp" />
     <ClCompile Include="TriggerArenaComponent.cpp" />
+    <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="WeaponFactory.cpp" />
+    <ClCompile Include="WeaponPickupComponent.cpp" />
+    <ClCompile Include="WeaponSystemComponent.cpp" />
+    <ClCompile Include="WeaponSystemManager.cpp" />
+    <ClCompile Include="AnimationComponentLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Precompiled</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Precompiled</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSourceComponent.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSourceComponentManager.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraComponent.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraManager.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
-      <Filter>Collisions</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComponentManager.h">
-      <Filter>Collisions</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEmitterComponentManager.h">
-      <Filter>Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEmitterComponent.h">
-      <Filter>Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelComponentManager.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelComponent.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentManager.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentMessage.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjectManager.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="StreakEmitterComponent.h">
-      <Filter>Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptComponent.h">
-      <Filter>ScriptComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptComponentManager.h">
-      <Filter>ScriptComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentMessageCallback.h">
-      <Filter>ScriptComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentMessageTypeToLua.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="FireComponent.h">
-      <Filter>FireComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSourceComponentManager.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="StreakEmitterComponent.h">
-      <Filter>Particles</Filter>
-    </ClInclude>
-    <ClInclude Include="PointLightComponent.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="PointLightComponentManager.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponSystemComponent.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponData.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthPoint.h">
-      <Filter>Health</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectileData.h">
-      <Filter>Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoComponent.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoData.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectileFactory.h">
-      <Filter>Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectileComponent.h">
-      <Filter>Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponSystemManager.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponFactory.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="InputComponent.h">
-      <Filter>InputComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementComponent.h">
-      <Filter>MovementComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Precompiled</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Precompiled</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectileComponentManager.h">
-      <Filter>Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoComponentManager.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerControls.h">
-      <Filter>InputComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponDefines.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyComponentManager.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneralAmmoData.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentAnswer.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkComponent.h">
-      <Filter>NetworkComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkComponentManager.h" />
-    <ClInclude Include="ProjectileBufferData.h">
-      <Filter>Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoCheckData.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoReplenishData.h">
-      <Filter>Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkPlayerReciverComponent.h" />
-    <ClInclude Include="PlayerNetworkComponent.h">
-      <Filter>PlayerNetwork</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerPlayerNetworkComponent.h" />
-    <ClInclude Include="HealthComponent.h">
-      <Filter>Health</Filter>
-    </ClInclude>
-    <ClInclude Include="BoxColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ColliderComponentManager.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementComponentManager.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBodyComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckPointComponent.h">
-      <Filter>CheckPoint</Filter>
-    </ClInclude>
+    <ClInclude Include="AmmoCheckData.h" />
+    <ClInclude Include="AmmoComponent.h" />
+    <ClInclude Include="AmmoComponentManager.h" />
+    <ClInclude Include="AmmoData.h" />
+    <ClInclude Include="AmmoReplenishData.h" />
     <ClInclude Include="AnimationComponent.h" />
-    <ClInclude Include="SphereColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CapsuleColliderComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyClientRepresentation.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyClientRepresentationManager.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionData.h">
-      <Filter>Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionFactory.h">
-      <Filter>Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionComponent.h">
-      <Filter>Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckPointSystem.h">
-      <Filter>CheckPoint</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionBufferData.h">
-      <Filter>Explosion</Filter>
-    </ClInclude>
+    <ClInclude Include="ArmorPickupComponent.h" />
+    <ClInclude Include="AudioSourceComponent.h" />
+    <ClInclude Include="AudioSourceComponentManager.h" />
+    <ClInclude Include="BoxColliderComponent.h" />
+    <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="CapsuleColliderComponent.h" />
+    <ClInclude Include="CharacterControllerComponent.h" />
+    <ClInclude Include="CheckpointComponentManager.h" />
+    <ClInclude Include="CheckPointComponent.h" />
+    <ClInclude Include="CheckPointSystem.h" />
+    <ClInclude Include="ColliderComponent.h" />
+    <ClInclude Include="ColliderComponentManager.h" />
+    <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="CollisionComponentManager.h" />
+    <ClInclude Include="ComponentAnswer.h" />
+    <ClInclude Include="ComponentMessageCallback.h" />
+    <ClInclude Include="ComponentMessageTypeToLua.h" />
+    <ClInclude Include="DamageOnCollisionCollidedObjectData.h" />
+    <ClInclude Include="DamageOnCollisionComponent.h" />
+    <ClInclude Include="DamageOnCollisionComponentManager.h" />
+    <ClInclude Include="DoorComponent.h" />
+    <ClInclude Include="DoorManager.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyBlueprint.h" />
+    <ClInclude Include="EnemyClientRepresentation.h" />
+    <ClInclude Include="EnemyClientRepresentationManager.h" />
+    <ClInclude Include="EnemyComponentManager.h" />
+    <ClInclude Include="EnemyTypes.h" />
+    <ClInclude Include="ExplosionBufferData.h" />
+    <ClInclude Include="ExplosionComponent.h" />
+    <ClInclude Include="ExplosionComponentManager.h" />
+    <ClInclude Include="ExplosionData.h" />
+    <ClInclude Include="ExplosionFactory.h" />
+    <ClInclude Include="GeneralAmmoData.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthComponentManager.h" />
-    <ClInclude Include="IPickupComponent.h">
-      <Filter>Pickup</Filter>
-    </ClInclude>
-    <ClInclude Include="PickupComponentManager.h">
-      <Filter>Pickup\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="ArmorPickupComponent.h">
-      <Filter>Pickup\Armor</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoPickupComponent.h">
-      <Filter>Pickup\Ammo</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthPickupComponent.h">
-      <Filter>Pickup\Health</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageOnCollisionComponent.h">
-      <Filter>DamageOnCollisionComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyBlueprint.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="DoorManager.h">
-      <Filter>DoorComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="DoorComponent.h">
-      <Filter>DoorComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyPickupComponent.h">
-      <Filter>Pickup\Key</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageOnCollisionCollidedObjectData.h">
-      <Filter>DamageOnCollisionComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckPointSystem.h">
-      <Filter>CheckPoint</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageOnCollisionComponentManager.h">
-      <Filter>DamageOnCollisionComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="ExplosionComponentManager.h">
-      <Filter>Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckpointComponentManager.h">
-      <Filter>CheckPoint</Filter>
-    </ClInclude>
-    <ClInclude Include="ImpController.h">
-      <Filter>Enemy\Imp</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyTypes.h">
-      <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="RevenantController.h">
-      <Filter>Enemy\Revenant</Filter>
-    </ClInclude>
-    <ClInclude Include="PinkyController.h">
-      <Filter>Enemy\Pinky</Filter>
-    </ClInclude>
+    <ClInclude Include="HealthPickupComponent.h" />
+    <ClInclude Include="ImpController.h" />
+    <ClInclude Include="IPickupComponent.h" />
+    <ClInclude Include="KeyPickupComponent.h" />
+    <ClInclude Include="MeshColliderComponent.h" />
+    <ClInclude Include="MovementComponentManager.h" />
+    <ClInclude Include="NetworkComponent.h" />
+    <ClInclude Include="NetworkComponentManager.h" />
+    <ClInclude Include="NetworkPlayerReciverComponent.h" />
+    <ClInclude Include="AmmoPickupComponent.h" />
+    <ClInclude Include="PickupComponentManager.h" />
+    <ClInclude Include="PinkyController.h" />
+    <ClInclude Include="PlayerNetworkComponent.h" />
+    <ClInclude Include="ProjectileBufferData.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Spawner.h">
-      <Filter>EnemySpawner</Filter>
-    </ClInclude>
+    <ClInclude Include="RevenantController.h" />
+    <ClInclude Include="RigidBodyComponent.h" />
+    <ClInclude Include="ServerPlayerNetworkComponent.h" />
+    <ClInclude Include="Spawner.h" />
     <ClInclude Include="SpawnerManager.h" />
-    <ClInclude Include="WeaponSoundData.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerPlayerNetworkComponent.h">
-      <Filter>ServerPlayerNetwork</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterControllerComponent.h">
-      <Filter>Collider/Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponPickupComponent.h">
-      <Filter>Pickup\Weapon</Filter>
-    </ClInclude>
+    <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="TriggerArenaComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Particles">
-      <UniqueIdentifier>{083f76b5-74e5-4f57-86b9-71c6ebe9a69e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Audio">
-      <UniqueIdentifier>{80e033d5-791e-49e0-ab96-2916cd7bc107}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{317bd6ea-49ec-4d6a-84c6-f6d615cf1f03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Collisions">
-      <UniqueIdentifier>{8d2c937d-bc83-4bc7-a289-a508b0b33583}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{068a1ac1-411c-443f-85f5-7e7d5f82bed1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Component">
-      <UniqueIdentifier>{bc2bfc79-d74a-43b4-8423-6c38bdc96734}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject">
-      <UniqueIdentifier>{eb3ddca2-f61c-4ef9-aee6-0de16f80d576}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ScriptComponent">
-      <UniqueIdentifier>{693bd916-9e55-4c29-a108-69508fb4d6b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FireComponent">
-      <UniqueIdentifier>{d2dac69b-b1c5-47ec-b1cb-9af2c78bedf8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lights">
-      <UniqueIdentifier>{a9cd968d-5a83-4a7f-89be-fa58e524ecc3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InputComponent">
-      <UniqueIdentifier>{3448c6b6-4af9-41f3-a1cf-a15587da0b07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Weapon">
-      <UniqueIdentifier>{bc0fd7cc-75b0-4bed-9635-e94087ecbe28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Health">
-      <UniqueIdentifier>{9b8ee388-3e83-4b73-8054-5c485f6802b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Projectile">
-      <UniqueIdentifier>{9334c820-a410-4439-92da-bdd98ec6e994}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Ammo">
-      <UniqueIdentifier>{d70ea127-4045-4714-9c65-c42d688cbbe3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MovementComponent">
-      <UniqueIdentifier>{02983070-7b49-4106-b034-5f85e9c058ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Precompiled">
-      <UniqueIdentifier>{e9975db9-e15c-49a1-918b-953f9a1f8c1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Enemy">
-      <UniqueIdentifier>{ff38c789-3c5c-45a6-850b-4e84825c1624}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="NetworkComponent">
-      <UniqueIdentifier>{cf66b67e-3cd9-4e22-b239-4d940bdcb3f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PlayerNetwork">
-      <UniqueIdentifier>{99d9f00f-198f-4dce-b936-14664660d642}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ServerPlayerNetwork">
-      <UniqueIdentifier>{6d33be8b-ef92-4cd0-bb9c-57ff330ee525}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Collider/Physics">
-      <UniqueIdentifier>{11a8cc8f-ccea-46ed-83f8-fe63342460bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CheckPoint">
-      <UniqueIdentifier>{0b4ceec9-a814-4474-8934-9b869ee791a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup">
-      <UniqueIdentifier>{aa2a2c2d-cd05-46ef-b91c-5fbc1ad5f700}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Explosion">
-      <UniqueIdentifier>{ae5926f1-1e49-4d37-9d59-767b6089c695}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Health">
-      <UniqueIdentifier>{19113ce6-30fd-47a5-8b50-3e68e38ce740}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Ammo">
-      <UniqueIdentifier>{f2931254-a86c-4351-83a9-a613de24aaf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Armor">
-      <UniqueIdentifier>{b0aded43-3675-4b79-9003-0c6aea49377c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Manager">
-      <UniqueIdentifier>{882930df-ecb3-40dd-aa1c-420617b4e3a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DamageOnCollisionComponent">
-      <UniqueIdentifier>{b28664eb-e439-4cf8-ad8d-0140542edf4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DoorComponent">
-      <UniqueIdentifier>{ddc514dd-0122-4909-8440-37b48a84ee96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pickup\Key">
-      <UniqueIdentifier>{d8fbd349-113f-4812-b49f-8860ba36c689}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Enemy\Imp">
-      <UniqueIdentifier>{c084fdb2-c38e-40ba-b307-e697e857494a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Enemy\Revenant">
-      <UniqueIdentifier>{5fd0bb5d-05c6-460c-a235-bc8bec273324}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Enemy\Pinky">
-      <UniqueIdentifier>{59f4680f-f023-4ada-a222-586706da19ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EnemySpawner">
-      <UniqueIdentifier>{42593922-70a4-4327-90bb-ac184219853f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TriggerArena">
-      <UniqueIdentifier>{594cfbe2-4fd8-45a5-9907-9b5cdf57f397}</UniqueIdentifier>
-<Filter Include="Pickup\Weapon">
-      <UniqueIdentifier>{a8198c9c-8c79-45dd-9404-69bd115e491c}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="WeaponDefines.h" />
+    <ClInclude Include="FireComponent.h" />
+    <ClInclude Include="HealthPoint.h" />
+    <ClInclude Include="InputComponent.h" />
+    <ClInclude Include="MovementComponent.h" />
+    <ClInclude Include="PlayerControls.h" />
+    <ClInclude Include="PointLightComponent.h" />
+    <ClInclude Include="PointLightComponentManager.h" />
+    <ClInclude Include="ProjectileComponent.h" />
+    <ClInclude Include="ProjectileComponentManager.h" />
+    <ClInclude Include="ProjectileData.h" />
+    <ClInclude Include="ProjectileFactory.h" />
+    <ClInclude Include="ScriptComponent.h" />
+    <ClInclude Include="ScriptComponentManager.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="ComponentMessage.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="ModelComponent.h" />
+    <ClInclude Include="ModelComponentManager.h" />
+    <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="ParticleEmitterComponent.h" />
+    <ClInclude Include="ParticleEmitterComponentManager.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StreakEmitterComponent.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Weapon.h" />
+    <ClInclude Include="WeaponData.h" />
+    <ClInclude Include="WeaponFactory.h" />
+    <ClInclude Include="WeaponPickupComponent.h" />
+    <ClInclude Include="WeaponSoundData.h" />
+    <ClInclude Include="WeaponSystemComponent.h" />
+    <ClInclude Include="WeaponSystemManager.h" />
+    <ClInclude Include="AnimationComponentLoader.h" />
   </ItemGroup>
 </Project>

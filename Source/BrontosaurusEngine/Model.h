@@ -88,7 +88,7 @@ public:
 	CU::Matrix44f GetBoneTransform(const float aTime, const eAnimationState aAnimationState, const char* aBoneName);
 	std::vector<mat4>& GetBones(float aTime, const eAnimationState aAnimationState, const bool aAnimationLooping);
 	inline bool HasBones() const;
-	inline bool HasAnimations();
+	inline bool HasAnimations() const;
 
 	inline bool IsAlphaModel() const;
 	inline const struct aiScene* GetScene() const;
@@ -98,6 +98,9 @@ public:
 	inline void RemoveRef();
 	inline int GetRefCount() const;
 	__forceinline const std::string& GetName() const;
+
+	float GetAnimationDuration(const eAnimationState aAnimationState) const;
+	bool GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const;
 
 private:
 
@@ -170,7 +173,7 @@ inline void CModel::SetScene(const aiScene* aScene)
 	myScene = aScene;
 }
 
-inline bool CModel::HasAnimations()
+inline bool CModel::HasAnimations() const
 {
 	return mySceneAnimator != nullptr;
 }

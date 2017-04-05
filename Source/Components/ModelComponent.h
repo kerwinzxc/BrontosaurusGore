@@ -26,6 +26,10 @@ public:
 	void ResetAnimation();
 	void SetIgnoreDepth(bool aShouldIgnoreDepth);
 
+	bool GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const;
+	const std::string& GetFilePath() const;
+
+	float GetAnimationDuration(const eAnimationState aAnimationState) const;
 private:
 	void CreateAnimationComponent();
 
