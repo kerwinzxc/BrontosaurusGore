@@ -88,9 +88,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 						SComponentMessageData damageData;
 						damageData.myInt = myWeaponData->projectileData->damage;
 						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-						direction = gameObject->GetWorldPosition() - shootPosition;
-						direction.Normalize();
-						//Do massive Domage!!
 					
 					}
 				}
