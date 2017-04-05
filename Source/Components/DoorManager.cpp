@@ -51,7 +51,7 @@ CDoorComponent * CDoorManager::CreateDoorComponent(const CU::Vector2f & aOpenDir
 	doorComponent->SetIsClosed(aIsClosed);
 	doorComponent->SetLockId(aLockId);
 	doorComponent->SetNetworkID(doorID);
-	doorComponent->SetShouldReset(!aShouldResetOnPlayerDeath);
+	doorComponent->SetShouldReset(aShouldResetOnPlayerDeath);
 	COMPMGR.RegisterComponent(doorComponent);
 	myDoors.emplace(doorID++, doorComponent);
 	return doorComponent;
