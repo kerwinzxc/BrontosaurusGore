@@ -166,7 +166,7 @@ void CImpController::Update(const float aDeltaTime)
 		break;
 	}
 	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	CU::Matrix44f& rotation = transform.GetRotation();
+	CU::Matrix44f rotation = transform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 
