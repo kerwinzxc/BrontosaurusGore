@@ -50,3 +50,17 @@ PixelOutput PS_PosTex(PosNormBinormTanTex_InputPixel input)
 	output.shadow /= input.position.w;
 	return output;
 }
+
+PixelOutput PS_PosTexInstanced(PosNormBinormTanTexInstanced_InputPixel input)
+{
+	PixelOutput output;
+	float alpha = diffuse.Sample(samplerWrap, input.uv).a;
+	if (alpha <= ALPHA_THRESHOLD)
+	{
+		discard;
+	}
+	output.shadow = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	output.shadow.xyz = input.position.zzz;
+	output.shadow /= input.position.w;
+	return output;
+}
