@@ -44,7 +44,7 @@ CModel::CModel()
 {
 }
 
-CModel::CModel(const CModel & aCopy)
+CModel::CModel(const CModel& aCopy)
 	: CModel()
 {
 	(*this) = aCopy;
@@ -52,8 +52,6 @@ CModel::CModel(const CModel & aCopy)
 
 CModel::~CModel()
 {
-
-	//TODO Fix this so overloaded = operator can be removed. mebe?
 	myFramework = nullptr;
 
 	for (unsigned int i = 0; i < myLODModels.Size(); ++i)
@@ -175,9 +173,9 @@ bool CModel::InitBuffers(const CLoaderMesh* aLoadedMesh)
 	CHECK_RESULT(result, "Failed to create instanceBuffer.");
 	///////////////////////////////////////////////////////
 
-
+	
 	//ANIMATION BUFFER
-	if (aLoadedMesh->myScene != nullptr && aLoadedMesh->myScene->myScene->mNumAnimations > 0)
+	if (aLoadedMesh->myScene != nullptr && /*aLoadedMesh->myScene->myScene->mNumAnimations*/(aLoadedMesh->myShaderType & EModelBluePrint_Bones) > 0)
 	{
 		SAnimationBoneStruct boneBuffer;
 		myBoneBuffer = BSR::CreateCBuffer<SAnimationBoneStruct>(&boneBuffer);
@@ -314,15 +312,6 @@ void CModel::RenderInstanced(const bool aRenderDepth, ID3D11PixelShader* aDepthS
 		context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, instanceCount, 0, 0, 0);
 	}
 
-	//UpdateInstanceBuffer();
-	//ID3D11DeviceContext* context = DEVICE_CONTEXT;
-	//unsigned int strides[2] = { myVertexSize, sizeof(SToWorldSpace) };
-	//unsigned int offsets[2] = { 0, 0 };
-	//ID3D11Buffer* buffers[2] = { myLODModels.GetLast().myVertexBuffer, myInstanceBuffer };
-	//context->IASetVertexBuffers(0, 2, buffers, strides, offsets);	
-	//context->IASetIndexBuffer(myLODModels.GetLast().myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	//context->DrawIndexedInstanced(myLODModels.GetLast().myIndexCount, min(myInstanceBufferData.Size(), ourMaxInstances), 0, 0, 0);
-
 	myInstanceBufferData.RemoveAll();
 }
 
@@ -370,7 +359,6 @@ void CModel::UpdateCBuffer(SForwardRenderModelParams& aParamObj)
 		ZeroMemory(&mappedSubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 		Lights::SLightsBuffer updatedLights;
-		//updatedLights.myCameraPos = RENDERER.GetCamera().GetPosition();
 		updatedLights.myDirectionalLight = aParamObj.myDirectionalLight;
 
 		for (unsigned int i = 0; i < aParamObj.myPointLightList.Size(); ++i)
@@ -403,6 +391,12 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
+#ifdef _DEBUG
+	if (myFilePath.find("lasma") != std::string::npos)
+	{
+		int br = 0;
+	}
+#endif
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
@@ -457,12 +451,18 @@ void CModel::UpdateInstanceBuffer(const unsigned int aStartIndex)
 	DEVICE_CONTEXT->Unmap(myInstanceBuffer, 0);
 }
 
+#include "../Physics/PhysXHelper.h"
+
 void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<mat4>& aBlendTo, const float aLerpValue, std::vector<mat4>& aBlendOut)
 {
 	for (size_t i = 0; i < aBlendFrom.size(); ++i)
 	{
+		CU::Matrix44f lerpedid = aBlendFrom[i].Lerp(aBlendTo[i].GetRotation(), aLerpValue);
+		CU::Matrix44f slerped = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
+		CU::Matrix44f difference = lerpedid - slerped;
+		aBlendOut[i] = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
 		//aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
-		aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
+		//aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
 		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
 	}
 }
@@ -479,11 +479,8 @@ std::vector<mat4>& CModel::GetBones(float aTime, const eAnimationState aAnimatio
 
 		return mySceneAnimator->GetTransforms(aTime, aAnimationLooping);
 	}
-	static std::vector<mat4> locNullBones;
-	if (locNullBones.empty())
-	{
-		locNullBones.push_back(mat4());
-	}
+
+	static std::vector<mat4> locNullBones = { mat4::Identity };
 
 	return locNullBones;
 }

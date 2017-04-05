@@ -35,17 +35,18 @@ void CImpController::Update(const float aDeltaTime)
 	myVelocity.y = myJumpForce;
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
-
+	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
 	if(myIsDead == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange() == true)
 		{
 			myState = eImpState::eChargingMeleeAttack;	
+			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		else if (WithinWalkToMeleeRange() == true)
 		{
 			myState = eImpState::eWalkIntoMeleeRange;
-		
 			if (ShouldJumpAfterPlayer() == true)
 			{
 				myState = eImpState::eJump;
@@ -55,6 +56,8 @@ void CImpController::Update(const float aDeltaTime)
 		else if (WithinDetectionRange() == true)
 		{
 			myState = eImpState::eChargingRangedAttack;
+			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		else
 		{
@@ -77,7 +80,8 @@ void CImpController::Update(const float aDeltaTime)
 	case eImpState::eWalkIntoMeleeRange:
 	{
 		LookAtPlayer();
-		myVelocity.z = mySpeed;
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		myVelocity.z = -mySpeed;
 		break;
 	}
 	case eImpState::eUseMeleeAttack:
@@ -85,6 +89,7 @@ void CImpController::Update(const float aDeltaTime)
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+			myState = eImpState::eIdle;
 			InitiateWander();
 		}
 		break;
@@ -93,6 +98,7 @@ void CImpController::Update(const float aDeltaTime)
 		if(GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+			myState = eImpState::eIdle;
 			myUsedAttackSinceLastRunning++;
 			if (myAttacksUntillRunningAway <= myUsedAttackSinceLastRunning)
 			{
@@ -107,18 +113,30 @@ void CImpController::Update(const float aDeltaTime)
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 		GetParent()->GetLocalTransform().LookAt(myWanderToPosition);
-		myVelocity.z = mySpeed;
+		myVelocity.z = -mySpeed;
 		CU::Vector3f distance = myWanderToPosition - GetParent()->GetWorldPosition();
 		if(distance.Length() < 0.5f)
 		{
 			myState = eImpState::eIdle;
 			myElaspedWanderTime = 0.0f;
+			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		}
 		myElaspedWanderTime += aDeltaTime;
 		if(myElaspedWanderTime >= myWanderDuration)
 		{
 			myState = eImpState::eIdle;
 			myElaspedWanderTime = 0.0f;
+			LookAtPlayer();
+			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+		}
+		if(GetIfSidesAreColliding() == true)
+		{
+			if (myIsJumping == true)
+			{
+				InitiateWander();
+			}
+			ApplyJumpForce(myJumpHeight);
 		}
 		break;
 	}
@@ -148,7 +166,7 @@ void CImpController::Update(const float aDeltaTime)
 		break;
 	}
 	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	CU::Matrix44f& rotation = transform.GetRotation();
+	CU::Matrix44f rotation = transform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
 
 
@@ -204,18 +222,41 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 		myState = eImpState::eDead;
 		myIsDead = true;
-		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
-		break;
+		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		if (myShouldNotReset == false)
+		{
+			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+			break;
+		}
 	}
+	break;
 	case eComponentMessageType::eCheckPointReset:
 	{
+		if (myShouldNotReset == false)
+		{
 		myState = eImpState::eIdle;
 		myIsDead = false;
 		SComponentMessageData visibilityData;
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 		break;
+		}
+	}
+	case eComponentMessageType::eOnCollisionEnter:
+	{
+		switch (myState)
+		{
+		case eImpState::eWalkIntoMeleeRange:
+			ApplyJumpForce(myJumpHeight);
+			break;
+		case eImpState::eRunAfterShooting:
+			InitiateWander();
+			break;
+		default:
+			break;
+		}
 	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;
@@ -251,19 +292,20 @@ bool CImpController::CheckIfInAir()
 
 void CImpController::InitiateWander()
 {
+
+	CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
 	if (myWanderAngle > 0)
 	{
-		myUsedAttackSinceLastRunning = 0.0f;
+		myUsedAttackSinceLastRunning = 0;
 		myState = eImpState::eRunAfterShooting;
 		float randomAngles = rand() % (myWanderAngle);
 		randomAngles -= myWanderAngle * 0.5f;;
 		float randomRadians = randomAngles * (PI / 180.0f);
-		CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
-		impMatrix.Rotate(PI, CU::Axees::Y);
 		impMatrix.Rotate(randomRadians, CU::Axees::Y);
+		impMatrix.Rotate(PI, CU::Axees::Y);
+	}
 		impMatrix.Move(CU::Vector3f(0.0f, 0.0f, myWanderDistance));
 		myWanderToPosition = impMatrix.GetPosition();	
-	}
 }
 
 bool CImpController::CanChangeState()

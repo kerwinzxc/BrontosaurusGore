@@ -92,15 +92,20 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	newProjectileObject->GetLocalTransform().Scale(CU::Vector3f(0.1, 0.1, 0.1));
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	newProjectileObject->AddComponent(tempProjectileComponent);
-	CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
-	newProjectileObject->AddComponent(modelComponent);
+	if (!myPassiveProjectiles[aIndex]->projectileName.empty())
+	{
+		//BUGG: carl did this, don't know if it causes problems
+		CModelComponent* modelComponent = myModelComponentManagerPointer->CreateComponent(myPassiveProjectiles[aIndex]->projectileName.c_str());
+		newProjectileObject->AddComponent(modelComponent);
+	}
+
 	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	SComponentMessageData visibilityData;
 	visibilityData.myBool = false;
 	newProjectileObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 
 	SSphereColliderData sphereColliderDesc;
-	sphereColliderDesc.myRadius = 1.0f;
+	sphereColliderDesc.myRadius = .1f;
 	sphereColliderDesc.IsTrigger = false;
 
 	unsigned int collideWith = Physics::CollideEverything;
@@ -114,7 +119,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	
 	SRigidBodyData rigidbodyData;
 	rigidbodyData.isKinematic = false;
-	rigidbodyData.useGravity = false;
+	rigidbodyData.useGravity = true;
 	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData);
 	
 	newProjectileObject->AddComponent(projectileRigidBodyCollider);

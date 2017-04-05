@@ -5,6 +5,8 @@
 #include "../Physics/PhysicsCharacterController.h"
 #include "../Audio/AudioInterface.h"
 
+class CTextInstance;
+
 class CMovementComponent : public CComponent
 {
 public:
@@ -34,6 +36,8 @@ private:
 	};
 
 	CU::CBitSet<static_cast<int>(ePlayerControls::eLength)> myKeysDown;
+
+	CTextInstance* myTextInstance;
 
 	CU::Vector3f myVelocity;
 	float myAcceleration;

@@ -136,7 +136,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_DESTROY:
 		CEngine::GetInstance()->Shutdown();
-		PostQuitMessage(0);
+		
+		
 		break;
 	case WM_KILLFOCUS:
 	{
