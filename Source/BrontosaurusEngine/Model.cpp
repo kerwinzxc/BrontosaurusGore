@@ -467,6 +467,41 @@ void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<m
 	}
 }
 
+float CModel::GetAnimationDuration(const eAnimationState aAnimationState) const
+{
+	auto it = mySceneAnimators.find(aAnimationState);
+	if (it != mySceneAnimators.end())
+	{
+		if (!it->second.Animations.empty())
+		{
+			return it->second.Animations.front().Duration / it->second.Animations.front().TicksPerSecond;
+		}
+	}
+
+	return 0.f;
+}
+
+bool CModel::GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const
+{
+	if (HasAnimations())
+	{
+		if (aAnimationStatesOut.IsInitialized())
+		{
+			aAnimationStatesOut.Destroy();
+		}
+		aAnimationStatesOut.Init(static_cast<unsigned int>(mySceneAnimators.size()));
+
+		for (const auto& animation : mySceneAnimators)
+		{
+			aAnimationStatesOut.Add(animation.first);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 std::vector<mat4>& CModel::GetBones(float aTime, const eAnimationState aAnimationState, const bool aAnimationLooping)
 {
 	if(mySceneAnimator != nullptr)

@@ -48,6 +48,7 @@ void CColliderComponent::UpdatePosition()
 
 void CColliderComponent::UpdateCallbacks()
 {
+	//kommentar: detta är mycket snyggt! mvh carl
 	for (SStoredCallBackData& callbackData : myStoredCallBackDataList)
 	{
 		SComponentMessageData data;
@@ -64,11 +65,13 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 	case eComponentMessageType::eAddComponent: 
 		if (aMessageData.myComponentTypeAdded == eComponentType::eCollision && aMessageData.myComponent == this)
 		{
-			const int ParentId = GetParent()->GetId();
-			myShape->SetObjectId(ParentId);
-		}
-			
-			break;
+			if (myShape)
+			{
+				const int ParentId = GetParent()->GetId();
+				myShape->SetObjectId(ParentId);
+			}
+		}	
+		break; //else: fall through;
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
@@ -93,8 +96,6 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 		break;
 	case eComponentMessageType::eDeactivate:
 		myActor->SetIsActive(false);
-		break;
-	default:
 		break;
 	}
 }

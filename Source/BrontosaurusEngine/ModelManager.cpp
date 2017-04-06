@@ -60,6 +60,9 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 
 const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoaderMesh, const char* aTexturePath)
 {
+	DL_MESSAGE_BOX("LoadGUIModel function is not compatible with engine updates in BrontosaurusGore");
+	return -1;
+#if 0
 	if (myModels.find(aLoaderMesh->myName) == myModels.end())
 	{
 		CEffect* effect = GUIModleHelper::CreateEffect(aLoaderMesh);
@@ -79,14 +82,15 @@ const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoa
 
 		myModels[aLoaderMesh->myName] = handle;
 
-		//myModelList[handle].Initialize(effect, surface, aLoaderMesh);
+		myModelList[handle].Initialize(effect, surface, aLoaderMesh);
 
 		SPixelConstantBuffer bufferStruct = {};
-		//ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
-		//myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
+		ID3D11Buffer* pixelConstantBuffer = BSR::CreateCBuffer<SPixelConstantBuffer>(&bufferStruct);
+		myModelList[handle].AddConstantBuffer(CModel::eShaderStage::ePixel, pixelConstantBuffer);
 	}
 
 	return myModels[aLoaderMesh->myName];
+#endif
 }
 
 const CModelManager::ModelId CModelManager::LoadGUIModel(const CLoaderMesh* aLoaderMesh, const CU::GrowingArray<std::string>& aTexturePaths)
@@ -146,6 +150,20 @@ int CModelManager::GetModelRefCount(const ModelId aModelID) const
 	}
 
 	return myModelList[aModelID].GetRefCount();
+}
+
+const std::string& CModelManager::GetFilePath(const ModelId aModelID) const
+{
+	for (const auto& model : myModels)
+	{
+		if (model.second == aModelID)
+		{
+			return model.first;
+		}
+	}
+
+	static const std::string NullString;
+	return NullString;
 }
 
 void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aModelId)
