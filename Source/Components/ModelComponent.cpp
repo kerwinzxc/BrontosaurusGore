@@ -81,7 +81,10 @@ void CModelComponent::Receive(const eComponentMessageType aType, const SComponen
 		}
 		break;
 	case eComponentMessageType::eDied:
-		myModel.SetVisibility(false);
+		if (!GetParent()->AskComponents(eComponentQuestionType::eHasDeathAnimation, SComponentQuestionData()))
+		{
+			myModel.SetVisibility(false);
+		}
 		break;
 	case eComponentMessageType::eDeactivate:
 		myModel.SetVisibility(false);
@@ -108,6 +111,21 @@ void CModelComponent::CreateAnimationComponent()
 void CModelComponent::SetIgnoreDepth(bool aShouldIgnoreDepth)
 {
 	myModel.SetIgnoreDepth(aShouldIgnoreDepth);
+}
+
+bool CModelComponent::GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const
+{
+	return myModel.GetAnimationStates(aAnimationStatesOut);
+}
+
+const std::string& CModelComponent::GetFilePath() const
+{
+	return myModel.GetFilePath();
+}
+
+float CModelComponent::GetAnimationDuration(const eAnimationState aAnimationState) const
+{
+	return myModel.GetAnimationDuration(aAnimationState);
 }
 
 void CModelComponent::SetAnimation(const eAnimationState aAnimationKey)

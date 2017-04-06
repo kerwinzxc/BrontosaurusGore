@@ -287,6 +287,17 @@ void CModelInstance::SetHighlight(const CU::Vector4f& aColor, float anIntensivit
 	myHighlightIntencity = anIntensivity;
 }
 
+float CModelInstance::GetAnimationDuration(const eAnimationState aAnimationState) const
+{
+	CModelManager* modelManager = MODELMGR;
+	CModel* model = modelManager->GetModel(myModel);
+	if (model)
+	{
+		return model->GetAnimationDuration(aAnimationState);
+	}
+
+	return 0.f;
+}
 void CModelInstance::SetAnimation(const eAnimationState aAnimationKey)
 {
 	myCurrentAnimation = aAnimationKey;
@@ -322,6 +333,25 @@ eAnimationState CModelInstance::GetAnimationState() const
 float CModelInstance::GetAnimationCounter() const
 {
 	return myAnimationCounter;
+}
+
+bool CModelInstance::GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const
+{
+	CModelManager* modelManager = MODELMGR;
+	CModel* model = modelManager->GetModel(myModel);
+	if (model)
+	{
+		model->GetAnimationStates(aAnimationStatesOut);
+		return true;
+	}
+
+	return false;
+}
+
+const std::string& CModelInstance::GetFilePath() const
+{
+	CModelManager* modelManager = MODELMGR;
+	return modelManager->GetFilePath(myModel);
 }
 
 void CModelInstance::SetHighlightIntencity(const float aHighlightIntencity)

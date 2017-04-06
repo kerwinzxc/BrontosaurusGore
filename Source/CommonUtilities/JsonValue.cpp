@@ -434,7 +434,9 @@ namespace CU
 		return self[aKey];
 	}
 
-	bool CJsonValue::CheckKeys(CU::GrowingArray<std::string> someKeys) const
+#undef self
+
+	bool CJsonValue::CheckKeys(const CU::GrowingArray<std::string>& someKeys) const
 	{
 #ifdef _DEBUG 
 		for (CU::GrowingArray<std::string>::size_type i = 0; i < someKeys.Size(); ++i)
@@ -448,7 +450,11 @@ namespace CU
 
 		return true;
 	}
-#undef self
+
+	bool CJsonValue::FileExists(const std::string& aFileName)
+	{
+		return std::ifstream(aFileName).good();
+	}
 
 	CJsonValue::CJsonValue(const picojson::value* aValuePointer)
 		: myValue(aValuePointer)
