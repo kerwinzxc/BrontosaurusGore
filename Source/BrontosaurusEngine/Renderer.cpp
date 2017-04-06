@@ -37,9 +37,9 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 	myIsRunning = true;
 
 	mySettings.HDR = false;
-	mySettings.Bloom = false;
+	mySettings.Bloom = true;
 	mySettings.Motionblur = false;
-	mySettings.CromaticAberration = false;
+	mySettings.CromaticAberration = true;
 	mySettings.FXAA = true;
 
 	myOncePerFrameBufferTimer = myTimers.CreateTimer();
@@ -59,7 +59,7 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp0Wrap1;
 
-	myLut = 0;
+	myLut = &TEXTUREMGR.LoadTexture("Lut/defaultLUT.dds");
 	CU::Vector2ui windowSize = ENGINE->GetWindow()->GetWindowSize();
 	myColorGradingPackage.Init(windowSize);
 
@@ -149,14 +149,16 @@ void CRenderer::Render()
 
 	renderTo->Activate();
 	
-	//Downsample(*renderTo);
+	Downsample(*renderTo);
 	//HDR();
-	//Bloom();
-	//MotionBlur();
+	Bloom();
+	MotionBlur();
 	//LensDistortion(myIntermediatePackage);
 
-	//myIntermediatePackage.Activate();
 	AntiAliasing();
+	DoColorGrading();
+	myIntermediatePackage.Activate();
+	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myColorGradingPackage);
 
 	int blup;//temp
 	myGUIRenderer.DoRenderQueues(*this, blup);
@@ -169,7 +171,6 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 	myGUIRenderer.RenderWholeGuiToPackage(myGUIRenderer.GetInputPackage(), myFullScreenHelper);
 	RenderGUI();
-	//DoColorGrading();
 	
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
@@ -481,7 +482,7 @@ void CRenderer::UpdateShadowBuffer(SSetShadowBuffer* msg)
 	BSR::UpdateCBuffer<SCascadeBuffer>(myShadowBuffer, &msg->cascadeBuffer);
 
 	DEVICE_CONTEXT->PSSetShaderResources(8, 1, &msg->myShadowBuffer.GetResource());
-	DEVICE_CONTEXT->PSSetConstantBuffers(3, 1, &myShadowBuffer);
+	DEVICE_CONTEXT->PSSetConstantBuffers(4, 1, &myShadowBuffer);
 }
 
 void CRenderer::CreateRasterizerStates()
@@ -747,7 +748,7 @@ void CRenderer::CreateDepthStencilStates()
 		depthStencilEnabledDesc.DepthEnable = true;
 		depthStencilEnabledDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		depthStencilEnabledDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		depthStencilEnabledDesc.StencilEnable = true;
+		depthStencilEnabledDesc.StencilEnable = false;
 		depthStencilEnabledDesc.StencilReadMask = 0xFF;
 		depthStencilEnabledDesc.StencilWriteMask = 0xFF;
 		depthStencilEnabledDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
@@ -757,7 +758,7 @@ void CRenderer::CreateDepthStencilStates()
 		depthStencilEnabledDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 		depthStencilEnabledDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 		depthStencilEnabledDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilEnabledDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		depthStencilEnabledDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;
 		result = DEVICE->CreateDepthStencilState(&depthStencilEnabledDesc, &depthStencilState);
 		CHECK_RESULT(result, "Failed to create Depth Stencil State.");
 		myDepthStencilStates[static_cast<int>(eDepthStencilState::eLesser)] = depthStencilState;
@@ -816,7 +817,7 @@ void CRenderer::CreateSamplerStates()
 	HRESULT result;
 	ID3D11SamplerState* clampState = nullptr;
 	ID3D11SamplerState* wrapState = nullptr;
-
+	ID3D11SamplerState* pointWrapState = nullptr;
 
 
 	D3D11_SAMPLER_DESC samplerStateDesc;
@@ -834,21 +835,37 @@ void CRenderer::CreateSamplerStates()
 	samplerStateDesc.BorderColor[3] = 0;
 	samplerStateDesc.MinLOD = -D3D11_FLOAT32_MAX;
 	samplerStateDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
 	result = DEVICE->CreateSamplerState(&samplerStateDesc, &wrapState);
 	mySamplerStates[static_cast<int>(eSamplerState::eWrap)] = wrapState;
 
 	samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
-
 	result = DEVICE->CreateSamplerState(&samplerStateDesc, &clampState);
 	mySamplerStates[static_cast<int>(eSamplerState::eClamp)] = clampState;
 
-	mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)] = nullptr;
+	samplerStateDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	samplerStateDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-	CHECK_RESULT(result, "Failed to create SamplerState.");
+	result = DEVICE->CreateSamplerState(&samplerStateDesc, &pointWrapState);
+	mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)] = pointWrapState;
+
+	CHECK_RESULT(result, "Failed to create SamplerStates.");
+
+
+
+	ID3D11SamplerState* troth[3] =
+	{
+		mySamplerStates[static_cast<int>(eSamplerState::eClamp)],
+		mySamplerStates[static_cast<int>(eSamplerState::eWrap)],
+		mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)]
+	};
+	DEVICE_CONTEXT->VSSetSamplers(0, 3, troth);
+	DEVICE_CONTEXT->PSSetSamplers(0, 3, troth);
+
 }
 
 void CRenderer::DoRenderQueue()
@@ -880,17 +897,6 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 
 
 	assert(aState->mySamplerState != eSamplerState::eSize);
-	//if (aState->mySamplerState == eSamplerState::eClamp0Wrap1)
-	{
-		ID3D11SamplerState* troth[3] = 
-		{ 
-			mySamplerStates[static_cast<int>(eSamplerState::eClamp)], 
-			mySamplerStates[static_cast<int>(eSamplerState::eWrap)],
-			mySamplerStates[static_cast<int>(eSamplerState::eClamp0Wrap1)]
-		};
-		DEVICE_CONTEXT->VSSetSamplers(0, 2, troth);
-		DEVICE_CONTEXT->PSSetSamplers(0, 2, troth);
-	}
 	//else
 	//{
 	//	DEVICE_CONTEXT->VSSetSamplers(0, 1, &mySamplerStates[static_cast<int>(aState->mySamplerState)]);
