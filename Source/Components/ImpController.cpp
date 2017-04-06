@@ -23,6 +23,7 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myElapsedChargeMeleeAttackTime = 0.0f;
 	myElapsedChargeAttackTime = 0.0f;
 	myChargeMeleeAttackDuration = 1.0f;
+	myJumpForce = 0.0f;
 }
 
 CImpController::~CImpController()
