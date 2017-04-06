@@ -118,7 +118,8 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3f & aPosition)
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
-	imp->SetWorldPosition(aPosition);
+	imp->GetLocalTransform().SetPosition(aPosition);
+	aPosition.Print();
 
 	CEnemy* controller;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
@@ -170,7 +171,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	DL_PRINT("EnemyNetworkID:");
 	DL_PRINT(std::to_string(controller->GetNetworkID()).c_str());
 
-
+	imp->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 	Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(message));
 
 	return controller;
@@ -227,6 +228,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	DL_PRINT("EnemyRepesentationNetworkID:");
 	DL_PRINT(std::to_string(enemy->GetNetworkID()).c_str());
+	repesention->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 
 	return enemy;
 }

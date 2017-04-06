@@ -57,7 +57,8 @@ void CSpawnerComponent::SpawnEnemy()
 	//activeMessage->SetNetworkID(myEnemy->GetNetworkID());
 	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
 
-	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetWorldPosition());
+	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetLocalTransform().GetPosition());
+	GetParent()->GetLocalTransform().GetPosition().Print();
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddEnemyToWave(myEnemy));
 }
