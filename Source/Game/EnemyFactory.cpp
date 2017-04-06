@@ -164,7 +164,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
 	controllerDesc.radius = 0.5f;
-	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc,imp->GetId());
 	imp->AddComponent(CollisionController);
 
 	DL_PRINT("EnemyNetworkID:");
@@ -222,7 +222,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
 	controllerDesc.radius = 0.5f;
-	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc, repesention->GetId());
 	repesention->AddComponent(CollisionController);
 
 	DL_PRINT("EnemyRepesentationNetworkID:");

@@ -20,16 +20,18 @@ CGameObject* GetCurrentObject()
 
 CColliderComponent* CreateComponent(SColliderData& aColData)
 {
+	CGameObject* parent = GetCurrentObject();
 	CColliderComponentManager* colliderMan = LoadManager::GetInstance()->GetCurrentPLaystate().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData, parent->GetId());
 }
 
 
 CColliderComponent* CreateComponentServer(SColliderData& aColData)
 {
+	CGameObject* parent = GetCurrentObject();
 	GET_SERVERLOADMANAGER(loadManager);
 	CColliderComponentManager* colliderMan = loadManager.GetCurrentGameServer().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData, parent->GetId());
 }
 
 int LoadSphereCollider(KLoader::SLoadedComponentData someData)
@@ -104,9 +106,6 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
-
-
 
 	CColliderComponent* component = CreateComponent(data);
 	if(component == nullptr)
@@ -221,7 +220,6 @@ int LoadMeshColliderServer(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
 	CColliderComponent* component = CreateComponentServer(data);
 	return component->GetId();

@@ -13,3 +13,18 @@ CBoxColliderComponent::~CBoxColliderComponent()
 
 }
 
+void CBoxColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
+{
+	switch (aMessageType)
+	{
+	case eComponentMessageType::eAddComponent:
+		if (aMessageData.myComponent == this)
+		{
+			const int ParentId = GetParent()->GetId();
+			int i = 0;
+		}
+
+		break; //else: fall through;
+	}
+	CColliderComponent::Receive(aMessageType, aMessageData);
+}

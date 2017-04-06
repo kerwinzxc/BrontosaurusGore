@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ColliderComponent.h"
 #include "ColliderComponentManager.h"
+#include "../Physics/Shape.h"
 
 CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
 {
@@ -61,7 +62,13 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eAddComponent: 
-		if (aMessageData.myComponentTypeAdded != eComponentType::eCollision) break; //else: fall through;
+		if (aMessageData.myComponentTypeAdded == eComponentType::eCollision && aMessageData.myComponent == this)
+		{
+			const int ParentId = GetParent()->GetId();
+			myShape->SetObjectId(ParentId);
+		}
+			
+			break; //else: fall through;
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{

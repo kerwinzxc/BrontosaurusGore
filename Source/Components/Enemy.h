@@ -50,6 +50,7 @@ protected:
 	virtual inline bool WithinWalkToMeleeRange();
 	void LookAtPlayer();
 	bool GetIfSidesAreColliding();
+	const CU::Vector3f GetNearestJumpPosition();
 protected:
 	static CU::GrowingArray<CGameObject*> ourPlayerObjects;
 	static CU::GrowingArray<CEnemyRunTowardsComponent*> ourEnemyRunTowardsComponents;

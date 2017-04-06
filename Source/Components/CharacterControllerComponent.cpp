@@ -45,7 +45,12 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eAddComponent:
-		if (aMessageData.myComponentTypeAdded != eComponentType::eCharacterController) break; //else: fall through;
+		if (aMessageData.myComponentTypeAdded != eComponentType::eCharacterController)
+		{
+			const int ParentId = GetParent()->GetId();
+			myController->SetParentId(ParentId);
+		}
+		break;
 	case eComponentMessageType::eObjectDone:
 	{
 		CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
