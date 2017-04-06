@@ -54,7 +54,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 		{
 			shootPosition = cameraPositionData.myVector3f;
 			cameraPosition = shootPosition;
-			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
+			shootPosition += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
@@ -67,11 +67,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
