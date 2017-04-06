@@ -216,12 +216,8 @@ void CPlayState::Load()
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
-	myScene->AddCamera(CScene::eCameraType::eWeaponCamera);
 	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
-	CRenderCamera& weaponCamera = myScene->GetRenderCamera(CScene::eCameraType::eWeaponCamera);
-
 	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 500.f);
-	weaponCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 10.f);
 
 	myWeaponFactory->LoadWeapons();
 

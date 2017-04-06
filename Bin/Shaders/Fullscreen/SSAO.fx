@@ -3,7 +3,9 @@
 Texture2D normal : register(t2);
 Texture2D RMAO	 : register(t3);
 Texture2D depth  : register(t5);
-Texture2D random : register(t6);
+Texture2D depth2 : register(t6);
+
+Texture2D random : register(t7);
 
 SamplerState SamplerClamp : register(s0);
 SamplerState samplerWrap  : register(s1);
@@ -22,7 +24,8 @@ static const float g_bias = 0.2f;
 
 float3 getPosition(in float2 uv)
 {
-	float zDepth = depth.Sample(SamplerClamp, uv).x;
+	float zDepth = depth2.Sample(SamplerClamp, uv).x;
+	zDepth == 1.0f ? depth.Sample(SamplerClamp, uv).x : zDepth;
 
 	float4 worldPosition = (float4) 0;
 	worldPosition.xy = (uv * 2.0f);

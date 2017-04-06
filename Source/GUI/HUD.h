@@ -73,7 +73,8 @@ private:
 	unsigned myAmmountOfWeapons;
 	//crosshair
 	SHUDElement myCrosshairElement;
-	CSpriteInstance* myCrosshairSprite;
+	CU::GrowingArray<CSpriteInstance*> myCrosshairSprites;
+	CSpriteInstance* myActiveCrosshairSprite;
 	volatile bool myCrosshairHasUpdated;
 
 };

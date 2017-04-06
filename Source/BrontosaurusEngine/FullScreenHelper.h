@@ -45,6 +45,7 @@ public:
 		eSSAO,
 		eOverlay,
 		eAlphaBlend,
+		eMergeDepth,
 		eSize,
 	};
 

@@ -1,4 +1,5 @@
 #include <structs.fx>
+#include <../oncePerFrame.fx>
 Texture2D renderPackage : register(t1);
 
 SamplerState Sampler
@@ -11,13 +12,13 @@ SamplerState Sampler
 static const uint kernelSize = 5;
 static const float weights[kernelSize] = {0.06136f, 0.24477f, 0.38774f, 0.24477f, 0.06136f};
 static const float texelOffset[kernelSize] = {-2.0f, -1.0f, 0.0f, 1.0f, 2.0f };
-static const float texelSize = 1.0f / 256.f;
 static const float scale = 1.f;
 
 
 PixelOutput PS_HorizontalBlur(PosTex_InputPixel input)
 {
     float4 blurColor = (float4)0;
+	float texelSize = 1.0f / (float)windowSize.x;
 
     for(unsigned int i = 0; i < kernelSize; ++i)
     {
@@ -35,6 +36,7 @@ PixelOutput PS_HorizontalBlur(PosTex_InputPixel input)
 PixelOutput PS_VerticalBlur(PosTex_InputPixel input)
 {
     float4 blurColor = (float4)0;
+	float texelSize = 1.0f / (float) windowSize.y;
 
     for(unsigned int i = 0; i < kernelSize; ++i)
     {

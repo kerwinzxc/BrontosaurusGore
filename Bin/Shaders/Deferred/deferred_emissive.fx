@@ -30,7 +30,6 @@ cbuffer ProjectionInverse      : register(b1)
 	float4x4 cameraSpace;
 }
 
-
 //**********************************************//
 //					G-BUFFER					//
 //**********************************************//

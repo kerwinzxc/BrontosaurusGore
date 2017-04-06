@@ -13,7 +13,7 @@ SamplerState Sampler
 // Luminance SHADER
 PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
-    float bloomCutoff = 0.65f;
+    float bloomCutoff = 0.5f;
     float3 resource = renderPackage.SampleLevel(Sampler, input.tex, 0).rgb;
 
     float3 relativeLuminance = (float3)0;
