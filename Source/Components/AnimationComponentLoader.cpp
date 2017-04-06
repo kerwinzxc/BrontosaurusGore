@@ -22,6 +22,10 @@ namespace AnimationComponentLoader
 {
 	static SAnimation locIdleState;
 
+	void LoadShoot(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+	void LoadEquip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+	void LoadJump (const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
 	{
 		//CU::GrowingArray<eAnimationState> animationStates;
@@ -59,47 +63,125 @@ namespace AnimationComponentLoader
 			if (statesObject.HasKey("shoot"))
 			{
 				CU::CJsonValue shootObject = statesObject["shoot"];
-				SAnimation shootState;
-				int animationKey = SAnimationState::AnimationStates.Find(shootObject["animation"].GetString());
-				if (animationKey != SAnimationState::AnimationStates.FoundNone)
+				LoadShoot(shootObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("equip"))
+			{
+				CU::CJsonValue equipObject = statesObject["equip"];
+				LoadEquip(equipObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("jump"))
+			{
+				CU::CJsonValue jumpObject = statesObject["jump"];
+				LoadJump(jumpObject, aModelComponent, aAnimationStates);
+			}
+		}
+	}
+
+	void LoadShoot(const CU::CJsonValue& aShootObject, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
+	{
+		SAnimation shootState;
+		int animationKey = SAnimationState::AnimationStates.Find(aShootObject["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			shootState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aShootObject["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				shootState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				shootState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			shootState.myIsLooping = aShootObject["loop"].GetBool();
+			if (shootState.myIsLooping)
+			{
+				if (aShootObject.HasKey("coolDownTime"))
 				{
-					shootState.myAnimationKey = static_cast<eAnimationState>(animationKey);
-					int nextAnimationKey = SAnimationState::AnimationStates.Find(shootObject["nextAnimation"].GetString());
-					if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
-					{
-						shootState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
-					}
-					else
-					{
-						shootState.myNextAnimationKey = eAnimationState::none;
-					}
-					
-					shootState.myIsLooping = shootObject["loop"].GetBool();
-					if (shootState.myIsLooping)
-					{
-						if (shootObject.HasKey("coolDownTime"))
-						{
-							shootState.myCoolDownTime = shootObject["coolDownTime"].GetFloat();
-						}
-					}
-					else
-					{
-						shootState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::shot01);
-					}
-
-
-					aAnimationStates["shoot"] = shootState;
+					shootState.myCoolDownTime = aShootObject["coolDownTime"].GetFloat();
 				}
 			}
 			else
 			{
-				DL_PRINT_WARNING("File does not have key shoot %s", jsonPath.c_str());
+				shootState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::shot01);
 			}
 
-			//for (eAnimationState animationState : animationStates)
-			//{
-			//	
-			//}
+
+			aAnimationStates["shoot"] = shootState;
+		}
+	}
+
+	void LoadEquip(const CU::CJsonValue& aEquipObject, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
+	{
+		SAnimation equipState;
+		int animationKey = SAnimationState::AnimationStates.Find(aEquipObject["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			equipState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aEquipObject["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				equipState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				equipState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			equipState.myIsLooping = aEquipObject["loop"].GetBool();
+			if (equipState.myIsLooping)
+			{
+				if (aEquipObject.HasKey("coolDownTime"))
+				{
+					equipState.myCoolDownTime = aEquipObject["coolDownTime"].GetFloat();
+				}
+			}
+			else
+			{
+				equipState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::equip01);
+			}
+
+
+			aAnimationStates["equip"] = equipState;
+		}
+	}
+
+	void LoadJump(const CU::CJsonValue& aJumpObject, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
+	{
+		SAnimation jumpState;
+		int animationKey = SAnimationState::AnimationStates.Find(aJumpObject["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			jumpState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aJumpObject["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				jumpState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				jumpState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			jumpState.myIsLooping = aJumpObject["loop"].GetBool();
+			if (jumpState.myIsLooping)
+			{
+				if (aJumpObject.HasKey("coolDownTime"))
+				{
+					jumpState.myCoolDownTime = aJumpObject["coolDownTime"].GetFloat();
+				}
+			}
+			else
+			{
+				jumpState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::equip01);
+			}
+
+
+			aAnimationStates["jump"] = jumpState;
 		}
 	}
 }

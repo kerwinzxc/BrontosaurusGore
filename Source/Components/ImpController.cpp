@@ -292,6 +292,7 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 	{
 		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
 		myIsJumping = true;
+		GetParent()->NotifyComponents(eComponentMessageType::eImpStartToJump, SComponentMessageData());
 	}
 }
 

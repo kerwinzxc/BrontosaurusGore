@@ -91,6 +91,15 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		{
 			myAnimationStack.Add(it->second);
 		}
+	case eComponentMessageType::eSetVisibility:
+		if (aMessageData.myBool == true)
+		{
+			it = myAnimationStates.find("equip");
+			if (it != animationEnd)
+			{
+				myAnimationStack.Add(it->second);
+			}
+		}
 		break;
 	}
 }

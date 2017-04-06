@@ -58,7 +58,7 @@ void CColliderComponent::UpdateCallbacks()
 	myStoredCallBackDataList.RemoveAll();
 }
 
-void CColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	switch (aMessageType)
 	{
