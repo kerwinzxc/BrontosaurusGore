@@ -196,7 +196,7 @@ void CImpController::Update(const float aDeltaTime)
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
 		transform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
 	CheckForNewTransformation(aDeltaTime);
