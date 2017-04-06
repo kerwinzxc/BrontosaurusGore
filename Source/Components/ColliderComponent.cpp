@@ -68,7 +68,7 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 			myShape->SetObjectId(ParentId);
 		}
 			
-			break; //else: fall through;
+			break;
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
