@@ -8,7 +8,10 @@ CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physi
 	myData = aColliderData;
 
 	myActor = aActor;
-	myActor->SetCallbackData(this);
+	if(myActor != nullptr)
+	{
+		myActor->SetCallbackData(this);
+	}
 	SetUserData(this);
 
 	myShape = aShape;
@@ -35,15 +38,18 @@ CColliderComponent::~CColliderComponent()
 
 void CColliderComponent::UpdatePosition()
 {
-	CU::Matrix44f transform = myActor->GetTransformation();
-	const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
-	const CU::Vector3f scale = parentTransform.GetScale();
-	transform.SetScale(scale);
+	if(myActor != nullptr)
+	{	
+		CU::Matrix44f transform = myActor->GetTransformation();
+		const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
+		const CU::Vector3f scale = parentTransform.GetScale();
+		transform.SetScale(scale);
 
-	GetParent()->SetWorldTransformation(transform);
-	SComponentMessageData data;
-	data.myComponent = this;
-	GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
+		GetParent()->SetWorldTransformation(transform);
+		SComponentMessageData data;
+		data.myComponent = this;
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
+	}
 }
 
 void CColliderComponent::UpdateCallbacks()
@@ -70,12 +76,17 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 				const int ParentId = GetParent()->GetId();
 				myShape->SetObjectId(ParentId);
 			}
+			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+			transformation.SetScale({ 1.0f, 1.0f, 1.0f });
+			CU::Vector3f worldPos = myData.center;
+			transformation.SetPosition(transformation.GetPosition() + worldPos);
+			myActor->SetTransformation(transformation);
 		}	
-		break; //else: fall through;
+		
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
-		if (aMessageData.myComponent != this)
+		if (aMessageData.myComponent != this && myActor != nullptr)
 		{
 			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
 			transformation.SetScale({ 1.0f, 1.0f, 1.0f });

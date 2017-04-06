@@ -89,4 +89,6 @@ namespace Physics
 		myCallback = aCallbacker;
 		//myPxActor->userData = aCallbacker;
 	}
+
+	
 }

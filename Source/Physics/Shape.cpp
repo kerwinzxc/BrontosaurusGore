@@ -2,6 +2,7 @@
 #include "Shape.h"
 #include <PxShape.h>
 #include <PxFiltering.h>
+#include <PxRigidActor.h>
 
 namespace Physics
 {
@@ -54,5 +55,12 @@ namespace Physics
 
 		myShape->setQueryFilterData(filterData);
 		myShape->setSimulationFilterData(filterData);
+	}
+
+	
+
+	physx::PxShape* CShape::GetShape()
+	{
+		return myShape;
 	}
 }

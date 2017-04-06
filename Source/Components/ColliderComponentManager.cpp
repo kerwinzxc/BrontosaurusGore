@@ -179,25 +179,8 @@ CColliderComponent* CColliderComponentManager::CreateMeshCollider(const SMeshCol
 		return nullptr;
 	}
 
-	Physics::SMaterialData material;
-	Physics::CShape* shape = myPhysics->CreateMeshShape(aMeshColliderData.myPath, material);
-	if (!shape)
-	{
-		DL_ASSERT("Failed to create BoxShape");
-		return nullptr;
-	}
-
-	shape->SetCollisionLayers(aMeshColliderData.myLayer, aMeshColliderData.myCollideAgainst);
-	shape->SetObjectId(anId);
-
-	Physics::CPhysicsActor* actor = myPhysics->CreateStaticActor(shape, aMeshColliderData.IsTrigger);
-	if (!actor)
-	{
-		DL_ASSERT("Failed to create physics actor");
-		return nullptr;
-	}
-	myScene->AddActor(actor);
-	CMeshColliderComponent* component = new CMeshColliderComponent(aMeshColliderData, shape, actor);
+	
+	CMeshColliderComponent* component = new CMeshColliderComponent(aMeshColliderData, myScene);
 	return component;
 }
 

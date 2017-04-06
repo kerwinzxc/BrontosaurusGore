@@ -142,7 +142,7 @@ namespace Physics
 		return CreateShape(*geometry, aMaterialData);
 	}
 
-	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData)
+	CShape* CPhysics::CreateMeshShape(const char * aPath, const SMaterialData & aMaterialData, const CU::Vector3f& aScale)
 	{
 		PxDefaultFileInputData inputData(aPath);
 		PxSerializationRegistry* registry = PxSerialization::createSerializationRegistry(PxGetPhysics());
@@ -169,7 +169,7 @@ namespace Physics
 
 					PxConvexMesh* mesh = static_cast<PxConvexMesh*>(obj);
 
-					shape = CreateShape(*mesh, aMaterialData);
+					shape = CreateShape(*mesh, aMaterialData, aScale);
 				}
 				break;
 			case PxConcreteType::eTRIANGLE_MESH_BVH33: 
@@ -226,11 +226,15 @@ namespace Physics
 		return new CShape(shape);
 	}
 
-	CShape* CPhysics::CreateShape(physx::PxConvexMesh& aMesh, const SMaterialData& aMaterialData)
+	CShape* CPhysics::CreateShape(physx::PxConvexMesh& aMesh, const SMaterialData& aMaterialData, const CU::Vector3f& aScale)
 	{
 		PxMaterial* material = CreateMaterial(aMaterialData);
 
 		PxConvexMeshGeometry* meshGeometry = new PxConvexMeshGeometry(&aMesh);
+		PxMeshScale& scale = meshGeometry->scale;
+		scale.scale.x = aScale.x;
+		scale.scale.y = aScale.y;
+		scale.scale.z = aScale.z;
 		PxShape* shape = myPxPhysics->createShape(*meshGeometry, *material);
 		return new CShape(shape);
 	}
