@@ -9,6 +9,10 @@
 
 CU::ThreadPool* CU::ThreadPool::ourInstance = nullptr;
 
+#ifndef RETAIL
+//#define LogThreads
+#endif
+
 namespace CU
 {
 	ThreadPool::ThreadPool()
@@ -18,7 +22,7 @@ namespace CU
 		myConcurentThreadsSupported = std::thread::hardware_concurrency();
 		
 
-#ifndef RETAIL
+#ifdef LogThreads
 		TCHAR szExeFileName[MAX_PATH];
 		GetModuleFileName(NULL, szExeFileName, MAX_PATH);
 		TCHAR* out = PathFindFileName(szExeFileName);
@@ -109,6 +113,13 @@ namespace CU
 		myCondition.notify_one();
 	}
 
+	
+
+	bool ThreadPool::IsRunning() const
+	{
+		return isStopped == false;
+	}
+#ifdef LogThreads
 	void ThreadPool::LogStart()
 	{
 		std::ofstream output = GetLogStream();
@@ -122,7 +133,7 @@ namespace CU
 	{
 
 		std::ofstream output = GetLogStream();
-		output<< "#LogEnd\n";
+		output << "#LogEnd\n";
 		output << GetEpochTicks();
 		output << "\n";
 		output.close();
@@ -135,11 +146,6 @@ namespace CU
 		output << aThreadName;
 		output << "\n";
 		output.close();
-	}
-
-	bool ThreadPool::IsRunning() const
-	{
-		return isStopped == false;
 	}
 
 	void ThreadPool::LogCreateThread()
@@ -159,6 +165,32 @@ namespace CU
 		output << "\n";
 		output.close();
 	}
+#else
+	void ThreadPool::LogStart()
+	{
+
+	}
+
+	void ThreadPool::LogEnd()
+	{
+
+	}
+
+	void ThreadPool::LogName(const std::string& aThreadName)
+	{
+
+	}
+
+	void ThreadPool::LogCreateThread()
+	{
+
+	}
+
+	void ThreadPool::LogDestroyThread()
+	{
+
+	}
+#endif
 
 	unsigned long long ThreadPool::GetEpochTicks()
 	{

@@ -244,7 +244,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClie
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.minMoveDistance = 0.00001f;
 	controllerDesc.halfHeight = 1.0f;
-	CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc, gameObject->GetId());
 	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
 	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());

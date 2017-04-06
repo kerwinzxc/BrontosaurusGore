@@ -4,14 +4,13 @@
 #include <characterkinematic/PxController.h>
 #include <PxScene.h>
 #include "PxQueryReport.h"
-#include "CollisionLayers.h"
 #include "PxRigidDynamic.h"
-#include <xatomic.h>
 
 namespace Physics
 {
 	CPhysicsCharacterController::CPhysicsCharacterController(physx::PxController * aPxController, const SCharacterControllerDesc & aData)
 	{
+		
 		myData = aData;
 		myController = aPxController;
 		myController->getActor()->userData = this;
@@ -34,6 +33,7 @@ namespace Physics
 		filterData.word0 = 1; //I am now everything but aFilterMask
 		filterData.word1 = colGroups; //I don't Collide with anything
 							  //controllerFilters.mFilterCallback = myCollisionHandler;
+		filterData.word2 = myParentId;
 		controllerFilters.mFilterData = &filterData;
 		controllerFilters.mFilterFlags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC;
 
@@ -83,6 +83,11 @@ namespace Physics
 	void CPhysicsCharacterController::SetCallbackData(IPhysicsCallback* aCallbacker)
 	{
 		myCallback = aCallbacker;
+	}
+
+	void CPhysicsCharacterController::SetParentId(ComponentId aNId)
+	{
+		myParentId = aNId;
 	}
 
 	void CPhysicsCharacterController::SetCollisionFlags(const uint8_t flags)

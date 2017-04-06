@@ -44,7 +44,13 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eAddComponent:
-		if (aMessageData.myComponentTypeAdded != eComponentType::eCharacterController) break; //else: fall through;
+		if (aMessageData.myComponentTypeAdded == eComponentType::eCharacterController && aMessageData.myComponent == this)
+		{
+
+			const int ParentId = GetParent()->GetId();
+			myController->SetParentId(ParentId);
+		}
+			break; //else: fall through;
 	case eComponentMessageType::eObjectDone:
 	{
 		CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
@@ -83,6 +89,7 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 void CCharacterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
 
+	
 		void* compPtr = aOther->GetCallbackData()->GetUserData();
 		SComponentMessageData data;
 		data.myComponent = static_cast<CComponent*>(compPtr);

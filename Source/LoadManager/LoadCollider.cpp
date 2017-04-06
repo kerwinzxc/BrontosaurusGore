@@ -18,16 +18,20 @@ CGameObject* GetCurrentObject()
 
 CColliderComponent* CreateComponent(SColliderData& aColData)
 {
+
+	CGameObject* parent = GetCurrentObject();
 	CColliderComponentManager* colliderMan = LoadManager::GetInstance()->GetCurrentPLaystate().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData, parent->GetId());
 }
 
 
 CColliderComponent* CreateComponentServer(SColliderData& aColData)
 {
+
+	CGameObject* parent = GetCurrentObject();
 	GET_SERVERLOADMANAGER(loadManager);
 	CColliderComponentManager* colliderMan = loadManager.GetCurrentGameServer().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData,parent->GetId());
 }
 
 int LoadSphereCollider(KLoader::SLoadedComponentData someData)
@@ -143,7 +147,7 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 	
-	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data,parent->GetId());
 	return component->GetId();
 }
 
@@ -254,7 +258,7 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
-	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data, parent->GetId());
 	return component->GetId();
 }
 
