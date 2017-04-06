@@ -8,6 +8,7 @@
 #include "../ThreadedPostmaster/AddEnemyToWave.h"
 #include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
 #include "../TServer/ServerMessageManager.h"
+#include "../Game/PollingStation.h"
 #include "EnemyTypes.h"
 
 CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID)
@@ -56,7 +57,8 @@ void CSpawnerComponent::SpawnEnemy()
 	//activeMessage->SetNetworkID(myEnemy->GetNetworkID());
 	//Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(activeMessage));
 
-	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetWorldPosition());
+	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetLocalTransform().GetPosition());
+	GetParent()->GetLocalTransform().GetPosition().Print();
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddEnemyToWave(myEnemy));
 }
@@ -82,7 +84,10 @@ eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMe
 		//unsigned short it = myWaves[i];
 		if (myWaves[i] == aStartWaveMessage.GetWave())
 		{
-			SpawnEnemy();
+			for (int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); i++)
+			{
+				SpawnEnemy();
+			}
 			break;
 		}
 	}

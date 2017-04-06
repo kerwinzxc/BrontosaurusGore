@@ -98,4 +98,5 @@ struct SDeferredRenderModelParams
 
 	ID3D11PixelShader* aPixelshader = nullptr;
 	bool myRenderToDepth = false;
+	bool myIgnoreDepth = false;
 };

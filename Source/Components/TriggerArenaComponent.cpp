@@ -29,7 +29,7 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 	case eComponentMessageType::eAddComponent:
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 	case eComponentMessageType::eOnTriggerEnter:
-		DL_PRINT("On Trigger enter arenaaaa");
+		//DL_PRINT("On Trigger enter arenaaaa");
 		for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); ++i)
 		{
 			DL_PRINT("On Trigger enter arenaaaa is player?");

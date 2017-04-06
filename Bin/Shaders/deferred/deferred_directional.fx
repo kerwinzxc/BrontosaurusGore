@@ -13,6 +13,7 @@ Texture2D deferred_normal       : register(t2);
 Texture2D deferred_RMAO			: register(t3);
 Texture2D deferred_emissive     : register(t4);
 Texture2D deferred_depth        : register(t5);
+Texture2D deferred_depth2		: register(t6);
 
 Texture2D shadowBuffer          : register(t8);
 
@@ -22,6 +23,8 @@ Texture2D shadowBuffer          : register(t8);
 
 SamplerState samplerClamp       : register(s0);
 SamplerState samplerWrap        : register(s1);
+SamplerState samplerPointWrap	: register(s2);
+
 
 
 //**********************************************//
@@ -48,7 +51,7 @@ cbuffer directionalLight        : register(b2)
 	} directionalLight;
 }
 
-cbuffer ShadowBufferData		: register(b3)
+cbuffer ShadowBufferData		: register(b4)
 {
 	struct Cascade
 	{
@@ -220,7 +223,7 @@ float4 GetCascadeProjectionSpacePosition(uint cascadeIndex, float3 worldPosition
 	return pixelCascadePos;
 }
 
-#define SHADOWMAP_TEXTURESIZE 2048.f * 4.f
+#define SHADOWMAP_TEXTURESIZE 2048.f
 #define LOOP_SNURR 3
 static float2 shadowmapTexelSize = 1.0f / SHADOWMAP_TEXTURESIZE;
 
@@ -233,18 +236,18 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 
 	float2 texCoord = GetShadowMapUV(cascadeIndex, pixelPosCascade.xy);
 
-	float shadowMapDepth = shadowBuffer.SampleLevel(samplerClamp, texCoord, 0).x;
+	//float shadowMapDepth = shadowBuffer.SampleLevel(samplerPointWrap, texCoord, 0).x;
 
-	float3 normal = deferred_normal.SampleLevel(samplerClamp, uv, 0).xyz;
+	float3 normal = deferred_normal.SampleLevel(samplerWrap, uv, 0).xyz;
 	float bias = dot(directionalLight.direction, normal);
 				//max(0.05 * (1.0 - dot(normal, directionalLight.direction)), 0.005);
 	bias = clamp(bias , 0.008f, 0.04f);
 
 
-	if (shadowMapDepth < pixelPosCascade.z - bias && shadowMapDepth != 0.f)
-	{
-		output = 0.0f;
-	}
+	//if (shadowMapDepth < pixelPosCascade.z - bias && shadowMapDepth != 0.f)
+	//{
+	//	output = 0.0f;
+	//}
 	
 	float shadow = 0.0f;
 	float samples = 0.0f;
@@ -253,7 +256,7 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 	{
 		for (int y = -LOOP_SNURR; y <= LOOP_SNURR; ++y)
 		{
-			float pcfDepth = shadowBuffer.SampleLevel(samplerClamp, texCoord + float2(x, y) * shadowmapTexelSize /** ((float)(cascadeIndex + 1) / (float)NUM_CASCADES)*/, 0).x;
+			float pcfDepth = shadowBuffer.SampleLevel(samplerWrap, texCoord + float2(x, y) * shadowmapTexelSize /** ((float)(cascadeIndex + 1) / (float)NUM_CASCADES)*/, 0).x;
 			shadow += pixelPosCascade.z - bias > pcfDepth ? 0.0 : 1.0;
 			samples += 1.0f;
 		}
@@ -263,13 +266,21 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 	return shadow;
 }
 
+
+float GetDepth(float2 uv)
+{
+	float depth = deferred_depth2.Sample(samplerClamp, uv).x;
+	return (depth == 1.0f) ? deferred_depth.Sample(samplerClamp, uv).x : depth;
+}
+
+
 Output PS_PosTex(PosTex_InputPixel inputPixel)
 {
 	Output output;
 	
 	
 	float2 uv = inputPixel.tex;
-	float1 depth = deferred_depth.Sample(samplerClamp, uv).x;
+	float1 depth = GetDepth(uv);
 
 	float4 fullAlbedo = deferred_diffuse.Sample(samplerClamp, uv).rgba;
 
