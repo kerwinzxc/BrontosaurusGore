@@ -91,6 +91,7 @@ enum class eComponentMessageType
 	eNullifyForces, // doesn't do stuff :(
 	eServerChangeWeapon,
 	eAddWeaponIndex,
+	eImpStartToJump,
 	eLength,
 };
 

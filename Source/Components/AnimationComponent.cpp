@@ -19,7 +19,7 @@ CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 
 	AnimationComponentLoader::LoadAnimations(myModelComponent, myAnimationStates);
 
-	myAnimationStack.Add(myAnimationStates["idle"]);
+	PushAnimation(myAnimationStates["idle"]);
 
 	ourAnimations.Add(this);
 }
@@ -81,15 +81,29 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		}
 		else
 		{
-			myAnimationStack.Add(myAnimationStates["shoot"]);
-			myModelComponent.ResetAnimation();
+			PushAnimation(myAnimationStates["shoot"]);
+			//myAnimationStack.Add(myAnimationStates["shoot"]);
+			//myModelComponent.ResetAnimation();
 		}
 		break;
 	case eComponentMessageType::eDied:
 		it = myAnimationStates.find("death");
 		if (it != animationEnd)
 		{
-			myAnimationStack.Add(it->second);
+			PushAnimation(it->second);
+			//myAnimationStack.Add(it->second);
+			//myModelComponent.ResetAnimation();
+		}
+	case eComponentMessageType::eSetVisibility:
+		if (aMessageData.myBool == true)
+		{
+			it = myAnimationStates.find("equip");
+			if (it != animationEnd)
+			{
+				PushAnimation(it->second);
+				//myAnimationStack.Add(it->second);
+				//myModelComponent.ResetAnimation();
+			}
 		}
 		break;
 	}
@@ -102,7 +116,7 @@ bool CAnimationComponent::Answer(const eComponentQuestionType aQuestionType, SCo
 		auto it = myAnimationStates.find("death");
 		if (it != myAnimationStates.end())
 		{
-			myAnimationStack.Add(it->second);
+			myAnimationStack.Add(it->second); //bugg??? const member function???
 			return true;
 		}
 	}
@@ -116,4 +130,10 @@ void CAnimationComponent::UpdateAnimations(const CU::Time aDeltaTime)
 	{
 		animationComponent->Update(aDeltaTime);
 	}
+}
+
+void CAnimationComponent::PushAnimation(const SAnimation& aAnimation)
+{
+	myAnimationStack.Add(aAnimation);
+	myModelComponent.ResetAnimation();
 }
