@@ -26,9 +26,10 @@ myWeaponSprite(nullptr),
 myCurrentWeapon(0),
 myTransitionLength(0),
 myWeaponHUDHasChanged(true),
-myCrosshairSprite(nullptr),
+myActiveCrosshairSprite(nullptr),
 myCrosshairHasUpdated(true)
 {
+	myCrosshairSprites.Init(4);
 }
 
 
@@ -44,7 +45,7 @@ void CHUD::LoadHUD()
 
 	LoadArmourAndHealth(jsonDocument.at("healthAndArmor"));
 	LoadWeaponHud(jsonDocument.at("weapon"));
-	LoadCrosshair(jsonDocument.at("crosshair"));
+	LoadCrosshair(jsonDocument.at("crosshairs"));
 }
 
 void CHUD::LoadArmourAndHealth(const CU::CJsonValue& aJsonValue)
@@ -101,9 +102,21 @@ void CHUD::LoadWeaponHud(const CU::CJsonValue& aJsonValue)
 
 void CHUD::LoadCrosshair(const CU::CJsonValue& aJsonValue)
 {
-	myCrosshairElement = LoadElement(aJsonValue);
-	myCrosshairSprite = new CSpriteInstance(aJsonValue.at("sprite").GetString().c_str());
-	myCrosshairSprite->SetSize({ 1.f,1.f });
+	// For now I'm just using the same element for all sprites; change if nessesary.
+
+	//Kyle
+	CU::CJsonValue jsonDocument;
+	jsonDocument.Parse("Json/HUD/HUD.json");
+	const CU::CJsonValue chrosshairArray = jsonDocument.at("crosshairs");
+	myCrosshairElement = LoadElement(chrosshairArray.at(0));
+
+	for (int i = 0; i < chrosshairArray.Size(); ++i)
+	{
+		CSpriteInstance* sprite = new CSpriteInstance(chrosshairArray.at(i).at("sprite").GetString().c_str());
+		myCrosshairSprites.Add(sprite);
+		myCrosshairSprites[i]->SetSize({ 1.f,1.f });
+	}
+	myActiveCrosshairSprite = myCrosshairSprites[0];
 }
 
 void CHUD::UpdateHealthAndArmour()
@@ -170,6 +183,7 @@ void CHUD::UpdateWeapon()
 	if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)
 	{
 		myCurrentWeapon = myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName);
+		myActiveCrosshairSprite = myCrosshairSprites[myCurrentWeapon];
 	}
 	delete ammoQuestion.myAmmoLeftData;
 
@@ -352,11 +366,12 @@ void CHUD::Render()
 
 	if (myCrosshairHasUpdated == true)
 	{
-		SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"crosshair", myCrosshairElement.myGuiElement, myCrosshairElement.myPixelSize);
+		SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"crosshairs", myCrosshairElement.myGuiElement, myCrosshairElement.myPixelSize);
 
 		RENDERER.AddRenderMessage(createOrClearGui);
 
-		myCrosshairSprite->RenderToGUI(L"crosshair");
+		//myCrosshairSprite->RenderToGUI(L"crosshairs");
+		myActiveCrosshairSprite->RenderToGUI(L"crosshairs");
 		//myCrosshairHasUpdated = false;
 	}
 }
