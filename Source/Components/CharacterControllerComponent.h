@@ -11,7 +11,7 @@ namespace Physics
 class CCharacterControllerComponent : public CComponent, public Physics::IPhysicsCallback
 {
 public:
-	CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const CU::Vector3f& aCenter = CU::Vector3f());
+	CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const float aHalfHeight, const float aRadius, const CU::Vector3f& aCenter = CU::Vector3f());
 	~CCharacterControllerComponent();
 
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
