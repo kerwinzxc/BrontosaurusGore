@@ -544,7 +544,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.halfHeight = 1.f;
+		controllerDesc.radius = 0.5f;
 		float rad = 45.f;
 		DEGREES_TO_RADIANS(rad);
 		controllerDesc.slopeLimit = rad;
