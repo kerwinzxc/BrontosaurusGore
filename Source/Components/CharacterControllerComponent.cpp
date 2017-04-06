@@ -6,7 +6,6 @@
 CCharacterControllerComponent::CCharacterControllerComponent(Physics::CPhysicsCharacterController* aController, const float aHalfHeight, const float aRadius, const CU::Vector3f& aCenter)
 {
 	myCenter = aCenter;
-	myRadius = aRadius;
 	myCenter.y += ((aHalfHeight * 2) - (aRadius / 2));
 	myController = aController;
 	myController->SetCallbackData(this);
