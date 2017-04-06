@@ -109,6 +109,7 @@ namespace CU
 		myProjection = aProjection;
 		myTransformation = aTransformation;
 		myProjectionInverse = aProjection.GetInverted();
+		myFrustum.SetFrustum(myProjectionInverse);
 	}
 
 	Matrix44f Camera::GetInverse() const
