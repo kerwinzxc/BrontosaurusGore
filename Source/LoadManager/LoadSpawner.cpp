@@ -8,20 +8,26 @@ int LoadSpawnerComponent(KLoader::SLoadedComponentData someData)
 
 	GET_SERVERLOADMANAGER(loadManager);
 	CU::CJsonValue list;
-	CU::GrowingArray<unsigned char> waveList;
+	CU::GrowingArray<unsigned short> waveList;
 	if (someData.myData.Count("WaveList") > 0)
 	{
 		list = someData.myData.at("WaveList"); //hämta ut denna arrayen
 		waveList.Init(list.Size(), true);
-
+		waveList.RemoveAll();
+		//unsigned short it;
+		//unsigned short what;
+		//unsigned short size = 0;
 		for (unsigned char i = 0; i <list.Size(); ++i)
 		{
-			waveList.Add(list[i].GetUchar());
+			//size++;
+			//it = list[i].GetUInt();
+			waveList.Add(list[i].GetUInt());
+			//what = waveList.GetLast();
 		}
 	}
 	else
 	{
-		DL_MESSAGE_BOX("Fattas Lista i Spawner component leta i leveldata");
+		DL_MESSAGE_BOX("Fattas Lista i Spawner component kolla så att värdena är rätt i unity scenen");
 		waveList.Init(1, true);
 	}
 

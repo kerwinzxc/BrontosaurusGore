@@ -10,7 +10,7 @@
 #include "../TServer/ServerMessageManager.h"
 #include "EnemyTypes.h"
 
-CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID)
+CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID)
 {
 	mySpawInterval = 5.0f;
 	myWaves = aWaves;
@@ -79,6 +79,7 @@ eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMe
 {
 	for (int i = 0; i < myWaves.Size(); i++)
 	{
+		//unsigned short it = myWaves[i];
 		if (myWaves[i] == aStartWaveMessage.GetWave())
 		{
 			SpawnEnemy();

@@ -10,11 +10,11 @@ public:
 
 	eMessageReturn DoEvent(::Postmaster::ISubscriber& aSubscriber) const override;
 
-	const unsigned char GetWave() const;
+	const unsigned short GetWave() const;
 
 private:
 
-	unsigned char myWave;
+	unsigned short myWave;
 
 
 };

@@ -23,7 +23,7 @@ eMessageReturn CStartWaveMessage::DoEvent(::Postmaster::ISubscriber & aSubscribe
 	return  aSubscriber.DoEvent(*this);;
 }
 
-const unsigned char CStartWaveMessage::GetWave() const
+const unsigned short CStartWaveMessage::GetWave() const
 {
 	return myWave;
 }

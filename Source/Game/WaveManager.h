@@ -28,5 +28,6 @@ private:
 	unsigned char myNumberOfPlayers;
 	unsigned char myNumberOfWavesToSpawn;
 	unsigned char myResetToWaveCount;
+	unsigned char myResetToNumberOfWaves;
 };
 
