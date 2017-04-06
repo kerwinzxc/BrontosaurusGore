@@ -236,6 +236,7 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CImpController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
+	CEnemy::Receive(aMessageType, aMessageData);
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:

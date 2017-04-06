@@ -91,7 +91,7 @@ CCharacterControllerComponent* CColliderComponentManager::CreateCharacterControl
 {
 	Physics::CPhysicsCharacterController* controller = myControllerManager->CreateCharacterController(aParams, anId);
 	controller->SetParentId(anId);
-	CCharacterControllerComponent* component = new CCharacterControllerComponent(controller, aParams.center);
+	CCharacterControllerComponent* component = new CCharacterControllerComponent(controller, aParams.halfHeight, aParams.radius, aParams.center);
 	CComponentManager::GetInstance().RegisterComponent(component);
 	return component;
 }
