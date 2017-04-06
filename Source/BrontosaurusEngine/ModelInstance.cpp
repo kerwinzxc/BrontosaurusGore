@@ -211,7 +211,7 @@ void CModelInstance::RenderDeferred(CRenderCamera & aRenderToCamera)
 	params.myHighlightColor = myHighlightColor;
 	params.myHighlightIntensivity = myHighlightIntencity;
 	params.aHighlightIntencity = myHighlightIntencity;
-
+	params.myIgnoreDepth = myIgnoreDepth;
 	params.aPixelshader = aRenderToCamera.GetShadowShader();
 	params.myRenderToDepth = aRenderToCamera.GetIsShadowCamera();
 	
