@@ -90,6 +90,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		if (it != animationEnd)
 		{
 			myAnimationStack.Add(it->second);
+			myModelComponent.ResetAnimation();
 		}
 	case eComponentMessageType::eSetVisibility:
 		if (aMessageData.myBool == true)
@@ -98,6 +99,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 			if (it != animationEnd)
 			{
 				myAnimationStack.Add(it->second);
+				myModelComponent.ResetAnimation();
 			}
 		}
 		break;
