@@ -28,6 +28,8 @@ public:
 	static void UpdateAnimations(const CU::Time aDeltaTime);
 
 private:
+	void PushAnimation(const SAnimation& aAnimation);
+
 	std::map<std::string, SAnimation> myAnimationStates;
 	CU::GrowingArray<SAnimation> myAnimationStack;
 
