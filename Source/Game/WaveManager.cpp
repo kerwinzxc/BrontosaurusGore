@@ -107,6 +107,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 		door2->SetDoorAction(eDoorAction::eLock);
 		door2->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
+		myEnemiesInWave.RemoveAll();
 		StartWave();
 	}
 
