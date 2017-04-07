@@ -65,6 +65,7 @@ protected:
 
 	unsigned int myServerId;
 	unsigned int myActiveWeaponIndex;
+	unsigned int myRunTowardsComponentIndex;
 
 	float mySpeed;
 	float myDetectionRange2;

@@ -26,6 +26,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(
 	myElapsedWaitingToSendMessageTime = 0.0f;
 	myShouldNotReset = nej;
 	myType = aType;
+	myRunTowardsComponentIndex = 999999;
 }
 
 CEnemy::~CEnemy()
@@ -289,22 +290,45 @@ void CEnemy::AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTow
 const CU::Vector3f CEnemy::GetNearestJumpPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
+	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
+	{
+		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(false);
+	}
 
 	if (ourEnemyRunTowardsComponents.IsInitialized() == false || ourEnemyRunTowardsComponents.Size() == 0)
 	{
 		return position;
 	}
 
-	CU::Vector3f playerPos = ourEnemyRunTowardsComponents[0]->GetParent()->GetWorldPosition();
-	for (unsigned int i = 0; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	CU::Vector3f playerPos;
+	unsigned int startIndex = 0;
+	for (unsigned int startIndex = 0; startIndex < ourEnemyRunTowardsComponents.Size(); ++startIndex)
 	{
-		CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
-		const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
-
-		if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+		if (ourEnemyRunTowardsComponents[startIndex]->GetIsOccupied() == false)
 		{
-			playerPos = newPlayerPos;
+			playerPos = ourEnemyRunTowardsComponents[startIndex]->GetParent()->GetWorldPosition();
+			break;
 		}
+	}
+	myRunTowardsComponentIndex = startIndex;
+	for (unsigned int i = startIndex; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	{
+		if (ourEnemyRunTowardsComponents[i]->GetIsOccupied() == false)
+		{
+			CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
+			const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
+
+			if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+			{
+				playerPos = newPlayerPos;
+				myRunTowardsComponentIndex = i;
+			}
+		}
+	}
+
+	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
+	{
+		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(true);
 	}
 
 	return playerPos;
