@@ -65,8 +65,8 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	aMessageData;
 
 	if (myAnimationStates.empty()) return;
-	auto it = myAnimationStates.begin();
 	auto animationEnd = myAnimationStates.end();
+	auto it = animationEnd;
 
 	switch (aMessageType)
 	{
