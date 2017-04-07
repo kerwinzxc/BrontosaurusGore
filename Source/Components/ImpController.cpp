@@ -133,8 +133,9 @@ void CImpController::Update(const float aDeltaTime)
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 		GetParent()->GetLocalTransform().LookAt(myWanderToPosition);
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
-		CU::Vector3f distance = myWanderToPosition - GetParent()->GetWorldPosition();
+		CU::Vector3f distance = myWanderToPosition - GetParent()->GetLocalTransform().GetPosition();
 		if(distance.Length() < 0.5f)
 		{
 			myState = eImpState::eIdle;
