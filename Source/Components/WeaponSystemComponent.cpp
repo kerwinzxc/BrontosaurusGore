@@ -173,8 +173,10 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myIsActive = false;
 		break;
 	}
+
 	case eComponentMessageType::eCheckPointReset:
 	{
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		myIsActive = true;
 		break;
 	}

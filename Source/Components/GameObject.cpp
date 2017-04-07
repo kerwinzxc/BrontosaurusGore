@@ -72,10 +72,6 @@ void CGameObject::AddComponent(CComponent* aComponent)
 	SComponentMessageData data;
 	data.myComponentTypeAdded = aComponent->myType;
 	data.myComponent = aComponent;
-	if(aComponent->myType == eComponentType::eAmmoPickup)
-	{
-		int i = 0;
-	}
 	Receive(eComponentMessageType::eAddComponent, data);
 }
 

@@ -457,7 +457,7 @@ void CClient::Update()
 			case  ePackageType::eSpawnEnemyRepresentation:
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
-				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType());
+				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType(), enemyRep->GetPosition());
 				DL_PRINT("EnemyRepSpawned");
 				//enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
