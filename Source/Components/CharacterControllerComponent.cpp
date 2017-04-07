@@ -54,7 +54,7 @@ void CCharacterControllerComponent::Receive(const eComponentMessageType aMessage
 		break;
 	case eComponentMessageType::eObjectDone:
 	{
-		CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+		CU::Matrix44f transformation = GetParent()->GetLocalTransform();
 		transformation.SetScale({ 1.0f, 1.0f, 1.0f });
 		transformation.SetPosition(transformation.GetPosition()/* + myCenter*/);
 		myController->SetPosition(transformation.myPosition);

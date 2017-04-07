@@ -79,12 +79,12 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 
 eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMessage)
 {
-	for (int i = 0; i < myWaves.Size(); i++)
+	for (unsigned int i = 0; i < myWaves.Size(); i++)
 	{
 		//unsigned short it = myWaves[i];
 		if (myWaves[i] == aStartWaveMessage.GetWave())
 		{
-			for (int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); i++)
+			for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); i++)
 			{
 				SpawnEnemy();
 			}
