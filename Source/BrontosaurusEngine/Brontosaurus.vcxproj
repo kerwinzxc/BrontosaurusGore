@@ -430,9 +430,6 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="NumberDrawer.h" />
-    <ClInclude Include="ParticleEmitter.h" />
-    <ClInclude Include="ParticleEmitterInstance.h" />
-    <ClInclude Include="ParticleEmitterManager.h" />
     <ClInclude Include="PlatformHelpers.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PointLightInstance.h" />
@@ -502,9 +499,6 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="NumberDrawer.cpp" />
-    <ClCompile Include="ParticleEmitter.cpp" />
-    <ClCompile Include="ParticleEmitterInstance.cpp" />
-    <ClCompile Include="ParticleEmitterManager.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PointLightInstance.cpp" />
     <ClCompile Include="Renderer.cpp" />

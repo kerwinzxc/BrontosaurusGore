@@ -1,10 +1,17 @@
 #pragma once
-#include "vector4.h"
 #include "Texture.h"
+#include "../CommonUtilities/GrowingArray.h"
+#include "../CommonUtilities/StaticArray.h"
 #include <mutex>
+
+namespace Particles
+{
+	class IParticleUpdater;
+}
 
 namespace CU
 {
+	class CJsonValue;
 	class Time;
 	class Camera;
 
@@ -29,8 +36,16 @@ public:
 		eNURBSSphere,
 		eSize,
 	};
+	enum class EmitterType
+	{
+		eSphere,
+		ePoint,
+		eNone,
+	};
 
 	CParticleEmitter();
+
+	explicit CParticleEmitter(const CU::CJsonValue& aJsonValue);
 	CParticleEmitter(const CParticleEmitter& aParticleEmitter);
 	~CParticleEmitter();
 	void Init(const SEmitterData& EmitterData);
@@ -39,9 +54,22 @@ public:
 
 	bool HasEffects() const;
 	CParticleEmitter& operator=(const CParticleEmitter& aParticleEmitter);
-	CParticleEmitter& operator=(CParticleEmitter&& aParticleEmitter);
-
+	CParticleEmitter& operator=(CParticleEmitter&& aParticleEmitter) noexcept;
+	void AddRef();
+	void RemoveRef();
 private:
+
+
+	void ParseColor(const CU::CJsonValue& aJsonValue);
+	void ParseSize(const CU::CJsonValue& aJsonValue);
+	void ParseLifetime(const CU::CJsonValue& aJsonValue);
+	void ParseVelocity(const CU::CJsonValue& aJsonValue);
+	void ParseParticle(const CU::CJsonValue& aJsonValue);
+	EmitterType ParseEmitterType(const std::string& aTypeString);
+	void ParseEmissionArea(const CU::CJsonValue& aJsonValue);
+	RenderMode GetRenderMode(const std::string& aRenderModeString);
+
+	void ParseRender(const CU::CJsonValue& aJsonValue);
 
 	ID3D11Buffer* GetVertexBuffer();
 	void ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList);
@@ -49,14 +77,31 @@ private:
 	bool InitBuffers();
 
 private:
-	CU::StaticArray<CEffect*, static_cast<int>(RenderMode::eSize)> myRenderEffects;
+	struct EmitterData
+	{
+		std::string name;
+		int id = 0;
+		unsigned int maxNrOfParticles = 0;
+		unsigned int emissionRate = 0;
+		bool loop = false;
+		float lifetime = 0.f;
+		struct
+		{
+			RenderMode renderMode = RenderMode::eMetaBall;
+			CTexture* myTexture = nullptr;
+		} render;
 
-	CTexture*		myTexture;
+		CU::GrowingArray<Particles::IParticleUpdater*> updaters;
+		
+	} myEmitterData;
+
+	CU::StaticArray<CEffect*, static_cast<int>(RenderMode::eSize)> myRenderEffects;
 
 	CDXFramework*	myFramework;
 	ID3D11Buffer*	myVertexBuffer;
 	ID3D11Buffer*	myModelBuffer;
 
-	unsigned int myMaxNrOfParticles;
 	std::mutex myUpdateVBufferMutex;
+	unsigned int myRefCount;
+	
 };

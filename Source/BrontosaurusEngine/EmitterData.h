@@ -1,7 +1,7 @@
 #pragma once
 #include "../CommonUtilities/StaticArray.h"
-#include <Vector3.h>
-#include <Vector4.h>
+#include "../CommonUtilities/Vector3.h"
+#include "../CommonUtilities/Vector4.h"
 
 #ifndef STATIC_SIZEOF
 #define STATIC_SIZEOF(x) {char STATIC_SIZEOF_TEMP[(x)]; STATIC_SIZEOF_TEMP = 1;}

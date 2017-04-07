@@ -2,6 +2,7 @@
 #include <functional>
 #include "../CommonUtilities/vector2.h"
 #include "../FontEngine/FontEngineFacade.h"
+#include "ParticleEmitterManager.h"
 //#include "TextInstance.h"
 
 class CParticleEmitterManager;
@@ -121,7 +122,6 @@ private:
 	CLightManager* myLightManager;
 	CInputManager* myInputManager;
 	CTextureManager* myTextureManager;
-	CParticleEmitterManager* myParticleEmitterManager;
 	CFireEmitterManager* myFireEmitterManager;
 	
 	CConsole* myConsole;
@@ -202,8 +202,7 @@ inline CConsole* CEngine::GetConsole()
 
 inline CParticleEmitterManager& CEngine::GetParticleEmitterManager()
 {
-	assert(myParticleEmitterManager != nullptr);
-	return *myParticleEmitterManager;
+	return CParticleEmitterManager::GetInstance();
 }
 
 inline CFireEmitterManager& CEngine::GetFireEmitterManager()
