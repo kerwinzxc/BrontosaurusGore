@@ -318,15 +318,22 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			CWeapon* nextWeapon = myWeapons[aIndex];
-			unsigned short& activeWeaponIndex = myActiveWeaponIndex;
-			auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true)
 			{
-				nextWeapon->Equip();
-				activeWeaponIndex = aIndex;
-			};
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				{
+					nextWeapon->Equip();
+					activeWeaponIndex = aIndex;
+				};
 
-			myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+			}
+			else
+			{
+				myActiveWeaponIndex = aIndex;
+			}
 		}
 	}
 }
