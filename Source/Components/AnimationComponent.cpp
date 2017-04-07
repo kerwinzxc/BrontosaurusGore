@@ -46,6 +46,13 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 		}
 	}
 
+	CU::Vector3f positoin3D = GetParent()->GetToWorldTransform().GetPosition();
+	CU::Vector2f position(positoin3D.x, positoin3D.z);
+	CU::Vector2f velocity = position - myLastPosition;
+	myLastPosition = position;
+
+	//now we have the velocity, but not the boundaries for different velocities. lets get that on monday
+	
 	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
 	myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
 	myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myAnimationBlend);
@@ -102,29 +109,10 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		{
 			PushAnimation(it->second);
 		}
-	//case eComponentMessageType::eSetVisibility:
-	//	if (aMessageData.myBool == true)
-	//	{
-	//		it = myAnimationStates.find("equip");
-	//		if (it != animationEnd)
-	//		{
-	//			PushAnimation(it->second);
-	//		}
-	//	}
-	//	else if (aMessageData.myBool == false)
-	//	{
-	//		it = myAnimationStates.find("unequip");
-	//		if (it != animationEnd)
-	//		{
-	//			myModelComponent.SetVisibility(true);
-	//			PushAnimation(it->second);
-	//		}
-	//	}
-	//	break;
+		break;
 	case eComponentMessageType::eUnequip:
 		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
 		{
-			DL_PRINT("Changed equip-to when already equipping");
 			myOnFinnishedCallback = *aMessageData.myVoidFunction;
 			break;
 		}
