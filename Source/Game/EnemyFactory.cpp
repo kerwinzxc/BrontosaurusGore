@@ -66,8 +66,7 @@ CEnemyFactory * CEnemyFactory::GetInstance()
 
 void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 {
-	CU::CJsonValue value;
-	value.Parse("Json/Spawner/EnemyStats.json");
+	CU::CJsonValue value = value.Parse("Json/Spawner/EnemyStats.json");
 	if (value.Count(alevel) <= 0)
 	{
 		DL_PRINT("Didn't find your level in EnemyStats.json, please add your level to the dokument or ask Alex for help");
@@ -122,7 +121,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	imp->GetLocalTransform().SetPosition(aPosition);
 	aPosition.Print();
 
-	CEnemy* controller;
+	CEnemy* controller = nullptr;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(aType);
@@ -220,7 +219,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	controllerDesc.halfHeight = 1.47f;
 
 
-	CModelComponent* model;
+	CModelComponent* model = nullptr;
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:

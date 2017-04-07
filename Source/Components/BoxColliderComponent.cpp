@@ -21,7 +21,6 @@ void CBoxColliderComponent::Receive(const eComponentMessageType aMessageType, co
 		if (aMessageData.myComponent == this)
 		{
 			const int ParentId = GetParent()->GetId();
-			int i = 0;
 		}
 
 		break; //else: fall through;
