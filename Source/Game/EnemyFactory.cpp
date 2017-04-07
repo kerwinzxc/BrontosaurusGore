@@ -120,7 +120,6 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->GetLocalTransform().SetPosition(aPosition);
-	aPosition.Print();
 
 	CEnemy* controller;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
@@ -155,9 +154,9 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	case eEnemyTypes::eRevenant:
 	{
 
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 
 
 		controller = myEnemyManager.CreateComponent(&myRevenantBluePrint, aType);
@@ -169,9 +168,9 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	case eEnemyTypes::ePinky:
 	{
 
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 
 
 		controller = myEnemyManager.CreateComponent(&myPinkyBluePrint, aType);
@@ -255,6 +254,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	health->SetMaxHealth(aHealthValue);
 	health->SetHealth(aHealthValue);
+	DL_PRINT("Health comp ID %u", health->GetId());
 	repesention->AddComponent(health);
 
 	myEnemyManager.InitWeaponSystem(enemy, &myWeaponSystemManager);
