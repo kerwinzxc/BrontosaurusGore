@@ -27,6 +27,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(
 	myShouldNotReset = nej;
 	myType = aType;
 	myRunTowardsComponentIndex = 999999;
+	myIsAggressive = false;
 }
 
 CEnemy::~CEnemy()
@@ -256,6 +257,7 @@ eMessageReturn CEnemy::DoEvent(const CResetToCheckPointMessage& aResetToCheckPoi
 	SComponentMessageData controllerPositionData;
 	controllerPositionData.myVector3f = mySpawnPosition;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	myIsAggressive = false;
 	return eMessageReturn::eContinue;
 }
 

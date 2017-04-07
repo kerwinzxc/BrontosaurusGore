@@ -80,6 +80,7 @@ protected:
 	bool myIsDead;
 	bool myIsAttacking;
 	bool myShouldNotReset;
+	bool myIsAggressive;
 	char myControllerConstraints;
 private:
 	float myHighlightTimer;

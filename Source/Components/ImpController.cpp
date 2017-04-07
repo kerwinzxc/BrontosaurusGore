@@ -59,14 +59,20 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+			myIsAggressive = true;
 		}
 		else if (WithinDetectionRange() == true)
 		{
 			myState = eImpState::eChase;
+			myIsAggressive = true;
 		}
 		else
 		{
 			myState = eImpState::eIdle;
+			if(myIsAggressive == true)
+			{
+				myState = eImpState::eChase;
+			}
 		}
 	}
 	else
