@@ -88,6 +88,8 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myImpBluePrint.wanderDistance = impstats.at("FleeDistance").GetFloat();
 	myImpBluePrint.wanderAngle = impstats.at("FleeAngle").GetFloat();
 
+	myImpBluePrint.shootingRange = 0;
+
 
 	CU::CJsonValue revenantStats = value.at(alevel).at("Revenant");
 	myRevenantBluePrint.Health = revenantStats.at("Health").GetInt();
@@ -129,21 +131,20 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.slopeLimit = 45 * (PI / 180.0f);
 	controllerDesc.stepOffset = 0.3f;
-	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.skinWidth = 0.001f;
 	controllerDesc.minMoveDistance = 0.f;
 	controllerDesc.center.y = -0.88f;
-	controllerDesc.radius = 1.08f;
 	controllerDesc.halfHeight = 1.47f;
-
+	controllerDesc.radius = 1.08f;
 
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:
 	{
 
-		controllerDesc.halfHeight = 1.47f;
-		controllerDesc.radius = 1.08f;
-		controllerDesc.center.y = -0.88f;
+		controllerDesc.halfHeight = 1.96f;
+		controllerDesc.radius = 1.16f;
+		controllerDesc.center.y = -1.99f;
 
 		controller = myEnemyManager.CreateComponent(&myImpBluePrint, aType);
 		health->SetMaxHealth(myImpBluePrint.Health);
@@ -180,6 +181,8 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	}
 	break;
 	}
+	//controllerDesc.center.y += ((controllerDesc.halfHeight * 2) - (controllerDesc.radius / 2));
+
 	controller->KillEverythingThenResetItAgain(true);
 	imp->AddComponent(controller);
 	imp->AddComponent(health);
@@ -227,9 +230,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	case eEnemyTypes::eImp:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_MindControlledHuman_01.fbx");
-		controllerDesc.halfHeight = 1.47f;
-		controllerDesc.radius = 1.08f;
-		controllerDesc.center.y = -0.88f;
+		controllerDesc.halfHeight = 1.96f;
+		controllerDesc.radius = 1.16f;
+		controllerDesc.center.y = -1.99f;
 	}
 	break;
 	case eEnemyTypes::eRevenant:
@@ -252,6 +255,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 		break;
 	}
 	repesention->AddComponent(model);
+	controllerDesc.center.x *= -1;
+	controllerDesc.center.z *= -1;
+	//controllerDesc.center.y -= ((controllerDesc.halfHeight * 2) - (controllerDesc.radius / 2));
 
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	health->SetMaxHealth(aHealthValue);

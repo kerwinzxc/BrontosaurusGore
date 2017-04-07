@@ -102,6 +102,10 @@ void CEnemy::CheckForNewTransformation(const float aDeltaTime)
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
+	if (myVelocity.z > 20)
+		myVelocity.z = 20;
+	if (myVelocity.y > 900)
+		myVelocity.y = 900;
 	data.myVector4f = myVelocity * rotation * aDeltaTime;
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
