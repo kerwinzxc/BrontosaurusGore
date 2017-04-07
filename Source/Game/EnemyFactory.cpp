@@ -125,10 +125,25 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(aType);
+
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.slopeLimit = 45;
+	controllerDesc.stepOffset = 0.3f;
+	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.minMoveDistance = 0.f;
+
+
+
+
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:
 	{
+
+		controllerDesc.halfHeight = 2.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = 2;
+
 		controller = myEnemyManager.CreateComponent(&myImpBluePrint, aType);
 		health->SetMaxHealth(myImpBluePrint.Health);
 		health->SetHealth(myImpBluePrint.Health);
@@ -137,6 +152,12 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	break;
 	case eEnemyTypes::eRevenant:
 	{
+
+		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = controllerDesc.halfHeight;
+
+
 		controller = myEnemyManager.CreateComponent(&myRevenantBluePrint, aType);
 		health->SetMaxHealth(myRevenantBluePrint.Health);
 		health->SetHealth(myRevenantBluePrint.Health);
@@ -145,6 +166,12 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	break;
 	case eEnemyTypes::ePinky:
 	{
+
+		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = controllerDesc.halfHeight;
+
+
 		controller = myEnemyManager.CreateComponent(&myPinkyBluePrint, aType);
 		health->SetMaxHealth(myPinkyBluePrint.Health);
 		health->SetHealth(myPinkyBluePrint.Health);
@@ -158,13 +185,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 
 	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
 
-	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.f;
-	controllerDesc.halfHeight = 1.0f;
-	controllerDesc.slopeLimit = 45;
-	controllerDesc.stepOffset = 0.3f;
-	controllerDesc.skinWidth = 0.08f;
-	controllerDesc.radius = 0.5f;
+	
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc,imp->GetId());
 	imp->AddComponent(CollisionController);
 
@@ -186,22 +207,39 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	enemy->KillEverythingThenResetItAgain(true);
 	repesention->AddComponent(enemy);
 
+
+	Physics::SCharacterControllerDesc controllerDesc;
+	controllerDesc.minMoveDistance = 0.f;
+	controllerDesc.slopeLimit = 45;
+	controllerDesc.stepOffset = 0.3f;
+	controllerDesc.skinWidth = 0.08f;
+
+
 	CModelComponent* model;
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_MindControlledHuman_01.fbx");
+		controllerDesc.halfHeight = 2.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = controllerDesc.halfHeight;
 	}
 	break;
 	case eEnemyTypes::eRevenant:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
+		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = controllerDesc.halfHeight;
 	}
 	break;
 	case eEnemyTypes::ePinky:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
+		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.center.y = controllerDesc.halfHeight;
 	}
 	break;
 	default:
@@ -216,13 +254,6 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	myEnemyManager.InitWeaponSystem(enemy, &myWeaponSystemManager);
 
-	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.f;
-	controllerDesc.halfHeight = 1.0f;
-	controllerDesc.slopeLimit = 45;
-	controllerDesc.stepOffset = 0.3f;
-	controllerDesc.skinWidth = 0.08f;
-	controllerDesc.radius = 0.5f;
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc, repesention->GetId());
 	repesention->AddComponent(CollisionController);
 

@@ -37,7 +37,7 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 	myIsRunning = true;
 
 	mySettings.HDR = false;
-	mySettings.Bloom = true;
+	mySettings.Bloom = false;
 	mySettings.Motionblur = false;
 	mySettings.CromaticAberration = true;
 	mySettings.FXAA = true;
