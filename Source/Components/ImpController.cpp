@@ -133,8 +133,9 @@ void CImpController::Update(const float aDeltaTime)
 	{
 		myWanderToPosition.y = GetParent()->GetLocalTransform().GetPosition().y;
 		GetParent()->GetLocalTransform().LookAt(myWanderToPosition);
+		GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
 		myVelocity.z = -mySpeed;
-		CU::Vector3f distance = myWanderToPosition - GetParent()->GetWorldPosition();
+		CU::Vector3f distance = myWanderToPosition - GetParent()->GetLocalTransform().GetPosition();
 		if(distance.Length() < 0.5f)
 		{
 			myState = eImpState::eIdle;
@@ -184,19 +185,6 @@ void CImpController::Update(const float aDeltaTime)
 		break;
 	default:
 		break;
-	}
-	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = transform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
-
-
-	SComponentQuestionData data;
-	data.myVector4f = myVelocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		transform.SetPosition(data.myVector3f);
-		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
 	CheckForNewTransformation(aDeltaTime);
@@ -314,7 +302,6 @@ bool CImpController::CheckIfInAir()
 
 void CImpController::InitiateWander()
 {
-
 	//CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
 	//if (myWanderAngle > 0)
 	//{
