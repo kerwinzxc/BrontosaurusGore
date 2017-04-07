@@ -68,7 +68,7 @@ void CWaveManager::StartWave()
 
 void CWaveManager::Update()
 {
-	for (int i = 0; i < myEnemiesInWave.Size(); i++)
+	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
 		if (myEnemiesInWave[i]->GetIsDead() == true)
 		{
@@ -119,7 +119,7 @@ eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToC
 	myNumberOfPlayers = 0;
 	myNumberOfWavesToSpawn = myResetToNumberOfWaves;
 	SComponentMessageData data; data.myInt = 10000;
-	for (int i = 0; i < myEnemiesInWave.Size(); i++)
+	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
 		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
 		CNetworkMessage_SetIsRepesentationActive* deactivate = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);

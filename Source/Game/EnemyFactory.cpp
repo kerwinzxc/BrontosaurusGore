@@ -121,7 +121,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->GetLocalTransform().SetPosition(aPosition);
 
-	CEnemy* controller;
+	CEnemy* controller = nullptr;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(aType);
@@ -219,7 +219,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	controllerDesc.halfHeight = 1.47f;
 
 
-	CModelComponent* model;
+	CModelComponent* model = nullptr;
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:

@@ -213,7 +213,7 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 	}
 	
 	CU::Vector3f playerPos = ourPlayerObjects[0]->GetWorldPosition();
-	for(int i = 0; i < ourPlayerObjects.Size(); ++i)
+	for(unsigned int i = 0; i < ourPlayerObjects.Size(); ++i)
 	{
 		CGameObject*const player = ourPlayerObjects[i];
 		const CU::Vector3f newPlayerPos = player->GetWorldPosition();
@@ -296,7 +296,7 @@ const CU::Vector3f CEnemy::GetNearestJumpPosition()
 	}
 
 	CU::Vector3f playerPos = ourEnemyRunTowardsComponents[0]->GetParent()->GetWorldPosition();
-	for (int i = 0; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	for (unsigned int i = 0; i < ourEnemyRunTowardsComponents.Size(); ++i)
 	{
 		CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
 		const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
