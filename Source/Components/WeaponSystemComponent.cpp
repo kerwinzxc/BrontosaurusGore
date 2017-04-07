@@ -318,9 +318,15 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
-			myActiveWeaponIndex = aIndex;
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+			CWeapon* nextWeapon = myWeapons[aIndex];
+			unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+			auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+			{
+				nextWeapon->Equip();
+				activeWeaponIndex = aIndex;
+			};
+
+			myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
 		}
 	}
 }

@@ -36,4 +36,4 @@ inline TAnimationState<NumStates>::TAnimationState(const char* aCommaSeperatedSt
 }
 
 #define DECLARE_ANIMATION_ENUM_AND_STRINGS \
-ENUM_STRING_MACRO(AnimationState, idle01, walk01, run01, shot01, equip01, unequip01, jump01, death01, meleeAttack01, throwAttack01, none)
+ENUM_STRING_MACRO(AnimationState, idle01, walk01, run01, shot01, equip01, unequip01, jump01, death01, meleeAttack01, throwAttack01, invisible, none)

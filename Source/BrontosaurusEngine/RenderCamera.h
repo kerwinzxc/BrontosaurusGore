@@ -3,7 +3,7 @@
 #include "RenderPackage.h"
 
 struct SRenderMessage;
-struct CGeometryBuffer;
+class CGeometryBuffer;
 struct ID3D11PixelShader;
 
 class CRenderCamera

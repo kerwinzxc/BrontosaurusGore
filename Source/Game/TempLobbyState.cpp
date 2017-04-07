@@ -162,7 +162,10 @@ void CTempLobbyState::Conect()
 #endif
 
 		processName += ".exe";
-		WindowsHelper::StartProgram(processName);
+		if (!WindowsHelper::StartProgram(processName))
+		{
+			DL_MESSAGE_BOX("Failed to start server, failed to build TServer_Application?\n%s", processName.c_str());
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		WindowsHelper::SetFocus(CEngine::GetInstance()->GetWindow()->GetHWND());
 	}

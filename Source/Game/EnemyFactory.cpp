@@ -185,6 +185,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	imp->AddComponent(health);
 
 	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
+	message->SetPosition(aPosition);
 
 	
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc,imp->GetId());
@@ -199,9 +200,10 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	return controller;
 }
 
-CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
+CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition)
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
+	repesention->GetLocalTransform().SetPosition(aPosition);
 
 	CEnemyClientRepresentation* enemy = &CEnemyClientRepresentationManager::GetInstance().CreateAndRegister();
 	enemy->SetEnemyType(aType);

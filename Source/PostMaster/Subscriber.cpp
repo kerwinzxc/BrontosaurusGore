@@ -9,7 +9,7 @@
 //{
 //}
 
-Subscriber::Subscriber(int i)
+Subscriber::Subscriber(int /*i*/)
 {
 }
 

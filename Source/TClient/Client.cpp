@@ -457,7 +457,7 @@ void CClient::Update()
 			case  ePackageType::eSpawnEnemyRepresentation:
 			{
 				CNetworkMessage_SpawnEnemyRepesention* enemyRep = currentMessage->CastTo<CNetworkMessage_SpawnEnemyRepesention>();
-				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType());
+				CEnemy* enemy = CEnemyFactory::GetInstance()->CreateRepesention(enemyRep->GetHealth(), enemyRep->GetEnemyType(), enemyRep->GetPosition());
 				DL_PRINT("EnemyRepSpawned");
 				//enemy->GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 			}
@@ -551,7 +551,7 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	DL_PRINT("wait Connecting");
 	while (myState == eClientState::CONECTING)
 	{
-		
+		std::this_thread::yield();
 	}
 
 	return  true;

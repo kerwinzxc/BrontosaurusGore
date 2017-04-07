@@ -526,12 +526,12 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
 		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-		addHandGunData.myString = "MeleeWeapon";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "MeleeWeapon";
-		tempAmmoReplensihData.replenishAmount = 1000000;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		//addHandGunData.myString = "MeleeWeapon";
+		//playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		//tempAmmoReplensihData.ammoType = "MeleeWeapon";
+		//tempAmmoReplensihData.replenishAmount = 1000000;
+		//giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		//playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		CPlayerNetworkComponent* network = new CPlayerNetworkComponent();
 		CComponentManager::GetInstance().RegisterComponent(network);
