@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "KeyPickupComponent.h"
 #include "PollingStation.h"
-#include "..\TClient\ClientMessageManager.h"
-#include "..\TShared\NetworkMessage_PickupKey.h"
-#include "..\ThreadedPostmaster\Postmaster.h"
-#include "..\ThreadedPostmaster\SendNetowrkMessageMessage.h"
+#include "../TClient/ClientMessageManager.h"
+#include "../TShared/NetworkMessage_PickupKey.h"
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
 
 CKeyPickupComponent::CKeyPickupComponent()
 {
@@ -35,4 +36,5 @@ void CKeyPickupComponent::DoMyEffect()
 	message->SetID(myNetworkId);
 	message->SetLockID(myLockId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a key!"));
 }

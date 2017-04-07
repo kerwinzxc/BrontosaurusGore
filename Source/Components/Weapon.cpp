@@ -269,3 +269,29 @@ bool CWeapon::CanShoot()
 	}
 	return false;
 }
+
+void CWeapon::Equip()
+{
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityTrue;
+		visibilityTrue.myBool = true;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityTrue);
+
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eEquip, SComponentMessageData());
+	}
+}
+
+void CWeapon::Unequip(const std::function<void(void)>& aOnUnequippedCallback)
+{
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityFalse;
+		visibilityFalse.myBool = false;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityFalse);
+
+		SComponentMessageData unequipData;
+		unequipData.myVoidFunction = &aOnUnequippedCallback;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eUnequip, unequipData);
+	}
+}

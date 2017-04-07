@@ -173,8 +173,10 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myIsActive = false;
 		break;
 	}
+
 	case eComponentMessageType::eCheckPointReset:
 	{
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		myIsActive = true;
 		break;
 	}
@@ -316,9 +318,22 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
-			myActiveWeaponIndex = aIndex;
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true)
+			{
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				{
+					nextWeapon->Equip();
+					activeWeaponIndex = aIndex;
+				};
+
+				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+			}
+			else
+			{
+				myActiveWeaponIndex = aIndex;
+			}
 		}
 	}
 }

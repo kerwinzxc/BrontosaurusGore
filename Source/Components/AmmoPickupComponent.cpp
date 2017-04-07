@@ -5,6 +5,8 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetWorkMessage_PickupAmmo.h"
 #include "../TClient/ClientMessageManager.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
+#include "../CommonUtilities/StringHelper.h"
 
 CAmmoPickupComponent::CAmmoPickupComponent()
 {
@@ -52,4 +54,10 @@ void CAmmoPickupComponent::DoMyEffect()
 	CNetWorkMessage_PickupAmmo* message = CClientMessageManager::GetInstance()->CreateMessage<CNetWorkMessage_PickupAmmo>(ID_ALL_BUT_ME);
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	if (myPickupData.ammoType == "PlasmaRifle")
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Plasma Rifle ammo!"));
+		return;
+	}
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + CU::StringToWString(myPickupData.ammoType) + L" ammo!"));
 }

@@ -5,6 +5,7 @@
 #include "../TShared/NetworkMessage_PickupArmor.h"
 #include "../TClient/ClientMessageManager.h"
 #include "../Game/PollingStation.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
 
 CArmorPickupComponent::CArmorPickupComponent()
 {
@@ -33,6 +34,7 @@ void CArmorPickupComponent::DoMyEffect()
 	CNetworkmessage_PickupArmor* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkmessage_PickupArmor>(ID_ALL_BUT_ME);
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myReplenishAmount) + L" armor!"));
 }
 
 

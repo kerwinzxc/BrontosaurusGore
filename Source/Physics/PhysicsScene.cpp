@@ -46,7 +46,10 @@ namespace Physics
 		physx::PxVec3 dir = { aDirection.x, aDirection.y, aDirection.z };
 		physx::PxReal dist = aRayLength;
 
-		if (myPxScene->raycast(origin, dir, dist, hit))
+		physx::PxHitFlags flags = physx::PxHitFlag::eDEFAULT;
+		physx::PxQueryFilterData filter;
+
+		if (myPxScene->raycast(origin, dir, dist, hit, flags, filter))
 		{
 			outData.hit = hit.hasBlock;
 			if(hit.hasBlock)

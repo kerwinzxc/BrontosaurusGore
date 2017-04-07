@@ -5,6 +5,7 @@
 #include "../TShared/NetworkMessage_PickupHealth.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TClient/ClientMessageManager.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
 
 CHealthPickupComponent::CHealthPickupComponent()
 {
@@ -41,4 +42,5 @@ void CHealthPickupComponent::DoMyEffect()
 	CNetworkMessage_PickupHealth* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupHealth>(ID_ALL_BUT_ME);
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myRestoreAmount) + L" health!"));
 }

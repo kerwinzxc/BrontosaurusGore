@@ -79,6 +79,7 @@
     <ClCompile Include="WeaponSystemComponent.cpp" />
     <ClCompile Include="WeaponSystemManager.cpp" />
     <ClCompile Include="EnemyRunTowardsComponent.cpp" />
+    <ClCompile Include="AnimationComponentLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -180,5 +181,6 @@
     <ClInclude Include="WeaponSystemComponent.h" />
     <ClInclude Include="WeaponSystemManager.h" />
     <ClInclude Include="EnemyRunTowardsComponent.h" />
+    <ClInclude Include="AnimationComponentLoader.h" />
   </ItemGroup>
 </Project>

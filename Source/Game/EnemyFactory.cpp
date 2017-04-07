@@ -23,6 +23,7 @@
 #include "TServer/ServerMessageManager.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/Postmaster.h"
+#include "CommonUtilities/CommonUtilities.h"
 
 
 CEnemyFactory* CEnemyFactory::ourInstance = nullptr;
@@ -87,6 +88,8 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myImpBluePrint.wanderDistance = impstats.at("FleeDistance").GetFloat();
 	myImpBluePrint.wanderAngle = impstats.at("FleeAngle").GetFloat();
 
+	myImpBluePrint.shootingRange = 0;
+
 
 	CU::CJsonValue revenantStats = value.at(alevel).at("Revenant");
 	myRevenantBluePrint.Health = revenantStats.at("Health").GetInt();
@@ -119,30 +122,29 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 {
 	CGameObject* imp = myGameObjectManager.CreateGameObject();
 	imp->GetLocalTransform().SetPosition(aPosition);
-	aPosition.Print();
 
-	CEnemy* controller;
+	CEnemy* controller = nullptr;
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	CNetworkMessage_SpawnEnemyRepesention* message = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SpawnEnemyRepesention>(ID_ALL);
 	message->SetEnemyType(aType);
 
 	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.slopeLimit = 45;
+	controllerDesc.slopeLimit = 45 * (PI / 180.0f);
 	controllerDesc.stepOffset = 0.3f;
-	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.skinWidth = 0.001f;
 	controllerDesc.minMoveDistance = 0.f;
-
-
-
+	controllerDesc.center.y = -0.88f;
+	controllerDesc.halfHeight = 1.47f;
+	controllerDesc.radius = 1.08f;
 
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:
 	{
 
-		controllerDesc.halfHeight = 2.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = 2;
+		controllerDesc.halfHeight = 1.96f;
+		controllerDesc.radius = 1.16f;
+		controllerDesc.center.y = -1.99f;
 
 		controller = myEnemyManager.CreateComponent(&myImpBluePrint, aType);
 		health->SetMaxHealth(myImpBluePrint.Health);
@@ -153,9 +155,9 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	case eEnemyTypes::eRevenant:
 	{
 
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 
 
 		controller = myEnemyManager.CreateComponent(&myRevenantBluePrint, aType);
@@ -167,9 +169,9 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	case eEnemyTypes::ePinky:
 	{
 
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 
 
 		controller = myEnemyManager.CreateComponent(&myPinkyBluePrint, aType);
@@ -179,11 +181,14 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	}
 	break;
 	}
+	//controllerDesc.center.y += ((controllerDesc.halfHeight * 2) - (controllerDesc.radius / 2));
+
 	controller->KillEverythingThenResetItAgain(true);
 	imp->AddComponent(controller);
 	imp->AddComponent(health);
 
 	myEnemyManager.InitWeaponSystem(controller, &myWeaponSystemManager);
+	message->SetPosition(aPosition);
 
 	
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc,imp->GetId());
@@ -198,9 +203,10 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	return controller;
 }
 
-CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType)
+CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition)
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
+	repesention->GetLocalTransform().SetPosition(aPosition);
 
 	CEnemyClientRepresentation* enemy = &CEnemyClientRepresentationManager::GetInstance().CreateAndRegister();
 	enemy->SetEnemyType(aType);
@@ -209,47 +215,54 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 
 	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.f;
-	controllerDesc.slopeLimit = 45;
+	controllerDesc.slopeLimit = 45 * (PI / 180.0f);
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.minMoveDistance = 0.f;
+	controllerDesc.center.y = -0.88f;
+	controllerDesc.radius = 1.08f;
+	controllerDesc.halfHeight = 1.47f;
 
 
-	CModelComponent* model;
+	CModelComponent* model = nullptr;
 	switch (aType)
 	{
 	case eEnemyTypes::eImp:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_MindControlledHuman_01.fbx");
-		controllerDesc.halfHeight = 2.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.96f;
+		controllerDesc.radius = 1.16f;
+		controllerDesc.center.y = -1.99f;
 	}
 	break;
 	case eEnemyTypes::eRevenant:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 	}
 	break;
 	case eEnemyTypes::ePinky:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 	}
 	break;
 	default:
 		break;
 	}
 	repesention->AddComponent(model);
+	controllerDesc.center.x *= -1;
+	controllerDesc.center.z *= -1;
+	//controllerDesc.center.y -= ((controllerDesc.halfHeight * 2) - (controllerDesc.radius / 2));
 
 	CHealthComponent* health = CHealthComponentManager::GetInstance()->CreateAndRegisterComponent();
 	health->SetMaxHealth(aHealthValue);
 	health->SetHealth(aHealthValue);
+	DL_PRINT("Health comp ID %u", health->GetId());
 	repesention->AddComponent(health);
 
 	myEnemyManager.InitWeaponSystem(enemy, &myWeaponSystemManager);

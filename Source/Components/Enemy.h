@@ -65,6 +65,7 @@ protected:
 
 	unsigned int myServerId;
 	unsigned int myActiveWeaponIndex;
+	unsigned int myRunTowardsComponentIndex;
 
 	float mySpeed;
 	float myDetectionRange2;
@@ -79,6 +80,7 @@ protected:
 	bool myIsDead;
 	bool myIsAttacking;
 	bool myShouldNotReset;
+	bool myIsAggressive;
 	char myControllerConstraints;
 private:
 	float myHighlightTimer;

@@ -53,6 +53,8 @@ namespace Physics
 			myPxActor->detachShape(*shape);
 			shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !aIsTrigger);
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, aIsTrigger);
+			shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, !aIsTrigger);
+
 			myPxActor->attachShape(*shape);
 		}
 	}
