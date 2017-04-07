@@ -23,6 +23,7 @@
 #include "TServer/ServerMessageManager.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/Postmaster.h"
+#include "CommonUtilities/CommonUtilities.h"
 
 
 CEnemyFactory* CEnemyFactory::ourInstance = nullptr;
@@ -127,12 +128,13 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	message->SetEnemyType(aType);
 
 	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.slopeLimit = 45;
+	controllerDesc.slopeLimit = 45 * (PI / 180.0f);
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
 	controllerDesc.minMoveDistance = 0.f;
-
-
+	controllerDesc.center.y = -0.88f;
+	controllerDesc.radius = 1.08f;
+	controllerDesc.halfHeight = 1.47f;
 
 
 	switch (aType)
@@ -140,9 +142,9 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	case eEnemyTypes::eImp:
 	{
 
-		controllerDesc.halfHeight = 2.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = 2;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 
 		controller = myEnemyManager.CreateComponent(&myImpBluePrint, aType);
 		health->SetMaxHealth(myImpBluePrint.Health);
@@ -209,10 +211,13 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 
 	Physics::SCharacterControllerDesc controllerDesc;
-	controllerDesc.minMoveDistance = 0.f;
-	controllerDesc.slopeLimit = 45;
+	controllerDesc.slopeLimit = 45 * (PI / 180.0f);
 	controllerDesc.stepOffset = 0.3f;
 	controllerDesc.skinWidth = 0.08f;
+	controllerDesc.minMoveDistance = 0.f;
+	controllerDesc.center.y = -0.88f;
+	controllerDesc.radius = 1.08f;
+	controllerDesc.halfHeight = 1.47f;
 
 
 	CModelComponent* model;
@@ -221,25 +226,25 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	case eEnemyTypes::eImp:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_MindControlledHuman_01.fbx");
-		controllerDesc.halfHeight = 2.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 	}
 	break;
 	case eEnemyTypes::eRevenant:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 	}
 	break;
 	case eEnemyTypes::ePinky:
 	{
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
-		controllerDesc.halfHeight = 1.0f;
-		controllerDesc.radius = 0.5f;
-		controllerDesc.center.y = controllerDesc.halfHeight;
+		controllerDesc.halfHeight = 1.47f;
+		controllerDesc.radius = 1.08f;
+		controllerDesc.center.y = -0.88f;
 	}
 	break;
 	default:

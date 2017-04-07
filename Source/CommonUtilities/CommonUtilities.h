@@ -27,6 +27,7 @@
 #define KEVIN nullptr
 #define CARL delete new int
 #define MARCUS bool myIsActive
+#define DarkMARCUS bool myIsInActive
 
 template<typename Key, typename Value>
 void MapDelete(std::map < Key, Value> &aMap)
