@@ -30,11 +30,14 @@ public:
 private:
 	void PushAnimation(const SAnimation& aAnimation);
 
+	std::function<void(void)> myOnFinnishedCallback;
+
 	std::map<std::string, SAnimation> myAnimationStates;
 	CU::GrowingArray<SAnimation> myAnimationStack;
 
 	CU::Vector2f myLastPosition;
 	CModelComponent& myModelComponent;
+	bool myUpdateHasRun;
 
 	static CU::GrowingArray<CAnimationComponent*> ourAnimations;
 };

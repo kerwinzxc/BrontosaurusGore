@@ -551,7 +551,7 @@ bool CClient::Connect(const char* anIp, std::string aClientName)
 	DL_PRINT("wait Connecting");
 	while (myState == eClientState::CONECTING)
 	{
-		
+		std::this_thread::yield();
 	}
 
 	return  true;

@@ -14,6 +14,7 @@ CU::GrowingArray<CAnimationComponent*> CAnimationComponent::ourAnimations(64u);
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
 	, myModelComponent(aModelCompoent)
+	, myUpdateHasRun(false)
 {
 	myType = eComponentType::eAnimationComponent;
 
@@ -31,6 +32,7 @@ CAnimationComponent::~CAnimationComponent()
 
 void CAnimationComponent::Update(const CU::Time aDeltaTime)
 {
+	myUpdateHasRun = true;
 	if (myAnimationStack.Empty())
 	{
 		return;
@@ -44,6 +46,13 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 		}
 	}
 
+	CU::Vector3f positoin3D = GetParent()->GetToWorldTransform().GetPosition();
+	CU::Vector2f position(positoin3D.x, positoin3D.z);
+	CU::Vector2f velocity = position - myLastPosition;
+	myLastPosition = position;
+
+	//now we have the velocity, but not the boundaries for different velocities. lets get that on monday
+	
 	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
 	myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
 	myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myAnimationBlend);
@@ -53,20 +62,30 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 	if (myAnimationStack.GetLast().myCoolDownTime != -1.f)
 	{
 		myAnimationStack.GetLast().myCoolDownTime -= aDeltaTime.GetSeconds();
+		DL_PRINT("animation cooldown: %f", myAnimationStack.GetLast().myCoolDownTime);
 		if (myAnimationStack.GetLast().myCoolDownTime <= 0.f)
 		{
+			if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::invisible)
+			{
+				myModelComponent.SetVisibility(false);
+			}
+
 			myAnimationStack.Pop();
+
+			if (myOnFinnishedCallback != nullptr)
+			{
+				myOnFinnishedCallback();
+				myOnFinnishedCallback = nullptr;
+			}
 		}
 	}
 }
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
-	aMessageData;
-
-	if (myAnimationStates.empty()) return;
-	auto it = myAnimationStates.begin();
+	if (myAnimationStates.empty() || !myUpdateHasRun) return;
 	auto animationEnd = myAnimationStates.end();
+	auto it = animationEnd;
 
 	switch (aMessageType)
 	{
@@ -82,8 +101,6 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		else
 		{
 			PushAnimation(myAnimationStates["shoot"]);
-			//myAnimationStack.Add(myAnimationStates["shoot"]);
-			//myModelComponent.ResetAnimation();
 		}
 		break;
 	case eComponentMessageType::eDied:
@@ -91,19 +108,32 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		if (it != animationEnd)
 		{
 			PushAnimation(it->second);
-			//myAnimationStack.Add(it->second);
-			//myModelComponent.ResetAnimation();
 		}
-	case eComponentMessageType::eSetVisibility:
-		if (aMessageData.myBool == true)
+		break;
+	case eComponentMessageType::eUnequip:
+		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
 		{
-			it = myAnimationStates.find("equip");
-			if (it != animationEnd)
+			myOnFinnishedCallback = *aMessageData.myVoidFunction;
+			break;
+		}
+
+		it = myAnimationStates.find("unequip");
+		if (it != animationEnd)
+		{
+			myModelComponent.SetVisibility(true);
+			PushAnimation(it->second);
+			myOnFinnishedCallback = *aMessageData.myVoidFunction;
+		}
+		break;
+	case eComponentMessageType::eEquip:
+		it = myAnimationStates.find("equip");
+		if (it != animationEnd)
+		{
+			if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01)
 			{
-				PushAnimation(it->second);
-				//myAnimationStack.Add(it->second);
-				//myModelComponent.ResetAnimation();
+				myAnimationStack.Pop();
 			}
+			PushAnimation(it->second);
 		}
 		break;
 	}
