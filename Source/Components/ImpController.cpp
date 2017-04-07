@@ -186,19 +186,6 @@ void CImpController::Update(const float aDeltaTime)
 	default:
 		break;
 	}
-	CU::Matrix44f& transform = GetParent()->GetLocalTransform();
-	CU::Matrix44f rotation = transform.GetRotation();
-	rotation.myForwardVector.y = 0.f;
-
-
-	SComponentQuestionData data;
-	data.myVector4f = myVelocity * rotation * aDeltaTime;
-	data.myVector4f.w = aDeltaTime;
-	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-	{
-		transform.SetPosition(data.myVector3f);
-		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-	}
 
 	CheckForNewTransformation(aDeltaTime);
 }
