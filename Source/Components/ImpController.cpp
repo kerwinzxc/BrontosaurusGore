@@ -302,7 +302,6 @@ bool CImpController::CheckIfInAir()
 
 void CImpController::InitiateWander()
 {
-
 	//CU::Matrix44f impMatrix = GetParent()->GetLocalTransform(); //Change this later to something less taxing
 	//if (myWanderAngle > 0)
 	//{
