@@ -24,6 +24,7 @@ namespace AnimationComponentLoader
 
 	void LoadShoot(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadEquip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+	void LoadUnequip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadJump (const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
@@ -70,6 +71,12 @@ namespace AnimationComponentLoader
 			{
 				CU::CJsonValue equipObject = statesObject["equip"];
 				LoadEquip(equipObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("unequip"))
+			{
+				CU::CJsonValue unequipObject = statesObject["unequip"];
+				LoadUnequip(unequipObject, aModelComponent, aAnimationStates);
 			}
 
 			if (statesObject.HasKey("jump"))
@@ -147,6 +154,41 @@ namespace AnimationComponentLoader
 
 
 			aAnimationStates["equip"] = equipState;
+		}
+	}
+
+	void LoadUnequip(const CU::CJsonValue& aUnequipObject, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
+	{
+		SAnimation equipState;
+		int animationKey = SAnimationState::AnimationStates.Find(aUnequipObject["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			equipState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aUnequipObject["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				equipState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				equipState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			equipState.myIsLooping = aUnequipObject["loop"].GetBool();
+			if (equipState.myIsLooping)
+			{
+				if (aUnequipObject.HasKey("coolDownTime"))
+				{
+					equipState.myCoolDownTime = aUnequipObject["coolDownTime"].GetFloat();
+				}
+			}
+			else
+			{
+				equipState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::equip01);
+			}
+
+
+			aAnimationStates["unequip"] = equipState;
 		}
 	}
 
