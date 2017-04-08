@@ -14,7 +14,7 @@
 CPlayerNetworkComponent::CPlayerNetworkComponent() : myID(0)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetClientIDMessage(*this));
-
+	myIsActive = true;
 }
 
 
@@ -49,14 +49,19 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 		CNetworkMessage_PlayerDied* playerDied = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerDied>(ID_ALL);
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(playerDied));
+		myIsActive = false;
 	}
 	break;
 	case eComponentMessageType::eCheckPointReset:
 	{
-		CNetworkMessage_PlayerRespawned* playerRespawned = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerRespawned>(ID_ALL);
+		if(myIsActive == false)
+		{
+			CNetworkMessage_PlayerRespawned* playerRespawned = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PlayerRespawned>(ID_ALL);
 
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(playerRespawned));
-		DL_PRINT("Back");
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(playerRespawned));
+			myIsActive = true;
+			DL_PRINT("Back");
+		}
 	}
 	break;
 	default: break;

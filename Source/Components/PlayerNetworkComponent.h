@@ -16,6 +16,6 @@ private:
 	float myInterpolationSpeed;
 
 	unsigned short myID;
-
+	bool myIsActive;
 };
 
