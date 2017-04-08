@@ -501,30 +501,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
-		SComponentMessageData addHandGunData;
-		SComponentMessageData giveAmmoData;
-
-		addHandGunData.myString = "BFG";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		SAmmoReplenishData tempAmmoReplensihData;
-		tempAmmoReplensihData.ammoType = "BFG";
-		tempAmmoReplensihData.replenishAmount = 100;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		addHandGunData.myString = "Shotgun";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "Shotgun";
-		tempAmmoReplensihData.replenishAmount = 100;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		addHandGunData.myString = "PlasmaRifle";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "PlasmaRifle";
-		tempAmmoReplensihData.replenishAmount = 1000;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		
+		GivePlayerWeapons(playerObject);
 
 		//addHandGunData.myString = "MeleeWeapon";
 		//playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
@@ -606,5 +584,61 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
 		
+	}
+}
+
+void CPlayState::GivePlayerWeapons(CGameObject* aPlayerObject)
+{
+	CU::CJsonValue levelsFile;
+
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+
+	const std::string & alevel = levelsArray.at(myLevelIndex).GetString();
+	CU::CJsonValue value;
+	value.Parse("Json/Weapons/PlayerStartWeapons.json");
+
+	SComponentMessageData addHandGunData;
+	SComponentMessageData giveAmmoData;
+	SAmmoReplenishData tempAmmoReplensihData;
+
+	if (value.Count(alevel) <= 0)
+	{
+		DL_PRINT_WARNING("Didn't the level %s in PlayerStartWeapons.json, giving all weapons to player as default, if you need help ask Marcus", alevel);
+		addHandGunData.myString = "BFG";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "BFG";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "Shotgun";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "Shotgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "PlasmaRifle";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "PlasmaRifle";
+		tempAmmoReplensihData.replenishAmount = 1000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		return;
+	}
+	CU::CJsonValue loadedLevelsStartWeaponsData = value.at(alevel);
+	CU::CJsonValue weaponArray = loadedLevelsStartWeaponsData.at("Weapons");
+	for (int i = 0; i < weaponArray.Size(); ++i)
+	{
+		std::string loadedWeaponName = weaponArray[i].at("WeaponName").GetString();
+		addHandGunData.myString = loadedWeaponName.c_str();
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = loadedWeaponName.c_str();
+		tempAmmoReplensihData.replenishAmount = 100000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 }
