@@ -334,6 +334,7 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 			{
 				CWeapon* nextWeapon = myWeapons[aIndex];
 				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 				nextWeapon->Equip();
 				activeWeaponIndex = aIndex;
 			}
