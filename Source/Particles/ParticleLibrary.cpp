@@ -14,7 +14,7 @@ Particles::CParticleLibrary::~CParticleLibrary()
 
 void Particles::CParticleLibrary::Load(const std::string& aPath)
 {
-	CU::CJsonValue levelsFile;
+	/*CU::CJsonValue levelsFile;
 	std::string errorString = levelsFile.Parse(aPath);
 	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
 
@@ -23,7 +23,7 @@ void Particles::CParticleLibrary::Load(const std::string& aPath)
 	for(int i = 0; i < systemsArray.Size(); ++i)
 	{
 		LoadSystem(systemsArray[i]);
-	}
+	}*/
 }
 
 Particles::CParticleLibrary::ParticleId Particles::CParticleLibrary::AddRef(const std::string& aSystemName)
