@@ -318,7 +318,7 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true)
+			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
 			{
 				CWeapon* nextWeapon = myWeapons[aIndex];
 				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
@@ -332,7 +332,10 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 			}
 			else
 			{
-				myActiveWeaponIndex = aIndex;
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				nextWeapon->Equip();
+				activeWeaponIndex = aIndex;
 			}
 		}
 	}
