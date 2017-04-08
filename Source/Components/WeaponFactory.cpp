@@ -48,12 +48,12 @@ void CWeaponFactory::LoadWeapons()
 	std::string filePath = "Json/Weapons/WeaponStats.json";
 	const std::string& errorString = weaponBluePrint.Parse(filePath);
 	CU::CJsonValue levelsArray = weaponBluePrint.at("Weapons");
-	LoadWeaponsFromJsonValue(levelsArray);
+	LoadWeaponsFromJsonValue(levelsArray, true);
 	CU::CJsonValue enemyWeaponBluePrint;
 	filePath = "Json/Weapons/EnemyWeaponStats.json";
 	const std::string& enemyErrorString = weaponBluePrint.Parse(filePath);
 	CU::CJsonValue enemyLevelsArray = weaponBluePrint.at("Weapons");
-	LoadWeaponsFromJsonValue(enemyLevelsArray);
+	LoadWeaponsFromJsonValue(enemyLevelsArray, false);
 }
 unsigned short CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
 {
@@ -143,7 +143,7 @@ SWeaponSoundData CWeaponFactory::GetSoundData(CU::CJsonValue aSoundData)
 	return soundData;
 }
 
-void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
+void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, bool aIsPlayerWeapon)
 {
 	for (int i = 0; i < aJsonValue.Size(); ++i)
 	{
