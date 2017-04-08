@@ -54,6 +54,7 @@ private:
 	float myLastGroundedPositionY;
 
 	float myIdleCountdown;
+	float myIdleThingCountdown;
 
 	char myControllerConstraints;
 	bool myCanDoubleJump;
