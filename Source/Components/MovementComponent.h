@@ -27,6 +27,7 @@ private:
 	void KeyReleased(const ePlayerControls aPlayerControl);
 
 	void ApplyJumpForce(float aJumpHeight);
+	void ResetIdle();
 private:
 	enum class MovementMode
 	{
@@ -51,6 +52,8 @@ private:
 	float myElapsedFallCheckTime;
 	float myFallCheckCooldown;
 	float myLastGroundedPositionY;
+
+	float myIdleCountdown;
 
 	char myControllerConstraints;
 	bool myCanDoubleJump;
