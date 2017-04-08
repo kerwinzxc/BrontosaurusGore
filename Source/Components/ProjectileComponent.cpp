@@ -23,7 +23,7 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		Deactivate();
-		//if(myData->shouldRayCast == false)
+		if(myData->shouldRayCast == false)
 		{
 			SComponentMessageData damageData;
 			damageData.myInt = myData->damage;
