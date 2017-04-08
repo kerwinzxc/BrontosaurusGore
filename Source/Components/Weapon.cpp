@@ -176,6 +176,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				localWeaponMatrix.Move(shootDisplacment);
 				shootPosition = localWeaponMatrix.GetPosition();
 
+
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;

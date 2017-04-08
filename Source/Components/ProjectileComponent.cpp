@@ -19,6 +19,7 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eOnTriggerEnter:
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		Deactivate();
