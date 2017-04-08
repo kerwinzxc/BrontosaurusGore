@@ -77,3 +77,17 @@ void CEnemyClientRepresentation::CheckIfOutOfBounds()
 		//}
 	}
 }
+
+bool CEnemyClientRepresentation::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eIsEnemy :
+	{
+		return true;
+		break;
+	}
+	default:
+		break;
+	}
+}

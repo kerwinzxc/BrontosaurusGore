@@ -29,6 +29,7 @@ enum class eComponentQuestionType
 	eEnemyNetworkID,
 	eGetCurrentAmmoData,
 	eGetWeapons,
+	eIsEnemy,
 	eLength,
 };
 
