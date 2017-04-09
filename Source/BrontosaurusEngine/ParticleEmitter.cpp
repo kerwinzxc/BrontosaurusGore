@@ -15,7 +15,7 @@
 CParticleEmitter::CParticleEmitter()
 {
 	myRefCount = 0;
-	myEmitterData.maxNrOfParticles = 0;
+	myEmitterData.emitter.maxNrOfParticles = 0;
 	myEmitterData.render.myTexture = nullptr;
 
 	for (int i = 0; i < myRenderEffects.Size(); ++i)
@@ -26,7 +26,7 @@ CParticleEmitter::CParticleEmitter()
 	myFramework = nullptr;
 	myVertexBuffer = nullptr;
 	myModelBuffer = nullptr;
-	myEmitterData.updaters.Init(5);
+	myEmitterData.particles.updaters.Init(5);
 }
 
 CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticleEmitter()
@@ -34,11 +34,11 @@ CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticle
 	myEmitterData.name = aJsonValue["name"].GetString();
 	myEmitterData.id = aJsonValue["id"].GetInt();
 
-	myEmitterData.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
-	myEmitterData.emissionRate = aJsonValue["emissionRate"].GetUInt();
+	myEmitterData.emitter.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
+	myEmitterData.emitter.emissionRate = aJsonValue["emissionRate"].GetUInt();
 
-	myEmitterData.loop = aJsonValue["loop"].GetBool();
-	myEmitterData.lifetime = aJsonValue["lifetime"].GetFloat();
+	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
+	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
 	
 	ParseEmissionArea(aJsonValue["emitter"]);
 	ParseParticle(aJsonValue["particle"]);
@@ -57,7 +57,7 @@ CParticleEmitter::~CParticleEmitter()
 void CParticleEmitter::Init(const SEmitterData& aEmitterData)
 {
 	myEmitterData.render.myTexture = &TEXTUREMGR.LoadTexture(aEmitterData.TexturePath.c_str());
-	myEmitterData.maxNrOfParticles = static_cast<unsigned short>(aEmitterData.NumOfParticles);
+	myEmitterData.emitter.maxNrOfParticles = static_cast<unsigned short>(aEmitterData.NumOfParticles);
 
 
 	unsigned int ShaderType = 0;
@@ -138,7 +138,7 @@ CParticleEmitter& CParticleEmitter::operator=(const CParticleEmitter& aParticleE
 		return *this;
 	}
 
-	myEmitterData.maxNrOfParticles = myEmitterData.maxNrOfParticles;
+	myEmitterData.emitter.maxNrOfParticles = myEmitterData.emitter.maxNrOfParticles;
 	myEmitterData.render.myTexture = aParticleEmitter.myEmitterData.render.myTexture;
 	SAFE_ADD_REF(myEmitterData.render.myTexture);
 
@@ -196,6 +196,32 @@ void CParticleEmitter::RemoveRef()
 	--myRefCount;
 }
 
+void CParticleEmitter::Init()
+{
+	unsigned int ShaderType = 0;
+	ShaderType |= EModelBluePrint_Position;
+	ShaderType |= EModelBluePrint_Size;
+	ShaderType |= EModelBluePrint_Color;
+
+	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
+	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaballsSpherePixel.fx", ShaderType);
+	ID3D11GeometryShader* geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/metaballs/metaballsGeometry.fx", ShaderType);
+	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
+
+	myRenderEffects[static_cast<int>(RenderMode::eMetaBall)] = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/nurbs/nurbsVertex.fx", ShaderType);
+	pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/nurbs/nurbsSpherePixel.fx", ShaderType);
+	geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/nurbs/nurbsGeometry.fx", ShaderType);
+	inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/nurbs/nurbsVertex.fx", ShaderType);
+
+	myRenderEffects[static_cast<int>(RenderMode::eNURBSSphere)] =
+		new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	myFramework = FRAMEWORK;
+	InitBuffers();
+}
+
 void CParticleEmitter::ParseColor(const CU::CJsonValue& aJsonValue)
 {
 }
@@ -204,8 +230,20 @@ void CParticleEmitter::ParseSize(const CU::CJsonValue& aJsonValue)
 {
 }
 
+CParticleEmitter::LifetimeType CParticleEmitter::GetLifetimeType(const std::string& aTypeString)
+{
+	if(aTypeString == "random")
+	{
+		return LifetimeType::eRandom;
+	}
+
+	DL_ASSERT("Unknown lifetime type \"%s\"", aTypeString.c_str());
+	LifetimeType::eConstant;
+}
+
 void CParticleEmitter::ParseLifetime(const CU::CJsonValue& aJsonValue)
 {
+	myEmitterData.particles.lifetime.type = GetLifetimeType(aJsonValue["type"].GetString());
 }
 
 void CParticleEmitter::ParseVelocity(const CU::CJsonValue& aJsonValue)
@@ -232,9 +270,47 @@ CParticleEmitter::EmitterType CParticleEmitter::ParseEmitterType(const std::stri
 	return EmitterType::eNone;
 }
 
+CParticleEmitter::SpreadType CParticleEmitter::GetSpreadType(const std::string& aTypeString)
+{
+	if(aTypeString == "sphere")
+	{
+		return SpreadType::eSphere;
+	}
+
+	DL_ASSERT("Unknown spreadtype \"%s\"", aTypeString.c_str());
+	return SpreadType::eNone;
+}
+
 void CParticleEmitter::ParseEmissionArea(const CU::CJsonValue& aJsonValue)
 {
-	EmitterType type = ParseEmitterType(aJsonValue["type"].GetString());
+	const EmitterType type = ParseEmitterType(aJsonValue["type"].GetString());
+	myEmitterData.emitter.type = type;
+	switch (type)
+	{
+	case EmitterType::ePoint: 
+		break;
+	case EmitterType::eSphere:
+	case EmitterType::eNone:
+	default: 
+		DL_ASSERT("No handling for emitter type \"%s\"", aJsonValue["type"].GetString().c_str());
+		break;
+	}
+
+
+	const CU::CJsonValue spread = aJsonValue["spread"];
+	const SpreadType spreadType = GetSpreadType(spread["type"].GetString());
+	//myEmitterData.emitter.spread.type = spreadType;
+
+	switch (spreadType)
+	{
+	case SpreadType::eSphere: 
+		myEmitterData.emitter.spread.value.angle = spread["angle"].GetFloat();
+		break;
+	case SpreadType::eNone: 
+	default: 
+		DL_ASSERT("No handling for spread type \"%s\"",spread["type"].GetString().c_str());
+		break;
+	}
 }
 
 CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& aRenderModeString)
@@ -247,7 +323,7 @@ CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& 
 	{
 		return RenderMode::eMetaBall;
 	}
-	if(aRenderModeString == "nurbs")
+	if(aRenderModeString == "nurbssphere")
 	{
 		return RenderMode::eNURBSSphere;
 	}
@@ -256,10 +332,11 @@ CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& 
 	return RenderMode::eBillboard;
 }
 
-
 void CParticleEmitter::ParseRender(const CU::CJsonValue& aJsonValue)
 {
 	myEmitterData.render.renderMode = GetRenderMode(aJsonValue["type"].GetString());
+
+	myEmitterData.render.color = aJsonValue["color"].GetVector4f("rgba");
 
 	if(myEmitterData.render.renderMode == RenderMode::eBillboard)
 	{
@@ -279,9 +356,9 @@ void CParticleEmitter::ResizeVertexBuffer(const CU::GrowingArray<SParticle, unsi
 
 	unsigned int bufferSize = sizeof(SParticle);
 
-	if (aParticleList.Size() > myEmitterData.maxNrOfParticles)
+	if (aParticleList.Size() > myEmitterData.emitter.maxNrOfParticles)
 	{
-		bufferSize *= myEmitterData.maxNrOfParticles;
+		bufferSize *= myEmitterData.emitter.maxNrOfParticles;
 	}
 	else
 	{
@@ -317,7 +394,7 @@ bool CParticleEmitter::InitBuffers()
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.ByteWidth = sizeof(SParticle) * myEmitterData.maxNrOfParticles;
+	vertexBufferDesc.ByteWidth = sizeof(SParticle) * myEmitterData.emitter.maxNrOfParticles;
 	vertexBufferDesc.BindFlags = D3D11_USAGE_DYNAMIC | D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vertexBufferDesc.MiscFlags = 0;

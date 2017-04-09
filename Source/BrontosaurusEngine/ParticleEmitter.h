@@ -2,6 +2,9 @@
 #include "Texture.h"
 #include "../CommonUtilities/GrowingArray.h"
 #include "../CommonUtilities/StaticArray.h"
+#include "../CommonUtilities/vector3.h"
+
+#include "../CommonUtilities/vector4.h"
 #include <mutex>
 
 namespace Particles
@@ -42,13 +45,26 @@ public:
 		ePoint,
 		eNone,
 	};
+	enum class SpreadType
+	{
+		eSphere,
+		eNone
+	};
+	enum class LifetimeType
+	{
+		eConstant,
+		eRandom,
+	};
 
 	CParticleEmitter();
 
 	explicit CParticleEmitter(const CU::CJsonValue& aJsonValue);
 	CParticleEmitter(const CParticleEmitter& aParticleEmitter);
 	~CParticleEmitter();
+
+	//DEPRECATED
 	void Init(const SEmitterData& EmitterData);
+	
 	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode);
 	void Destroy();
 
@@ -58,14 +74,16 @@ public:
 	void AddRef();
 	void RemoveRef();
 private:
-
+	void Init();
 
 	void ParseColor(const CU::CJsonValue& aJsonValue);
 	void ParseSize(const CU::CJsonValue& aJsonValue);
+	LifetimeType GetLifetimeType(const std::string& aTypeString);
 	void ParseLifetime(const CU::CJsonValue& aJsonValue);
 	void ParseVelocity(const CU::CJsonValue& aJsonValue);
 	void ParseParticle(const CU::CJsonValue& aJsonValue);
 	EmitterType ParseEmitterType(const std::string& aTypeString);
+	SpreadType GetSpreadType(const std::string& aTypeString);
 	void ParseEmissionArea(const CU::CJsonValue& aJsonValue);
 	RenderMode GetRenderMode(const std::string& aRenderModeString);
 
@@ -77,23 +95,66 @@ private:
 	bool InitBuffers();
 
 private:
-	struct EmitterData
+	union Value
 	{
-		std::string name;
-		int id = 0;
+		struct MimMax
+		{
+			CU::Vector3f min;
+			CU::Vector3f max;
+		};
+		float radius;
+		float angle;
+	};
+
+	struct Spread
+	{
+		SpreadType type;
+		Value value;
+	};
+
+	struct Emitter
+	{
+		EmitterType type;
 		unsigned int maxNrOfParticles = 0;
 		unsigned int emissionRate = 0;
+
 		bool loop = false;
 		float lifetime = 0.f;
-		struct
-		{
-			RenderMode renderMode = RenderMode::eMetaBall;
-			CTexture* myTexture = nullptr;
-		} render;
-
-		CU::GrowingArray<Particles::IParticleUpdater*> updaters;
 		
+		Spread spread;
+		
+		Value value;
+	};
+
+	struct RenderStruct
+	{
+		RenderMode renderMode = RenderMode::eMetaBall;
+		CTexture* myTexture = nullptr;
+		CU::Vector4f color;
+	};
+	struct Lifetime
+	{
+		LifetimeType type;
+		float min;
+		float max;
+	};
+	struct ParticleData
+	{
+		Lifetime lifetime;
+		CU::GrowingArray<Particles::IParticleUpdater*> updaters;
+	};
+	struct EmitterData
+	{
+		
+		std::string name;
+		int id = 0;
+		RenderStruct render;
+		Emitter emitter;
+
+		ParticleData particles;
+
 	} myEmitterData;
+	
 
 	CU::StaticArray<CEffect*, static_cast<int>(RenderMode::eSize)> myRenderEffects;
 

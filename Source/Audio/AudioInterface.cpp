@@ -48,8 +48,8 @@ namespace Audio
 		listenerposition.OrientationFront.Z = aTranslation.myForwardVector.z;
 		
 		listenerposition.OrientationTop.X = aTranslation.myUpVector.x;
-		listenerposition.OrientationTop.Y = aTranslation.myUpVector.x;
-		listenerposition.OrientationTop.Z = aTranslation.myUpVector.x;
+		listenerposition.OrientationTop.Y = aTranslation.myUpVector.y;
+		listenerposition.OrientationTop.Z = aTranslation.myUpVector.z;
 
 		myWwiseManager->SetListenerPosition(listenerposition);
 	}
