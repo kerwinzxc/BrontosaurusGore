@@ -20,8 +20,6 @@ DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 namespace AnimationComponentLoader
 {
-	static SAnimation locIdleState;
-
 	//void LoadMoving(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadShoot(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadEquip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);

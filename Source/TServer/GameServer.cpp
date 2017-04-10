@@ -102,11 +102,6 @@ void CGameServer::Load(const int aLevelIndex)
 
 	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
-#ifdef _DEBUGq
-	myLevelIndex = levelsArray.Size() - 1;
-#else
-	const int levelIndex = 0;
-#endif
 	int myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
