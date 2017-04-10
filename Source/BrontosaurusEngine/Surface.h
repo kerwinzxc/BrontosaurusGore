@@ -22,6 +22,9 @@ public:
 	CSurface(const CU::GrowingArray<const wchar_t*>& aTexturePathList);
 	CSurface(const CSurface& aSurface);
 	~CSurface();
+
+	CSurface& operator=(const CSurface& aSurface);
+
 	void Activate();
 
 	const CU::Vector2ui& GetTextureSize() const;
