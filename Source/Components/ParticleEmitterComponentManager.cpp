@@ -8,6 +8,7 @@
 
 #include "..\BrontosaurusEngine\Scene.h"
 #include "..\BrontosaurusEngine\ParticleEmitterInstance.h"
+#include "ParticleEmitterManager.h"
 
 
 CParticleEmitterComponentManager* CParticleEmitterComponentManager::myInstance = nullptr;
@@ -38,13 +39,12 @@ void CParticleEmitterComponentManager::Destroy()
 	myInstance = nullptr;
 }
 
-CParticleEmitterComponent * CParticleEmitterComponentManager::CreateComponent(const SEmitterData & aEmitterData)
+CParticleEmitterComponent * CParticleEmitterComponentManager::CreateComponent(const std::string& aSystemId)
 {
-	CParticleEmitterInstance* emitter = new CParticleEmitterInstance(aEmitterData);
+	Particles::ParticleEmitterID emitter = CParticleEmitterManager::GetInstance().GetParticleEmitterId(aSystemId);
 	myComponents.Add(new CParticleEmitterComponent(emitter));
-	InstanceID id = myScene->AddParticleEmitterInstance(emitter);
 	CComponentManager::GetInstance().RegisterComponent(myComponents.GetLast());
-	emitter->SetInstandeID(id);
+	//emitter->SetInstandeID(id);
 	return myComponents.GetLast();
 }
 
@@ -60,7 +60,7 @@ void CParticleEmitterComponentManager::RemoveAll()
 void CParticleEmitterComponentManager::Remove(CParticleEmitterComponent * aComponentToRemove)
 {
 	//CComponentManager::GetInstance().RemoveComponent(aComponentToRemove->GetId());
-	myScene->DeleteParticleEmitterInstance(aComponentToRemove->GetEmitter()->GetInstanceID());
+	//myScene->DeleteParticleEmitterInstance(aComponentToRemove->GetEmitter()->GetInstanceID());
 	//myComponents.DeleteCyclic(aComponentToRemove);
 }
 

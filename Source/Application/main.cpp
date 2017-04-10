@@ -113,18 +113,19 @@ void Init(int argc, char* argv[])
 		engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
 		engineParams.myDebugFlags = DebugDrawerFlags();
 
-	CParticleEmitterManager::Create();
-
 	CEngine::GetInstance()->Init(engineParams);
 
+	CParticleEmitterManager::Create();
 	CParticleEmitterManager::GetInstance().LoadParticleLibrary("Json/Particles.json");
+	//CParticleEmitterManager::GetInstance().Run();
 	//Physics::CPhysXManager::Create();
 	CEngine::GetInstance()->Start();
 }
 
 	Audio::CAudioInterface::Destroy();
-	CParticleEmitterManager::Destroy();
 	CEngine::DestroyInstance();
+
+	CParticleEmitterManager::Destroy();
 	PostMaster::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();
 	CommandLineManager::DestroyInstance();

@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderPackage.h"
 #include "LightModel.h"
-#include "../Components/ParticleEmitterComponent.h"
+#include "EmitterData.h"
 
 struct SRenderMessage;
 
@@ -22,6 +22,7 @@ public:
 	void AddRenderMessage(SRenderMessage* aMessage);
 
 
+	
 	void DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,ID3D11ShaderResourceView* aDepthResourceView);
 	CRenderPackage& GetIntermediatePackage();
 
@@ -43,6 +44,7 @@ private:
 	void RenderSpotLight(SRenderMessage* aRenderMessage);
 	void DoDirectLighting();
 	void DoLight();
+	void ToProcessed();
 	void ToIntermediate();
 
 	void ClearParticleTargets();

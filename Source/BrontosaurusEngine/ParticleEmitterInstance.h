@@ -18,7 +18,10 @@ typedef unsigned int ParticleEmitterID;
 class CParticleEmitterInstance
 {
 public:
-	CParticleEmitterInstance(const SEmitterData& aEmitterData);
+	friend class CParticleEmitter;
+
+	
+	CParticleEmitterInstance(int anId);
 	~CParticleEmitterInstance();
 
 	void Update(const CU::Time& aDeltaTime);
@@ -33,7 +36,11 @@ public:
 	inline void SetInstandeID(const InstanceID aID);
 
 	bool IsDone() const;
-
+	int GetEmitterId();
+	void ResetLifetime();
+	void ResetSpawnTimer();
+	bool IsActive();
+	void SetTransformation(const CU::Matrix44f& aMatrix44);
 private:
 	void Init();
 	void EmitParticle();
@@ -42,21 +49,19 @@ private:
 
 private:
 	CU::Matrix44f	myToWorldSpace;
-	SEmitterData	myEmitterData;
-
 
 	CU::GrowingArray<SParticle, unsigned int, false> myParticles;
 	CU::GrowingArray<SParticleLogic> myParticleLogic;
 
-	float myEmitDelta;
 	float myEmitTimer;
-	ParticleEmitterID myEmitterID;
+	int myEmitterID;
 	InstanceID myInstanceID;
 
 
 	bool  myIsActive;
 	bool myIsVisible;
 	float myLifetime;
+	static int ourIds;
 };
 
 inline void CParticleEmitterInstance::SetPosition(CU::Vector3f aPosition)

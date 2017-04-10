@@ -255,7 +255,7 @@ SSlua::ArgumentList LuaFunctions::CreateParticleEmitterComponent(SSlua::Argument
 
 	data.ColorOverLife;
 
-	CParticleEmitterComponent* emitter = CParticleEmitterComponentManager::GetInstance().CreateComponent(data);
+	CParticleEmitterComponent* emitter = CParticleEmitterComponentManager::GetInstance().CreateComponent(anArgumentList[0].GetString());
 
 	return{ SSArgument(static_cast<ssLuaNumber>(emitter->GetId())) };
 }
