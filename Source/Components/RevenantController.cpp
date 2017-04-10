@@ -216,14 +216,17 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
-		myFlightForce = 0.0f;
-		myState = eRevenantState::eIdle;
-		myIsflying = false;
+		if (myShouldNotReset == false)
+		{
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			myFlightForce = 0.0f;
+			myState = eRevenantState::eIdle;
+			myIsflying = false;
+		}
 		break;
 	}
 }
