@@ -311,6 +311,7 @@
     <ClCompile Include="LoadingAnimation.cpp" />
     <ClCompile Include="LoadState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="ParticleEffectManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PlayState.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="LoadingAnimation.h" />
     <ClInclude Include="LoadState.h" />
     <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="ParticleEffectManager.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PlayState.h" />

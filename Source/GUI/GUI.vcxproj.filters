@@ -65,6 +65,12 @@
     <ClInclude Include="GUIElement.h">
       <Filter>HUD</Filter>
     </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuElement.h">
+      <Filter>Menu\MenuElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BarWidget.cpp">
@@ -122,6 +128,12 @@
     <ClCompile Include="BarInstance.cpp">
       <Filter>HUD</Filter>
     </ClCompile>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuElement.cpp">
+      <Filter>Menu\MenuElement</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Widgets">
@@ -150,6 +162,12 @@
     </Filter>
     <Filter Include="HUD">
       <UniqueIdentifier>{5cfcb43b-63ee-485a-9e21-32557ebc0fa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{a8f1fedd-f5f5-4113-a6a8-985c8c577578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu\MenuElement">
+      <UniqueIdentifier>{db89343d-80ce-4af0-8e0e-443c10c913a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
