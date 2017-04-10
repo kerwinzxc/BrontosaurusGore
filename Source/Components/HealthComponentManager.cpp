@@ -48,7 +48,7 @@ void CHealthComponentManager::TakeDamage(const unsigned int aID, const unsigned 
 	SComponentMessageData data; data.myInt = aDamageTaken;
 	if (myHealthComponents.count(aID) > 0)
 	{
-		myHealthComponents.at(aID)->Receive(eComponentMessageType::eNetworkDoDamage, data);
+		myHealthComponents.at(aID)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eNetworkDoDamage, data);
 	}
 }
 

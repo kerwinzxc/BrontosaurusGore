@@ -17,7 +17,7 @@ struct SRigidBodyData : public SColliderData
 class CRigidBodyComponent : public CColliderComponent
 {
 public:
-	CRigidBodyComponent(const SRigidBodyData& aColliderData, Physics::CPhysicsActor* aActor);
+	CRigidBodyComponent(const SRigidBodyData& aColliderData, Physics::CPhysicsActor* aActor, const bool aIsTrigger);
 	~CRigidBodyComponent();
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;

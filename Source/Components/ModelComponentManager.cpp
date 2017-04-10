@@ -36,7 +36,7 @@ CModelComponentManager& CModelComponentManager::GetInstance()
 	return *ourInstance;
 }
 
-CModelComponent* CModelComponentManager::CreateComponent(const char* aModelPath)
+CModelComponent* CModelComponentManager::CreateComponent(const std::string& aModelPath)
 {
 	CModelInstance* instance = new CModelInstance(aModelPath);
 	/*InstanceID modelID = */(void)myScene.AddModelInstance(instance);
@@ -47,15 +47,3 @@ CModelComponent* CModelComponentManager::CreateComponent(const char* aModelPath)
 
 	return myModels.GetLast();
 }
-
-//CModelComponent* CModelComponentManager::CreateComponent(SShape aShape)
-//{
-//	CModelInstance* instance = new CModelInstance(aShape);
-//
-//	//InstanceID modelID = myScene.AddDebugObjectInstance(instance);
-//			//later add the shape to the scene (and make sure it's not col info)
-//	CModelComponent* modelComp = new CModelComponent(*instance, true);
-//
-//	myModels.Add(modelComp);
-//	return myModels.GetLast();
-//}

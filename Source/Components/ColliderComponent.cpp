@@ -3,10 +3,10 @@
 #include "ColliderComponentManager.h"
 #include "../Physics/Shape.h"
 
-CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
+CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger)
 {
 	myData = aColliderData;
-
+	myIsTrigger = aIsTrigger;
 	myActor = aActor;
 	if(myActor != nullptr)
 	{
@@ -123,6 +123,10 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 				return true;
 			}
 		}
+	}
+	else if (aQuestionType == eComponentQuestionType::eHaveTriggerCollision)
+	{
+		return myIsTrigger;
 	}
 	return false;
 }
