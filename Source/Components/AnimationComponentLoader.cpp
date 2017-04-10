@@ -259,7 +259,7 @@ namespace AnimationComponentLoader
 			}
 			else
 			{
-				jumpState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::equip01);
+				jumpState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::jump01);
 			}
 
 

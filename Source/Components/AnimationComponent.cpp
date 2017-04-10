@@ -61,11 +61,10 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 		if (it != myAnimationStates.end())
 		{
 			currentAnimation = &it->second;
-			DL_PRINT("has moving");
 			currentAnimation->myAnimationBlend = 0.f;
 		}
 	}
-	
+
 	myModelComponent.SetAnimation(currentAnimation->myAnimationKey);
 	myModelComponent.SetNextAnimation(currentAnimation->myNextAnimationKey);
 	myModelComponent.SetAnimationLerpValue(currentAnimation->myAnimationBlend);
@@ -94,12 +93,20 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
-	if (myAnimationStates.empty() /*|| !myUpdateHasRun*/) return;
+	if (myAnimationStates.empty()) return;
+
 	auto animationEnd = myAnimationStates.end();
 	auto it = animationEnd;
 
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eImpStartToJump:
+		it = myAnimationStates.find("jump");
+		if (it != animationEnd)
+		{
+			PushAnimation(it->second);
+		}
+		break;
 	case eComponentMessageType::eShoot:
 	case eComponentMessageType::eShootWithNetworking:
 		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::shot01)

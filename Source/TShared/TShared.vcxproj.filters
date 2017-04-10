@@ -75,6 +75,9 @@
     <Filter Include="NetworkMessage\ChangeWeapon">
       <UniqueIdentifier>{28cc44ba-6cc0-4a37-ad0f-9c7cbb9034da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkMessage\AnimationStart">
+      <UniqueIdentifier>{fee5141f-4e54-4115-9f79-0caf0bdd3d02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -204,6 +207,9 @@
     <ClInclude Include="NetworkMessage_PickupWeapon.h">
       <Filter>NetworkMessage\Pickups</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMessage_AnimationStart.h">
+      <Filter>NetworkMessage\AnimationStart</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -309,6 +315,9 @@
     </ClCompile>
     <ClCompile Include="NetworkMessage_PickupWeapon.cpp">
       <Filter>NetworkMessage\Pickups</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMessage_AnimationStart.cpp">
+      <Filter>NetworkMessage\AnimationStart</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

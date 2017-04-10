@@ -31,6 +31,7 @@
 #include "NetworkMessage_SpawnEnemyRepesention.h"
 #include "NetworkMessage_SetIsRepesentationActive.h"
 #include "NetworkMessage_WeaponChange.h"
+#include "NetworkMessage_AnimationStart.h"
 
 CMessageManager::CMessageManager()
 {
@@ -119,6 +120,8 @@ CNetworkMessage* CMessageManager::CreateMessage(const SNetworkPackageHeader& aHe
 		return CreateMessage<CNetworkMessage_SetIsRepesentationActive>(aHeader);
 	case ePackageType::eWeaponChange:
 		return CreateMessage<CNetworkMessage_WeaponChange>(aHeader);
+	case ePackageType::eAnimationStart:
+		return CreateMessage<CNetworkMessage_AnimationStart>(aHeader);
 	case ePackageType::eSize:
 	case ePackageType::eZero:
 	default: 

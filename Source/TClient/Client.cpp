@@ -53,6 +53,7 @@
 #include "../TShared/NetworkMessage_ResetToCheckpoint.h"
 #include "../TShared/NetworkMessage_SpawnEnemyRepesention.h"
 #include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
+#include "../TShared/NetworkMessage_AnimationStart.h"
 #include "../Components/DoorManager.h"
 #include "../Game/EnemyFactory.h"
 
@@ -487,6 +488,13 @@ void CClient::Update()
 				}
 				myNetworkRecieverComponents.at(changeMessage->GetHeader().mySenderID)->GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
 				}
+				break;
+			case ePackageType::eAnimationStart:
+			{
+				CNetworkMessage_AnimationStart* animationMessage = currentMessage->CastTo<CNetworkMessage_AnimationStart>();
+				CEnemyClientRepresentation& enemy = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(animationMessage->GetEnemyID());
+				enemy.GetParent()->NotifyComponents(animationMessage->GetAnimation(), SComponentMessageData());
+			}
 				break;
 			case ePackageType::eZero:
 			case ePackageType::eSize:
