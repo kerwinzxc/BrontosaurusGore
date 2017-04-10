@@ -21,6 +21,12 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eOnTriggerEnter:
+	{
+		if(aMessageData.myComponent->GetParent()->AskComponents(eComponentQuestionType::eHaveTriggerCollision, SComponentQuestionData()) == true)
+		{
+			break;
+		}
+	}
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		if(myData->isPlayerFriendly == true)

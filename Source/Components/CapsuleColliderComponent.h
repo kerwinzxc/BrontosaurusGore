@@ -11,7 +11,7 @@ struct SCapsuleColliderData : public SColliderData
 class CCapsuleColliderComponent : public CColliderComponent
 {
 public:
-	CCapsuleColliderComponent(const SCapsuleColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
+	CCapsuleColliderComponent(const SCapsuleColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger);
 	~CCapsuleColliderComponent();
 
 
