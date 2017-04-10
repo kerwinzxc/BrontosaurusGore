@@ -125,8 +125,23 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 	{
 		CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
 		newWeaponModelComponent->SetIgnoreDepth(true);
+
 		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 		newWeaponObject->AddComponent(newWeaponModelComponent);
+
+		if (aWeapon->GetData()->modelFilePath.find("Plasma") != std::string::npos
+			|| aWeapon->GetData()->modelFilePath.find("Shotgun") != std::string::npos)
+		{
+			std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
+			size_t pos = playerHandsPath.find_last_of('/');
+			playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
+
+			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath.c_str());
+			handModelComponent->SetIgnoreDepth(true);
+
+			newWeaponObject->AddComponent(handModelComponent);
+		}
+
 		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
 		aWeapon->SetWeaponObject(newWeaponObject);
 		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
