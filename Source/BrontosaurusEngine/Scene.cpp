@@ -22,7 +22,7 @@ CScene::CScene()
 {
 	myModels.Init(4096);
 	myPointLights.Init(32);
-	myParticleEmitters.Init(8);
+	//myParticleEmitters.Init(8);
 	myFireEmitters.Init(8);
 	mySkybox = nullptr;
 	myCubemap = nullptr;
@@ -38,20 +38,21 @@ CScene::~CScene()
 		SAFE_DELETE(mySkybox);
 	}
 	myModels.DeleteAll();
-	myParticleEmitters.DeleteAll();
+	//myParticleEmitters.DeleteAll();
 }
 
 void CScene::Update(const CU::Time aDeltaTime)
 {
+	CParticleEmitterManager::GetInstance().Update(aDeltaTime);
 	for (CModelInstance* model : myModels)
 	{
 		model->Update(aDeltaTime);
 	}
-	for (CParticleEmitterInstance* particle : myParticleEmitters)
+	/*for (CParticleEmitterInstance* particle : myParticleEmitters)
 	{
 		if (particle == nullptr) continue;
 		particle->Update(aDeltaTime);
-	}
+	}*/
 }
 
 void CScene::Render()
@@ -144,7 +145,7 @@ void CScene::Render()
 	statemsg.mySamplerState = eSamplerState::eClamp;
 	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
-	for (unsigned int i = 0; i < myParticleEmitters.Size(); ++i)
+	/*for (unsigned int i = 0; i < myParticleEmitters.Size(); ++i)
 	{
 		if (myParticleEmitters[i] == nullptr || myParticleEmitters[i]->IsVisible() == false)
 		{
@@ -152,7 +153,8 @@ void CScene::Render()
 		}
 
 		myParticleEmitters[i]->Render(PlayerOneCamera);
-	}
+	}*/
+	CParticleEmitterManager::GetInstance().Render(PlayerOneCamera);
 	
 	PlayerOneCamera.Render();
 
@@ -220,20 +222,20 @@ InstanceID CScene::AddPointLightInstance(const CPointLightInstance& aPointLight)
 	return id;
 }
 
-InstanceID CScene::AddParticleEmitterInstance(CParticleEmitterInstance* aParticleEmitterInstance)
-{
-	if (myFreeParticleEmitters.Size() < 1)
-	{
-		InstanceID temp = myParticleEmitters.Size();
-		myParticleEmitters.Add(aParticleEmitterInstance);
-		return temp;
-	}
-
-	InstanceID tempId = myFreeParticleEmitters.Pop();
-	myParticleEmitters[tempId] = aParticleEmitterInstance;
-
-	return  tempId;
-}
+//InstanceID CScene::AddParticleEmitterInstance(CParticleEmitterInstance* aParticleEmitterInstance)
+//{
+//	if (myFreeParticleEmitters.Size() < 1)
+//	{
+//		InstanceID temp = myParticleEmitters.Size();
+//		myParticleEmitters.Add(aParticleEmitterInstance);
+//		return temp;
+//	}
+//
+//	InstanceID tempId = myFreeParticleEmitters.Pop();
+//	myParticleEmitters[tempId] = aParticleEmitterInstance;
+//
+//	return  tempId;
+//}
 
 InstanceID CScene::AddFireEmitters(const CFireEmitterInstance& aFireEmitter)
 {
@@ -303,10 +305,10 @@ CRenderCamera& CScene::GetRenderCamera(const eCameraType aCameraType)
 	return myRenderCameras[static_cast<int>(aCameraType)];
 }
 
-CParticleEmitterInstance* CScene::GetParticleEmitterInstance(const InstanceID aParticleEmitterID)
-{
-	return (myParticleEmitters.HasIndex(aParticleEmitterID)) ? myParticleEmitters[aParticleEmitterID] : nullptr;
-}
+//CParticleEmitterInstance* CScene::GetParticleEmitterInstance(const InstanceID aParticleEmitterID)
+//{
+//	return (myParticleEmitters.HasIndex(aParticleEmitterID)) ? myParticleEmitters[aParticleEmitterID] : nullptr;
+//}
 
 CPointLightInstance * CScene::GetPointLightInstance(const InstanceID aID)
 {
@@ -336,30 +338,30 @@ void CScene::DeleteModelInstance(const InstanceID& anId)
 	delete currentModel;
 }
 
-void CScene::DeleteParticleEmitterInstance(const InstanceID anID)
-{
-	//if thread lock here
-	
-	//static std::mutex lockHere;
-	//lockHere.lock();
-
-	if(anID > myParticleEmitters.Size())
-	{
-		return;
-	}
-	
-	CParticleEmitterInstance* emitter = myParticleEmitters[anID];
-	myParticleEmitters[anID] = nullptr;
-	myFreeParticleEmitters.Push(anID);
-
-	//lockHere.unlock();
-	
-	//if thread unlock here
-	
-	
-	delete emitter;
-	//emitter->Destroy();
-}
+//void CScene::DeleteParticleEmitterInstance(const InstanceID anID)
+//{
+//	//if thread lock here
+//	
+//	//static std::mutex lockHere;
+//	//lockHere.lock();
+//
+//	if(anID > myParticleEmitters.Size())
+//	{
+//		return;
+//	}
+//	
+//	CParticleEmitterInstance* emitter = myParticleEmitters[anID];
+//	myParticleEmitters[anID] = nullptr;
+//	myFreeParticleEmitters.Push(anID);
+//
+//	//lockHere.unlock();
+//	
+//	//if thread unlock here
+//	
+//	
+//	delete emitter;
+//	//emitter->Destroy();
+//}
 
 void CScene::RemovePointLightInstance(const InstanceID anID)
 {

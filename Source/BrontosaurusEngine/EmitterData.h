@@ -121,6 +121,7 @@ struct SParticle
 struct SParticleLogic
 {
 	CU::Vector3f movementDir;
+	float speed;
 	float lifeTime;
 	float lifetimeLeft;
 	float rotation;

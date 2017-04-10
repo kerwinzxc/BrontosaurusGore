@@ -1,5 +1,7 @@
 #pragma once
-#include "../Components/ParticleEmitterComponent.h"
+
+struct SParticleLogic;
+struct SParticle;
 
 namespace Particles
 {
@@ -11,7 +13,7 @@ namespace Particles
 
 		virtual ~IParticleUpdater(){}
 
-		virtual void Update(const float aDt, CParticleEmitterInstance& anParticleEmitterInstance) = 0;
+		virtual void Update(const float aDt, SParticle& aParticle, SParticleLogic& aParticleLogic) = 0;
 	};
 }
 

@@ -5,8 +5,8 @@
 
 Particles::CParticleColorSpawner::CParticleColorSpawner(const CU::CJsonValue& aJsonValue)
 {
-	myMin = aJsonValue["min"].GetVector4f("rgba");
-	myMax = aJsonValue["max"].GetVector4f("rgba");
+	myMin = aJsonValue["min"]["color"].GetVector4f("rgba");
+	myMax = aJsonValue["max"]["color"].GetVector4f("rgba");
 }
 
 Particles::CParticleColorSpawner::~CParticleColorSpawner()

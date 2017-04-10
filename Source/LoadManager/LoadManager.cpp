@@ -81,7 +81,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("ArmorPickupComponent", LoadArmorPackComponent);
 	loader.RegisterComponentLoadFunction("KeyPickupComponent", LoadKeyPickupComponent);
 	loader.RegisterComponentLoadFunction("WeaponPickupComponent",LoadWeaponPickupkComponent);
-	loader.RegisterComponentLoadFunction("ParticleSystem", LoadParticleEmitterComponent);
+	loader.RegisterComponentLoadFunction("ParticleEmitterComponent", LoadParticleEmitterComponent);
 	loader.RegisterComponentLoadFunction("CheckpointComponent", LoadCheckpointComponent);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxCollider);
 	loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereCollider);
