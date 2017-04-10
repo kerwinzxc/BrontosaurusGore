@@ -119,6 +119,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 	case eRevenantState::eFlyAscend:
 	{
+		DL_PRINT("Ascending!!!");
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 		if(myFlightForce <= 0.0f)
@@ -130,6 +131,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyHover:
 	{
+		DL_PRINT("Hovering!!!");
 		LookAtPlayer();
 		ChangeWeapon(1);
 		myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
@@ -150,6 +152,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyDescend:
 	{
+		DL_PRINT("Descending!!!");
 		LookAtPlayer();
 
 		myFlightForce -= gravityAcceleration * aDeltaTime;
@@ -197,6 +200,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myIsDead = true;
 		myState = eRevenantState::eDead;
 		myIsflying = false;
+		myFlightForce = 0.0f;
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
@@ -217,6 +221,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		visibilityData.myBool = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
 		GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+		myFlightForce = 0.0f;
 		myState = eRevenantState::eIdle;
 		myIsflying = false;
 		break;
@@ -227,6 +232,7 @@ void  CRevenantController::ApplyFlightForce()
 {
 	if(CheckIfInAir() == false)
 	{
+		DL_PRINT("Applying flight forces");
 		myIsflying = true;
 		myFlightForce = sqrtf((gravityAcceleration)* myFlightHeight * 2);
 	}
@@ -282,4 +288,11 @@ bool CRevenantController::CanChangeState()
 		break;
 	}
 	return true;
+}
+
+eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	myFlightForce = 0.0f;
+	myState = eRevenantState::eIdle;
+	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }
