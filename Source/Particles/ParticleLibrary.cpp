@@ -14,16 +14,16 @@ Particles::CParticleLibrary::~CParticleLibrary()
 
 void Particles::CParticleLibrary::Load(const std::string& aPath)
 {
-	/*CU::CJsonValue levelsFile;
-	std::string errorString = levelsFile.Parse(aPath);
+	CU::CJsonValue particlesFile;
+	std::string errorString = particlesFile.Parse(aPath);
 	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
 
-	CU::CJsonValue systemsArray = levelsFile["systems"];
+	CU::CJsonValue systemsArray = particlesFile["systems"];
 
 	for(int i = 0; i < systemsArray.Size(); ++i)
 	{
 		LoadSystem(systemsArray[i]);
-	}*/
+	}
 }
 
 Particles::CParticleLibrary::ParticleId Particles::CParticleLibrary::AddRef(const std::string& aSystemName)
