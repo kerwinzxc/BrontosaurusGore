@@ -372,6 +372,7 @@
     <ClInclude Include="LoadScriptComponent.h" />
     <ClInclude Include="LoadSoundComponent.h" />
     <ClInclude Include="LoadSpawner.h" />
+    <ClInclude Include="LoadTumbleweed.h" />
     <ClInclude Include="LoadWeaponPickupComponent.h" />
     <ClInclude Include="LoadWeaponSystemComponent.h" />
     <ClInclude Include="LuaFunctions.h" />
@@ -411,6 +412,7 @@
     <ClCompile Include="LoadScriptComponent.cpp" />
     <ClCompile Include="LoadSoundComponent.cpp" />
     <ClCompile Include="LoadSpawner.cpp" />
+    <ClCompile Include="LoadTumbleweed.cpp" />
     <ClCompile Include="LoadWeaponPickupComponent.cpp" />
     <ClCompile Include="LoadWeaponSystemComponent.cpp" />
     <ClCompile Include="LuaFunctions.cpp" />

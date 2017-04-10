@@ -100,6 +100,7 @@
     </ClInclude>
     <ClInclude Include="LoadArenaTrigger.h" />
     <ClInclude Include="LoadEnemyRunTowardsComponent.h" />
+    <ClInclude Include="LoadTumbleweed.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -198,6 +199,7 @@
     </ClCompile>
     <ClCompile Include="LoadArenaTrigger.cpp" />
     <ClCompile Include="LoadEnemyRunTowardsComponent.cpp" />
+    <ClCompile Include="LoadTumbleweed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LuaFunctions">
