@@ -161,7 +161,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eTakeDamage:
-		Audio::CAudioInterface::GetInstance()->PostEvent("Impact_Tick"); // hitta något annat ställe om båda spelarna hör detta.//  CWeapon Shoot ?
+		//Audio::CAudioInterface::GetInstance()->PostEvent("Impact_Tick"); // hitta något annat ställe om båda spelarna hör detta.//  CWeapon Shoot ?
 		StartHighlight();
 		break;
 	case eComponentMessageType::eCheckPointReset:

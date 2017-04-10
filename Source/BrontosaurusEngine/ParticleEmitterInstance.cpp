@@ -67,10 +67,17 @@ namespace
 	}
 }
 
-CParticleEmitterInstance::CParticleEmitterInstance(const SEmitterData& aEmitterData)
+int CParticleEmitterInstance::ourIds = 0;
+
+CParticleEmitterInstance::CParticleEmitterInstance(int anId)
 {
-	myEmitterData = aEmitterData;
+	myEmitterID = anId;
+	myInstanceID = ourIds++;
+
 	Init();
+
+	ResetLifetime();
+	ResetSpawnTimer();
 }
 
 CParticleEmitterInstance::~CParticleEmitterInstance()
@@ -80,142 +87,122 @@ CParticleEmitterInstance::~CParticleEmitterInstance()
 	engine->GetParticleEmitterManager().RemoveParticleEmitter(myEmitterID);
 }
 
-void CParticleEmitterInstance::Init()
-{
-	myInstanceID = 0;
-
-	myIsActive = true;
-	myIsVisible = true;
-
-	myLifetime = myEmitterData.Lifetime;
-
-	myEmitDelta = 1.f / myEmitterData.EmissionRate;
-	myEmitTimer = 0.f;
-
-	myParticles.Init(myEmitterData.NumOfParticles);
-	myParticleLogic.Init(myEmitterData.NumOfParticles);
-
-	CEngine* engine = CEngine::GetInstance();
-	assert(engine != nullptr && "CEngine was nullptr");
-	myEmitterID = engine->GetParticleEmitterManager().CreateParticleEmitter(myEmitterData);
-
-}
 
 void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 {
-	float deltaTime = aDeltaTime.GetSeconds();
+	//float deltaTime = aDeltaTime.GetSeconds();
 
-	myLifetime -= deltaTime;
+	//myLifetime -= deltaTime;
 
-	if(myLifetime < 0)
-	{
-		if(myEmitterData.ShouldLoop == true)
-		{
-			myLifetime = myEmitterData.Lifetime;
-		}
-		else
-		{
-			myIsActive = false;
-		}
-	}
+	//if(myLifetime < 0)
+	//{
+	//	if(myEmitterData.ShouldLoop == true)
+	//	{
+	//		myLifetime = myEmitterData.Lifetime;
+	//	}
+	//	else
+	//	{
+	//		myIsActive = false;
+	//	}
+	//}
 
-	if (myIsActive == true)
-	{
-		myEmitTimer += deltaTime;
-		while (myEmitTimer >= myEmitDelta)
-		{
-			myEmitTimer -= myEmitDelta;
-			EmitParticle();
-		}
-	}
-	if (myParticles.Size() != myParticleLogic.Size())
-	{
-		assert(false && "Particlelist and logiclist missalligned.");
-	}
+	//if (myIsActive == true)
+	//{
+	//	myEmitTimer += deltaTime;
+	//	while (myEmitTimer >= myEmitDelta)
+	//	{
+	//		myEmitTimer -= myEmitDelta;
+	//		EmitParticle();
+	//	}
+	//}
+	//if (myParticles.Size() != myParticleLogic.Size())
+	//{
+	//	assert(false && "Particlelist and logiclist missalligned.");
+	//}
 
-	for (unsigned short i = 0; i < myParticles.Size(); ++i)
-	{
-		myParticleLogic[i].lifetimeLeft -= deltaTime;
-		if (myParticleLogic[i].lifetimeLeft <= 0.0f)
-		{
-			myParticles.RemoveCyclicAtIndex(i);
-			myParticleLogic.RemoveCyclicAtIndex(i);
-			--i;
-			continue;
-		}
+	//for (unsigned short i = 0; i < myParticles.Size(); ++i)
+	//{
+	//	myParticleLogic[i].lifetimeLeft -= deltaTime;
+	//	if (myParticleLogic[i].lifetimeLeft <= 0.0f)
+	//	{
+	//		myParticles.RemoveCyclicAtIndex(i);
+	//		myParticleLogic.RemoveCyclicAtIndex(i);
+	//		--i;
+	//		continue;
+	//	}
 
-		if (myEmitterData.UseGravity == true)
-		{
-			myParticleLogic[i].movementDir = myParticleLogic[i].movementDir + (myEmitterData.Gravity * deltaTime);
-		}
-
-
-		CU::Vector3f deltaMovement = myParticleLogic[i].movementDir * deltaTime;
-		float particleLifetime = 1.0f - (myParticleLogic[i].lifetimeLeft / myParticleLogic[i].lifeTime);
-		
+	//	if (myEmitterData.UseGravity == true)
+	//	{
+	//		myParticleLogic[i].movementDir = myParticleLogic[i].movementDir + (myEmitterData.Gravity * deltaTime);
+	//	}
 
 
-		myParticles[i].position += deltaMovement;
+	//	CU::Vector3f deltaMovement = myParticleLogic[i].movementDir * deltaTime;
+	//	float particleLifetime = 1.0f - (myParticleLogic[i].lifetimeLeft / myParticleLogic[i].lifeTime);
+	//	
 
 
-		
-		myParticles[i].position.w = myParticleLogic[i].rotation + fLerp(
-			myEmitterData.StartRotation, 
-			myEmitterData.EndRotation, 
-			CalcCurve(particleLifetime, myEmitterData.RotationCurve));
-
-		myParticles[i].position.w *= 3.1415f / 180.f;
+	//	myParticles[i].position += deltaMovement;
 
 
-		myParticles[i].size = fLerp(
-			myEmitterData.StartSize, 
-			myEmitterData.EndSize, 
-			CalcCurve(particleLifetime, myEmitterData.SizeCurve));
-		
-		
-		
-		SEmitterKeyframe startK = {0.0f, myEmitterData.StartColor};
-		SEmitterKeyframe endK = {1.0f, myEmitterData.EndColor};
+	//	
+	//	myParticles[i].position.w = myParticleLogic[i].rotation + fLerp(
+	//		myEmitterData.StartRotation, 
+	//		myEmitterData.EndRotation, 
+	//		CalcCurve(particleLifetime, myEmitterData.RotationCurve));
+
+	//	myParticles[i].position.w *= 3.1415f / 180.f;
 
 
-		for (int j = 0; j < myEmitterData.ColorOverLife.Size(); ++j)
-		{
-			if (myEmitterData.ColorOverLife[j].time < 0.0f)
-				continue;
-
-			if (myEmitterData.ColorOverLife[j].time < particleLifetime)
-			{
-				if (myEmitterData.ColorOverLife[j].time > startK.time)
-				{
-					startK = myEmitterData.ColorOverLife[j];
-				}
-			}
+	//	myParticles[i].size = fLerp(
+	//		myEmitterData.StartSize, 
+	//		myEmitterData.EndSize, 
+	//		CalcCurve(particleLifetime, myEmitterData.SizeCurve));
+	//	
+	//	
+	//	
+	//	SEmitterKeyframe startK = {0.0f, myEmitterData.StartColor};
+	//	SEmitterKeyframe endK = {1.0f, myEmitterData.EndColor};
 
 
-			if (myEmitterData.ColorOverLife[j].time > particleLifetime)
-			{
-				if (myEmitterData.ColorOverLife[j].time < endK.time)
-				{
-					endK = myEmitterData.ColorOverLife[j];
-				}
-			}
+	//	for (int j = 0; j < myEmitterData.ColorOverLife.Size(); ++j)
+	//	{
+	//		if (myEmitterData.ColorOverLife[j].time < 0.0f)
+	//			continue;
 
-		}
+	//		if (myEmitterData.ColorOverLife[j].time < particleLifetime)
+	//		{
+	//			if (myEmitterData.ColorOverLife[j].time > startK.time)
+	//			{
+	//				startK = myEmitterData.ColorOverLife[j];
+	//			}
+	//		}
 
 
-		// start is bigger then life
+	//		if (myEmitterData.ColorOverLife[j].time > particleLifetime)
+	//		{
+	//			if (myEmitterData.ColorOverLife[j].time < endK.time)
+	//			{
+	//				endK = myEmitterData.ColorOverLife[j];
+	//			}
+	//		}
 
-		float colorT = (particleLifetime - startK.time) / (endK.time - startK.time);
+	//	}
 
-		const float curve = CalcCurve(colorT, myEmitterData.ColorCurve);
-		CU::Vector4f colr = vectorFlerp(
-			startK.value,
-			endK.value,
-			curve);
 
-		myParticles[i].color = colr;
+	//	// start is bigger then life
 
-	}
+	//	float colorT = (particleLifetime - startK.time) / (endK.time - startK.time);
+
+	//	const float curve = CalcCurve(colorT, myEmitterData.ColorCurve);
+	//	CU::Vector4f colr = vectorFlerp(
+	//		startK.value,
+	//		endK.value,
+	//		curve);
+
+	//	myParticles[i].color = colr;
+
+	//}
 }
 
 void CParticleEmitterInstance::Render(CRenderCamera& aRenderCamera)
@@ -232,9 +219,41 @@ void CParticleEmitterInstance::Render(CRenderCamera& aRenderCamera)
 	}
 }
 
+int CParticleEmitterInstance::GetEmitterId()
+{
+	return myEmitterID;
+}
+
+void CParticleEmitterInstance::ResetLifetime()
+{
+	myLifetime = CParticleEmitterManager::GetInstance().GetEmitter(GetEmitterId())->GetLifetime();
+}
+
+void CParticleEmitterInstance::ResetSpawnTimer()
+{
+	myEmitTimer = CParticleEmitterManager::GetInstance().GetEmitter(GetEmitterId())->GetEmitTime();
+}
+
+bool CParticleEmitterInstance::IsActive()
+{
+	return myIsActive;
+}
+
+void CParticleEmitterInstance::SetTransformation(const CU::Matrix44f& aMatrix44)
+{
+	myToWorldSpace = aMatrix44;
+}
+
+void CParticleEmitterInstance::Init()
+{
+	SetVisibility(true);
+	myParticles.Init(CParticleEmitterManager::GetInstance().GetEmitter(GetEmitterId())->GetMaxParticles());
+	myParticleLogic.Init(CParticleEmitterManager::GetInstance().GetEmitter(GetEmitterId())->GetMaxParticles());
+}
+
 void CParticleEmitterInstance::EmitParticle()
 {
-	if (myParticles.Size() < static_cast<unsigned int>(myEmitterData.NumOfParticles))
+	/*if (myParticles.Size() < static_cast<unsigned int>(myEmitterData.NumOfParticles))
 	{
 
 		SParticle particle;
@@ -262,12 +281,13 @@ void CParticleEmitterInstance::EmitParticle()
 
 		myParticles.Add(particle);
 		myParticleLogic.Add(logic);
-	}
+	}*/
 }
 
 void CParticleEmitterInstance::Activate()
 {
-	myLifetime = myEmitterData.Lifetime;
+	ResetLifetime();
+	ResetSpawnTimer();
 	myIsActive = true;
 }
 

@@ -18,7 +18,7 @@ public:
 	static void Create();
 	static void Destroy();
 
-	CParticleEmitterComponent* CreateComponent(const SEmitterData& aEmitterData);
+	CParticleEmitterComponent* CreateComponent(const std::string& aSystemId);
 	
 	void RemoveAll();
 	void Remove(CParticleEmitterComponent* aComponentToRemove);

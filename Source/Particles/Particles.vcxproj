@@ -189,12 +189,14 @@
     <ClInclude Include="IParticleUpdater.h" />
     <ClInclude Include="ParticleColorSpawner.h" />
     <ClInclude Include="ParticleColorUpdater.h" />
+    <ClInclude Include="ParticleForceUpdater.h" />
+    <ClInclude Include="ParticleFrictionUpdater.h" />
     <ClInclude Include="ParticleLibrary.h" />
     <ClInclude Include="ParticleLifetimeSpawner.h" />
     <ClInclude Include="ParticleSizeSpawner.h" />
     <ClInclude Include="ParticleSizeUpdate.h" />
     <ClInclude Include="ParticleVelocitySpawner.h" />
-    <ClInclude Include="ParticleVelocityUpdater.h" />
+    <ClInclude Include="Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\BrontosaurusEngine\ParticleEmitter.cpp" />
@@ -203,12 +205,13 @@
     <ClCompile Include="IParticleSpawner.cpp" />
     <ClCompile Include="ParticleColorSpawner.cpp" />
     <ClCompile Include="ParticleColorUpdater.cpp" />
+    <ClCompile Include="ParticleForceUpdater.cpp" />
+    <ClCompile Include="ParticleFrictionUpdater.cpp" />
     <ClCompile Include="ParticleLibrary.cpp" />
     <ClCompile Include="ParticleLifetimeSpawner.cpp" />
     <ClCompile Include="ParticleSizeSpawner.cpp" />
     <ClCompile Include="ParticleSizeUpdate.cpp" />
     <ClCompile Include="ParticleVelocitySpawner.cpp" />
-    <ClCompile Include="ParticleVelocityUpdater.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

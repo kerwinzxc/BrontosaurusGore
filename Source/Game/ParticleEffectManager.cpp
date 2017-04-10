@@ -61,12 +61,12 @@ void CParticleEffectManager::SpawnParticle(const std::string& aEffectName, const
 		return;
 	}
 
-
-	CParticleEmitterInstance* particleEmitter = new CParticleEmitterInstance(data.myInitData);
-	particleEmitter->SetPosition(aSpawnPosition);
-	InstanceID particleID = myScene.AddParticleEmitterInstance(particleEmitter);
+	//TODO: Check if this one actually DOES anything
+	//CParticleEmitterInstance* particleEmitter = new CParticleEmitterInstance(data.myInitData);
+	//particleEmitter->SetPosition(aSpawnPosition);
+	//InstanceID particleID = myScene.AddParticleEmitterInstance(particleEmitter);
 	
-	data.myAlarmClock.Init(data.myActiveTime, std::bind(&CParticleEffectManager::DespawnParticle, this, particleID, activeParticlesIndex));
+	//data.myAlarmClock.Init(data.myActiveTime, std::bind(&CParticleEffectManager::DespawnParticle, this, particleID, activeParticlesIndex));
 
 }
 
@@ -74,11 +74,11 @@ void CParticleEffectManager::DespawnParticle(const InstanceID aEmitterIndex, con
 {
 	//SParticleData& particle = myActiveParticleEmitters[aParticleDataIndex];
 	//myScene.DeleteParticleEmitterInstance(aEmitterIndex); //don't delete, just stop spawning and move to to-be-deleted-list
-	CParticleEmitterInstance* emitter = myScene.GetParticleEmitterInstance(aEmitterIndex);
-	if (emitter)
+	//CParticleEmitterInstance* emitter = myScene.GetParticleEmitterInstance(aEmitterIndex);
+	//if (emitter)
 	{
-		emitter->Deactivate();
-		myKilledParticleEmitters.Add(aEmitterIndex);
+		//emitter->Deactivate();
+		//myKilledParticleEmitters.Add(aEmitterIndex);
 	
 	}
 	
@@ -96,14 +96,14 @@ void CParticleEffectManager::Update()
 	for (unsigned int i = 0; i < myKilledParticleEmitters.Size(); ++i)
 	{
 		InstanceID id = myKilledParticleEmitters[i];
-		CParticleEmitterInstance* emitter = myScene.GetParticleEmitterInstance(id);
-		if (emitter && emitter->IsDone())
+		//CParticleEmitterInstance* emitter = myScene.GetParticleEmitterInstance(id);
+		/*if (emitter && emitter->IsDone())
 		{
 			myScene.DeleteParticleEmitterInstance(id);
 			myKilledParticleEmitters.RemoveCyclicAtIndex(i);
 
 			--i;
-		}
+		}*/
 	}
 }
 

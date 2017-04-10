@@ -7,11 +7,11 @@ class CParticleEmitterInstance;
 class CParticleEmitterComponent : public CComponent
 {
 public:
-	CParticleEmitterComponent(CParticleEmitterInstance * aEmitterInstance);
+	CParticleEmitterComponent(int anId);
 	~CParticleEmitterComponent();
 	void Update(CU::Time aDeltaTime);
 
-	inline CParticleEmitterInstance* GetEmitter();
+	//inline CParticleEmitterInstance* GetEmitter();
 
 	void Activate();
 	void Deactivate();
@@ -21,13 +21,14 @@ public:
 	void Destroy() override;
 
 private:
+	int myInstanceId;
 	//Keep in Scene and have pointer to scene one?
-	CParticleEmitterInstance* myParticleInstance;
+	//CParticleEmitterInstance* myParticleInstance;
 };
 
 
 
-CParticleEmitterInstance* CParticleEmitterComponent::GetEmitter()
-{
-	return myParticleInstance;
-}
+//CParticleEmitterInstance* CParticleEmitterComponent::GetEmitter()
+//{
+//	return myParticleInstance;
+//}
