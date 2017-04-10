@@ -53,7 +53,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 
 void CEnemyClientRepresentation::CheckIfOutOfBounds()
 {
-	if (GetParent()->GetWorldPosition().y < -200.0f)
+	if (GetParent()->GetWorldPosition().y < -100.0f)
 	{
 		SComponentQuestionData healthQuestionData;
 		if(GetParent()->AskComponents(eComponentQuestionType::eGetHealth, healthQuestionData) == true)
