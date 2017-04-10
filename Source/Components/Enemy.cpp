@@ -129,7 +129,7 @@ void CEnemy::Attack()
 		SComponentMessageData messageData;
 		CU::Vector3f direction = ClosestPlayerPosition() - GetParent()->GetWorldPosition();
 		direction.Normalize();
-		messageData.myVector3f = direction;
+		messageData.myVector3f = ClosestPlayerPosition();
 		messageData.myVector4f.w = myServerId;
 		GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 	}
