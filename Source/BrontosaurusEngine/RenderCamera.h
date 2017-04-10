@@ -1,5 +1,5 @@
 #pragma once
-#include <Camera.h>
+#include "../CommonUtilities/Camera.h"
 #include "RenderPackage.h"
 
 struct SRenderMessage;

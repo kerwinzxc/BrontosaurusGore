@@ -5,6 +5,9 @@
 #include "../CommonUtilities/StaticArray.h"
 #include "../CommonUtilities/vector3.h"
 #include "../CommonUtilities/vector4.h"
+#include "binary_tree.h"
+#include "EmitterData.h"
+#include "../CommonUtilities/matrix44.h"
 
 
 namespace Particles
@@ -26,6 +29,7 @@ namespace CU
 
 class CEffect;
 class CDXFramework;
+class CParticleEmitterInstance;
 struct ID3D11Buffer;
 struct SParticle;
 struct SEmitterData;
@@ -60,22 +64,33 @@ public:
 	CParticleEmitter();
 
 	explicit CParticleEmitter(const CU::CJsonValue& aJsonValue);
-	CParticleEmitter(const CParticleEmitter& aParticleEmitter);
+	CParticleEmitter(const CParticleEmitter& aParticleEmitter) = delete;
+	CParticleEmitter(const CParticleEmitter&& aParticleEmitter) = delete;
+	CParticleEmitter& operator=(const CParticleEmitter& aParticleEmitter) = delete;
+	CParticleEmitter& operator=(CParticleEmitter&& aParticleEmitter) = delete;
+
 	~CParticleEmitter();
 
 	//DEPRECATED
 	void Init(const SEmitterData& EmitterData);
-	
+	void UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance);
+
 	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode);
 	void Destroy();
 
 	bool HasEffects() const;
-	CParticleEmitter& operator=(const CParticleEmitter& aParticleEmitter);
-	CParticleEmitter& operator=(CParticleEmitter&& aParticleEmitter) noexcept;
+	
 	void AddRef();
 	void RemoveRef();
+	float GetLifetime() const;
+	float GetEmitTime();
+	unsigned GetMaxParticles();
 private:
 	void Init();
+
+	void InitialVelocity(SParticleLogic& aParticleLogic);
+	void SpawnParticle(SParticle& aParticle, SParticleLogic& aParticleLogic);
+	void UpdateParticles(SParticle& aParticle, SParticleLogic& aLogic, const float aDt);
 
 	void ParseSpawnParameters(const CU::CJsonValue& aJsonValue);
 	void ParseUpdateParameters(const CU::CJsonValue& aJsonValue);
@@ -163,5 +178,5 @@ private:
 
 	std::mutex myUpdateVBufferMutex;
 	unsigned int myRefCount;
-	
+	CU::Matrix44f myCurrentInstaceTransform;
 };

@@ -91,6 +91,7 @@
     <ClInclude Include="ParticleVelocitySpawner.h">
       <Filter>Spawn\Velocity</Filter>
     </ClInclude>
+    <ClInclude Include="Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ParticleLibrary.cpp">

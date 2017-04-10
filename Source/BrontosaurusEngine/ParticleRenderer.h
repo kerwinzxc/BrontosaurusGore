@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderPackage.h"
 #include "LightModel.h"
-#include "../Components/ParticleEmitterComponent.h"
+#include "EmitterData.h"
 
 struct SRenderMessage;
 

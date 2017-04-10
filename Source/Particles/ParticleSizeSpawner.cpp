@@ -4,8 +4,8 @@
 
 Particles::CParticleSizeSpawner::CParticleSizeSpawner(const CU::CJsonValue& aJsonValue)
 {
-	myMin = aJsonValue["myMin"].GetFloat();
-	myMax = aJsonValue["myMax"].GetFloat();
+	myMin = aJsonValue["min"].GetFloat();
+	myMax = aJsonValue["max"].GetFloat();
 }
 
 Particles::CParticleSizeSpawner::~CParticleSizeSpawner()

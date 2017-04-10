@@ -77,7 +77,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		ClearParticleTargets();
 		SetParticleTargets(aDepthStencilView);
 		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(myParticleMessages[i]);
-		CParticleEmitter* emitter = ENGINE->GetParticleEmitterManager().GetParticleEmitter(msg->particleEmitter);
+		CParticleEmitter* emitter = CParticleEmitterManager::GetInstance().GetEmitter(msg->particleEmitter);
 		if (emitter == nullptr)	break;
 
 		//msg->renderMode = CParticleEmitter::RenderMode::eNURBSSphere;

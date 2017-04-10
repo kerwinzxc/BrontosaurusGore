@@ -2,19 +2,29 @@
 #include "ParticleEmitterManager.h"
 #include "EmitterData.h"
 #include "ParticleEmitter.h"
+#include "picojson.h"
+#include "../Particles/ParticleLibrary.h"
+#include "ParticleEmitterInstance.h"
+#include "Work.h"
+#include "ThreadPool.h"
 
 
 CParticleEmitterManager* CParticleEmitterManager::ourInstance = nullptr;
 
-CParticleEmitterManager::CParticleEmitterManager()
+CParticleEmitterManager::CParticleEmitterManager(): myIsActive(true), myThreadFinished(false)
 {
 	myParticleEmitterComp.Init(16);
-	myParticleEmitters.Init(16);
+	myInstances.Init(10);
 }
 
 
 CParticleEmitterManager::~CParticleEmitterManager()
 {
+	myIsActive = false;
+	while (myThreadFinished == false)
+	{
+		
+	}
 }
 
 CParticleEmitterManager& CParticleEmitterManager::GetInstance()
@@ -37,50 +47,9 @@ void CParticleEmitterManager::Destroy()
 	SAFE_DELETE(ourInstance);
 }
 
-const CParticleEmitterManager::ParticleEmitterID CParticleEmitterManager::CreateParticleEmitter(const SEmitterData & aEmitterData)
+void CParticleEmitterManager::RemoveParticleEmitter(const Particles::ParticleEmitterID aID)
 {
-	ParticleEmitterID id = EmitterExists(aEmitterData);
 	
-	if (id == -1)
-	{
-		SParticleEmitterComparer comp;
-		comp.myNumOfParticles = aEmitterData.NumOfParticles;
-		comp.myTexturePath = aEmitterData.TexturePath;
-		
-		if (myFreeParticleEmitterIDs.Size() == 0)
-		{
-			id = myParticleEmitters.Size();
-			myParticleEmitters.Add(CParticleEmitter());
-			myParticleEmitterComp.Add(SParticleEmitterComparer());
-
-		}
-		else
-		{
-			id = myFreeParticleEmitterIDs.Pop();
-			myParticleEmitterComp[id] = comp;
-		}
-		comp.myID = id;
-		myParticleEmitterComp[id] = comp;
-		myParticleEmitters[id].Init(aEmitterData);
-	}
-
-	AddRef(id);
-	return id;
-}
-
-CParticleEmitter * CParticleEmitterManager::GetParticleEmitter(const ParticleEmitterID aID)
-{
-	if (myParticleEmitterComp[aID].myID == -1)
-	{
-		return nullptr;
-	}
-
-	return &myParticleEmitters[aID];
-}
-
-void CParticleEmitterManager::RemoveParticleEmitter(const ParticleEmitterID aID)
-{
-	RemoveRef(aID);
 	//if (myParticleEmitterComp[aID].myRefCount <= 0)
 	//{
 	//	myParticleEmitters[aID].Destroy();
@@ -96,35 +65,180 @@ void CParticleEmitterManager::RemoveParticleEmitter(const ParticleEmitterID aID)
 
 void CParticleEmitterManager::LoadParticleLibrary(const std::string& aLibraryPath)
 {
-	std::map<std::basic_string<char>, Particles::CParticleLibrary>::iterator it = myLibraries.find(aLibraryPath);
+	std::map<std::basic_string<char>, Particles::CParticleLibrary*>::iterator it = myLibraries.find(aLibraryPath);
 
 	if(it == myLibraries.end())
 	{
-		myLibraries[aLibraryPath].Load(aLibraryPath);
+		myLibraries[aLibraryPath] = new Particles::CParticleLibrary;
+		myLibraries[aLibraryPath]->Load(aLibraryPath);
 	}
 }
 
-int CParticleEmitterManager::EmitterExists(const SEmitterData & aEmitterData)
+Particles::ParticleEmitterID CParticleEmitterManager::GetEmitterInstance(Particles::ParticleEmitterID aId)
 {
-	for (unsigned int i = 0; i < myParticleEmitterComp.Size(); i++)
+	CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(aId);
+	CParticleEmitterInstance* result = nullptr;
+	if (freeInstances.Size() == 0)
 	{
-		if (myParticleEmitterComp[i] == aEmitterData)
+		result = new CParticleEmitterInstance(aId);
+	}
+	else
+	{
+		result = freeInstances[freeInstances.Size() - 1];
+		freeInstances.RemoveCyclicAtIndex(freeInstances.Size() -1);
+	}
+	myInstances.Add(result);
+	return result->GetInstanceID();
+}
+
+Particles::ParticleEmitterID CParticleEmitterManager::GetParticleEmitterId(const std::string& aSystemId)
+{
+	std::map<std::basic_string<char>, Particles::CParticleLibrary*>::iterator it;
+	for(it = myLibraries.begin(); it != myLibraries.end();++it)
+	{
+		Particles::ParticleEmitterID id = it->second->GetSystem(aSystemId);
+		if (id != it->second->FoundNone)
 		{
-			return myParticleEmitterComp[i].myID;
+			return GetEmitterInstance(id);
 		}
 	}
 
-	return -1;
+	DL_ASSERT("Could not find particle emitter \"%s\"", aSystemId.c_str());
+	return GetEmitterInstance(Particles::CParticleLibrary::FoundNone);
 }
 
-void CParticleEmitterManager::AddRef(const ParticleEmitterID aID)
+void CParticleEmitterManager::Release(Particles::ParticleEmitterID anInstanceId)
 {
-	myParticleEmitterComp[aID].myRefCount++;
+	for(int i = 0; i < myInstances.Size();++i)
+	{
+		if(myInstances[i]->GetInstanceID() == anInstanceId)
+		{
+			CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(myInstances[i]->GetEmitterId());
+			freeInstances.Add(myInstances[i]);
+			myInstances.RemoveCyclicAtIndex(i);
+			break;
+		}
+	}
 }
 
-void CParticleEmitterManager::RemoveRef(const ParticleEmitterID aID)
+void CParticleEmitterManager::SetPosition(int aInstanceId, const CU::Vector3f& aPosition)
 {
-	myParticleEmitterComp[aID].myRefCount--;
+	for(int i = 0; i < myInstances.Size(); ++i)
+	{
+		if(myInstances[i]->GetInstanceID() == aInstanceId)
+		{
+			myInstances[i]->SetPosition(aPosition);
+			break;
+		}
+	}
+}
+
+void CParticleEmitterManager::Activate(Particles::ParticleEmitterID aInstanceId)
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		if (myInstances[i]->GetInstanceID() == aInstanceId)
+		{
+			myInstances[i]->Activate();
+			break;
+		}
+	}
+}
+
+void CParticleEmitterManager::Deactivate(Particles::ParticleEmitterID aInstanceId)
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		if (myInstances[i]->GetInstanceID() == aInstanceId)
+		{
+			myInstances[i]->Deactivate();
+			break;
+		}
+	}
+}
+
+CParticleEmitter* CParticleEmitterManager::GetEmitter(Particles::ParticleEmitterID aParticleEmitter)
+{
+	std::map<std::basic_string<char>, Particles::CParticleLibrary*>::iterator it;
+	for(it = myLibraries.begin(); it != myLibraries.end(); ++it)
+	{
+		CParticleEmitter* emitter = it->second->GetSystemP(aParticleEmitter);
+
+		if(emitter != nullptr)
+		{
+			return emitter;
+		}
+	}
+
+	return nullptr;
+}
+
+void CParticleEmitterManager::Update(const CU::Time aDeltaTime)
+{
+	for(int i = 0; i < myInstances.Size(); ++i)
+	{
+		CParticleEmitter* emitter = GetEmitter(myInstances[i]->GetEmitterId());
+		if(emitter != nullptr)
+		{
+			CParticleEmitterInstance& instance = *myInstances[i];
+			emitter->UpdateInstance(aDeltaTime, instance);
+			int i = 0;
+		}
+	}
+}
+
+void CParticleEmitterManager::Render(CRenderCamera& aRenderCamera)
+{
+	for(int i = 0; i < myInstances.Size();++i)
+	{
+		if(myInstances[i]->IsVisible() == true)
+		{
+			myInstances[i]->Render(aRenderCamera);
+		}
+	}
+}
+
+void CParticleEmitterManager::Run()
+{
+	std::function<void(void)> func = std::bind(&CParticleEmitterManager::InternalRun, this);
+	CU::Work work(func, CU::ePriority::eHigh);
+	work.SetName("Particle thread"); 
+
+	std::function<bool(void)> condition = std::bind(&CParticleEmitterManager::IsActive, this);
+	work.AddLoopCondition(condition); 
+	std::function<void(void)> callback = std::bind(&CParticleEmitterManager::ThreadFinished, this);
+	work.SetFinishedCallback(callback);
+	myTimerManager.CreateTimer();
+	myTimerManager.UpdateTimers();
+	CU::ThreadPool::GetInstance()->AddWork(work);
+}
+
+bool CParticleEmitterManager::IsActive() const
+{
+	return myIsActive;
+}
+
+void CParticleEmitterManager::ThreadFinished()
+{
+	myThreadFinished = true;
+}
+
+void CParticleEmitterManager::InternalRun()
+{
+	myTimerManager.UpdateTimers();
+	Update(myTimerManager.GetTimer(0).GetDeltaTime());
+}
+
+CU::GrowingArray<CParticleEmitterInstance*>& CParticleEmitterManager::GetFreeInstances(Particles::ParticleEmitterID aId)
+{
+	std::map<int, CU::GrowingArray<CParticleEmitterInstance*>>::iterator it = myFreeInstances.find(aId);
+
+	if (it == myFreeInstances.end())
+	{
+		myFreeInstances[aId].Init(5);
+	}
+
+	return myFreeInstances[aId];
 }
 
 bool CParticleEmitterManager::SParticleEmitterComparer::operator==(const SEmitterData & aEmitterData)

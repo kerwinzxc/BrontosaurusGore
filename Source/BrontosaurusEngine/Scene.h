@@ -45,7 +45,7 @@ public:
 	InstanceID AddModelInstance(CModelInstance* aModelInstance); //return int
 	InstanceID AddDirectionalLight(const Lights::SDirectionalLight& aDirectionalLight);
 	InstanceID AddPointLightInstance(const CPointLightInstance& aPointLight);
-	InstanceID AddParticleEmitterInstance(CParticleEmitterInstance* aParticleEmitterInstance);
+	//InstanceID AddParticleEmitterInstance(CParticleEmitterInstance* aParticleEmitterInstance);
 	InstanceID AddFireEmitters(const CFireEmitterInstance& aFireEmitter);
 	void AddCamera(const eCameraType aCameraType);
 
@@ -57,7 +57,7 @@ public:
 	CModelInstance* GetModelAt(const InstanceID aModelID);
 	CFireEmitterInstance& GetFireEmitter(const InstanceID aFireEmitterID);
 	CRenderCamera& GetRenderCamera(const eCameraType aCameraType);
-	CParticleEmitterInstance* GetParticleEmitterInstance(const InstanceID aParticleEmitterID);
+	//CParticleEmitterInstance* GetParticleEmitterInstance(const InstanceID aParticleEmitterID);
 	CPointLightInstance* GetPointLightInstance(const InstanceID aID);
 	
 	//Delete Shiz here
@@ -66,10 +66,10 @@ public:
 
 	inline unsigned int GetModelListSize()   {return myModels.Size();}
 	inline unsigned int GetLightListSize()   {return myPointLights.Size();}
-	inline unsigned int GetEmitterListSize() {return myParticleEmitters.Size();}
+	//inline unsigned int GetEmitterListSize() {return myParticleEmitters.Size();}
 	inline unsigned int GetCameraListSize()  {return myRenderCameras.Size();}
 
-	void DeleteParticleEmitterInstance(const InstanceID anID);
+	//void DeleteParticleEmitterInstance(const InstanceID anID);
 	void RemovePointLightInstance(const InstanceID anID);
 
 	void GenerateCubemap();
@@ -86,8 +86,8 @@ private:
 	CU::GrowingArray<CPointLightInstance, InstanceID> myPointLights;
 	CU::Stack<InstanceID, InstanceID> myFreePointlights;
 
-	CU::GrowingArray<CParticleEmitterInstance*, InstanceID> myParticleEmitters;
-	CU::Stack<InstanceID, InstanceID> myFreeParticleEmitters;
+	//CU::GrowingArray<CParticleEmitterInstance*, InstanceID> myParticleEmitters;
+	//CU::Stack<InstanceID, InstanceID> myFreeParticleEmitters;
 	
 	CU::GrowingArray<CFireEmitterInstance, InstanceID> myFireEmitters;
 

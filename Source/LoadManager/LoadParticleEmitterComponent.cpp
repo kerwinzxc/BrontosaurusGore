@@ -37,6 +37,6 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 	emitterData.ColorCurve = eLerpCurve::eLinear;
 	emitterData.SizeCurve = eLerpCurve::eLinear;
 	emitterData.SizeCurve = eLerpCurve::eLinear;*/
-	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
+	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(someData.myData["ParticleEmitterName"].GetString());
 	return companent->GetId();
 }

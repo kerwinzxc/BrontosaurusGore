@@ -2,6 +2,7 @@
 #include "JsonValue.h"
 #include "DL_Debug.h"
 
+const Particles::ParticleEmitterID Particles::CParticleLibrary::FoundNone = -1;
 
 Particles::CParticleLibrary::CParticleLibrary()
 {
@@ -26,7 +27,7 @@ void Particles::CParticleLibrary::Load(const std::string& aPath)
 	}
 }
 
-Particles::CParticleLibrary::ParticleId Particles::CParticleLibrary::AddRef(const std::string& aSystemName)
+Particles::ParticleEmitterID Particles::CParticleLibrary::AddRef(const std::string& aSystemName)
 {
 	std::map<std::basic_string<char>, int>::iterator it = myStringIdMap.find(aSystemName);
 
@@ -39,16 +40,16 @@ Particles::CParticleLibrary::ParticleId Particles::CParticleLibrary::AddRef(cons
 	return it->second;
 }
 
-void Particles::CParticleLibrary::AddRef(const ParticleId anId)
+void Particles::CParticleLibrary::AddRef(const Particles::ParticleEmitterID anId)
 {
-	std::map<int, CParticleEmitter>::iterator it = myIdEmitterMap.find(anId);
+	std::map<int, CParticleEmitter*>::iterator it = myIdEmitterMap.find(anId);
 
 	if(it == myIdEmitterMap.end())
 	{
 		DL_ASSERT("Particly emitter with id %d doesn't exist.", anId);
 	}
 
-	it->second.AddRef();
+	it->second->AddRef();
 }
 
 void Particles::CParticleLibrary::RemoveRef(const std::string& aSystemName)
@@ -63,22 +64,44 @@ void Particles::CParticleLibrary::RemoveRef(const std::string& aSystemName)
 	RemoveRef(it->second);
 }
 
-void Particles::CParticleLibrary::RemoveRef(const ParticleId anId)
+void Particles::CParticleLibrary::RemoveRef(const Particles::ParticleEmitterID anId)
 {
-	std::map<int, CParticleEmitter>::iterator it = myIdEmitterMap.find(anId);
+	std::map<int, CParticleEmitter*>::iterator it = myIdEmitterMap.find(anId);
 
 	if (it == myIdEmitterMap.end())
 	{
 		DL_ASSERT("Particly emitter with id %d doesn't exist.", anId);
 	}
 
-	it->second.RemoveRef();
+	it->second->RemoveRef();
 }
 
-void Particles::CParticleLibrary::AddSystemRef(const std::string& aName, const ParticleId aId)
+Particles::ParticleEmitterID Particles::CParticleLibrary::GetSystem(const std::string& aSystemId)
+{
+	std::map<std::basic_string<char>, int>::iterator id = myStringIdMap.find(aSystemId);
+
+	if(id == myStringIdMap.end())
+	{
+		return FoundNone;
+	}
+
+	id->second;
+}
+
+CParticleEmitter * Particles::CParticleLibrary::GetSystemP(ParticleEmitterID aParticleEmitter)
+{
+	std::map<int, CParticleEmitter*>::iterator it = myIdEmitterMap.find(aParticleEmitter);
+	if (it == myIdEmitterMap.end())
+	{
+		return nullptr;
+	}
+	return it->second;
+}
+
+void Particles::CParticleLibrary::AddSystemRef(const std::string& aName, const Particles::ParticleEmitterID aId)
 {
 	std::map<std::basic_string<char>, int>::iterator stringIt = myStringIdMap.find(aName);
-	std::map<int, CParticleEmitter>::iterator idIt = myIdEmitterMap.find(aId);
+	std::map<int, CParticleEmitter*>::iterator idIt = myIdEmitterMap.find(aId);
 	if(stringIt != myStringIdMap.end())
 	{
 		DL_ASSERT("Particly emitter with name \"%s\" already exists.", aName.c_str());
@@ -95,10 +118,10 @@ void Particles::CParticleLibrary::AddSystemRef(const std::string& aName, const P
 void Particles::CParticleLibrary::LoadSystem(const CU::CJsonValue& aJsonValue)
 {
 	const std::string name = aJsonValue["name"].GetString();
-	const ParticleId id = aJsonValue["id"].GetInt();
+	const Particles::ParticleEmitterID id = aJsonValue["id"].GetInt();
 	AddSystemRef(name, id);
 
-	CParticleEmitter emitter(aJsonValue);
+	CParticleEmitter* emitter = new CParticleEmitter(aJsonValue);
 
 	myIdEmitterMap[id] = emitter;
 }
