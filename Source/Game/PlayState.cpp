@@ -36,6 +36,7 @@
 #include "Components/DoorManager.h"
 #include "../Components/CheckpointComponentManager.h"
 #include "EnemyFactory.h"
+#include "TumbleweedFactory.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -151,6 +152,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myColliderComponentManager);
 	SAFE_DELETE(myPhysicsScene);
 	SAFE_DELETE(myGameObjectManager);
+	CTumbleweedFactory::DestroyInstance();
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
 
@@ -297,6 +299,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
 	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
 
+	CTumbleweedFactory::GetInstance()->Update(aDeltaTime.GetSeconds());
+	
 	CAnimationComponent::UpdateAnimations(aDeltaTime);
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -399,6 +403,8 @@ void CPlayState::CreateManagersAndFactories()
 	
 	myExplosionComponentManager = new CExplosionComponentManager();
 	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
+	CTumbleweedFactory::CreateInstance();
+	CTumbleweedFactory::GetInstance()->Init(myGameObjectManager, myColliderComponentManager);
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -570,6 +576,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerHealthComponent->SetArmor(0);
 
 		playerObject->AddComponent(playerHealthComponent);
+		CTumbleweedFactory::GetInstance()->CreateNewTumbleweed(playerObject->GetWorldPosition());
 
 		/*SBoxColliderData data;
 		data.myHalfExtent = CU::Vector3f(0.25, 0.9, 0.25);
