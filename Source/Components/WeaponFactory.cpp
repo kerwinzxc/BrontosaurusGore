@@ -125,8 +125,21 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 	{
 		CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
 		newWeaponModelComponent->SetIgnoreDepth(true);
+
 		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 		newWeaponObject->AddComponent(newWeaponModelComponent);
+
+		std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
+		size_t pos = playerHandsPath.find_last_of('/');
+		playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
+		if (CU::CJsonValue::FileExists(playerHandsPath))
+		{
+			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath);
+			handModelComponent->SetIgnoreDepth(true);
+
+			newWeaponObject->AddComponent(handModelComponent);
+		}
+
 		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
 		aWeapon->SetWeaponObject(newWeaponObject);
 		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
