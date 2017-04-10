@@ -69,11 +69,20 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		{
 			if(myWeapons[myActiveWeaponIndex]->CanShoot() == true)
 			{
-				myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+				CU::Vector3f targetPosition = aMessageData.myVector3f;
+				CU::Vector3f shootPosition = GetParent()->GetWorldPosition();
+				CU::Vector3f shootDisplacment(myWeapons[myActiveWeaponIndex]->GetData()->shootPositionX, myWeapons[myActiveWeaponIndex]->GetData()->shootPositionY, myWeapons[myActiveWeaponIndex]->GetData()->shootPositionZ);
+				CU::Matrix44f localWeaponMatrix = GetParent()->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				shootPosition = localWeaponMatrix.GetPosition();
+
+				CU::Vector3f shootDirection = targetPosition - shootPosition;
+				shootDirection.Normalize();
+				myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
 
 				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
-				shootMessage->SetDirection(aMessageData.myVector3f);
+				shootMessage->SetDirection(shootDirection);
 				shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Enemy);
 				shootMessage->SetShooterId(aMessageData.myVector4f.w);
 				shootMessage->SetWeaponIndex(myActiveWeaponIndex);
@@ -173,8 +182,10 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myIsActive = false;
 		break;
 	}
+
 	case eComponentMessageType::eCheckPointReset:
 	{
+		myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
 		myIsActive = true;
 		break;
 	}
@@ -316,9 +327,26 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
-			myActiveWeaponIndex = aIndex;
-			myWeapons[myActiveWeaponIndex]->SetModelVisibility(true);
+			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
+			{
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				{
+					nextWeapon->Equip();
+					activeWeaponIndex = aIndex;
+				};
+
+				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+			}
+			else
+			{
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
+				nextWeapon->Equip();
+				activeWeaponIndex = aIndex;
+			}
 		}
 	}
 }

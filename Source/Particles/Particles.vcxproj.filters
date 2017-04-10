@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ParticleLibrary">
+      <UniqueIdentifier>{0bb1f6dc-7928-4afa-aff3-cc3c599c2c8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleEmitter">
+      <UniqueIdentifier>{ad9a4239-b6a4-4e71-a065-f80c50aba2c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleEmitterInstance">
+      <UniqueIdentifier>{a64fc889-10a2-4138-9ea3-d57a9728d5c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleEmitterManager">
+      <UniqueIdentifier>{3717882a-9713-45d7-a818-bd6b33fd028a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater">
+      <UniqueIdentifier>{d026d6f2-89cc-4dba-82e6-1889ac5e67a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Base">
+      <UniqueIdentifier>{32629741-985a-4b50-815e-bfb90b8fdfbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Color">
+      <UniqueIdentifier>{6c8b8685-fc1d-4dad-83c2-e52db67cd982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Size">
+      <UniqueIdentifier>{aeeacdde-5c5b-4365-97a9-41f83b2d726d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Velocity">
+      <UniqueIdentifier>{2b1e72f8-7d74-4040-a424-f57c34e6f9f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn">
+      <UniqueIdentifier>{f2cae2fc-d330-42da-8edd-9be311acd40d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Base">
+      <UniqueIdentifier>{593be353-9edd-428d-8fcd-ef12b07ac150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Color">
+      <UniqueIdentifier>{a8b16bcc-7378-4e60-a4ab-a184e3c59ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Velocity">
+      <UniqueIdentifier>{9d244d75-b007-4aa6-8b9a-0ec40c2905ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Size">
+      <UniqueIdentifier>{bb5aabfb-878b-409f-b00c-6888cfc81a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Lifetime">
+      <UniqueIdentifier>{a4b4efa3-09fa-4466-9bd0-c006eacdc6eb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ParticleLibrary.h">
+      <Filter>ParticleLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BrontosaurusEngine\ParticleEmitter.h">
+      <Filter>ParticleEmitter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BrontosaurusEngine\ParticleEmitterInstance.h">
+      <Filter>ParticleEmitterInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BrontosaurusEngine\ParticleEmitterManager.h">
+      <Filter>ParticleEmitterManager</Filter>
+    </ClInclude>
+    <ClInclude Include="IParticleUpdater.h">
+      <Filter>Updater\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleColorUpdater.h">
+      <Filter>Updater\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSizeUpdate.h">
+      <Filter>Updater\Size</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleVelocityUpdater.h">
+      <Filter>Updater\Velocity</Filter>
+    </ClInclude>
+    <ClInclude Include="IParticleSpawner.h">
+      <Filter>Spawn\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleColorSpawner.h">
+      <Filter>Spawn\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleLifetimeSpawner.h">
+      <Filter>Spawn\Lifetime</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSizeSpawner.h">
+      <Filter>Spawn\Size</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleVelocitySpawner.h">
+      <Filter>Spawn\Velocity</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ParticleLibrary.cpp">
+      <Filter>ParticleLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BrontosaurusEngine\ParticleEmitter.cpp">
+      <Filter>ParticleEmitter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BrontosaurusEngine\ParticleEmitterInstance.cpp">
+      <Filter>ParticleEmitterInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BrontosaurusEngine\ParticleEmitterManager.cpp">
+      <Filter>ParticleEmitterManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleColorUpdater.cpp">
+      <Filter>Updater\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSizeUpdate.cpp">
+      <Filter>Updater\Size</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleVelocityUpdater.cpp">
+      <Filter>Updater\Velocity</Filter>
+    </ClCompile>
+    <ClCompile Include="IParticleSpawner.cpp">
+      <Filter>Spawn\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleColorSpawner.cpp">
+      <Filter>Spawn\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleLifetimeSpawner.cpp">
+      <Filter>Spawn\Lifetime</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSizeSpawner.cpp">
+      <Filter>Spawn\Size</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleVelocitySpawner.cpp">
+      <Filter>Spawn\Velocity</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

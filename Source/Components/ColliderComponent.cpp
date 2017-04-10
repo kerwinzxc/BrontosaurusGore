@@ -1,13 +1,17 @@
 #include "stdafx.h"
 #include "ColliderComponent.h"
 #include "ColliderComponentManager.h"
+#include "../Physics/Shape.h"
 
 CColliderComponent::CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
 {
 	myData = aColliderData;
 
 	myActor = aActor;
-	myActor->SetCallbackData(this);
+	if(myActor != nullptr)
+	{
+		myActor->SetCallbackData(this);
+	}
 	SetUserData(this);
 
 	myShape = aShape;
@@ -34,19 +38,23 @@ CColliderComponent::~CColliderComponent()
 
 void CColliderComponent::UpdatePosition()
 {
-	CU::Matrix44f transform = myActor->GetTransformation();
-	const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
-	const CU::Vector3f scale = parentTransform.GetScale();
-	transform.SetScale(scale);
+	if(myActor != nullptr)
+	{	
+		CU::Matrix44f transform = myActor->GetTransformation();
+		const CU::Matrix44f parentTransform = GetParent()->GetToWorldTransform();
+		const CU::Vector3f scale = parentTransform.GetScale();
+		transform.SetScale(scale);
 
-	GetParent()->SetWorldTransformation(transform);
-	SComponentMessageData data;
-	data.myComponent = this;
-	GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
+		GetParent()->SetWorldTransformation(transform);
+		SComponentMessageData data;
+		data.myComponent = this;
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
+	}
 }
 
 void CColliderComponent::UpdateCallbacks()
 {
+	//kommentar: detta är mycket snyggt! mvh carl
 	for (SStoredCallBackData& callbackData : myStoredCallBackDataList)
 	{
 		SComponentMessageData data;
@@ -56,16 +64,29 @@ void CColliderComponent::UpdateCallbacks()
 	myStoredCallBackDataList.RemoveAll();
 }
 
-void CColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
+void CColliderComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eAddComponent: 
-		if (aMessageData.myComponentTypeAdded != eComponentType::eCollision) break; //else: fall through;
+		if (aMessageData.myComponentTypeAdded == eComponentType::eCollision && aMessageData.myComponent == this)
+		{
+			if (myShape)
+			{
+				const int ParentId = GetParent()->GetId();
+				myShape->SetObjectId(ParentId);
+			}
+			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
+			transformation.SetScale({ 1.0f, 1.0f, 1.0f });
+			CU::Vector3f worldPos = myData.center;
+			transformation.SetPosition(transformation.GetPosition() + worldPos);
+			myActor->SetTransformation(transformation);
+		}	
+		
 	case eComponentMessageType::eObjectDone:
 	case eComponentMessageType::eMoving:
 	{
-		if (aMessageData.myComponent != this)
+		if (aMessageData.myComponent != this && myActor != nullptr)
 		{
 			CU::Matrix44f transformation = GetParent()->GetToWorldTransform();
 			transformation.SetScale({ 1.0f, 1.0f, 1.0f });
@@ -86,8 +107,6 @@ void CColliderComponent::Receive(const eComponentMessageType aMessageType, const
 		break;
 	case eComponentMessageType::eDeactivate:
 		myActor->SetIsActive(false);
-		break;
-	default:
 		break;
 	}
 }

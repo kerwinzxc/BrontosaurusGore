@@ -53,11 +53,18 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 
 void CEnemyClientRepresentation::CheckIfOutOfBounds()
 {
-	if (GetParent()->GetWorldPosition().y < -100.0f)
+	if (GetParent()->GetWorldPosition().y < -200.0f)
 	{
-		SComponentMessageData takeDamageData;
-		takeDamageData.myInt = 10000;
-		GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);
+		SComponentQuestionData healthQuestionData;
+		if(GetParent()->AskComponents(eComponentQuestionType::eGetHealth, healthQuestionData) == true)
+		{
+			if(healthQuestionData.myInt > 0)
+			{
+				SComponentMessageData takeDamageData;
+				takeDamageData.myInt = 10000;
+				GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);			
+			}
+		}
 		//Teleport stuff back code
 		//CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
 		////parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
@@ -68,5 +75,19 @@ void CEnemyClientRepresentation::CheckIfOutOfBounds()
 		//{
 		//	parentTransform.SetPosition(data.myVector3f);
 		//}
+	}
+}
+
+bool CEnemyClientRepresentation::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
+{
+	switch (aQuestionType)
+	{
+	case eComponentQuestionType::eIsEnemy :
+	{
+		return true;
+		break;
+	}
+	default:
+		break;
 	}
 }

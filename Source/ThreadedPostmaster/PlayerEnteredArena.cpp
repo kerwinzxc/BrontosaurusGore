@@ -2,7 +2,7 @@
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 
-CPlayerEnteredArena::CPlayerEnteredArena(const unsigned char aChange, const unsigned char aAmountOfWaves , const short aKeyId) : IMessage(eMessageType::ePlayerEnterArena)
+CPlayerEnteredArena::CPlayerEnteredArena(const short aChange, const unsigned char aAmountOfWaves , const short aKeyId) : IMessage(eMessageType::ePlayerEnterArena)
 {
 	myAmountOfWaves = aAmountOfWaves;
 	myKeyId = aKeyId;
@@ -24,7 +24,7 @@ const unsigned char CPlayerEnteredArena::GetWaveAmount() const
 	return myAmountOfWaves;
 }
 
-const unsigned char CPlayerEnteredArena::GetPlayerChange() const
+const  short CPlayerEnteredArena::GetPlayerChange() const
 {
 	return myPlayerChange;
 }

@@ -8,6 +8,7 @@
 #include "FBXLoader.h"
 #include "LightModel.h"
 #include "ShaderManager.h"
+#include "../BrontosaurusEngine/EmitterData.h"
 
 CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper) : mySharedRenderer(aRenderer), mySharedHelper(aHelper)
 {

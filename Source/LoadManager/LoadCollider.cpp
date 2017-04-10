@@ -10,6 +10,8 @@
 #include "Physics\PhysicsCharacterController.h"
 #include "CharacterControllerComponent.h"
 
+#define TO_RADIANS(x) (x) * (3.1415f / 180.f)
+
 CGameObject* GetCurrentObject()
 {
 	int id = KLoader::CKevinLoader::GetInstance().GetCurrentObjectIndex();
@@ -18,16 +20,18 @@ CGameObject* GetCurrentObject()
 
 CColliderComponent* CreateComponent(SColliderData& aColData)
 {
+	CGameObject* parent = GetCurrentObject();
 	CColliderComponentManager* colliderMan = LoadManager::GetInstance()->GetCurrentPLaystate().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData, parent->GetId());
 }
 
 
 CColliderComponent* CreateComponentServer(SColliderData& aColData)
 {
+	CGameObject* parent = GetCurrentObject();
 	GET_SERVERLOADMANAGER(loadManager);
 	CColliderComponentManager* colliderMan = loadManager.GetCurrentGameServer().GetColliderComponentManager();
-	return colliderMan->CreateComponent(&aColData);
+	return colliderMan->CreateComponent(&aColData, parent->GetId());
 }
 
 int LoadSphereCollider(KLoader::SLoadedComponentData someData)
@@ -102,9 +106,6 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
-
-
 
 	CColliderComponent* component = CreateComponent(data);
 	if(component == nullptr)
@@ -143,7 +144,7 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 	
-	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data, parent->GetId());
 	return component->GetId();
 }
 
@@ -219,7 +220,6 @@ int LoadMeshColliderServer(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1;
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myPath = someData.myData.at("meshPath").GetString().c_str();
-	//data.myPath = "Models/PhysX/C_Rock_5m.xml";
 
 	CColliderComponent* component = CreateComponentServer(data);
 	return component->GetId();
@@ -246,15 +246,18 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	CColliderComponentManager* colliderMan = loadManager.GetCurrentGameServer().GetColliderComponentManager();
 	Physics::SCharacterControllerDesc data;
 
-	data.slopeLimit = someData.myData.at("slopeLimit").GetFloat();
+	data.slopeLimit = TO_RADIANS(someData.myData.at("slopeLimit").GetFloat());
 	data.stepOffset = someData.myData.at("stepOffset").GetFloat();
 	data.skinWidth = someData.myData.at("skinWidth").GetFloat();
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
+	data.center.x *= -1;
+	data.center.z *= -1; // ska vara med?
+	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.radius = someData.myData.at("radius").GetFloat();
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
-	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data);
+	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data, parent->GetId());
 	return component->GetId();
 }
 

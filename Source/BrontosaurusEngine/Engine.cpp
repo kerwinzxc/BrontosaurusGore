@@ -79,7 +79,6 @@ void CEngine::Init(SInitEngineParams& aInitEngineParams)
 	myShaderManager = new CShaderManager();
 	myLightManager = new CLightManager();
 	myTextureManager = new CTextureManager();
-	myParticleEmitterManager = new CParticleEmitterManager();
 	myFireEmitterManager = new CFireEmitterManager();
 
 	myRenderer = new CRenderer();
@@ -265,7 +264,6 @@ CEngine::CEngine()
 	, myTextureManager(nullptr)
 	, myLineDrawer(nullptr)
 	, myThreadPool(nullptr)
-	, myParticleEmitterManager(nullptr)
 	, myFireEmitterManager(nullptr)
 	, myConsole(nullptr)
 	, myRendererIsRunning(true)
@@ -296,7 +294,6 @@ CEngine::~CEngine()
 	SAFE_DELETE(myShaderManager);
 	SAFE_DELETE(myLightManager);
 	SAFE_DELETE(myLineDrawer);
-	SAFE_DELETE(myParticleEmitterManager);
 	SAFE_DELETE(myFireEmitterManager);
 	SAFE_DELETE(myTextureManager);
 

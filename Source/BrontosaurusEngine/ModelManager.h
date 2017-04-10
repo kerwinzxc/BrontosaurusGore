@@ -31,6 +31,7 @@ public:
 	CModel* GetModel(const ModelId aModelID);
 	void RemoveModel(const ModelId aModelID);
 	int GetModelRefCount(const ModelId aModelID) const;
+	const std::string& GetFilePath(const ModelId aModelID) const;
 
 private:
 	void LoadAnimations(const std::string& aPath, const ModelId aModelId);

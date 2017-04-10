@@ -13,6 +13,12 @@ class CWeapon;
 struct SExplosionData;
 enum class ePlayerControls;
 
+namespace std
+{
+	template<class _Fty>
+	class function;
+}
+
 namespace CU
 {
 	template<typename ObjectType, typename SizeType = unsigned int, bool USE_SAFE_MODE = true>
@@ -91,6 +97,9 @@ enum class eComponentMessageType
 	eNullifyForces, // doesn't do stuff :(
 	eServerChangeWeapon,
 	eAddWeaponIndex,
+	eImpStartToJump,
+	eEquip,
+	eUnequip,
 	eLength,
 };
 
@@ -131,6 +140,7 @@ struct SComponentMessageData
 		SAmmoReplenishData* myAmmoReplenishData;
 		const SExplosionData* myExplosionData;
 		CWeapon* myWeapon;
+		const std::function<void(void)>* myVoidFunction;
 	};
 };
 

@@ -96,7 +96,7 @@ void CExplosionFactory::CreateExplosion()
 	sphereColliderDesc.IsTrigger = true;
 
 
-	CColliderComponent* explosionSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc);
+	CColliderComponent* explosionSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc, newExplosionObject->GetId());
 	newExplosionObject->AddComponent(explosionSphereCollider);
 
 	SEmitterData emitterData;

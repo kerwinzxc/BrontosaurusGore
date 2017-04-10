@@ -31,7 +31,7 @@ namespace Physics
 	void CPhysicsActor::SetIsActive(const bool aIsActive)
 	{
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
-	}
+	} // är det fler som krashar här eller är det bara jag när jag debuggar? -kyle
 
 	bool CPhysicsActor::GetIsActive()
 	{
@@ -53,6 +53,8 @@ namespace Physics
 			myPxActor->detachShape(*shape);
 			shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !aIsTrigger);
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, aIsTrigger);
+			shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, !aIsTrigger);
+
 			myPxActor->attachShape(*shape);
 		}
 	}
@@ -89,4 +91,6 @@ namespace Physics
 		myCallback = aCallbacker;
 		//myPxActor->userData = aCallbacker;
 	}
+
+	
 }

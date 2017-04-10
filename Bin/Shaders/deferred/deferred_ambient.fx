@@ -11,6 +11,7 @@ Texture2D deferred_normal       : register(t2);
 Texture2D deferred_RMAO			: register(t3);
 Texture2D deferred_emissive     : register(t4);
 Texture2D deferred_depth        : register(t5);
+Texture2D deferred_depth2		: register(t6);
 
 //**********************************************//
 //					SAMPLERS					//
@@ -59,12 +60,18 @@ float GetSpecPowToMip(float fSpecPow, int nMips)
 	return float(nMips - 1 - 0) * (1.0f - clamp(fSmulMaxT / fMaxT, 0.0f, 1.0f));
 }
 
+float GetDepth(float2 uv)
+{
+	float depth = deferred_depth2.Sample(SamplerClamp, uv).x;
+	return (depth >= 9.9999f) ? deferred_depth.Sample(SamplerClamp, uv).x : depth;
+}
+
+
 Output PS_PosTex(PosTex_InputPixel inputPixel)
 {
 	Output output;
 	float2 uv = inputPixel.tex;
-
-	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
+	float1 depth = GetDepth(uv);
 	
 	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
 

@@ -112,7 +112,6 @@ CNetworkMessage* CMessageStorage::GetType()
 	if (CheckTypeExist<MESSAGE_TYPE>() == false)
 	{
 		DL_ASSERT("MessageType has not been created");
-		int apa = 5;
 	}
 	//myMutex.unlock();
 

@@ -31,7 +31,7 @@ namespace WindowsHelper
 		GoogleIt(std::string(aGoogleSearch.begin(), aGoogleSearch.end()));
 	}
 
-	void StartProgram(const std::string& aExePath)
+	bool StartProgram(const std::string& aExePath)
 	{
 		std::wstring widePath(aExePath.begin(), aExePath.end());
 
@@ -57,10 +57,11 @@ namespace WindowsHelper
 			&pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
 		))
 		{
-			int br = 0;
+			return false;
 		}
 
 		locStartedProcesses[aExePath] = pi;
+		return true;
 	}
 
 	void CloseProgram(const std::string& aExePath)

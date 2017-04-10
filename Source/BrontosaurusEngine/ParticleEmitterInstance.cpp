@@ -7,7 +7,6 @@
 #include "ParticleEmitterManager.h"
 
 #include "../CommonUtilities/CUTime.h"
-#include <GrowingArray.h>
 
 
 //#define STATIC_SIZEOF(x) {char STATIC_SIZEOF_TEMP[(x)]; STATIC_SIZEOF_TEMP = 1;}

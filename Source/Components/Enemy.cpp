@@ -26,6 +26,8 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(
 	myElapsedWaitingToSendMessageTime = 0.0f;
 	myShouldNotReset = nej;
 	myType = aType;
+	myRunTowardsComponentIndex = 999999;
+	myIsAggressive = false;
 }
 
 CEnemy::~CEnemy()
@@ -102,12 +104,16 @@ void CEnemy::CheckForNewTransformation(const float aDeltaTime)
 	rotation.myForwardVector.y = 0.f;
 
 	SComponentQuestionData data;
+	if (myVelocity.z > 20)
+		myVelocity.z = 20;
+	if (myVelocity.y > 900)
+		myVelocity.y = 900;
 	data.myVector4f = myVelocity * rotation * aDeltaTime;
 	data.myVector4f.w = aDeltaTime;
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
 		transform.SetPosition(data.myVector3f);
-		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 }
 
@@ -123,7 +129,7 @@ void CEnemy::Attack()
 		SComponentMessageData messageData;
 		CU::Vector3f direction = ClosestPlayerPosition() - GetParent()->GetWorldPosition();
 		direction.Normalize();
-		messageData.myVector3f = direction;
+		messageData.myVector3f = ClosestPlayerPosition();
 		messageData.myVector4f.w = myServerId;
 		GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 	}
@@ -213,7 +219,7 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 	}
 	
 	CU::Vector3f playerPos = ourPlayerObjects[0]->GetWorldPosition();
-	for(int i = 0; i < ourPlayerObjects.Size(); ++i)
+	for(unsigned int i = 0; i < ourPlayerObjects.Size(); ++i)
 	{
 		CGameObject*const player = ourPlayerObjects[i];
 		const CU::Vector3f newPlayerPos = player->GetWorldPosition();
@@ -251,6 +257,7 @@ eMessageReturn CEnemy::DoEvent(const CResetToCheckPointMessage& aResetToCheckPoi
 	SComponentMessageData controllerPositionData;
 	controllerPositionData.myVector3f = mySpawnPosition;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	myIsAggressive = false;
 	return eMessageReturn::eContinue;
 }
 
@@ -289,22 +296,45 @@ void CEnemy::AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTow
 const CU::Vector3f CEnemy::GetNearestJumpPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
+	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
+	{
+		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(false);
+	}
 
 	if (ourEnemyRunTowardsComponents.IsInitialized() == false || ourEnemyRunTowardsComponents.Size() == 0)
 	{
 		return position;
 	}
 
-	CU::Vector3f playerPos = ourEnemyRunTowardsComponents[0]->GetParent()->GetWorldPosition();
-	for (int i = 0; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	CU::Vector3f playerPos;
+	unsigned int startIndex = 0;
+	for (unsigned int startIndex = 0; startIndex < ourEnemyRunTowardsComponents.Size(); ++startIndex)
 	{
-		CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
-		const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
-
-		if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+		if (ourEnemyRunTowardsComponents[startIndex]->GetIsOccupied() == false)
 		{
-			playerPos = newPlayerPos;
+			playerPos = ourEnemyRunTowardsComponents[startIndex]->GetParent()->GetWorldPosition();
+			break;
 		}
+	}
+	myRunTowardsComponentIndex = startIndex;
+	for (unsigned int i = startIndex; i < ourEnemyRunTowardsComponents.Size(); ++i)
+	{
+		if (ourEnemyRunTowardsComponents[i]->GetIsOccupied() == false)
+		{
+			CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
+			const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
+
+			if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
+			{
+				playerPos = newPlayerPos;
+				myRunTowardsComponentIndex = i;
+			}
+		}
+	}
+
+	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
+	{
+		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(true);
 	}
 
 	return playerPos;

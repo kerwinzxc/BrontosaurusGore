@@ -102,11 +102,6 @@ void CGameServer::Load(const int aLevelIndex)
 
 	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
-#ifdef _DEBUGq
-	myLevelIndex = levelsArray.Size() - 1;
-#else
-	const int levelIndex = 0;
-#endif
 	int myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
 	levelPath += levelsArray[myLevelIndex].GetString();
@@ -244,7 +239,7 @@ CServerPlayerNetworkComponent* CGameServer::AddPlayer(const unsigned short aClie
 	Physics::SCharacterControllerDesc controllerDesc;
 	controllerDesc.minMoveDistance = 0.00001f;
 	controllerDesc.halfHeight = 1.0f;
-	CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+	CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc, gameObject->GetId());
 	gameObject->AddComponent(controller);
 	CEnemy::SetPlayerObject(gameObject);
 	gameObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());

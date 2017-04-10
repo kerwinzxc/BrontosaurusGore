@@ -3,6 +3,9 @@
 #include "EmitterData.h"
 #include "ParticleEmitter.h"
 
+
+CParticleEmitterManager* CParticleEmitterManager::ourInstance = nullptr;
+
 CParticleEmitterManager::CParticleEmitterManager()
 {
 	myParticleEmitterComp.Init(16);
@@ -12,6 +15,26 @@ CParticleEmitterManager::CParticleEmitterManager()
 
 CParticleEmitterManager::~CParticleEmitterManager()
 {
+}
+
+CParticleEmitterManager& CParticleEmitterManager::GetInstance()
+{
+	if(ourInstance == nullptr)
+	{
+		DL_ASSERT("Particle emitter manager has not been created");
+	}
+
+	return *ourInstance;;
+}
+
+void CParticleEmitterManager::Create()
+{
+	ourInstance = new CParticleEmitterManager;
+}
+
+void CParticleEmitterManager::Destroy()
+{
+	SAFE_DELETE(ourInstance);
 }
 
 const CParticleEmitterManager::ParticleEmitterID CParticleEmitterManager::CreateParticleEmitter(const SEmitterData & aEmitterData)
@@ -69,6 +92,16 @@ void CParticleEmitterManager::RemoveParticleEmitter(const ParticleEmitterID aID)
 
 	//	myFreeParticleEmitterIDs.Push(aID);
 	//}
+}
+
+void CParticleEmitterManager::LoadParticleLibrary(const std::string& aLibraryPath)
+{
+	std::map<std::basic_string<char>, Particles::CParticleLibrary>::iterator it = myLibraries.find(aLibraryPath);
+
+	if(it == myLibraries.end())
+	{
+		myLibraries[aLibraryPath].Load(aLibraryPath);
+	}
 }
 
 int CParticleEmitterManager::EmitterExists(const SEmitterData & aEmitterData)

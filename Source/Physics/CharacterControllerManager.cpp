@@ -8,6 +8,9 @@
 #include "Physics.h"
 #include "PhysicsScene.h"
 #include "PhysicsCharacterController.h"
+#include <PxScene.h>
+#include "Components/Component.h"
+#include <PxRigidDynamic.h>
 
 namespace Physics
 {
@@ -28,7 +31,7 @@ namespace Physics
 		myControllerManager->purgeControllers();
 	}
 
-	Physics::CPhysicsCharacterController* CCharacterControllerManager::CreateCharacterController(const SCharacterControllerDesc& aDesc)
+	Physics::CPhysicsCharacterController* CCharacterControllerManager::CreateCharacterController(const SCharacterControllerDesc& aDesc, ComponentId anId)
 	{
 		PxCapsuleControllerDesc desc;
 		desc.slopeLimit = aDesc.slopeLimit;
@@ -39,6 +42,7 @@ namespace Physics
 		desc.climbingMode = PxCapsuleClimbingMode::eEASY;
 		desc.material = myPhysics->CreateMaterial(SMaterialData());
 		PxController* controller = myControllerManager->createController(desc);
+		
 		return new CPhysicsCharacterController(controller, aDesc);
 	}
 }

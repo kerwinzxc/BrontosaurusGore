@@ -428,6 +428,9 @@
     <ProjectReference Include="..\LuaWrapper\LuaWrapper.vcxproj">
       <Project>{2a943a8d-481f-42c6-9df6-f0d3c78e0781}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Particles\Particles.vcxproj">
+      <Project>{8ff3afbc-ce14-4748-a2b6-6e48fc5761f4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\PostMaster\PostMaster.vcxproj">
       <Project>{ff997492-8a34-4e1c-b403-48cabd258797}</Project>
     </ProjectReference>

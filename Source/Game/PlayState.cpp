@@ -216,12 +216,8 @@ void CPlayState::Load()
 
 
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
-	myScene->AddCamera(CScene::eCameraType::eWeaponCamera);
 	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
-	CRenderCamera& weaponCamera = myScene->GetRenderCamera(CScene::eCameraType::eWeaponCamera);
-
 	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 500.f);
-	weaponCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 10.f);
 
 	myWeaponFactory->LoadWeapons();
 
@@ -458,7 +454,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	modelObject->AddComponent(model);
 	otherPlayer->AddComponent(modelObject);
 	otherPlayer->AddComponent(playerReciver);
-
+	CPollingStation::GetInstance()->AddPlayerObject(otherPlayer);
 	
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
@@ -492,6 +488,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (CPollingStation::GetInstance())
 		{
 			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+			CPollingStation::GetInstance()->AddPlayerObject(playerObject);
 		}
 
 		CInputComponent* inputComponent = new CInputComponent();
@@ -505,37 +502,15 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
-		SComponentMessageData addHandGunData;
-		SComponentMessageData giveAmmoData;
+		
+		GivePlayerWeapons(playerObject);
 
-		addHandGunData.myString = "BFG";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		SAmmoReplenishData tempAmmoReplensihData;
-		tempAmmoReplensihData.ammoType = "BFG";
-		tempAmmoReplensihData.replenishAmount = 100;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		addHandGunData.myString = "Shotgun";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "Shotgun";
-		tempAmmoReplensihData.replenishAmount = 100;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		addHandGunData.myString = "PlasmaRifle";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "PlasmaRifle";
-		tempAmmoReplensihData.replenishAmount = 1000;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
-
-		addHandGunData.myString = "MeleeWeapon";
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
-		tempAmmoReplensihData.ammoType = "MeleeWeapon";
-		tempAmmoReplensihData.replenishAmount = 1000000;
-		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
-		playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		//addHandGunData.myString = "MeleeWeapon";
+		//playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		//tempAmmoReplensihData.ammoType = "MeleeWeapon";
+		//tempAmmoReplensihData.replenishAmount = 1000000;
+		//giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		//playerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 		CPlayerNetworkComponent* network = new CPlayerNetworkComponent();
 		CComponentManager::GetInstance().RegisterComponent(network);
@@ -544,12 +519,16 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		Physics::SCharacterControllerDesc controllerDesc;
 		controllerDesc.minMoveDistance = 0.00001f;
-		controllerDesc.halfHeight = 1.0f;
+		controllerDesc.halfHeight = 1.f;
+		controllerDesc.radius = 0.5f;
+		controllerDesc.halfHeight = 2.f;
+		controllerDesc.center.y = -3.0f;
+		
 		float rad = 45.f;
 		DEGREES_TO_RADIANS(rad);
 		controllerDesc.slopeLimit = rad;
 		controllerDesc.stepOffset = 1.0f;
-		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc);
+		CCharacterControllerComponent* controller = myColliderComponentManager->CreateCharacterControllerComponent(controllerDesc, playerObject->GetId());
 		playerObject->AddComponent(controller);
 
 		CHealthComponent* playerHealthComponent = new CHealthComponent(99999);
@@ -574,6 +553,13 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		playerObject->AddComponent(playerHealthComponent);
 
+		/*SBoxColliderData data;
+		data.myHalfExtent = CU::Vector3f(0.25, 0.9, 0.25);
+		data.center = CU::Vector3f(0.f, 0.9f, 0.f);
+		data.myType = SColliderData::eColliderType::eBox;
+		data.material = CU::Vector3f(0, 1, 0);
+		data.IsTrigger = false;
+		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data ,playerObject->GetId());*/
 
 		
 
@@ -602,5 +588,61 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
 		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
 		
+	}
+}
+
+void CPlayState::GivePlayerWeapons(CGameObject* aPlayerObject)
+{
+	CU::CJsonValue levelsFile;
+
+	std::string errorString = levelsFile.Parse("Json/LevelList.json");
+
+	CU::CJsonValue levelsArray = levelsFile.at("levels");
+
+
+	const std::string & alevel = levelsArray.at(myLevelIndex).GetString();
+	CU::CJsonValue value;
+	value.Parse("Json/Weapons/PlayerStartWeapons.json");
+
+	SComponentMessageData addHandGunData;
+	SComponentMessageData giveAmmoData;
+	SAmmoReplenishData tempAmmoReplensihData;
+
+	if (value.Count(alevel) <= 0)
+	{
+		DL_PRINT_WARNING("Didn't the level %s in PlayerStartWeapons.json, giving all weapons to player as default, if you need help ask Marcus", alevel);
+		addHandGunData.myString = "BFG";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "BFG";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "Shotgun";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "Shotgun";
+		tempAmmoReplensihData.replenishAmount = 100;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
+		addHandGunData.myString = "PlasmaRifle";
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = "PlasmaRifle";
+		tempAmmoReplensihData.replenishAmount = 1000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		return;
+	}
+	CU::CJsonValue loadedLevelsStartWeaponsData = value.at(alevel);
+	CU::CJsonValue weaponArray = loadedLevelsStartWeaponsData.at("Weapons");
+	for (int i = 0; i < weaponArray.Size(); ++i)
+	{
+		std::string loadedWeaponName = weaponArray[i].at("WeaponName").GetString();
+		addHandGunData.myString = loadedWeaponName.c_str();
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
+		tempAmmoReplensihData.ammoType = loadedWeaponName.c_str();
+		tempAmmoReplensihData.replenishAmount = 100000;
+		giveAmmoData.myAmmoReplenishData = &tempAmmoReplensihData;
+		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 	}
 }

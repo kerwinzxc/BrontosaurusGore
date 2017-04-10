@@ -26,6 +26,9 @@ public:
 	inline const SWeaponData* GetData()const;
 	bool CanShoot();
 
+	void Equip();
+	void Unequip(const std::function<void(void)>& aOnUnequippedCallback);
+
 	void CosmeticShoot(const CU::Vector3f& aDirection); // Alex
 private:
 	enum class SoundEvent

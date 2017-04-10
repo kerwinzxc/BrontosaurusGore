@@ -1,6 +1,7 @@
 #pragma once
 #include "ImportantNetworkMessage.h"
 #include "../Components/EnemyTypes.h"
+#include "../CommonUtilities/vector3.h"
 class CNetworkMessage_SpawnEnemyRepesention: public CImportantNetworkMessage
 {
 public:
@@ -11,9 +12,11 @@ public:
 
 	void SetHealth(const short aHealthValue);
 	void SetEnemyType(const eEnemyTypes aType);
+	void SetPosition(const CU::Vector3f& aPosition);
 
 	const short GetHealth() const;
 	const eEnemyTypes GetEnemyType() const;
+	const CU::Vector3f GetPosition() const;
 
 private:
 	void DoSerialize(StreamType& aStream) override;
@@ -21,6 +24,7 @@ private:
 
 	short myEnemyLife;
 	eEnemyTypes myEnemyType;
+	CU::Vector3f myPosition;
 
 };
 

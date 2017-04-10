@@ -1,4 +1,5 @@
 #pragma once
+#include "../Components/Component.h"
 
 namespace physx
 {
@@ -19,7 +20,7 @@ namespace Physics
 		CCharacterControllerManager(CPhysicsScene* aPhysicsScene, CPhysics* aPhysics);
 		~CCharacterControllerManager();
 
-		CPhysicsCharacterController* CreateCharacterController(const SCharacterControllerDesc& aDesc);
+		CPhysicsCharacterController* CreateCharacterController(const SCharacterControllerDesc& aDesc, ComponentId anId);
 
 	private:
 		physx::PxControllerManager* myControllerManager;

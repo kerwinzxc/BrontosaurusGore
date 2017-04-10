@@ -20,31 +20,32 @@ void CGeometryBuffer::Init(const CU::Vector2ui & aSize, CDXFramework* aFramework
 	}
 	myFramework = aFramework;
 
-	myDiffuse.Init(aSize, aTexture, aFormat);
-	myNormal.Init(aSize, aTexture, aFormat);
-	myRMAO.Init(aSize, aTexture, aFormat);
-	myEmissive.Init(aSize, aTexture, aFormat);
+	myPackages[0].Init(aSize, aTexture, aFormat);
+	myPackages[1].Init(aSize, aTexture, aFormat);
+	myPackages[2].Init(aSize, aTexture, aFormat);
+	myPackages[3].Init(aSize, aTexture, aFormat);
 }
 
-void CGeometryBuffer::BindInput(const EGeometryPackages aMask)
+void CGeometryBuffer::BindInput(const EGeometryPackages aMask, const EGeometryPackage aDepthPackage/* = EGeometryPackage::eDiffuse*/)
 {
-	ID3D11ShaderResourceView* srvs[5];
-	srvs[0] = (aMask & EGeometryPackage::eDiffuse)	? myDiffuse.GetResource() : nullptr;
-	srvs[1] = (aMask & EGeometryPackage::eNormal)	? myNormal.GetResource() : nullptr;
-	srvs[2] = (aMask & EGeometryPackage::eRMAO)		? myRMAO.GetResource() : nullptr;
-	srvs[3] = (aMask & EGeometryPackage::eEmissive) ? myEmissive.GetResource() : nullptr;
-	srvs[4] = (aMask & EGeometryPackage::eDepth)	? myDiffuse.GetDepthResource() : nullptr;
-	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
+	ID3D11ShaderResourceView* srvs[6];
+	srvs[0] = (aMask & EGeometryPackage::eDiffuse)	? myPackages[0].GetResource()	: nullptr;
+	srvs[1] = (aMask & EGeometryPackage::eNormal)	? myPackages[1].GetResource()	: nullptr;
+	srvs[2] = (aMask & EGeometryPackage::eRMAO)		? myPackages[2].GetResource()	: nullptr;
+	srvs[3] = (aMask & EGeometryPackage::eEmissive) ? myPackages[3].GetResource()	: nullptr;
+	srvs[4] = (aMask & EGeometryPackage::eDepth)	? GetRenderPackage(aDepthPackage).GetDepthResource() : nullptr;
+	srvs[5] = (aMask & EGeometryPackage::eDepth)	? GetRenderPackage(eEmissive).GetDepthResource()	: nullptr;
+	myFramework->GetDeviceContext()->PSSetShaderResources(1, 6, srvs);
 }
 
-void CGeometryBuffer::BindOutput(const EGeometryPackages aMask)
+void CGeometryBuffer::BindOutput(const EGeometryPackages aMask, const EGeometryPackage aDepthPackage/* = EGeometryPackage::eDiffuse*/)
 {
 	ID3D11RenderTargetView* rtvs[5];
-	rtvs[0] = (aMask & EGeometryPackage::eDiffuse)		? myDiffuse.GetRenderTargetView() : nullptr;
-	rtvs[1] = (aMask & EGeometryPackage::eNormal)		? myNormal.GetRenderTargetView() : nullptr;
-	rtvs[2] = (aMask & EGeometryPackage::eRMAO)			? myRMAO.GetRenderTargetView() : nullptr;
-	rtvs[3] = (aMask & EGeometryPackage::eEmissive)		? myEmissive.GetRenderTargetView() : nullptr;
-	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, myDiffuse.GetDepthStencilView());
+	rtvs[0] = (aMask & EGeometryPackage::eDiffuse)		? myPackages[0].GetRenderTargetView() : nullptr;
+	rtvs[1] = (aMask & EGeometryPackage::eNormal)		? myPackages[1].GetRenderTargetView() : nullptr;
+	rtvs[2] = (aMask & EGeometryPackage::eRMAO)			? myPackages[2].GetRenderTargetView() : nullptr;
+	rtvs[3] = (aMask & EGeometryPackage::eEmissive)		? myPackages[3].GetRenderTargetView() : nullptr;
+	myFramework->GetDeviceContext()->OMSetRenderTargets(4, rtvs, (aMask & EGeometryPackage::eDepth) ? GetRenderPackage(aDepthPackage).GetDepthStencilView() : nullptr);
 }
 
 void CGeometryBuffer::UnbindInput()
@@ -72,10 +73,10 @@ void CGeometryBuffer::UnbindOutput()
 
 void CGeometryBuffer::Clear()
 {
-	myDiffuse.Clear();
-	myNormal.Clear();
-	myRMAO.Clear();
-	myEmissive.Clear();
+	for (int i = 0; i < NUM_GB_PACKAGES; ++i)
+	{
+		myPackages[i].Clear();
+	}
 }
 
 CRenderPackage& CGeometryBuffer::GetRenderPackage(const EGeometryPackage aPackageType)
@@ -83,15 +84,13 @@ CRenderPackage& CGeometryBuffer::GetRenderPackage(const EGeometryPackage aPackag
 	switch (aPackageType)
 	{
 	case EGeometryPackage::eDiffuse:
-		return myDiffuse;
+		return myPackages[0];
 	case EGeometryPackage::eNormal:
-		return myNormal;
+		return myPackages[1];
 	case EGeometryPackage::eRMAO:
-		return myRMAO;
+		return myPackages[2];
 	case EGeometryPackage::eEmissive:
-		
-	case EGeometryPackage::eDepth:
-		break;
+		return myPackages[3];
 	default:
 		break;
 	}
@@ -101,3 +100,4 @@ bool CGeometryBuffer::IsInited()
 {
 	return myFramework != nullptr;
 }
+

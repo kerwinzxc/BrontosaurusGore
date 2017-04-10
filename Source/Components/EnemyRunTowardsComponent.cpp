@@ -4,6 +4,7 @@
 
 CEnemyRunTowardsComponent::CEnemyRunTowardsComponent()
 {
+	myIsOccupied = false;
 }
 
 

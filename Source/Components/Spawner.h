@@ -9,7 +9,7 @@ class CSpawnerComponent :
 	public CComponent, public Postmaster::ISubscriber
 {
 public:
-	CSpawnerComponent(const CU::GrowingArray<unsigned char>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID);
+	CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID);
 	~CSpawnerComponent();
 	void Update(const float aDeltaTime);
 	void SpawnEnemy();
@@ -19,7 +19,7 @@ public:
 	eMessageReturn DoEvent(const CStartWaveMessage & aStartWaveMessage) override;
 
 private:
-	CU::GrowingArray<unsigned char> myWaves;
+	CU::GrowingArray<unsigned short> myWaves;
 
 	CEnemy* myEnemy;
 

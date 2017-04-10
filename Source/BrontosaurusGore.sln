@@ -78,6 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fullscreen", "Fullscreen", 
 		..\Bin\Shaders\Fullscreen\HDR.fx = ..\Bin\Shaders\Fullscreen\HDR.fx
 		..\Bin\Shaders\Fullscreen\lightShafts.fx = ..\Bin\Shaders\Fullscreen\lightShafts.fx
 		..\Bin\Shaders\Fullscreen\luminance.fx = ..\Bin\Shaders\Fullscreen\luminance.fx
+		..\Bin\Shaders\Fullscreen\mergeDepth.fx = ..\Bin\Shaders\Fullscreen\mergeDepth.fx
 		..\Bin\Shaders\Fullscreen\motionBlur.fx = ..\Bin\Shaders\Fullscreen\motionBlur.fx
 		..\Bin\Shaders\Fullscreen\SSAO.fx = ..\Bin\Shaders\Fullscreen\SSAO.fx
 		..\Bin\Shaders\Fullscreen\structs.fx = ..\Bin\Shaders\Fullscreen\structs.fx
@@ -103,6 +104,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{B6
 	ProjectSection(SolutionItems) = preProject
 		..\Bin\Shaders\Deferred\deferred_ambient.fx = ..\Bin\Shaders\Deferred\deferred_ambient.fx
 		..\Bin\Shaders\Deferred\deferred_directional.fx = ..\Bin\Shaders\Deferred\deferred_directional.fx
+		..\Bin\Shaders\Deferred\deferred_emissive.fx = ..\Bin\Shaders\Deferred\deferred_emissive.fx
 		..\Bin\Shaders\Deferred\deferred_pixel.fx = ..\Bin\Shaders\Deferred\deferred_pixel.fx
 		..\Bin\Shaders\Deferred\deferred_pointLight.fx = ..\Bin\Shaders\Deferred\deferred_pointLight.fx
 		..\Bin\Shaders\Deferred\deferred_spotlight.fx = ..\Bin\Shaders\Deferred\deferred_spotlight.fx
@@ -110,6 +112,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{B6
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starter", "Starter\Starter.csproj", "{97047827-BF3D-478D-8467-686F75536A01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Particles", "Particles\Particles.vcxproj", "{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -776,6 +780,34 @@ Global
 		{97047827-BF3D-478D-8467-686F75536A01}.Retail|x64.Build.0 = Release|Any CPU
 		{97047827-BF3D-478D-8467-686F75536A01}.Retail|x86.ActiveCfg = Release|Any CPU
 		{97047827-BF3D-478D-8467-686F75536A01}.Retail|x86.Build.0 = Release|Any CPU
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Debug|x64.ActiveCfg = Debug|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Debug|x64.Build.0 = Debug|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Debug|x86.ActiveCfg = Debug|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Debug|x86.Build.0 = Debug|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|Any CPU.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|Any CPU.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|x64.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|x64.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|x86.ActiveCfg = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewer|x86.Build.0 = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|Any CPU.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|Any CPU.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|x64.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|x64.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|x86.ActiveCfg = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.ModelViewerRelease|x86.Build.0 = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Release|Any CPU.ActiveCfg = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Release|x64.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Release|x64.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Release|x86.ActiveCfg = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Release|x86.Build.0 = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|Any CPU.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|Any CPU.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|x64.ActiveCfg = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|x64.Build.0 = Release|x64
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|x86.ActiveCfg = Release|Win32
+		{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}.Retail|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

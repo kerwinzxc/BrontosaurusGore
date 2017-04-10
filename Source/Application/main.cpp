@@ -53,73 +53,77 @@ void Init(int argc, char* argv[])
 	PostMaster::CreateInstance();
 
 	{
-	CGame game;
+		CGame game;
 
-	SInitEngineParams engineParams;
-	engineParams.myWindowParams.Width = 1920;
-	engineParams.myWindowParams.Height = 1080;
-	engineParams.myWindowParams.Name = L"HighDoom";
-	engineParams.myWindowParams.Title = L"HighDoom";
-	engineParams.myWindowParams.Fullscreen = false;
-	engineParams.myThreadRender = true;
-	engineParams.myUseVsync = false;
+		SInitEngineParams engineParams;
+		engineParams.myWindowParams.Width = 1920;
+		engineParams.myWindowParams.Height = 1080;
+		engineParams.myWindowParams.Name = L"HighDoom";
+		engineParams.myWindowParams.Title = L"HighDoom";
+		engineParams.myWindowParams.Fullscreen = false;
+		engineParams.myThreadRender = true;
+		engineParams.myUseVsync = false;
 
-	int Iwidth;
-	int Iheight;
-	bool Bfullscreen = true;
+		int Iwidth;
+		int Iheight;
+		bool Bfullscreen = true;
 
-	if (CommandLineManager::GetInstance()->HasParameter("-width") == true)
-	{
-		std::string width;
-		width = CommandLineManager::GetInstance()->GetArgument("-width");
-		Iwidth = std::atoi(width.c_str());
-		engineParams.myWindowParams.Width = static_cast<unsigned short>(Iwidth);
-	}
-	if (CommandLineManager::GetInstance()->HasParameter("-height") == true)
-	{
-		std::string height;
-		height = CommandLineManager::GetInstance()->GetArgument("-height");
-		Iheight = std::atoi(height.c_str());
-		engineParams.myWindowParams.Height = static_cast<unsigned short>(Iheight);
-	}
-	if (CommandLineManager::GetInstance()->HasParameter("-fullscreen") == true)
-	{
-		std::string fullscreen;
-		fullscreen = CommandLineManager::GetInstance()->GetArgument("-fullscreen");
-		if (fullscreen == "False")
+		if (CommandLineManager::GetInstance()->HasParameter("-width") == true)
 		{
-			Bfullscreen = false;
-			//std::cout << "false" << std::endl;
+			std::string width;
+			width = CommandLineManager::GetInstance()->GetArgument("-width");
+			Iwidth = std::atoi(width.c_str());
+			engineParams.myWindowParams.Width = static_cast<unsigned short>(Iwidth);
 		}
-		else if (fullscreen == "True")
+		if (CommandLineManager::GetInstance()->HasParameter("-height") == true)
 		{
-			Bfullscreen = true;
-			//std::cout << "True" << std::endl;
+			std::string height;
+			height = CommandLineManager::GetInstance()->GetArgument("-height");
+			Iheight = std::atoi(height.c_str());
+			engineParams.myWindowParams.Height = static_cast<unsigned short>(Iheight);
 		}
-		engineParams.myWindowParams.Fullscreen = Bfullscreen;
-	}
-	if (CommandLineManager::GetInstance()->HasParameter("-noThreadRender") == true)
-	{
-		std::string fullscreen;
-		fullscreen = CommandLineManager::GetInstance()->GetArgument("-noThreadRender");
+		if (CommandLineManager::GetInstance()->HasParameter("-fullscreen") == true)
+		{
+			std::string fullscreen;
+			fullscreen = CommandLineManager::GetInstance()->GetArgument("-fullscreen");
+			if (fullscreen == "False")
+			{
+				Bfullscreen = false;
+				//std::cout << "false" << std::endl;
+			}
+			else if (fullscreen == "True")
+			{
+				Bfullscreen = true;
+				//std::cout << "True" << std::endl;
+			}
+			engineParams.myWindowParams.Fullscreen = Bfullscreen;
+		}
+		if (CommandLineManager::GetInstance()->HasParameter("-noThreadRender") == true)
+		{
+			std::string fullscreen;
+			fullscreen = CommandLineManager::GetInstance()->GetArgument("-noThreadRender");
 
-		engineParams.myThreadRender = false;
-	}
+			engineParams.myThreadRender = false;
+		}
 
 
 
-	engineParams.myInitCallbackFunction = std::bind(&CGame::Init, &game);
-	engineParams.myUpdateCallbackFunction = std::bind(&CGame::Update, &game, std::placeholders::_1);
-	engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
-	engineParams.myDebugFlags = DebugDrawerFlags();
+		engineParams.myInitCallbackFunction = std::bind(&CGame::Init, &game);
+		engineParams.myUpdateCallbackFunction = std::bind(&CGame::Update, &game, std::placeholders::_1);
+		engineParams.myRenderCallbackFunction = std::bind(&CGame::Render, &game);
+		engineParams.myDebugFlags = DebugDrawerFlags();
 
+	CParticleEmitterManager::Create();
 
 	CEngine::GetInstance()->Init(engineParams);
+
+	CParticleEmitterManager::GetInstance().LoadParticleLibrary("Json/Particles.json");
 	//Physics::CPhysXManager::Create();
 	CEngine::GetInstance()->Start();
 }
 
 	Audio::CAudioInterface::Destroy();
+	CParticleEmitterManager::Destroy();
 	CEngine::DestroyInstance();
 	PostMaster::DestroyInstance();
 	DL_Debug::Debug::DestroyInstance();

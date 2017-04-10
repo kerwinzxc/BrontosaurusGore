@@ -419,3 +419,5 @@ Bin/TClient_x64_Retail.lib
 SVNBin/
 *.fx
 Bin/Models/
+SoundLibrary/
+Bin/SoundLIbrary/

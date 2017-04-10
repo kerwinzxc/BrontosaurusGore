@@ -54,7 +54,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 		{
 			shootPosition = cameraPositionData.myVector3f;
 			cameraPosition = shootPosition;
-			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
+			shootPosition += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
@@ -67,11 +67,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(cameraPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
@@ -176,6 +176,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				localWeaponMatrix.Move(shootDisplacment);
 				shootPosition = localWeaponMatrix.GetPosition();
 
+
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
 				myElapsedFireTimer = 0.0f;
@@ -268,4 +269,30 @@ bool CWeapon::CanShoot()
 		return true;
 	}
 	return false;
+}
+
+void CWeapon::Equip()
+{
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityTrue;
+		visibilityTrue.myBool = true;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityTrue);
+
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eEquip, SComponentMessageData());
+	}
+}
+
+void CWeapon::Unequip(const std::function<void(void)>& aOnUnequippedCallback)
+{
+	if (myWeaponObject != nullptr)
+	{
+		SComponentMessageData visibilityFalse;
+		visibilityFalse.myBool = false;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityFalse);
+
+		SComponentMessageData unequipData;
+		unequipData.myVoidFunction = &aOnUnequippedCallback;
+		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eUnequip, unequipData);
+	}
 }

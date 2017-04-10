@@ -49,6 +49,7 @@ public:
 	void SetPosition(CU::Vector3f aPosition);
 	void Rotate(float aRotation, CU::Axees aAxis) { myTransformation.Rotate(aRotation, aAxis); }
 
+	float GetAnimationDuration(const eAnimationState aAnimationState) const;
 	void SetAnimation(const eAnimationState aAnimationKey);
 	void SetAnimationLerpie(const float aLerpValue);
 	void SetNextAnimation(const eAnimationState aAnimationKey);
@@ -56,6 +57,8 @@ public:
 	void ResetAnimation();
 	eAnimationState GetAnimationState() const;
 	float GetAnimationCounter() const;
+	bool GetAnimationStates(CU::GrowingArray<eAnimationState>& aAnimationStatesOut) const;
+	const std::string& GetFilePath() const;
 
 	void SetHighlightIntencity(const float aHighlightIntencity);
 	void SetHighlight(const CU::Vector4f& aColor, float anIntensivit);

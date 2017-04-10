@@ -40,8 +40,8 @@ CWaveManager::~CWaveManager()
 
 void CWaveManager::StartWave()
 {
-	//DL_PRINT("TotalWaves:");
-	//DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
+	DL_PRINT("TotalWaves:");
+	DL_PRINT(std::to_string(myNumberOfWavesToSpawn).c_str());
 	if (myWaveCount < myNumberOfWavesToSpawn)
 	{
 		myWaveCount++;
@@ -53,6 +53,7 @@ void CWaveManager::StartWave()
 	else
 	{
 		myResetToWaveCount = myWaveCount;
+		myResetToWaveCount = myNumberOfWavesToSpawn;
  		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eUnlock);
 		door->SetKeyID(myKeyIDToUnlock);
@@ -67,7 +68,7 @@ void CWaveManager::StartWave()
 
 void CWaveManager::Update()
 {
-	for (int i = 0; i < myEnemiesInWave.Size(); i++)
+	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
 		if (myEnemiesInWave[i]->GetIsDead() == true)
 		{
@@ -94,7 +95,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 	//DL_PRINT("WaveManager: PlayerEntered");
     myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
-	myNumberOfWavesToSpawn = aPlayerEnteredArena.GetWaveAmount();
+	myNumberOfWavesToSpawn += aPlayerEnteredArena.GetWaveAmount();
 
 	if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
 	{
@@ -106,6 +107,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 		door2->SetDoorAction(eDoorAction::eLock);
 		door2->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
+		myEnemiesInWave.RemoveAll();
 		StartWave();
 	}
 
@@ -116,9 +118,9 @@ eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToC
 {
 	myWaveCount = myResetToWaveCount;
 	myNumberOfPlayers = 0;
-
+	myNumberOfWavesToSpawn = myResetToNumberOfWaves;
 	SComponentMessageData data; data.myInt = 10000;
-	for (int i = 0; i < myEnemiesInWave.Size(); i++)
+	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
 		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
 		CNetworkMessage_SetIsRepesentationActive* deactivate = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);

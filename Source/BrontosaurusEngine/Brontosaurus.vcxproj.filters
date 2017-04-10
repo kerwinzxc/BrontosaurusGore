@@ -143,9 +143,6 @@
     <ClInclude Include="PointLightInstance.h">
       <Filter>Light</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleEmitterInstance.h">
-      <Filter>Particles</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>InputManager</Filter>
     </ClInclude>
@@ -173,9 +170,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="GUIModleHelper.h">
       <Filter>ModelManager</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEmitter.h">
-      <Filter>Particles</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>Text</Filter>
@@ -218,9 +212,6 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="AnimationController.h">
       <Filter>Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEmitterManager.h">
-      <Filter>Particles</Filter>
     </ClInclude>
     <ClInclude Include="ModelID.h">
       <Filter>Model</Filter>
@@ -333,9 +324,6 @@
     <ClCompile Include="PointLightInstance.cpp">
       <Filter>Light</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleEmitterInstance.cpp">
-      <Filter>Particles</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>InputManager</Filter>
     </ClCompile>
@@ -359,9 +347,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="GUIModleHelper.cpp">
       <Filter>ModelManager</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEmitter.cpp">
-      <Filter>Particles</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>Text</Filter>
@@ -390,9 +375,6 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="AnimationController.cpp">
       <Filter>Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEmitterManager.cpp">
-      <Filter>Particles</Filter>
     </ClCompile>
     <ClCompile Include="FireEmitter.cpp">
       <Filter>Fire</Filter>

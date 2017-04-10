@@ -41,6 +41,8 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* deferredSpotLight = SHADERMGR->LoadPixelShader(L"Shaders/Deferred/deferred_spotlight.fx", ShaderType);
 	ID3D11PixelShader* SSAO = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/SSAO.fx", ShaderType);
 
+	ID3D11PixelShader* mergeDepth = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/mergeDepth.fx", ShaderType);
+
 	// LightShafts
 	//
 	ID3D11VertexShader* lShvertexShader = SHADERMGR->LoadVertexShader(L"Shaders/Fullscreen/lightShafts.fx", ShaderType);
@@ -54,6 +56,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eCopyR)]					= new CEffect(vertexShader, cpyShaderR, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyG)]					= new CEffect(vertexShader, cpyShaderG, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyB)]					= new CEffect(vertexShader, cpyShaderB, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
 
 	myEffects[static_cast<int>(eEffectType::eHDR)]						= new CEffect(vertexShader, HDRShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eAverage)]					= new CEffect(vertexShader, avgShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -74,7 +77,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eDeferredSpotLight)]		= new CEffect(vertexShader, deferredSpotLight, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eSSAO)]						= new CEffect(vertexShader, SSAO, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eAA)]						= new CEffect(vertexShader, aaShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	myEffects[static_cast<int>(eEffectType::eMergeDepth)]				= new CEffect(vertexShader, mergeDepth, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMetaSurface)]				= new CEffect(lShvertexShader, metaSurfaceShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
