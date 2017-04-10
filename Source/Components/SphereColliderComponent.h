@@ -4,7 +4,7 @@
 struct SSphereColliderData : public SColliderData
 {
 	SSphereColliderData() { myType = eColliderType::eSphere; }
-	float myRadius;
+	float myRadius = 1.0f;
 };
 
 class CSphereColliderComponent : public CColliderComponent
