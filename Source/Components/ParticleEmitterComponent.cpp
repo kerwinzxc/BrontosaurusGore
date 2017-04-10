@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "ComponentManager.h"
 #include "ParticleEmitterComponentManager.h"
+#include "../BrontosaurusEngine/ParticleEmitterInstance.h"
 
 CParticleEmitterComponent::CParticleEmitterComponent(CParticleEmitterInstance* aEmitterInstance)
 {
@@ -24,6 +25,16 @@ void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
 	myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
 	myParticleInstance->Update(aDeltaTime);
 }
+void CParticleEmitterComponent::Activate()
+{
+	myParticleInstance->Activate();
+}
+
+void CParticleEmitterComponent::Deactivate()
+{
+	myParticleInstance->Deactivate();
+}
+
 
 void CParticleEmitterComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
