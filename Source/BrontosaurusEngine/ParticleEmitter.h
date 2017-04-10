@@ -72,7 +72,6 @@ public:
 	~CParticleEmitter();
 
 	//DEPRECATED
-	void Init(const SEmitterData& EmitterData);
 	void UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance);
 
 	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode);
@@ -85,6 +84,7 @@ public:
 	float GetLifetime() const;
 	float GetEmitTime();
 	unsigned GetMaxParticles();
+	CParticleEmitter::RenderMode GetRenderMode() const;
 private:
 	void Init();
 

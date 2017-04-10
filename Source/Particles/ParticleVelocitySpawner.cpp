@@ -14,7 +14,8 @@ Particles::CParticleVelocitySpawner::~CParticleVelocitySpawner()
 
 void Particles::CParticleVelocitySpawner::Spawn(SParticle& aParticle, SParticleLogic& aParticleLogic)
 {
-	aParticleLogic.speed = GenerateVelocity();
+	aParticleLogic.speed = 1.f;
+	aParticleLogic.movementDir *= GenerateVelocity();
 }
 
 float Particles::CParticleVelocitySpawner::GenerateVelocity()

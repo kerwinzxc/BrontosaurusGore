@@ -84,11 +84,11 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		//SortParticles(msg->particleList);
 		emitter->Render(msg->toWorld, msg->particleList, msg->renderMode);
 
-		if(msg->renderMode == CParticleEmitter::RenderMode::eMetaBall)
+		if(emitter->GetRenderMode() == CParticleEmitter::RenderMode::eMetaBall)
 		{
 			CreateSurface(aDepthStencilView);
 		}
-		if(msg->renderMode != CParticleEmitter::RenderMode::eBillboard)
+		if(emitter->GetRenderMode() != CParticleEmitter::RenderMode::eBillboard)
 		{
 			DoLight();
 		}

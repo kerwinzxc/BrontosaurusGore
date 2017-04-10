@@ -18,6 +18,9 @@
 #include "../Particles/ParticleVelocitySpawner.h"
 #include "../Particles/ParticleLifetimeSpawner.h"
 #include "../Particles/ParticleSizeSpawner.h"
+#include "../Particles/ParticleForceUpdater.h"
+
+
 
 CParticleEmitter::CParticleEmitter()
 {
@@ -61,39 +64,10 @@ CParticleEmitter::~CParticleEmitter()
 	Destroy();
 }
 
-void CParticleEmitter::Init(const SEmitterData& aEmitterData)
-{
-	myEmitterData.render.myTexture = &TEXTUREMGR.LoadTexture(aEmitterData.TexturePath.c_str());
-	myEmitterData.emitter.maxNrOfParticles = static_cast<unsigned short>(aEmitterData.NumOfParticles);
-
-
-	unsigned int ShaderType = 0;
-	ShaderType |= EModelBluePrint_Position;
-	ShaderType |= EModelBluePrint_Size;
-	ShaderType |= EModelBluePrint_Color;
-	
-	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
-	ID3D11PixelShader* pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaballsSpherePixel.fx", ShaderType);
-	ID3D11GeometryShader* geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/metaballs/metaballsGeometry.fx", ShaderType);
-	ID3D11InputLayout* inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/metaballs/metaballsVertex.fx", ShaderType);
-	
-	myRenderEffects[static_cast<int>(RenderMode::eMetaBall)] = new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/nurbs/nurbsVertex.fx", ShaderType);
-	pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/nurbs/nurbsSpherePixel.fx", ShaderType);
-	geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/nurbs/nurbsGeometry.fx", ShaderType);
-	inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/nurbs/nurbsVertex.fx", ShaderType);
-
-	myRenderEffects[static_cast<int>(RenderMode::eNURBSSphere)] = 
-		new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	myFramework = FRAMEWORK;
-	InitBuffers();
-}
-
 void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode)
 {
-	if (!myRenderEffects[static_cast<int>(aRenderMode)]) return;
+	const RenderMode renderMode = myEmitterData.render.renderMode;
+	if (!myRenderEffects[static_cast<int>(myEmitterData.render.renderMode)]) return;
 
 	myRenderEffects[static_cast<int>(aRenderMode)]->Activate();
 	UpdateCBuffers(aToWorldSpace);
@@ -240,6 +214,14 @@ void CParticleEmitter::Init()
 
 	myRenderEffects[static_cast<int>(RenderMode::eNURBSSphere)] =
 		new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+	
+	vertexShader = SHADERMGR->LoadVertexShader(L"Shaders/particles/billboardVertex.fx", ShaderType);
+	pixelShader = SHADERMGR->LoadPixelShader(L"Shaders/particles/billboardPixel.fx", ShaderType);
+	geometryShader = SHADERMGR->LoadGeometryShader(L"Shaders/particles/billboardGeometry.fx", ShaderType);
+	inputLayout = SHADERMGR->LoadInputLayout(L"Shaders/particles/billboardVertex.fx", ShaderType);
+
+	myRenderEffects[static_cast<int>(RenderMode::eBillboard)] =
+		new CEffect(vertexShader, pixelShader, geometryShader, inputLayout, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	myFramework = FRAMEWORK;
 	InitBuffers();
@@ -271,7 +253,7 @@ void CParticleEmitter::UpdateParticles(SParticle& aParticle, SParticleLogic& aLo
 {
 	for(int i = 0;i < myEmitterData.particles.updaters.Size(); ++i)
 	{
-		
+		myEmitterData.particles.updaters[i]->Update(aDt, aParticle, aLogic);
 	}
 
 	aParticle.position += aLogic.movementDir * aLogic.speed * aDt;
@@ -315,17 +297,18 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 {
 	for (int i = 0; i < aJsonValue.Size(); ++i)
 	{
-		Particles::IParticleSpawner* spawner = nullptr;
+		Particles::IParticleUpdater* updater = nullptr;
 		const CU::CJsonValue value = aJsonValue[i];
 
 		const std::string type = value["valueType"].GetString();
 
 		if (type == "force")
 		{
-			//spawner = new Particles::CParticleVelocitySpawner(value);
+			updater = new Particles::CParticleForceUpdater(value);
 		}
 		else if (type == "friction")
 		{
+			continue;
 			//spawner = new Particles::CParticleSizeSpawner(value);
 		}
 		else
@@ -333,7 +316,7 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 			DL_ASSERT("Attempting to add a unknows update parameter \"%s\"", type.c_str());
 		}
 
-		//myEmitterData.particles.spawners.Add(spawner);
+		myEmitterData.particles.updaters.Add(updater);
 	}
 }
 
@@ -415,6 +398,11 @@ CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& 
 
 	DL_ASSERT("Unkown render mode type \"%s\" in emitter \"%s\"", aRenderModeString.c_str(), myEmitterData.name.c_str());
 	return RenderMode::eBillboard;
+}
+
+CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode() const
+{
+	return myEmitterData.render.renderMode;
 }
 
 void CParticleEmitter::ParseRender(const CU::CJsonValue& aJsonValue)
