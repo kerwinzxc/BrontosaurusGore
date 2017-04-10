@@ -82,7 +82,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 
 		//msg->renderMode = CParticleEmitter::RenderMode::eNURBSSphere;
 		//SortParticles(msg->particleList);
-		emitter->Render(msg->toWorld, msg->particleList, msg->renderMode);
+		emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
 
 		if(emitter->GetRenderMode() == CParticleEmitter::RenderMode::eMetaBall)
 		{
@@ -91,6 +91,10 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		if(emitter->GetRenderMode() != CParticleEmitter::RenderMode::eBillboard)
 		{
 			DoLight();
+		}
+		else
+		{
+			ToProcessed();
 		}
 		ToIntermediate();
 	}
@@ -258,6 +262,19 @@ void CParticleRenderer::DoLight()
 	mySharedRenderer.SetStates(&changeStateMessage);
 
 	DoDirectLighting();
+}
+
+void CParticleRenderer::ToProcessed()
+{
+	SChangeStatesMessage changeStateMessage = {};
+	myProcessed.Clear();
+	myProcessed.Activate();
+	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
+	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
+	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.mySamplerState = eSamplerState::eClamp;
+	mySharedRenderer.SetStates(&changeStateMessage);
+	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eAlphaBlend, &myParticleGBuffer.diffuse, &myParticleGBuffer.alpha);
 }
 
 void CParticleRenderer::ToIntermediate()

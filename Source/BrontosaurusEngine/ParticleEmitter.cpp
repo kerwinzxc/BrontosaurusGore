@@ -19,7 +19,7 @@
 #include "../Particles/ParticleLifetimeSpawner.h"
 #include "../Particles/ParticleSizeSpawner.h"
 #include "../Particles/ParticleForceUpdater.h"
-
+#include "../Particles/ParticleFrictionUpdater.h"
 
 
 CParticleEmitter::CParticleEmitter()
@@ -69,7 +69,7 @@ void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::Gro
 	const RenderMode renderMode = myEmitterData.render.renderMode;
 	if (!myRenderEffects[static_cast<int>(myEmitterData.render.renderMode)]) return;
 
-	myRenderEffects[static_cast<int>(aRenderMode)]->Activate();
+	myRenderEffects[static_cast<int>(renderMode)]->Activate();
 	UpdateCBuffers(aToWorldSpace);
 	ResizeVertexBuffer(aParticleList);
 
@@ -144,9 +144,9 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 
 	aInstance.myEmitTimer -= dt;
 
-	if(aInstance.myEmitTimer < 0)
+	while(aInstance.myEmitTimer < 0)
 	{
-		aInstance.ResetSpawnTimer();
+		aInstance.myEmitTimer += GetEmitTime();
 		if(aInstance.myParticles.Size() < myEmitterData.emitter.maxNrOfParticles)
 		{
 			SParticle particle;
@@ -308,8 +308,8 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 		}
 		else if (type == "friction")
 		{
-			continue;
-			//spawner = new Particles::CParticleSizeSpawner(value);
+
+			updater = new Particles::CParticleFrictionUpdater(value);
 		}
 		else
 		{

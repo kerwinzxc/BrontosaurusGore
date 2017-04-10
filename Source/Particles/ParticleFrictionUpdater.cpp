@@ -13,5 +13,5 @@ Particles::CParticleFrictionUpdater::~CParticleFrictionUpdater()
 
 void Particles::CParticleFrictionUpdater::Update(const float aDt, SParticle& aParticle, SParticleLogic& aParticleLogic)
 {
-	aParticleLogic.movementDir *= (1.f - myFriction);
+	aParticleLogic.movementDir *= (1.f - myFriction * aDt);
 }
