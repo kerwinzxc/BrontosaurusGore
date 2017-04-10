@@ -21,7 +21,7 @@ CModelLoader::~CModelLoader()
 
 }
 
-bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX THIS SHIT.
+bool CModelLoader::LoadModel(const std::string& aPath, CModel& aNewModel) //TODO: FIX THIS SHIT.
 {
 	CFBXLoader loader;
 	CLoaderScene scene;
@@ -35,18 +35,24 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 
 	if (scene.myMeshes.Size() == 0)
 	{
-		DL_ASSERT("Could not find meshes in file: %s", aPath);
+		DL_ASSERT("Could not find meshes in file: %s", aPath.c_str());
 		return false;
 	}
 	
 	std::string modelPath = aPath;
-	modelPath = modelPath.substr(0, ((modelPath.find_last_of('/') != std::wstring::npos) ? modelPath.find_last_of('/') : modelPath.find_last_of('\\')) + 1);
-	std::wstring directory = std::wstring(modelPath.begin(), modelPath.end());
+	size_t directoryEnd = modelPath.find_last_of('/');
+	if (directoryEnd == std::string::npos)
+	{
+		modelPath.find_last_of('\\');
+	}
+	
+	modelPath = modelPath.substr(0, directoryEnd + 1);
+	std::wstring directory(modelPath.begin(), modelPath.end());
 
 	int shaderType = scene.myMeshes[0]->myShaderType;
 
-	std::string shaderPath = scene.myMeshes[0]->myShaderFile.c_str();
-	std::wstring wShaderPath = std::wstring(shaderPath.begin(), shaderPath.end());
+	const std::string& shaderPath = scene.myMeshes[0]->myShaderFile;
+	std::wstring wShaderPath(shaderPath.begin(), shaderPath.end());
 
 	ID3D11VertexShader* vertexShader = SHADERMGR->LoadVertexShader(wShaderPath != L"" ? directory + wShaderPath + L".fx" : L"Shaders/vertex_shader.fx", shaderType);
 
@@ -73,9 +79,9 @@ bool CModelLoader::LoadModel(const char* aPath, CModel* aNewModel) //TODO: FIX T
 
 	CSurface* surface = new CSurface(MODEL_TEXTURE_DIRECTORY, scene.myTextures);
 
-	aNewModel->Initialize(forwardEffect, surface, scene.myMeshes);
-	aNewModel->myDeferredEffect = deferredEffect;
-	aNewModel->SetScene(scene.myScene);
+	aNewModel.Initialize(forwardEffect, surface, scene.myMeshes);
+	aNewModel.myDeferredEffect = deferredEffect;
+	aNewModel.SetScene(scene.myScene);
 
 	return true;
 }
