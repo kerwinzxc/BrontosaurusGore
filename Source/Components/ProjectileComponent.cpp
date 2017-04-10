@@ -59,7 +59,7 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData, true));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
 		}
 		break;
 	}
