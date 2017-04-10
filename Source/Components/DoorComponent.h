@@ -37,6 +37,8 @@ public:
 	
 	eMessageReturn DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage) override;
 
+	eMessageReturn CDoorComponent::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
+
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
 private:
