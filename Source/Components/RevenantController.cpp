@@ -72,10 +72,18 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		else
 		{
-			if(myIsDead == true)
+			myState = eRevenantState::eIdle;
+			if(myIsAggressive == true)
 			{
-				myState = eRevenantState::eDead;
+				myState = eRevenantState::eChase;
 			}
+		}
+	}
+	else
+	{
+		if (myIsDead == true)
+		{
+			myState = eRevenantState::eDead;
 		}
 	}
 
@@ -198,6 +206,11 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		}
 	}
 	break;
+	case eComponentMessageType::eNetworkDoDamage:
+	{
+		myIsAggressive = true;
+		break;
+	}
 	case eComponentMessageType::eCheckPointReset:
 		myIsDead = false;
 		SComponentMessageData visibilityData;

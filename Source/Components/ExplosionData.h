@@ -5,4 +5,5 @@ struct SExplosionData
 	float radius;
 	float knockBackForce;
 	healthPoint damage;
+	bool isPlayerFriendly;
 };

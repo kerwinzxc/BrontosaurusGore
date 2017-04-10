@@ -3,6 +3,7 @@
 #include "ExplosionData.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/DeactivateExplosionMessage.h"
+#include "PollingStation.h"
 
 CExplosionComponent::CExplosionComponent()
 {
@@ -24,6 +25,10 @@ void CExplosionComponent::Receive(const eComponentMessageType aMessageType, cons
 	{
 		if(myCollidedWithGameObjects.Find(aMessageData.myComponent->GetParent()) == myCollidedWithGameObjects.FoundNone)
 		{
+			if(myData->isPlayerFriendly == true && CPollingStation::GetInstance()->CheckIfIsPlayerObject(aMessageData.myComponent->GetParent()) == true)
+			{
+				break;
+			}
 			SComponentMessageData damageData;
 			damageData.myInt = myData->damage;
 			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);

@@ -66,3 +66,12 @@ const unsigned int CPollingStation::GetNumberOfPlayers() const
 {
 	return myPLayers.Size();
 }
+
+bool CPollingStation::CheckIfIsPlayerObject(CGameObject* aGameObjectToCheck)
+{
+	if(myPLayers.Find(aGameObjectToCheck) == CU::GrowingArray<CGameObject*>::FoundNone)
+	{
+		return false;
+	}
+	return true;
+}

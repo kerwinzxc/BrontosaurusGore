@@ -195,6 +195,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 			newExplosionData->knockBackForce = aJsonValue[i].at("ExplosionKnockBackForce").GetFloat();
 			newExplosionData->damage = static_cast<healthPoint>(aJsonValue[i].at("ExplosionDamage").GetFloat());
 			newProjectileData->explosionData = newExplosionData;
+			newExplosionData->isPlayerFriendly = aIsPlayerWeapon;
 		}
 		else
 		{
