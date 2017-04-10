@@ -171,6 +171,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 		newProjectileData->maximumTravelRange = aJsonValue[i].at("MaximumTravelRange").GetFloat();
 		newProjectileData->shouldExplodeOnImpact = aJsonValue[i].at("ShouldProjectilesExplode").GetBool();
 		newProjectileData->shouldRayCast = aJsonValue[i].at("ShouldRayCast").GetBool();
+		newProjectileData->isPlayerFriendly = aIsPlayerWeapon;
 
 		if (newProjectileData->shouldExplodeOnImpact == true)
 		{
