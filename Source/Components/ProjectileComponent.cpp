@@ -23,6 +23,10 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	case eComponentMessageType::eOnTriggerEnter:
 	case eComponentMessageType::eOnCollisionEnter:
 	{
+		if(myData->isPlayerFriendly == true)
+		{
+			Deactivate();
+		}
 		if(myData->shouldRayCast == false)
 		{
 			CGameObject* hitObject = aMessageData.myComponent->GetParent();
