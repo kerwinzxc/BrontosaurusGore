@@ -50,8 +50,13 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 
 eMessageReturn CCheckPointSystem::DoEvent(const CRevivePlayerMessage& aRevivePlayerMessage)
 {
-	SComponentMessageData respawnData;
-	respawnData.myVector3f = myRespawnPlayerPosition;
-	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+	SComponentQuestionData healthLeftData;
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData);
+	if(healthLeftData.myInt <= 0)
+	{
+		SComponentMessageData respawnData;
+		respawnData.myVector3f = myRespawnPlayerPosition;
+		CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+	}
 	return eMessageReturn::eContinue;
 }
