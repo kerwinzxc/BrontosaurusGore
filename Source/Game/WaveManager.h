@@ -16,6 +16,7 @@ public:
 	eMessageReturn DoEvent(const CAddEnemyToWave & aAddEnemyToWave) override;
 	eMessageReturn DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena) override;
 	eMessageReturn DoEvent(const CResetToCheckPointMessage & aResetToCheckpointMessage) override;
+	eMessageReturn DoEvent(const CSetAsNewCheckPointMessage& aSetAsNewCheckPointMessage) override;
 
 private:
 
