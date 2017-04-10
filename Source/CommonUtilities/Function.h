@@ -109,7 +109,7 @@ private:
 	template<typename T>
 	void Create(T aFunctionObject)
 	{
-		if /*constexpr*/ (sizeof(T) <= sizeof(void*))
+		if /*constexpr*/ (sizeof(CEraserFunction<T, Ret, Arg...>) <= sizeof(void*))
 		{
 			myFunctionObject = new (myMemoryBlob) CEraserFunction<T, Ret, Arg...>(aFunctionObject);
 		}

@@ -609,7 +609,7 @@ void CPlayState::GivePlayerWeapons(CGameObject* aPlayerObject)
 
 	if (value.Count(alevel) <= 0)
 	{
-		DL_PRINT_WARNING("Didn't the level %s in PlayerStartWeapons.json, giving all weapons to player as default, if you need help ask Marcus", alevel);
+		DL_PRINT_WARNING("Didn't find the level %s in PlayerStartWeapons.json, giving all weapons to player as default, if you need help ask Marcus", alevel);
 		addHandGunData.myString = "BFG";
 		aPlayerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
 		tempAmmoReplensihData.ammoType = "BFG";

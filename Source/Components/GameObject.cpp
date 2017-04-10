@@ -183,7 +183,9 @@ bool CGameObject::Answer(const eComponentQuestionType aQuestionType, SComponentQ
 	return false;
 }
 
-CGameObject::CGameObject(CGameObjectManager &aManager) : myTransformId(0), myManager(&aManager)
+CGameObject::CGameObject(CGameObjectManager &aManager)
+	: myTransformId(0)
+	, myManager(&aManager)
 {
 	myType = eComponentType::eGameObject;
 	myComponents.Init(4);
