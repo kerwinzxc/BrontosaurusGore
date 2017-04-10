@@ -428,6 +428,8 @@
     <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="SphereColliderComponent.h" />
     <ClInclude Include="TriggerArenaComponent.h" />
+    <ClInclude Include="TumbleweedController.h" />
+    <ClInclude Include="TumbleweedFactory.h" />
     <ClInclude Include="WeaponDefines.h" />
     <ClInclude Include="FireComponent.h" />
     <ClInclude Include="HealthPoint.h" />
@@ -548,6 +550,8 @@
     </ClCompile>
     <ClCompile Include="StreakEmitterComponent.cpp" />
     <ClCompile Include="TriggerArenaComponent.cpp" />
+    <ClCompile Include="TumbleweedController.cpp" />
+    <ClCompile Include="TumbleweedFactory.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WeaponFactory.cpp" />
     <ClCompile Include="WeaponPickupComponent.cpp" />
