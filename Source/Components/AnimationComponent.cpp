@@ -14,7 +14,7 @@ CU::GrowingArray<CAnimationComponent*> CAnimationComponent::ourAnimations(64u);
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
 	, myModelComponent(aModelCompoent)
-	, myUpdateHasRun(false)
+	//, myUpdateHasRun(false)
 {
 	myType = eComponentType::eAnimationComponent;
 
@@ -32,7 +32,7 @@ CAnimationComponent::~CAnimationComponent()
 
 void CAnimationComponent::Update(const CU::Time aDeltaTime)
 {
-	myUpdateHasRun = true;
+	//myUpdateHasRun = true;
 	if (myAnimationStack.Empty())
 	{
 		return;
@@ -83,7 +83,7 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
-	if (myAnimationStates.empty() || !myUpdateHasRun) return;
+	if (myAnimationStates.empty() /*|| !myUpdateHasRun*/) return;
 	auto animationEnd = myAnimationStates.end();
 	auto it = animationEnd;
 
