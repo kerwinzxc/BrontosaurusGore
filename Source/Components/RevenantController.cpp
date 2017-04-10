@@ -93,6 +93,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eIdle:
 		break;
 	case eRevenantState::eWalkIntoMeleeRange:
+		myFlightForce -= gravityAcceleration * aDeltaTime;
 		LookAtPlayer();
 		myVelocity.z = mySpeed;
 		if (myToPlayer.y > 2.0f)
@@ -119,7 +120,6 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 	case eRevenantState::eFlyAscend:
 	{
-		DL_PRINT("Ascending!!!");
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 		if(myFlightForce <= 0.0f)
@@ -131,7 +131,6 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyHover:
 	{
-		DL_PRINT("Hovering!!!");
 		LookAtPlayer();
 		ChangeWeapon(1);
 		myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
@@ -152,7 +151,6 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyDescend:
 	{
-		DL_PRINT("Descending!!!");
 		LookAtPlayer();
 
 		myFlightForce -= gravityAcceleration * aDeltaTime;
@@ -232,7 +230,6 @@ void  CRevenantController::ApplyFlightForce()
 {
 	if(CheckIfInAir() == false)
 	{
-		DL_PRINT("Applying flight forces");
 		myIsflying = true;
 		myFlightForce = sqrtf((gravityAcceleration)* myFlightHeight * 2);
 	}
