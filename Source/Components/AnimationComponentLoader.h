@@ -7,4 +7,3 @@ namespace AnimationComponentLoader
 {
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 };
-

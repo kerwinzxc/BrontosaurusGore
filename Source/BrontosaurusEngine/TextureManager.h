@@ -11,7 +11,7 @@ public:
 
 	CTexture& LoadTexture(const wchar_t* aWideTexturePath);
 	CTexture& LoadTexture(const char* aTexturePath);
-	void DestroyTexture(const CTexture* aTexture);
+	void DestroyTexture(CTexture* aTexture);
 	
 private:
 	void CreateTexture(const wchar_t* aTexturePath, CTexture& aNewTexture);

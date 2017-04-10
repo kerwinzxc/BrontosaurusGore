@@ -30,13 +30,6 @@ CSurface::CSurface(const std::string& aDirectory, const CU::GrowingArray<std::st
 
 		}
 
-
-
-		/*if (aTextureNameList[i] == "")
-		{
-			myTextures.Add(nullptr);
-		}
-		else*/
 		{
 			if (i == eEmissive && aTextureNameList[i] == "")
 			{
@@ -70,27 +63,41 @@ CSurface::CSurface(const CU::GrowingArray<const wchar_t*>& aTexturePathList)
 	}
 }
 
-CSurface::CSurface(const CSurface & aSurface)
+CSurface::CSurface(const CSurface& aSurface)
+	: myTextures(aSurface.myTextures)
+	, myFramework(aSurface.myFramework)
 {
-	myFramework = aSurface.myFramework;
-	for (unsigned int i = 0; i < aSurface.myTextures.Size(); ++i)
+	for (CTexture* texture : myTextures)
 	{
-		myTextures.Add(aSurface.myTextures[i]);
-		myTextures.GetLast()->AddRef();
+		if (texture)
+		{
+			texture->AddRef();
+		}
 	}
 }
 
 CSurface::~CSurface()
 {
-	//for (unsigned int i = 0; i < myShaderResources.Size(); ++i)
-	//{
-	//	SAFE_RELEASE(myShaderResources[i]);
-	//}
-
 	for (unsigned int i = 0; i < myTextures.Size(); ++i)
 	{
 		CEngine::GetInstance()->GetTextureManager().DestroyTexture(myTextures[i]);
 	}
+}
+
+CSurface& CSurface::operator=(const CSurface& aSurface)
+{
+	myTextures = aSurface.myTextures;
+	myFramework = aSurface.myFramework;
+
+	for (CTexture* texture : myTextures)
+	{
+		if (texture)
+		{
+			texture->AddRef();
+		}
+	}
+
+	return *this;
 }
 
 void CSurface::Activate()
@@ -101,7 +108,7 @@ void CSurface::Activate()
 	{
 		if (myTextures[i] != nullptr)
 		{
-			shaderResourceViewPP[i] = *myTextures[i]->GetShaderResourceViewPointer();
+			shaderResourceViewPP[i] = myTextures[i]->GetShaderResourceView();
 		}
 	}
 
@@ -114,6 +121,11 @@ void CSurface::Activate()
 const CU::Vector2ui& CSurface::GetTextureSize() const
 {
 	assert(myTextures.Size() > 0 && "should not get texture size from surface of no textures");
+	if (myTextures.Empty())
+	{
+		return CU::Vector2ui::Zero;
+	}
+
 	return myTextures[0]->GetSize();
 }
 

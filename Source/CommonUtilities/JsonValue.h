@@ -1,4 +1,5 @@
 #pragma once
+#include "GrowingArray.h"
 
 namespace picojson
 {
