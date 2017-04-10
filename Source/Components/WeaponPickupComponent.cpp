@@ -6,6 +6,7 @@
 #include "../TClient/ClientMessageManager.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
+#include "AmmoReplenishData.h"
 
 CWeaponPickupComponent::CWeaponPickupComponent()
 {
@@ -29,6 +30,14 @@ void CWeaponPickupComponent::DoMyEffect()
 	SComponentMessageData data;
 	data.myString = myWeaponPickup.c_str();
 	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddWeapon,data);
+
+	SAmmoReplenishData AmmoReplensihData;
+	AmmoReplensihData.ammoType = myWeaponPickup.c_str();
+	AmmoReplensihData.replenishAmount = 1000;
+	SComponentMessageData giveAmmoData;
+	giveAmmoData.myAmmoReplenishData = &AmmoReplensihData;
+	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 	CNetworkMessage_PickupWeapon* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupWeapon>(ID_ALL_BUT_ME);
 
 	SComponentQuestionData questionData;

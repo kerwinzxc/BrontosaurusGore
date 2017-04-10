@@ -7,7 +7,7 @@
 #include "../Physics/PhysicsScene.h"
 
 CMeshColliderComponent::CMeshColliderComponent(const SMeshColliderData& aColliderData, Physics::CPhysicsScene* aScene) : myScene(aScene),
-	CColliderComponent(aColliderData, nullptr, nullptr)
+	CColliderComponent(aColliderData, nullptr, nullptr, false)
 {
 	myData = aColliderData;
 }

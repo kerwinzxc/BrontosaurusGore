@@ -178,7 +178,7 @@ int CFBXLoader::DetermineAndLoadVerticies(aiMesh* fbxMesh, CLoaderMesh* aLoaderM
 	return vertexBufferSize;
 }
 
-CLoaderModel* CFBXLoader::LoadModel(const char* aModel)
+CLoaderModel* CFBXLoader::LoadModel(const std::string& aModel)
 {
 	CLoaderModel* newModel = new CLoaderModel();
 	newModel->SetData(aModel);
@@ -192,7 +192,7 @@ CLoaderModel* CFBXLoader::LoadModel(const char* aModel)
 	return newModel;
 }
 
-bool does_file_exist(const char *fileName)
+bool does_file_exist(const std::string& fileName)
 {
 	std::ifstream infile(fileName);
 	return infile.good();
@@ -333,7 +333,7 @@ const aiNode* FindLODDNode(const aiNode* aNode)
 	return aNode;
 }
 
-bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
+bool CFBXLoader::LoadGUIScene(const std::string& aFilePath, CLoaderScene& aSceneOut)
 {
 	if (does_file_exist(aFilePath) == false)
 	{
@@ -341,11 +341,11 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		return false;
 	}
 
-	const aiScene* scene = aiImportFile(aFilePath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = aiImportFile(aFilePath.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
 	aSceneOut.myScene = scene;
 	if (scene->mNumCameras < 1)
 	{
-		DL_MESSAGE_BOX("fbx file has no camera: %s", aFilePath);
+		DL_MESSAGE_BOX("fbx file has no camera: %s", aFilePath.c_str());
 		return false;
 	}
 
@@ -361,13 +361,13 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 	aiNode* root = scene->mRootNode;
 	if (root == nullptr)
 	{
-		DL_MESSAGE_BOX("fbx file has no root node: %s", aFilePath);
+		DL_MESSAGE_BOX("fbx file has no root node: %s", aFilePath.c_str());
 		return false;
 	}
 
 	if (root->mNumChildren == 0)
 	{
-		DL_MESSAGE_BOX("fbx file root node is empty or massive: %s", aFilePath);
+		DL_MESSAGE_BOX("fbx file root node is empty or massive: %s", aFilePath.c_str());
 		return false;
 	}
 
@@ -427,7 +427,7 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		aiReturn result = scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (result != aiReturn_SUCCESS)
 		{
-			DL_MESSAGE_BOX("Found no albedo texture at path %s", aFilePath);
+			DL_MESSAGE_BOX("Found no albedo texture at path %s", aFilePath.c_str());
 		}
 
 		aSceneOut.myAlbedoTexture = path.C_Str();
@@ -450,7 +450,7 @@ bool CFBXLoader::LoadGUIScene(const char* aFilePath, CLoaderScene& aSceneOut)
 	return true;
 }
 
-bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
+bool CFBXLoader::LoadModelScene(const std::string& aFilePath, CLoaderScene& aSceneOut)
 {
 	if (does_file_exist(aFilePath) == false)
 	{
@@ -459,26 +459,26 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		return false;
 	}
 
-	const aiScene* scene = aiImportFile(aFilePath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded /*| aiProcess_Debone*/); //DEBONE GJORDE SÅ VAPNENA INTE FICK NÅGRA BEN
+	const aiScene* scene = aiImportFile(aFilePath.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded /*| aiProcess_Debone*/); //DEBONE GJORDE SÅ VAPNENA INTE FICK NÅGRA BEN
 	aSceneOut.myScene = scene;
 	aSceneOut.myCamera = nullptr;
 
 	aiNode* root = scene->mRootNode;
 	if (root == nullptr)
 	{
-		DL_ASSERT("fbx file has no root node: %s", aFilePath);
+		DL_ASSERT("fbx file has no root node: %s", aFilePath.c_str());
 		return false;
 	}
 
 	if (root->mNumChildren == 0)
 	{
-		DL_ASSERT("fbx file root node is empty or massive: %s", aFilePath);
+		DL_ASSERT("fbx file root node is empty or massive: %s", aFilePath.c_str());
 		return false;
 	}
 
 	if (scene->mNumMaterials > 1)
 	{
-		DL_MESSAGE_BOX("fbx scene contains more than one material, this will split the mesh which the engine does not support\n%s", aFilePath);
+		DL_MESSAGE_BOX("fbx scene contains more than one material, this will split the mesh which the engine does not support\n%s", aFilePath.c_str());
 	}
 
 	CU::GrowingArray<aiNode*> nodes(4);
@@ -549,7 +549,7 @@ bool CFBXLoader::LoadModelScene(const char* aFilePath, CLoaderScene& aSceneOut)
 		aiReturn result = scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		if (result != aiReturn_SUCCESS)
 		{
-			//DL_ASSERT("Failed to get diffuse/albedo texture from fbx scene: %s", aFilePath);
+			//DL_ASSERT("Failed to get diffuse/albedo texture from fbx scene: %s", aFilePath.c_str());
 
 			//return false;
 		}

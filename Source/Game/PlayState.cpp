@@ -601,8 +601,7 @@ void CPlayState::GivePlayerWeapons(CGameObject* aPlayerObject)
 
 
 	const std::string & alevel = levelsArray.at(myLevelIndex).GetString();
-	CU::CJsonValue value;
-	value.Parse("Json/Weapons/PlayerStartWeapons.json");
+	CU::CJsonValue value("Json/Weapons/PlayerStartWeapons.json");
 
 	SComponentMessageData addHandGunData;
 	SComponentMessageData giveAmmoData;

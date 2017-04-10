@@ -23,6 +23,6 @@ public:
 	CModelLoader();
 	~CModelLoader();
 
-	static bool LoadModel(const char * aPath, CModel * aNewModel);
+	static bool LoadModel(const std::string& aPath, CModel& aNewModel);
 };
 

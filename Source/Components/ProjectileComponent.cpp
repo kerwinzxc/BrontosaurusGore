@@ -21,6 +21,12 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eOnTriggerEnter:
+	{
+		if(aMessageData.myComponent->GetParent()->AskComponents(eComponentQuestionType::eHaveTriggerCollision, SComponentQuestionData()) == true)
+		{
+			break;
+		}
+	}
 	case eComponentMessageType::eOnCollisionEnter:
 	{
 		if(myData->isPlayerFriendly == true)
@@ -30,24 +36,22 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 		if(myData->shouldRayCast == false)
 		{
 			CGameObject* hitObject = aMessageData.myComponent->GetParent();
-			for(unsigned short i = 0; i < CPollingStation::GetInstance()->GetPlayers().Size(); i++)
+			if(CPollingStation::GetInstance()->CheckIfIsPlayerObject(hitObject) == true)
 			{
-				if(hitObject == CPollingStation::GetInstance()->GetPlayers()[i])
+				if(myData->isPlayerFriendly == true)
 				{
-					if(myData->isPlayerFriendly == true)
-					{
-						return;
-					}
-					else
-					{
-						Deactivate();
-						SComponentMessageData damageData;
-						damageData.myInt = myData->damage;
-						hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-						return;
-					}
+					return;
+				}
+				else
+				{
+					Deactivate();
+					SComponentMessageData damageData;
+					damageData.myInt = myData->damage;
+					hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+					return;
 				}
 			}
+			
 			if(myData->isPlayerFriendly ==false && hitObject->AskComponents(eComponentQuestionType::eIsEnemy,SComponentQuestionData()) == true)
 			{
 				return;
@@ -59,7 +63,7 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData, true));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
 		}
 		break;
 	}

@@ -2,8 +2,8 @@
 #include "SphereColliderComponent.h"
 
 
-CSphereColliderComponent::CSphereColliderComponent(const SSphereColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
-	: CColliderComponent(aColliderData, aShape, aActor)
+CSphereColliderComponent::CSphereColliderComponent(const SSphereColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger)
+	: CColliderComponent(aColliderData, aShape, aActor, aIsTrigger)
 {
 	myData = aColliderData;
 }

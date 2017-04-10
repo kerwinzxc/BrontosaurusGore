@@ -44,24 +44,22 @@ CTexture& CTextureManager::LoadTexture(const char* aTexturePath)
 	return LoadTexture(path);
 }
 
-void CTextureManager::DestroyTexture(const CTexture* aTexture)
+void CTextureManager::DestroyTexture(CTexture* aTexture)
 {
 	if (aTexture == nullptr)
 	{
 		return;
 	}
 
-	for (auto it = myTextures.begin(); it != myTextures.end(); ++it)
+	if (aTexture->DecRef() <= 0)
 	{
-		if (&it->second == aTexture)
+		for (auto it = myTextures.begin(); it != myTextures.end(); ++it)
 		{
-			int refCount = it->second.DecRef();
-			if (refCount < 1)
+			if (&it->second == aTexture)
 			{
 				myTextures.erase(it);
+				break;
 			}
-
-			break;
 		}
 	}
 }

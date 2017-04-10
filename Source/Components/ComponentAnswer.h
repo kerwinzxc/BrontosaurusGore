@@ -30,6 +30,7 @@ enum class eComponentQuestionType
 	eGetCurrentAmmoData,
 	eGetWeapons,
 	eIsEnemy,
+	eHaveTriggerCollision,
 	eLength,
 };
 

@@ -259,19 +259,10 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 		}
 	}
-	case eComponentMessageType::eOnCollisionEnter:
+	case eComponentMessageType::eNetworkDoDamage:
 	{
-		switch (myState)
-		{
-		case eImpState::eWalkIntoMeleeRange:
-			ApplyJumpForce(myJumpHeight);
-			break;
-		case eImpState::eRunAfterShooting:
-			InitiateWander();
-			break;
-		default:
-			break;
-		}
+		myIsAggressive = true;
+		break;
 	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;

@@ -48,6 +48,12 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 		if(myIsAlive == true)
 		{
 			TakeDamage(aMessageData.myInt);
+
+			if (CClientMessageManager::GetInstance() == nullptr)
+			{
+				DL_PRINT_WARNING("tried to get client message manager on server in health component");
+				break;
+			}
 			
 			CNetworkMessage_TakeDamage* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_TakeDamage>(ID_ALL_BUT_ME);
 
