@@ -454,7 +454,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	modelObject->AddComponent(model);
 	otherPlayer->AddComponent(modelObject);
 	otherPlayer->AddComponent(playerReciver);
-
+	CPollingStation::GetInstance()->AddPlayerObject(otherPlayer);
 	
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
@@ -488,6 +488,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (CPollingStation::GetInstance())
 		{
 			CPollingStation::GetInstance()->SetPlayerObject(playerObject);
+			CPollingStation::GetInstance()->AddPlayerObject(playerObject);
 		}
 
 		CInputComponent* inputComponent = new CInputComponent();
