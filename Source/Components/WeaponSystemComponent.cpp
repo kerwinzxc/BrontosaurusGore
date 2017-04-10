@@ -133,10 +133,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eAddWeaponIndex:
 	{
-		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		const char* weaponName = WeaponFactoryPointer->GetWeaponDataFromIndex(aMessageData.myInt)->name.c_str();
+		if (CheckIfAlreadyHaveWeapon(weaponName) == true)
 		{
 			SAmmoReplenishData replenishData;
-			replenishData.ammoType = aMessageData.myString;
+			replenishData.ammoType = weaponName;
 			replenishData.replenishAmount = 1000;
 			SComponentMessageData giveAmmoData;
 			giveAmmoData.myAmmoReplenishData = &replenishData;

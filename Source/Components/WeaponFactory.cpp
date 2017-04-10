@@ -234,3 +234,8 @@ short CWeaponFactory::GetWeaponFactoryWeaponIndex(const char* aWeaponName)
 	DL_PRINT("Couldn't find what weaponIndex to return. Check spelling and/or yell at Marcus. The weapons name was %s", aWeaponName);
 	return -1;
 }
+
+SWeaponData* CWeaponFactory::GetWeaponDataFromIndex(unsigned int aIndex)
+{
+	return myWeaponDataList[aIndex];
+}
