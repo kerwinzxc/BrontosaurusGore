@@ -11,7 +11,7 @@ struct SBoxColliderData : public SColliderData
 class CBoxColliderComponent : public CColliderComponent
 {
 public:
-	CBoxColliderComponent(const SBoxColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
+	CBoxColliderComponent(const SBoxColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger);
 	~CBoxColliderComponent();
 
 
