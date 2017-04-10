@@ -43,6 +43,7 @@ public:
 
 	void Run();
 	bool IsActive() const;
+	void SetTransformation(int aInstanceId, const CU::Matrix44f& aMatrix44);
 private:
 	void ThreadFinished();
 	void InternalRun();

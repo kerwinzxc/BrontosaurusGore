@@ -247,7 +247,7 @@ void CParticleEmitter::Init()
 
 void CParticleEmitter::InitialVelocity(SParticleLogic& aParticleLogic)
 {
-	const CU::Vector3f forward = myCurrentInstaceTransform.myForwardVector;
+	const CU::Vector3f forward = -myCurrentInstaceTransform.myForwardVector;
 
 	const float spread = myEmitterData.emitter.spread.value.angle;
 	const float halfSpread = spread / 2.f;
@@ -313,7 +313,28 @@ void CParticleEmitter::ParseSpawnParameters(const CU::CJsonValue& aJsonValue)
 
 void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 {
-	
+	for (int i = 0; i < aJsonValue.Size(); ++i)
+	{
+		Particles::IParticleSpawner* spawner = nullptr;
+		const CU::CJsonValue value = aJsonValue[i];
+
+		const std::string type = value["valueType"].GetString();
+
+		if (type == "force")
+		{
+			//spawner = new Particles::CParticleVelocitySpawner(value);
+		}
+		else if (type == "friction")
+		{
+			//spawner = new Particles::CParticleSizeSpawner(value);
+		}
+		else
+		{
+			DL_ASSERT("Attempting to add a unknows update parameter \"%s\"", type.c_str());
+		}
+
+		//myEmitterData.particles.spawners.Add(spawner);
+	}
 }
 
 void CParticleEmitter::ParseParticle(const CU::CJsonValue& aJsonValue)

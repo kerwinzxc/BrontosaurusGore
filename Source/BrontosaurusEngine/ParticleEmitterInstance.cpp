@@ -239,6 +239,11 @@ bool CParticleEmitterInstance::IsActive()
 	return myIsActive;
 }
 
+void CParticleEmitterInstance::SetTransformation(const CU::Matrix44f& aMatrix44)
+{
+	myToWorldSpace = aMatrix44;
+}
+
 void CParticleEmitterInstance::Init()
 {
 	SetVisibility(true);

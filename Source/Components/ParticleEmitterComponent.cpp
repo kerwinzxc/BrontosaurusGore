@@ -25,7 +25,7 @@ void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
 		return;
 	}
 	//myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
-	CParticleEmitterManager::GetInstance().SetPosition(myInstanceId, GetParent()->GetToWorldTransform().GetPosition());
+	CParticleEmitterManager::GetInstance().SetTransformation(myInstanceId, GetParent()->GetToWorldTransform());
 	//myParticleInstance->Update(aDeltaTime);
 }
 void CParticleEmitterComponent::Activate()

@@ -218,6 +218,18 @@ bool CParticleEmitterManager::IsActive() const
 	return myIsActive;
 }
 
+void CParticleEmitterManager::SetTransformation(int aInstanceId, const CU::Matrix44f& aMatrix44)
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		if (myInstances[i]->GetInstanceID() == aInstanceId)
+		{
+			myInstances[i]->SetTransformation(aMatrix44);
+			break;
+		}
+	}
+}
+
 void CParticleEmitterManager::ThreadFinished()
 {
 	myThreadFinished = true;

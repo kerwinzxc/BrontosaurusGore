@@ -40,6 +40,7 @@ public:
 	void ResetLifetime();
 	void ResetSpawnTimer();
 	bool IsActive();
+	void SetTransformation(const CU::Matrix44f& aMatrix44);
 private:
 	void Init();
 	void EmitParticle();
