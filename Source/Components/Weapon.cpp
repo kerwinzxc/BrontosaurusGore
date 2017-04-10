@@ -43,6 +43,7 @@ void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 	
 	}
 }
+
 void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
