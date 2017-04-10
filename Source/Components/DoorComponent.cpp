@@ -17,19 +17,18 @@ CDoorComponent::CDoorComponent()
 	myIsLocked = false;
 	myLockId = -1;
 	myNetworkID = 0;
-	myMoveDistance = 0;
-	myMoveSpeed = 1.0f;
+	myMoveDistance = 15;
+	myMoveSpeed = 0.25f;
 	myOpenDirection = CU::Vector2f::Zero;
 	myOriginPosition = CU::Vector2f::Zero;
 	myType = eComponentType::eDoor;
 	myResetToPosition = CU::Matrix44f::Identity;
-
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 }
 
 
 CDoorComponent::~CDoorComponent()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CDoorComponent::SetOpenDirection(const CU::Vector2f & aDirection)
@@ -71,14 +70,15 @@ void CDoorComponent::SnapShotDoorState()
 {
 	myResetToIsClosed = myIsClosed;
 	myResetToIsLocked = myIsLocked;
-	myResetToPosition = GetParent()->GetToWorldTransform();
+	myResetToPosition = GetParent()->GetLocalTransform();
 }
 
 void CDoorComponent::ResetToSnapShot()
 {
 	myIsClosed = myResetToIsClosed;
 	myIsLocked = myResetToIsLocked;
-	GetParent()->SetWorldTransformation(myResetToPosition);
+	GetParent()->GetLocalTransform() = (myResetToPosition);
+	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 }
 
 void CDoorComponent::SetNetworkID(const unsigned char aNetworkID)
@@ -90,15 +90,31 @@ void CDoorComponent::Update(const CU::Time & aDeltaTime)
 {
 	if (myIsClosed == false)
 	{
-		GetParent()->SetWorldPosition(CU::Vector3f(9999, 9999, 9999));
+		float distance = abs(GetParent()->GetLocalTransform().GetPosition().y - myOriginPosition.y);
+		//DL_PRINT("%f", lol);
+		if (distance < myMoveDistance)
+		{
+			CU::Vector3f move;
+			move = GetParent()->GetLocalTransform().GetPosition();
+			move.y -= myMoveSpeed;
+			GetParent()->GetLocalTransform().SetPosition(move);
+		}
+		//GetParent()->SetWorldPosition(CU::Vector3f(9999, 9999, 9999));
 		SComponentMessageData data;
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, data);
 		return;
 	}
 	else
 	{
-		GetParent()->SetWorldPosition(myResetToPosition.GetPosition());
-		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		if (GetParent()->GetLocalTransform().GetPosition().y < myOriginPosition.y)
+		{
+			CU::Vector3f move;
+			move = GetParent()->GetLocalTransform().GetPosition();
+			move.y += myMoveSpeed;
+			GetParent()->GetLocalTransform().SetPosition(move);
+			//GetParent()->SetWorldPosition(myResetToPosition.GetPosition());
+			GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		}
 	}
 }
 
@@ -149,13 +165,12 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 	case eComponentMessageType::eCheckPointReset:
 		ResetToSnapShot();
+		DL_PRINT("Resetto the doórretto");
 		break;
-	case eComponentMessageType::eAddComponent:
+	case eComponentMessageType::eObjectDone:
 			myOriginPosition = GetParent()->GetWorldPosition();
-			if (myShouldReset == true)
-			{
-				SnapShotDoorState();
-			}
+			Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
+			Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myGameObject != GetParent() && aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
@@ -168,11 +183,6 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 				doorMessage->SetDoorAction(eDoorAction::eOpen);
 				doorMessage->SetID(myNetworkID);
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(doorMessage));
-				
-				if (myShouldReset == true)
-				{
-					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
-				}
 				return;
 			}
 			for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetKeys().Size(); ++i)
@@ -202,4 +212,15 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 	default:
 		break;
 	}
+}
+
+eMessageReturn CDoorComponent::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	if (myShouldReset == true)
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+		DL_PRINT("Add door to checkpoint %u", GetParent()->GetId());
+		SnapShotDoorState();
+	}
+	return eMessageReturn::eContinue;
 }

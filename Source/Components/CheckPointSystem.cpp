@@ -25,6 +25,7 @@ eMessageReturn CCheckPointSystem::DoEvent(const CAddToCheckPointResetList& aAddT
 	if(myObjectsToReset.Find(aAddToCheckPointResetList.GetObjectToReset()) == myObjectsToReset.FoundNone)
 	{
 		myObjectsToReset.Add(aAddToCheckPointResetList.GetObjectToReset());
+		//DL_PRINT("Added thing to reset %u", aAddToCheckPointResetList.GetObjectToReset()->GetId());
 	}
 	return eMessageReturn::eContinue;
 }
@@ -43,6 +44,7 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 		SComponentMessageData respawnData;
 		respawnData.myVector3f = myRespawnPlayerPosition;
 		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+		//DL_PRINT("resseting a object %u", myObjectsToReset[i]->GetId());
 	}
 	myObjectsToReset.RemoveAll();
 	return eMessageReturn::eContinue;

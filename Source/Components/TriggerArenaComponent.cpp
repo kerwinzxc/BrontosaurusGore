@@ -13,21 +13,22 @@ CTriggerArenaComponent::CTriggerArenaComponent(const unsigned char aNumberOfWave
 	myHaveBeenTriggered = false;
 	myResetToTriggered = false;
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
+	
 	
 }
 
 
 CTriggerArenaComponent::~CTriggerArenaComponent()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
 	{
-	case eComponentMessageType::eAddComponent:
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+	case eComponentMessageType::eObjectDone:
+		Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 	case eComponentMessageType::eOnTriggerEnter:
 		//DL_PRINT("On Trigger enter arenaaaa");
 		for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); ++i)
@@ -65,6 +66,7 @@ void CTriggerArenaComponent::Receive(const eComponentMessageType aMessageType, c
 
 void CTriggerArenaComponent::OnPlayerEnter()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 	if (myPlayersInTrigger <= CPollingStation::GetInstance()->GetNumberOfPlayers() && myHaveBeenTriggered == false)
 	{
 		DL_PRINT("EnteredTriggerArena");
