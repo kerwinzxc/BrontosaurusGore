@@ -80,8 +80,6 @@
     <ClCompile Include="WeaponSystemManager.cpp" />
     <ClCompile Include="EnemyRunTowardsComponent.cpp" />
     <ClCompile Include="AnimationComponentLoader.cpp" />
-    <ClCompile Include="TumbleweedController.cpp" />
-    <ClCompile Include="TumbleweedFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -184,7 +182,5 @@
     <ClInclude Include="WeaponSystemManager.h" />
     <ClInclude Include="EnemyRunTowardsComponent.h" />
     <ClInclude Include="AnimationComponentLoader.h" />
-    <ClInclude Include="TumbleweedController.h" />
-    <ClInclude Include="TumbleweedFactory.h" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 {
 	SEmitterData emitterData;
-	emitterData.UseGravity = someData.myData["UseGravity"].GetBool();
+	/*emitterData.UseGravity = someData.myData["UseGravity"].GetBool();
 
 	if(emitterData.UseGravity == true)
 	{
@@ -36,7 +36,7 @@ int LoadParticleEmitterComponent(KLoader::SLoadedComponentData someData)
 
 	emitterData.ColorCurve = eLerpCurve::eLinear;
 	emitterData.SizeCurve = eLerpCurve::eLinear;
-	emitterData.SizeCurve = eLerpCurve::eLinear;
+	emitterData.SizeCurve = eLerpCurve::eLinear;*/
 	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
 	return companent->GetId();
 }

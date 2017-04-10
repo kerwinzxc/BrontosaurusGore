@@ -10,4 +10,5 @@ struct SProjectileData
 	healthPoint damage;
 	bool shouldExplodeOnImpact;
 	bool shouldRayCast;
+	bool isPlayerFriendly;
 };

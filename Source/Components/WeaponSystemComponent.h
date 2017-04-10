@@ -25,6 +25,7 @@ private:
 	void ChangeWeapon2(unsigned int aIndex);
 	void ChangeWeaponLocal(unsigned int aIndex);
 
+	bool CheckIfAlreadyHaveWeapon(const char* aWeaponName);
 	CU::GrowingArray<CWeapon*> myWeapons;
 	CU::GrowingArray<SAmmoData*> myTemporaryAmmoDataList;
 	CWeaponFactory* WeaponFactoryPointer;

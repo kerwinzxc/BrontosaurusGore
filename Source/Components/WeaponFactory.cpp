@@ -48,12 +48,12 @@ void CWeaponFactory::LoadWeapons()
 	std::string filePath = "Json/Weapons/WeaponStats.json";
 	const std::string& errorString = weaponBluePrint.Parse(filePath);
 	CU::CJsonValue levelsArray = weaponBluePrint.at("Weapons");
-	LoadWeaponsFromJsonValue(levelsArray);
+	LoadWeaponsFromJsonValue(levelsArray, true);
 	CU::CJsonValue enemyWeaponBluePrint;
 	filePath = "Json/Weapons/EnemyWeaponStats.json";
 	const std::string& enemyErrorString = weaponBluePrint.Parse(filePath);
 	CU::CJsonValue enemyLevelsArray = weaponBluePrint.at("Weapons");
-	LoadWeaponsFromJsonValue(enemyLevelsArray);
+	LoadWeaponsFromJsonValue(enemyLevelsArray, false);
 }
 unsigned short CWeaponFactory::CreateWeapon(const char* aWeaponName, CGameObject* aObjectToGiveAWeaponTo)
 {
@@ -125,8 +125,21 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 	{
 		CModelComponent* newWeaponModelComponent = myModelComponentManagerPointer->CreateComponent(aWeapon->GetData()->modelFilePath.c_str());
 		newWeaponModelComponent->SetIgnoreDepth(true);
+
 		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 		newWeaponObject->AddComponent(newWeaponModelComponent);
+
+		std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
+		size_t pos = playerHandsPath.find_last_of('/');
+		playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
+		if (CU::CJsonValue::FileExists(playerHandsPath))
+		{
+			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath);
+			handModelComponent->SetIgnoreDepth(true);
+
+			newWeaponObject->AddComponent(handModelComponent);
+		}
+
 		cameraObjectQuestionData.myGameObject->AddComponent(newWeaponObject);
 		aWeapon->SetWeaponObject(newWeaponObject);
 		newWeaponObject->Move(CU::Vector3f(aWeapon->GetData()->modelPositionX, aWeapon->GetData()->modelPositionY, aWeapon->GetData()->modelPositionZ));
@@ -143,7 +156,7 @@ SWeaponSoundData CWeaponFactory::GetSoundData(CU::CJsonValue aSoundData)
 	return soundData;
 }
 
-void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
+void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, bool aIsPlayerWeapon)
 {
 	for (int i = 0; i < aJsonValue.Size(); ++i)
 	{
@@ -171,6 +184,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
 		newProjectileData->maximumTravelRange = aJsonValue[i].at("MaximumTravelRange").GetFloat();
 		newProjectileData->shouldExplodeOnImpact = aJsonValue[i].at("ShouldProjectilesExplode").GetBool();
 		newProjectileData->shouldRayCast = aJsonValue[i].at("ShouldRayCast").GetBool();
+		newProjectileData->isPlayerFriendly = aIsPlayerWeapon;
 
 		if (newProjectileData->shouldExplodeOnImpact == true)
 		{
@@ -179,6 +193,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue)
 			newExplosionData->knockBackForce = aJsonValue[i].at("ExplosionKnockBackForce").GetFloat();
 			newExplosionData->damage = static_cast<healthPoint>(aJsonValue[i].at("ExplosionDamage").GetFloat());
 			newProjectileData->explosionData = newExplosionData;
+			newExplosionData->isPlayerFriendly = aIsPlayerWeapon;
 		}
 		else
 		{

@@ -59,14 +59,20 @@ void CImpController::Update(const float aDeltaTime)
 			myState = eImpState::eChargingRangedAttack;
 			LookAtPlayer();
 			GetParent()->GetLocalTransform().Rotate(PI, CU::Axees::Y);
+			myIsAggressive = true;
 		}
 		else if (WithinDetectionRange() == true)
 		{
 			myState = eImpState::eChase;
+			myIsAggressive = true;
 		}
 		else
 		{
 			myState = eImpState::eIdle;
+			if(myIsAggressive == true)
+			{
+				myState = eImpState::eChase;
+			}
 		}
 	}
 	else
@@ -253,19 +259,10 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 		}
 	}
-	case eComponentMessageType::eOnCollisionEnter:
+	case eComponentMessageType::eNetworkDoDamage:
 	{
-		switch (myState)
-		{
-		case eImpState::eWalkIntoMeleeRange:
-			ApplyJumpForce(myJumpHeight);
-			break;
-		case eImpState::eRunAfterShooting:
-			InitiateWander();
-			break;
-		default:
-			break;
-		}
+		myIsAggressive = true;
+		break;
 	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;
@@ -343,4 +340,11 @@ bool CImpController::CanChangeState()
 		break;
 	}
 	return true;
+}
+
+eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	myJumpForce = 0.0f;
+	myState = eImpState::eIdle;
+	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }

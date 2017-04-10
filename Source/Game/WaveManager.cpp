@@ -26,10 +26,12 @@ CWaveManager::CWaveManager()
 	myNumberOfPlayers = 0;
 	myNumberOfWavesToSpawn = 0;
 	myResetToWaveCount = 0;
+	myResetToNumberOfWaves = 0;
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::ePlayerEnterArena);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddEnemyToWave);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 
 }
 
@@ -52,8 +54,9 @@ void CWaveManager::StartWave()
 	}
 	else
 	{
-		myResetToWaveCount = myWaveCount;
-		myResetToWaveCount = myNumberOfWavesToSpawn;
+		DL_PRINT("Enemies defeated Unlocks door");
+		//myResetToWaveCount = myWaveCount;
+		//myResetToNumberOfWaves = myNumberOfWavesToSpawn;
  		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eUnlock);
 		door->SetKeyID(myKeyIDToUnlock);
@@ -68,8 +71,13 @@ void CWaveManager::StartWave()
 
 void CWaveManager::Update()
 {
+	SComponentMessageData data; data.myInt = 10000;
 	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
+		if (myEnemiesInWave[i]->GetParent()->GetLocalTransform().GetPosition().y < -150)
+		{
+			myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
+		}
 		if (myEnemiesInWave[i]->GetIsDead() == true)
 		{
 			myEnemiesInWave.Remove(myEnemiesInWave[i]);
@@ -92,9 +100,13 @@ eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
 eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena)
 {
 
-	//DL_PRINT("WaveManager: PlayerEntered");
+	DL_PRINT("WaveManager: PlayerEntered");
     myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
 	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
+
+	//myResetToNumberOfWaves = myNumberOfWavesToSpawn;
+	//myResetToWaveCount = myWaveCount;
+
 	myNumberOfWavesToSpawn += aPlayerEnteredArena.GetWaveAmount();
 
 	if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
@@ -107,6 +119,7 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 		door2->SetDoorAction(eDoorAction::eLock);
 		door2->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
+		myEnemiesInWave.RemoveAll();
 		StartWave();
 	}
 
@@ -129,6 +142,14 @@ eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToC
 	}
 
 	myEnemiesInWave.RemoveAll();
+
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CWaveManager::DoEvent(const CSetAsNewCheckPointMessage& aSetAsNewCheckPointMessage)
+{
+	myResetToWaveCount = myWaveCount;
+	myResetToNumberOfWaves = myNumberOfWavesToSpawn;
 
 	return eMessageReturn::eContinue;
 }

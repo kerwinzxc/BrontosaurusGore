@@ -9,6 +9,10 @@
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
+static const float timeUntilIdle = 3.0f;
+static float timeUntilIdleThing = 3.0f;
+static const float originalTimeUntilIdleThing = 3.0f;
+
 CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false), myIsWalking(false)
 {
 	CU::CJsonValue playerControls;
@@ -41,7 +45,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myTextInstance = new CTextInstance();
 	myTextInstance->Init();
 	myTextInstance->SetPosition({ 0.5f, 0.2f });
-
+	myIdleCountdown = timeUntilIdle;
+	myIdleThingCountdown = originalTimeUntilIdleThing;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -70,6 +75,32 @@ vodi CMovementComponent::Receive(const eComponentMessageType aMessageType, const
 
 void CMovementComponent::Update(const CU::Time aDeltaTime)
 {
+	myIdleCountdown -= aDeltaTime.GetSeconds();
+	if (myIdleCountdown < 0.0f) 
+	{
+		myIdleThingCountdown -= aDeltaTime.GetSeconds();
+		if (myIdleThingCountdown < 0.0f)
+		{
+			CU::Matrix44f tempMatrix = GetParent()->GetToWorldTransform();
+			tempMatrix.Move(CU::Vector3f(0.0f, 0.0f, 3.0f));
+			CU::Vector3f directionPosition = tempMatrix.GetPosition();
+			tempMatrix.Rotate(PI / 2.0f, CU::Axees::Y);
+			tempMatrix.Move(CU::Vector3f(0.0f, 0.0f, 3.0f));
+			CU::Vector3f spawnPosition = tempMatrix.GetPosition();
+			CU::Vector3f direction = directionPosition - spawnPosition;
+			direction.Normalize();
+
+			//do stuff.
+
+			timeUntilIdleThing *= 2.0f;
+			myIdleThingCountdown = timeUntilIdleThing;
+		}
+	}
+	if (myKeysDown.Any() == true) 
+	{
+		ResetIdle();
+	}
+
 #ifndef _RETAIL_BUILD
 	SwapMovementMode();
 
@@ -394,4 +425,11 @@ void CMovementComponent::KeyReleased(const ePlayerControls aPlayerControl)
 void CMovementComponent::ApplyJumpForce(float aJumpHeight)
 {
 	myJumpForce = sqrtf((gravityAcceleration) * aJumpHeight * 2);
+}
+
+void CMovementComponent::ResetIdle()
+{
+	myIdleCountdown = timeUntilIdle;
+	timeUntilIdleThing = originalTimeUntilIdleThing;
+	myIdleThingCountdown = originalTimeUntilIdleThing;
 }

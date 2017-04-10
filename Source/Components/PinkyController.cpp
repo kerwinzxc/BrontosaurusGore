@@ -66,6 +66,10 @@ void CPinkyController::Update(const float aDeltaTime)
 		else
 		{
 			myState = ePinkyState::eIdle;
+			if(myIsAggressive == true)
+			{
+				myState = ePinkyState::eWalkIntoMeleeRange;
+			}
 		}
 	}
 
@@ -164,6 +168,11 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 			myState = ePinkyState::eIdle;
 			break;
 		}
+	case eComponentMessageType::eNetworkDoDamage:
+	{
+		myIsAggressive = true;
+		break;
+	}
 	break;
 	}
 }

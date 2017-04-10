@@ -10,7 +10,7 @@ struct SSphereColliderData : public SColliderData
 class CSphereColliderComponent : public CColliderComponent
 {
 public:
-	CSphereColliderComponent(const SSphereColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
+	CSphereColliderComponent(const SSphereColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger);
 	~CSphereColliderComponent();
 
 	const SSphereColliderData* GetData() override { return &myData; };

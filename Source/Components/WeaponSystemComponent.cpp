@@ -69,11 +69,20 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		{
 			if(myWeapons[myActiveWeaponIndex]->CanShoot() == true)
 			{
-				myWeapons[myActiveWeaponIndex]->Shoot(aMessageData.myVector3f);
+				CU::Vector3f targetPosition = aMessageData.myVector3f;
+				CU::Vector3f shootPosition = GetParent()->GetWorldPosition();
+				CU::Vector3f shootDisplacment(myWeapons[myActiveWeaponIndex]->GetData()->shootPositionX, myWeapons[myActiveWeaponIndex]->GetData()->shootPositionY, myWeapons[myActiveWeaponIndex]->GetData()->shootPositionZ);
+				CU::Matrix44f localWeaponMatrix = GetParent()->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				shootPosition = localWeaponMatrix.GetPosition();
+
+				CU::Vector3f shootDirection = targetPosition - shootPosition;
+				shootDirection.Normalize();
+				myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
 
 				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
-				shootMessage->SetDirection(aMessageData.myVector3f);
+				shootMessage->SetDirection(shootDirection);
 				shootMessage->SetShooter(CNetworkMessage_WeaponShoot::Shooter::Enemy);
 				shootMessage->SetShooterId(aMessageData.myVector4f.w);
 				shootMessage->SetWeaponIndex(myActiveWeaponIndex);
@@ -92,24 +101,64 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eAddWeaponWithoutChangingToIt:
 	{
+		if(CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
 		ChangeWeapon2(myWeapons.Size() - 1);
 	}
 	break;
 	case eComponentMessageType::eAddWeapon:
 	{
+		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
 		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eAddWeaponIndex:
 	{
+		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myInt, GetParent());
 		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
 	{
+		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
 		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast());
@@ -318,15 +367,26 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 	{
 		if (myIsActive == true)
 		{
-			CWeapon* nextWeapon = myWeapons[aIndex];
-			unsigned short& activeWeaponIndex = myActiveWeaponIndex;
-			auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
 			{
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				{
+					nextWeapon->Equip();
+					activeWeaponIndex = aIndex;
+				};
+
+				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+			}
+			else
+			{
+				CWeapon* nextWeapon = myWeapons[aIndex];
+				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
+				myWeapons[myActiveWeaponIndex]->SetModelVisibility(false);
 				nextWeapon->Equip();
 				activeWeaponIndex = aIndex;
-			};
-
-			myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
+			}
 		}
 	}
 }
@@ -352,6 +412,18 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	}
 	default:
 		break;
+	}
+	return false;
+}
+
+bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)
+{
+	for(unsigned int i = 0; i < myWeapons.Size(); i++)
+	{
+		if(myWeapons[i]->GetData()->name == aWeaponName)
+		{
+			return true;
+		}
 	}
 	return false;
 }

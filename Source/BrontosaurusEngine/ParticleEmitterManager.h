@@ -1,26 +1,29 @@
 #pragma once
-#include <stack.h>
+#include "../CommonUtilities/Stack.h"
+#include "../Particles/ParticleLibrary.h"
 
 class CParticleEmitter;
 struct SEmitterData;
+
 
 class CParticleEmitterManager
 {
 public:
 	typedef int ParticleEmitterID;
-
-
-public:
-	CParticleEmitterManager();
-	~CParticleEmitterManager();
-
+	static CParticleEmitterManager& GetInstance();
+	static void Create();
+	static void Destroy();
 
 	const ParticleEmitterID CreateParticleEmitter(const SEmitterData& aEmitterData);
 	CParticleEmitter* GetParticleEmitter(const ParticleEmitterID aID);
 
 	void RemoveParticleEmitter(const ParticleEmitterID aID);
-
+	void LoadParticleLibrary(const std::string& aLibraryPath);
 private:
+
+	CParticleEmitterManager();
+	~CParticleEmitterManager();
+
 	struct SParticleEmitterComparer
 	{
 		std::string myTexturePath;
@@ -51,7 +54,7 @@ private:
 	CU::GrowingArray<CParticleEmitter> myParticleEmitters;
 	CU::Stack<ParticleEmitterID> myFreeParticleEmitterIDs;
 	CU::GrowingArray<SParticleEmitterComparer> myParticleEmitterComp;
-
-
+	std::map<std::string, Particles::CParticleLibrary> myLibraries;
+	static CParticleEmitterManager* ourInstance;
 };
 

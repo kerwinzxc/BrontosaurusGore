@@ -7,6 +7,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../Audio/AudioInterface.h"
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
 
@@ -27,6 +28,7 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(
 	myShouldNotReset = nej;
 	myType = aType;
 	myRunTowardsComponentIndex = 999999;
+	myIsAggressive = false;
 }
 
 CEnemy::~CEnemy()
@@ -128,7 +130,7 @@ void CEnemy::Attack()
 		SComponentMessageData messageData;
 		CU::Vector3f direction = ClosestPlayerPosition() - GetParent()->GetWorldPosition();
 		direction.Normalize();
-		messageData.myVector3f = direction;
+		messageData.myVector3f = ClosestPlayerPosition();
 		messageData.myVector4f.w = myServerId;
 		GetParent()->NotifyComponents(eComponentMessageType::eServerShoot, messageData);
 	}
@@ -159,6 +161,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eTakeDamage:
+		Audio::CAudioInterface::GetInstance()->PostEvent("Impact_Tick"); // hitta något annat ställe om båda spelarna hör detta.//  CWeapon Shoot ?
 		StartHighlight();
 		break;
 	case eComponentMessageType::eCheckPointReset:
@@ -212,11 +215,11 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
 	
-	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0)
+	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0 || ourPlayerObjects[0] == nullptr)
 	{
 		return position;
 	}
-	
+
 	CU::Vector3f playerPos = ourPlayerObjects[0]->GetWorldPosition();
 	for(unsigned int i = 0; i < ourPlayerObjects.Size(); ++i)
 	{
@@ -256,6 +259,7 @@ eMessageReturn CEnemy::DoEvent(const CResetToCheckPointMessage& aResetToCheckPoi
 	SComponentMessageData controllerPositionData;
 	controllerPositionData.myVector3f = mySpawnPosition;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+	myIsAggressive = false;
 	return eMessageReturn::eContinue;
 }
 

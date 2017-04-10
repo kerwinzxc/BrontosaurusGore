@@ -29,6 +29,8 @@ enum class eComponentQuestionType
 	eEnemyNetworkID,
 	eGetCurrentAmmoData,
 	eGetWeapons,
+	eIsEnemy,
+	eHaveTriggerCollision,
 	eLength,
 };
 

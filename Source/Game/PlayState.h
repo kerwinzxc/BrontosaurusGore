@@ -44,6 +44,7 @@ class CExplosionFactory;
 class CExplosionComponentManager;
 class CTextInstance;
 class CDamageOnCollisionComponentManager;
+class CGameObject;
 
 class CPlayState : public State , public Postmaster::ISubscriber
 {
@@ -83,6 +84,7 @@ public:
 private:
 
 	void CreatePlayer(CU::Camera& aCamera);
+	void GivePlayerWeapons(CGameObject* aPlayerObject);
 private:
 	Physics::CPhysicsScene* myPhysicsScene;
 	Physics::CPhysics* myPhysics;

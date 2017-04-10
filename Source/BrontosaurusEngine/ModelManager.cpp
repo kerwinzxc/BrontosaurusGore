@@ -246,7 +246,8 @@ void CModelManager::LoadAnimations(const std::string& aPath, const ModelId aMode
 
 bool CModelManager::CreateModel(const std::string& aModelPath, ModelId aNewModel)
 {
-	return CModelLoader::LoadModel(aModelPath.c_str(), &myModelList[aNewModel]/*tempModelPointer*/);
+	CModel& newModel = myModelList[aNewModel];
+	return CModelLoader::LoadModel(aModelPath.c_str(), newModel);
 }
 
 bool CModelManager::DoesModelExists(const std::string& aModelPath)

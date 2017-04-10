@@ -5,6 +5,8 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../TClient/ClientMessageManager.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
+#include "../ThreadedPostmaster/GameEventMessage.h"
+#include "AmmoReplenishData.h"
 
 CWeaponPickupComponent::CWeaponPickupComponent()
 {
@@ -28,6 +30,14 @@ void CWeaponPickupComponent::DoMyEffect()
 	SComponentMessageData data;
 	data.myString = myWeaponPickup.c_str();
 	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddWeapon,data);
+
+	SAmmoReplenishData AmmoReplensihData;
+	AmmoReplensihData.ammoType = myWeaponPickup.c_str();
+	AmmoReplensihData.replenishAmount = 1000;
+	SComponentMessageData giveAmmoData;
+	giveAmmoData.myAmmoReplenishData = &AmmoReplensihData;
+	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+
 	CNetworkMessage_PickupWeapon* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupWeapon>(ID_ALL_BUT_ME);
 
 	SComponentQuestionData questionData;
@@ -36,4 +46,16 @@ void CWeaponPickupComponent::DoMyEffect()
 	message->SetWeapon(questionData.myInt);
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+
+	if (myWeaponPickup == "PlasmaRifle")
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a Plasme Rifle"));
+	}
+	else if (myWeaponPickup == "BFG")
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up the BFG"));
+	}
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a " + CU::StringToWString(myWeaponPickup)));
+	}
 }

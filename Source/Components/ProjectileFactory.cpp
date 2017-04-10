@@ -116,6 +116,20 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	
 	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc,newProjectileObject->GetId());
 	newProjectileObject->AddComponent(projectileSphereCollider);
+
+	SSphereColliderData sphereColliderDescTrigger;
+	sphereColliderDescTrigger.myRadius = .1f;
+	sphereColliderDescTrigger.IsTrigger = true;
+
+	unsigned int collideWithTrigger = Physics::CollideEverything;
+	collideWithTrigger &= ~Physics::ECollisionLayer::eProjectile;
+	sphereColliderDescTrigger.myLayer = Physics::eProjectile;
+	sphereColliderDescTrigger.myCollideAgainst = static_cast<Physics::ECollisionLayer>(collideWithTrigger);
+
+
+	CColliderComponent* projectileSphereColliderTrigger = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDescTrigger, newProjectileObject->GetId());
+	newProjectileObject->AddComponent(projectileSphereColliderTrigger);
+
 	
 	SRigidBodyData rigidbodyData;
 	rigidbodyData.isKinematic = false;

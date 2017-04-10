@@ -42,7 +42,7 @@ class CColliderComponentManager;
 class CColliderComponent : public CComponent , public Physics::IPhysicsCallback
 {
 public:
-	CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor);
+	CColliderComponent(const SColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger);
 	virtual ~CColliderComponent();
 	void UpdatePosition();
 	void UpdateCallbacks();
@@ -70,5 +70,6 @@ protected:
 private:
 	CU::GrowingArray<SStoredCallBackData> myStoredCallBackDataList;
 	CColliderComponentManager* myManager;
+	bool myIsTrigger;
 };
 

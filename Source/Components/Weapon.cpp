@@ -43,6 +43,7 @@ void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 	
 	}
 }
+
 void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
@@ -177,6 +178,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				CU::Matrix44f localWeaponMatrix = myUser->GetToWorldTransform();
 				localWeaponMatrix.Move(shootDisplacment);
 				shootPosition = localWeaponMatrix.GetPosition();
+
 
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);

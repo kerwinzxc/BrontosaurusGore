@@ -100,7 +100,7 @@ class CLoaderModel
 public:
 	CLoaderModel(){ myIsLoaded = false; myAnimationDuration = 0.0f; }
 	~CLoaderModel(){}
-	void SetData(const char* aModelPath){ myModelPath = aModelPath; }
+	void SetData(const std::string& aModelPath){ myModelPath = aModelPath; }
 	CLoaderMesh* CreateMesh(){ CLoaderMesh *model = new CLoaderMesh(); myMeshes.push_back(model); model->myModel = this; return model; }
 
 	std::vector<CLoaderMesh*> myMeshes;
@@ -126,9 +126,9 @@ public:
 	~CFBXLoader();
 
 	//Consider Using LoadModelScene instead
-	CLoaderModel *LoadModel(const char* aModel);
-	bool LoadGUIScene(const char * aFilePath, CLoaderScene & aSceneOut);
-	bool LoadModelScene(const char * aFilePath, CLoaderScene & aSceneOut);
+	CLoaderModel* LoadModel(const std::string& aModel);
+	bool LoadGUIScene(const std::string& aFilePath, CLoaderScene & aSceneOut);
+	bool LoadModelScene(const std::string& aFilePath, CLoaderScene & aSceneOut);
 	const struct aiScene* GetScene(const std::string& aFBXPath);
 
 

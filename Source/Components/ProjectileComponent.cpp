@@ -3,6 +3,7 @@
 #include "ProjectileData.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/CreateExplosionMessage.h"
+#include "PollingStation.h"
 
 CProjectileComponent::CProjectileComponent()
 {
@@ -19,18 +20,50 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 {
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eOnTriggerEnter:
+	{
+		if(aMessageData.myComponent->GetParent()->AskComponents(eComponentQuestionType::eHaveTriggerCollision, SComponentQuestionData()) == true)
+		{
+			break;
+		}
+	}
 	case eComponentMessageType::eOnCollisionEnter:
 	{
-		Deactivate();
-		//if(myData->shouldRayCast == false)
+		if(myData->isPlayerFriendly == true)
 		{
+			Deactivate();
+		}
+		if(myData->shouldRayCast == false)
+		{
+			CGameObject* hitObject = aMessageData.myComponent->GetParent();
+			if(CPollingStation::GetInstance()->CheckIfIsPlayerObject(hitObject) == true)
+			{
+				if(myData->isPlayerFriendly == true)
+				{
+					return;
+				}
+				else
+				{
+					Deactivate();
+					SComponentMessageData damageData;
+					damageData.myInt = myData->damage;
+					hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+					return;
+				}
+			}
+			
+			if(myData->isPlayerFriendly ==false && hitObject->AskComponents(eComponentQuestionType::eIsEnemy,SComponentQuestionData()) == true)
+			{
+				return;
+			}
+			Deactivate();
 			SComponentMessageData damageData;
 			damageData.myInt = myData->damage;
-			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+			hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
 		}
 		if(myData && myData->shouldExplodeOnImpact == true)
 		{
-			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData, true));
+			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CCreateExplosionMessage(GetParent()->GetWorldPosition(), myData->explosionData));
 		}
 		break;
 	}
