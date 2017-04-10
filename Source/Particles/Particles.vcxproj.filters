@@ -35,6 +35,21 @@
     <Filter Include="Spawn">
       <UniqueIdentifier>{f2cae2fc-d330-42da-8edd-9be311acd40d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spawn\Base">
+      <UniqueIdentifier>{593be353-9edd-428d-8fcd-ef12b07ac150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Color">
+      <UniqueIdentifier>{a8b16bcc-7378-4e60-a4ab-a184e3c59ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Velocity">
+      <UniqueIdentifier>{9d244d75-b007-4aa6-8b9a-0ec40c2905ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Size">
+      <UniqueIdentifier>{bb5aabfb-878b-409f-b00c-6888cfc81a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spawn\Lifetime">
+      <UniqueIdentifier>{a4b4efa3-09fa-4466-9bd0-c006eacdc6eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ParticleLibrary.h">
@@ -61,6 +76,21 @@
     <ClInclude Include="ParticleVelocityUpdater.h">
       <Filter>Updater\Velocity</Filter>
     </ClInclude>
+    <ClInclude Include="IParticleSpawner.h">
+      <Filter>Spawn\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleColorSpawner.h">
+      <Filter>Spawn\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleLifetimeSpawner.h">
+      <Filter>Spawn\Lifetime</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSizeSpawner.h">
+      <Filter>Spawn\Size</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleVelocitySpawner.h">
+      <Filter>Spawn\Velocity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ParticleLibrary.cpp">
@@ -83,6 +113,21 @@
     </ClCompile>
     <ClCompile Include="ParticleVelocityUpdater.cpp">
       <Filter>Updater\Velocity</Filter>
+    </ClCompile>
+    <ClCompile Include="IParticleSpawner.cpp">
+      <Filter>Spawn\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleColorSpawner.cpp">
+      <Filter>Spawn\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleLifetimeSpawner.cpp">
+      <Filter>Spawn\Lifetime</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSizeSpawner.cpp">
+      <Filter>Spawn\Size</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleVelocitySpawner.cpp">
+      <Filter>Spawn\Velocity</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

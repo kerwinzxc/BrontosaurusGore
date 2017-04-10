@@ -1,5 +1,8 @@
 #include "stdafx.h"
+#include <string>
 #include "ParticleEmitter.h"
+
+#include "JsonValue.h"
 #include "EmitterData.h"
 
 #include "ShaderManager.h"
@@ -9,8 +12,6 @@
 #include "DXFramework.h"
 #include "ConstBufferTemplate.h"
 #include "TextureManager.h"
-#include "JsonValue.h"
-#include "../Particles/ParticleVelocityUpdater.h"
 
 CParticleEmitter::CParticleEmitter()
 {
@@ -27,6 +28,7 @@ CParticleEmitter::CParticleEmitter()
 	myVertexBuffer = nullptr;
 	myModelBuffer = nullptr;
 	myEmitterData.particles.updaters.Init(5);
+	myEmitterData.particles.spawners.Init(5);
 }
 
 CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticleEmitter()
@@ -222,41 +224,46 @@ void CParticleEmitter::Init()
 	InitBuffers();
 }
 
-void CParticleEmitter::ParseColor(const CU::CJsonValue& aJsonValue)
+void CParticleEmitter::ParseSpawnParameters(const CU::CJsonValue& aJsonValue)
 {
-}
-
-void CParticleEmitter::ParseSize(const CU::CJsonValue& aJsonValue)
-{
-}
-
-CParticleEmitter::LifetimeType CParticleEmitter::GetLifetimeType(const std::string& aTypeString)
-{
-	if(aTypeString == "random")
+	for(int i = 0; i < aJsonValue.Size();++i)
 	{
-		return LifetimeType::eRandom;
+		
 	}
-
-	DL_ASSERT("Unknown lifetime type \"%s\"", aTypeString.c_str());
-	LifetimeType::eConstant;
 }
 
-void CParticleEmitter::ParseLifetime(const CU::CJsonValue& aJsonValue)
+void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 {
-	myEmitterData.particles.lifetime.type = GetLifetimeType(aJsonValue["type"].GetString());
-}
+	for (int i = 0; i < aJsonValue.Size(); ++i)
+	{
+		Particles::IParticleSpawner* spawner = nullptr;
+		const CU::CJsonValue value = aJsonValue[i];
 
-void CParticleEmitter::ParseVelocity(const CU::CJsonValue& aJsonValue)
-{
+		const std::string type = value["type"].GetString();
+
+		if(type == "velocity")
+		{
+			//spawner = new Particles::CParticleVelocitySpawner(value);
+		}
+		else if (type == "size")
+		{
+			//spawner = new Particles::CParticleSizeSpawner(value);
+		}
+		else if (type == "color")
+		{
+			//spawner = new Particles::CParticleColorSpawner(value);
+		}
+
+		myEmitterData.particles.spawners.Add(spawner);
+	}
 }
 
 void CParticleEmitter::ParseParticle(const CU::CJsonValue& aJsonValue)
 {
 	ParseRender(aJsonValue["render"]);
-	ParseLifetime(aJsonValue["lifetime"]);
-	ParseVelocity(aJsonValue["velocity"]);
-	ParseSize(aJsonValue["size"]);
-	ParseColor(aJsonValue["color"]);
+	//myEmitterData.particles.spawners.Add(new Particles::CParticleLifetimeSpawner(aJsonValue["lifetime"]));
+	ParseSpawnParameters(aJsonValue["spawn"]);
+	ParseUpdateParameters(aJsonValue["update"]);
 }
 
 CParticleEmitter::EmitterType CParticleEmitter::ParseEmitterType(const std::string& aTypeString)
@@ -295,7 +302,6 @@ void CParticleEmitter::ParseEmissionArea(const CU::CJsonValue& aJsonValue)
 		DL_ASSERT("No handling for emitter type \"%s\"", aJsonValue["type"].GetString().c_str());
 		break;
 	}
-
 
 	const CU::CJsonValue spread = aJsonValue["spread"];
 	const SpreadType spreadType = GetSpreadType(spread["type"].GetString());

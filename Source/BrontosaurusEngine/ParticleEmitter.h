@@ -1,14 +1,15 @@
 #pragma once
+#include <mutex>
 #include "Texture.h"
 #include "../CommonUtilities/GrowingArray.h"
 #include "../CommonUtilities/StaticArray.h"
 #include "../CommonUtilities/vector3.h"
-
 #include "../CommonUtilities/vector4.h"
-#include <mutex>
+
 
 namespace Particles
 {
+	class IParticleSpawner;
 	class IParticleUpdater;
 }
 
@@ -76,11 +77,8 @@ public:
 private:
 	void Init();
 
-	void ParseColor(const CU::CJsonValue& aJsonValue);
-	void ParseSize(const CU::CJsonValue& aJsonValue);
-	LifetimeType GetLifetimeType(const std::string& aTypeString);
-	void ParseLifetime(const CU::CJsonValue& aJsonValue);
-	void ParseVelocity(const CU::CJsonValue& aJsonValue);
+	void ParseSpawnParameters(const CU::CJsonValue& aJsonValue);
+	void ParseUpdateParameters(const CU::CJsonValue& aJsonValue);
 	void ParseParticle(const CU::CJsonValue& aJsonValue);
 	EmitterType ParseEmitterType(const std::string& aTypeString);
 	SpreadType GetSpreadType(const std::string& aTypeString);
@@ -141,6 +139,7 @@ private:
 	struct ParticleData
 	{
 		Lifetime lifetime;
+		CU::GrowingArray<Particles::IParticleSpawner*> spawners;
 		CU::GrowingArray<Particles::IParticleUpdater*> updaters;
 	};
 	struct EmitterData

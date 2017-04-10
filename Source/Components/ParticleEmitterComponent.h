@@ -1,7 +1,8 @@
 #pragma once
 #include "../CommonUtilities/TimerManager.h"
 #include "Component.h"
-#include "../BrontosaurusEngine/ParticleEmitterInstance.h"
+
+class CParticleEmitterInstance;
 
 class CParticleEmitterComponent : public CComponent
 {
@@ -12,8 +13,8 @@ public:
 
 	inline CParticleEmitterInstance* GetEmitter();
 
-	inline void Activate();
-	inline void Deactivate();
+	void Activate();
+	void Deactivate();
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData);
 
@@ -24,15 +25,7 @@ private:
 	CParticleEmitterInstance* myParticleInstance;
 };
 
-void CParticleEmitterComponent::Activate()
-{
-	myParticleInstance->Activate();
-}
 
-void CParticleEmitterComponent::Deactivate()
-{
-	myParticleInstance->Deactivate();
-}
 
 CParticleEmitterInstance* CParticleEmitterComponent::GetEmitter()
 {
