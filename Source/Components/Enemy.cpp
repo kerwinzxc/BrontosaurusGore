@@ -215,11 +215,11 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
 	
-	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0)
+	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0 || ourPlayerObjects[0] == nullptr)
 	{
 		return position;
 	}
-	
+
 	CU::Vector3f playerPos = ourPlayerObjects[0]->GetWorldPosition();
 	for(unsigned int i = 0; i < ourPlayerObjects.Size(); ++i)
 	{
