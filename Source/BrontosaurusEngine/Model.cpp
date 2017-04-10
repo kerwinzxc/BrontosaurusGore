@@ -244,8 +244,7 @@ void CModel::Render(SDeferredRenderModelParams& aParamObj)
 
 	DEVICE_CONTEXT->IASetVertexBuffers(0, 1, &currentLodModel.myVertexBuffer, &stride, &offset);
 	DEVICE_CONTEXT->IASetIndexBuffer(currentLodModel.myIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);
-	
+	DEVICE_CONTEXT->DrawIndexed(currentLodModel.myIndexCount, 0, 0);	
 }
 
 //
@@ -391,12 +390,6 @@ void CModel::UpdateCBuffer(SDeferredRenderModelParams& aParamObj)
 	DEVICE_CONTEXT->Unmap(myCbuffer, 0);
 	DEVICE_CONTEXT->VSSetConstantBuffers(1, 1, &myCbuffer);
 	DEVICE_CONTEXT->PSSetConstantBuffers(1, 1, &myCbuffer);
-#ifdef _DEBUG
-	if (myFilePath.find("lasma") != std::string::npos)
-	{
-		int br = 0;
-	}
-#endif
 
 	//ANIMATION BUFFER
 	if (mySceneAnimator != nullptr && (aParamObj.aAnimationState != eAnimationState::none) /*&& (aParamObj.aAnimationState[0] != '\0')*/)
@@ -457,11 +450,11 @@ void CModel::BlendBones(const std::vector<mat4>& aBlendFrom, const std::vector<m
 {
 	for (size_t i = 0; i < aBlendFrom.size(); ++i)
 	{
-		CU::Matrix44f lerpedid = aBlendFrom[i].Lerp(aBlendTo[i].GetRotation(), aLerpValue);
-		CU::Matrix44f slerped = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
-		CU::Matrix44f difference = lerpedid - slerped;
-		aBlendOut[i] = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
-		//aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
+		//CU::Matrix44f lerpedid = aBlendFrom[i].Lerp(aBlendTo[i].GetRotation(), aLerpValue);
+		//CU::Matrix44f slerped = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
+		//CU::Matrix44f difference = lerpedid - slerped;
+		//aBlendOut[i] = Physics::Slerp(aBlendFrom[i].GetRotation(), aBlendTo[i].GetRotation(), aLerpValue);
+		aBlendOut[i] = aBlendFrom[i].Lerp(aBlendTo[i], aLerpValue);
 		//aBlendOut[i] = aBlendFrom[i].SlerpRotation(aBlendTo[i], aLerpValue);
 		aBlendOut[i].myPosition = aBlendFrom[i].myPosition.Lerp(aBlendTo[i].myPosition, aLerpValue);
 	}
