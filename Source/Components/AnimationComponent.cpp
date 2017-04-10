@@ -62,7 +62,6 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 	if (myAnimationStack.GetLast().myCoolDownTime != -1.f)
 	{
 		myAnimationStack.GetLast().myCoolDownTime -= aDeltaTime.GetSeconds();
-		DL_PRINT("animation cooldown: %f", myAnimationStack.GetLast().myCoolDownTime);
 		if (myAnimationStack.GetLast().myCoolDownTime <= 0.f)
 		{
 			if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::invisible)

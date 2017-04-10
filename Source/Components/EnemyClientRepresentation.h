@@ -23,6 +23,7 @@ protected:
 	float myPositionInterpolationSpeed;
 	float myRotationInterpolationSpeed;
 	eEnemyTypes myType;
+	bool myIsAlive;
 };
 
 inline const eEnemyTypes CEnemyClientRepresentation::GetEnemyType() const
