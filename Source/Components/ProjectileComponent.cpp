@@ -30,24 +30,22 @@ void CProjectileComponent::Receive(const eComponentMessageType aMessageType, con
 		if(myData->shouldRayCast == false)
 		{
 			CGameObject* hitObject = aMessageData.myComponent->GetParent();
-			for(unsigned short i = 0; i < CPollingStation::GetInstance()->GetPlayers().Size(); i++)
+			if(CPollingStation::GetInstance()->CheckIfIsPlayerObject(hitObject) == true)
 			{
-				if(hitObject == CPollingStation::GetInstance()->GetPlayers()[i])
+				if(myData->isPlayerFriendly == true)
 				{
-					if(myData->isPlayerFriendly == true)
-					{
-						return;
-					}
-					else
-					{
-						Deactivate();
-						SComponentMessageData damageData;
-						damageData.myInt = myData->damage;
-						hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-						return;
-					}
+					return;
+				}
+				else
+				{
+					Deactivate();
+					SComponentMessageData damageData;
+					damageData.myInt = myData->damage;
+					hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+					return;
 				}
 			}
+			
 			if(myData->isPlayerFriendly ==false && hitObject->AskComponents(eComponentQuestionType::eIsEnemy,SComponentQuestionData()) == true)
 			{
 				return;
