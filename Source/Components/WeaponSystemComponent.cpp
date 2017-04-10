@@ -112,7 +112,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			break;
 		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
-		ChangeWeapon2(myWeapons.Size() - 1);
+		//ChangeWeapon2(myWeapons.Size() - 1);
 	}
 	break;
 	case eComponentMessageType::eAddWeapon:
