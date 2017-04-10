@@ -341,3 +341,10 @@ bool CImpController::CanChangeState()
 	}
 	return true;
 }
+
+eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	myJumpForce = 0.0f;
+	myState = eImpState::eIdle;
+	return CEnemy::DoEvent(aResetToCheckPointMessage);
+}
