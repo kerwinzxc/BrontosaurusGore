@@ -129,14 +129,12 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 		CGameObject* newWeaponObject = myGameObjectManagerPointer->CreateGameObject();
 		newWeaponObject->AddComponent(newWeaponModelComponent);
 
-		if (aWeapon->GetData()->modelFilePath.find("Plasma") != std::string::npos
-			|| aWeapon->GetData()->modelFilePath.find("Shotgun") != std::string::npos)
+		std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
+		size_t pos = playerHandsPath.find_last_of('/');
+		playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
+		if (CU::CJsonValue::FileExists(playerHandsPath))
 		{
-			std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
-			size_t pos = playerHandsPath.find_last_of('/');
-			playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
-
-			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath.c_str());
+			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath);
 			handModelComponent->SetIgnoreDepth(true);
 
 			newWeaponObject->AddComponent(handModelComponent);
