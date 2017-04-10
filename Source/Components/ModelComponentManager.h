@@ -13,7 +13,7 @@ public:
 	CModelComponentManager(CScene& aScene);
 	~CModelComponentManager();
 
-	CModelComponent* CreateComponent(const char* aModelPath);
+	CModelComponent* CreateComponent(const std::string& aModelPath);
 	void DeleteModelComponent(CModelComponent* aComponent);
 
 private:
