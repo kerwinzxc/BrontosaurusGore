@@ -107,6 +107,7 @@ void CImpController::Update(const float aDeltaTime)
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+			//ChangeClientAnimation(eComponentMessageType::eImpMeleeAttack);
 			myState = eImpState::eIdle;
 			InitiateWander();
 		}
@@ -116,6 +117,7 @@ void CImpController::Update(const float aDeltaTime)
 		if(GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+			ChangeClientAnimation(eComponentMessageType::eImpThrowAttack);
 			myState = eImpState::eIdle;
 			myUsedAttackSinceLastRunning++;
 			if (myAttacksUntillRunningAway <= myUsedAttackSinceLastRunning)
@@ -283,9 +285,10 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
 		myIsJumping = true;
 
-		CNetworkMessage_AnimationStart* jumpMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
-		jumpMessage->Init(GetNetworkID(), eComponentMessageType::eImpStartToJump);
-		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(jumpMessage));
+		ChangeClientAnimation(eComponentMessageType::eImpStartToJump);
+		//CNetworkMessage_AnimationStart* jumpMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+		//jumpMessage->Init(GetNetworkID(), eComponentMessageType::eImpStartToJump);
+		//Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(jumpMessage));
 	}
 }
 
@@ -353,4 +356,11 @@ eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetTo
 	myJumpForce = 0.0f;
 	myState = eImpState::eIdle;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
+}
+
+void CImpController::ChangeClientAnimation(const eComponentMessageType aMessageType) const
+{
+	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+	animationMessage->Init(GetNetworkID(), aMessageType);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
 }

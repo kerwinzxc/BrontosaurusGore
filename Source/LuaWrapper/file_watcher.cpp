@@ -21,7 +21,7 @@ CFileWatcher::~CFileWatcher()
 	{
 		while (!myThreadIsDone)
 		{
-			Sleep(1);
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
 
@@ -66,8 +66,8 @@ void CFileWatcher::UpdateChanges(const std::wstring& aDir)
 		myMutex.lock();
 		OnFolderChange(aDir);
 		myMutex.unlock();
-	
-		Sleep(10); // No need to hog too much performance
+		FlushChanges();
+		std::this_thread::sleep_for(std::chrono::seconds(2));
 	}
 	myThreadIsDone = true;
 }

@@ -29,9 +29,17 @@ namespace Particles
 	private:
 		void AddSystemRef(const std::string& aName, const Particles::ParticleEmitterID aId);
 		void LoadSystem(const CU::CJsonValue& aJsonValue);
-		std::map<std::string, Particles::ParticleEmitterID> myStringIdMap;
 		
+		std::map<std::string, Particles::ParticleEmitterID> myStringIdMap;
 		std::map<Particles::ParticleEmitterID, CParticleEmitter*> myIdEmitterMap;
+		
+#ifndef _RETAIL_BUILD
+
+		std::string myFile;
+		void Reload();
+		void WatchFile(const std::string& aPath);
+		CFileWatcher myFileWatcher;
+#endif
 	};
 }
 
