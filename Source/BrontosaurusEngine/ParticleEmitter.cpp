@@ -313,7 +313,7 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 		}
 		else
 		{
-			DL_ASSERT("Attempting to add a unknows update parameter \"%s\"", type.c_str());
+			//DL_ASSERT("Attempting to add a unknown update parameter \"%s\"", type.c_str());
 			continue;
 		}
 
