@@ -20,6 +20,7 @@
 #include "../Particles/ParticleSizeSpawner.h"
 #include "../Particles/ParticleForceUpdater.h"
 #include "../Particles/ParticleFrictionUpdater.h"
+#include "../Particles/ParticleColorUpdater.h"
 
 
 CParticleEmitter::CParticleEmitter()
@@ -308,8 +309,15 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 		}
 		else if (type == "friction")
 		{
-
 			updater = new Particles::CParticleFrictionUpdater(value);
+		}
+		else if (type == "colorOverTime")
+		{
+			updater = new Particles::CParticleColorUpdater(value);
+		}
+		else if (type == "sizeOverTime")
+		{
+			
 		}
 		else
 		{

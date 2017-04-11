@@ -85,7 +85,7 @@ Particles::ParticleEmitterID Particles::CParticleLibrary::GetSystem(const std::s
 		return FoundNone;
 	}
 
-	id->second;
+	return id->second;
 }
 
 CParticleEmitter * Particles::CParticleLibrary::GetSystemP(ParticleEmitterID aParticleEmitter)
