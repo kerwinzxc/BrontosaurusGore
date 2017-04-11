@@ -36,6 +36,7 @@ enum class ePackageType: __int8
 	eSpawnEnemyRepresentation,
 	eSetRepesentationActive, 
 	eWeaponChange,
+	eAnimationStart,
 	eSize,
 	
 };

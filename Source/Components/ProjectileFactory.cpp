@@ -133,7 +133,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 	
 	SRigidBodyData rigidbodyData;
 	rigidbodyData.isKinematic = false;
-	rigidbodyData.useGravity = true;
+	rigidbodyData.useGravity = false;
 	CColliderComponent* projectileRigidBodyCollider = myColliderComponentManagerPointer->CreateComponent(&rigidbodyData, newProjectileObject->GetId());
 	
 	newProjectileObject->AddComponent(projectileRigidBodyCollider);

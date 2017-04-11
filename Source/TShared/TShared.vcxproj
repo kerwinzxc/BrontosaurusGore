@@ -208,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationState.h" />
+    <ClInclude Include="NetworkMessage_AnimationStart.h" />
     <ClInclude Include="NetworkMessage_DoorMessage.h" />
     <ClInclude Include="NetworkMessage_EnemyPosition.h" />
     <ClInclude Include="NetworkMessage_EnemyTransformation.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="TShared_NetworkWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NetworkMessage_AnimationStart.cpp" />
     <ClCompile Include="NetworkMessage_DoorMessage.cpp" />
     <ClCompile Include="NetworkMessage_EnemyPosition.cpp" />
     <ClCompile Include="NetworkMessage_EnemyTransformation.cpp" />
