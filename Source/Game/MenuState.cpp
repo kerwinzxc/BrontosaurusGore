@@ -3,6 +3,7 @@
 #include "InputMessage.h"
 #include "EInputReturn.h"
 #include "JsonValue.h"
+#include "EMouseButtons.h"
 
 CMenuState::CMenuState(StateStack& aStateStack, std::string aFile): State(aStateStack, eInputMessengerType::eMainMenu), myShowStateBelow(false), myPointerSprite(nullptr)
 {
@@ -42,10 +43,19 @@ CU::eInputReturn CMenuState::RecieveInput(const CU::SInputMessage& aInputMessage
 	{
 	case CU::eInputType::eMouseMoved: 
 		myManager.UpdateMousePosition(myManager.GetMopusePosition() + aInputMessage.myMouseDelta);
-
 		break;
-	case CU::eInputType::eMousePressed: break;
-	case CU::eInputType::eMouseReleased: break;
+	case CU::eInputType::eMousePressed:
+		if (aInputMessage.myMouseButton == CU::eMouseButtons::LBUTTON)
+		{
+			myManager.MousePressed();
+		}
+		break;
+	case CU::eInputType::eMouseReleased:
+		if (aInputMessage.myMouseButton == CU::eMouseButtons::LBUTTON)
+		{
+			myManager.MouseReleased();
+		}
+		break;
 	case CU::eInputType::eScrollWheelChanged: break;
 	case CU::eInputType::eKeyboardPressed: break;
 	case CU::eInputType::eKeyboardReleased: break;
@@ -79,7 +89,19 @@ void CMenuState::LoadElement(const CU::CJsonValue& aJsonValue,const std::string 
 	if (aJsonValue.at("isButton").GetBool())
 	{
 		const CU::CJsonValue &buttonValue = aJsonValue.at("button");
-		myManager.CreateClickArea(0, spriteID, buttonValue.at("rect").GetVector4f("xyzw"), 1);
+
+		CU::CJsonValue actionArray = buttonValue.at("actions");
+
+		CU::GrowingArray<std::string> actions(MAX(actionArray.Size(), 1));
+		CU::GrowingArray<std::string> arguments(MAX(actionArray.Size(), 1));
+
+		for (int i = 0; i < actionArray.Size(); ++i)
+		{
+			actions.Add(actionArray.at(i).at("action").GetString());
+			arguments.Add(actionArray.at(i).at("argument").GetString());
+		}
+
+		myManager.CreateClickArea(actions, arguments, spriteID, buttonValue.at("rect").GetVector4f("xyzw"), 1);
 	}
 
 	if (aJsonValue.at("hasText").GetBool())

@@ -14,6 +14,7 @@
 #include "../TServer/ServerMessageManager.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
 #include "../TServer/ServerMessageManager.h"
+#include "WeaponPickupData.h"
 
 CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryThatIsGoingToBEHardToObtain)
 	:WeaponFactoryPointer(&aWeaponFactoryThatIsGoingToBEHardToObtain)
@@ -230,6 +231,16 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myIsActive = true;
 		break;
 	}
+	case eComponentMessageType::eGiveYourselfAmmo:
+	{
+		SAmmoReplenishData replenishData;
+		replenishData.ammoType = myWeapons[myActiveWeaponIndex]->GetData()->name;
+		replenishData.replenishAmount = 1000;
+		SComponentMessageData giveAmmoData;
+		giveAmmoData.myAmmoReplenishData = &replenishData;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		break;
+	}
 	default:
 		break;
 	}
@@ -407,16 +418,24 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	}
 	case eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon:
 	{
+		DL_PRINT("weapon index belongs to %s ", myWeapons[myActiveWeaponIndex]->GetData()->name.c_str());
 		aQuestionData.myInt = WeaponFactoryPointer->GetWeaponFactoryWeaponIndex(myWeapons[myActiveWeaponIndex]->GetData()->name.c_str());
 		return true; 
 		break;
 	}
-	case eComponentQuestionType::eLastHitNormal:
-		aQuestionData.myVector3f = myWeapons[myActiveWeaponIndex]->GetLastHitNormal();
+	case eComponentQuestionType::eGetWeaponFactoryIndexOfSpecificWeapon:
+	{
+		for (unsigned int i = 0; i < myWeapons.Size(); i++)
+		{
+			if (myWeapons[i]->GetData()->name == aQuestionData.myWeaponPickupData->weaponName)
+			{
+				aQuestionData.myWeaponPickupData->weaponFactoryIndex = WeaponFactoryPointer->GetWeaponFactoryWeaponIndex(myWeapons[i]->GetData()->name.c_str());
+				return true;
+			}
+		}
+		return false;
 		break;
-	case eComponentQuestionType::eLastHitPosition:
-		aQuestionData.myVector3f = myWeapons[myActiveWeaponIndex]->GetLastHitPosition();
-		break;
+	}
 	default:
 		break;
 	}

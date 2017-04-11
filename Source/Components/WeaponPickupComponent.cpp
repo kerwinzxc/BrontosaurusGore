@@ -7,6 +7,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
 #include "AmmoReplenishData.h"
+#include "WeaponPickupData.h"
 
 CWeaponPickupComponent::CWeaponPickupComponent()
 {
@@ -38,12 +39,15 @@ void CWeaponPickupComponent::DoMyEffect()
 	giveAmmoData.myAmmoReplenishData = &AmmoReplensihData;
 	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
-	CNetworkMessage_PickupWeapon* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupWeapon>(ID_ALL_BUT_ME);
+	CNetworkMessage_PickupWeapon* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupWeapon>(ID_ALL);
 
 	SComponentQuestionData questionData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetWeaponFactoryIndexOfActiveWeapon, questionData);
+	SWeaponPickupData temporaryWeaponPickupData;
+	questionData.myWeaponPickupData = &temporaryWeaponPickupData;
+	questionData.myWeaponPickupData->weaponName = myWeaponPickup.c_str();
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetWeaponFactoryIndexOfSpecificWeapon, questionData);
 
-	message->SetWeapon(questionData.myInt);
+	message->SetWeapon(questionData.myWeaponPickupData->weaponFactoryIndex);
 	message->SetID(myNetworkId);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
 

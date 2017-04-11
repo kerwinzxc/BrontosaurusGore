@@ -2,6 +2,7 @@
 
 class CColliderComponent;
 class CWeapon;
+struct SWeaponPickupData;
 
 namespace CU
 {
@@ -31,6 +32,7 @@ enum class eComponentQuestionType
 	eGetWeapons,
 	eIsEnemy,
 	eHaveTriggerCollision,
+	eGetWeaponFactoryIndexOfSpecificWeapon,
 
 	eHitPosition,
 	eLastHitNormal,
@@ -64,6 +66,7 @@ struct SComponentQuestionData
 		SAmmoLeftData* myAmmoLeftData;
 		CGameObject* myGameObject;
 		const CU::GrowingArray<CWeapon*>* myWeapons;
+		SWeaponPickupData* myWeaponPickupData;
 	};
 };
 

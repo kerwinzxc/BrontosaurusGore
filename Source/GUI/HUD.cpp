@@ -395,7 +395,7 @@ void CHUD::Render()
 		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
 		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
 
-		guiChangeState = new SRenderToGUI(L"healthAndArmour", changeStatesMessage);
+		guiChangeState = new SRenderToGUI(L"weapon", changeStatesMessage);
 		RENDERER.AddRenderMessage(guiChangeState);
 
 		myAmmoNumber.RenderToGUI(L"weapon");
