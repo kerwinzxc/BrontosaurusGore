@@ -41,6 +41,9 @@ public:
 	void ResetSpawnTimer();
 	bool IsActive();
 	void SetTransformation(const CU::Matrix44f& aMatrix44);
+	void AddRef();
+	void Release();
+	bool ShouldKeep() const;
 private:
 	void Init();
 	void EmitParticle();
@@ -61,6 +64,7 @@ private:
 	bool  myIsActive;
 	bool myIsVisible;
 	float myLifetime;
+	unsigned short myRefs;
 	static int ourIds;
 };
 

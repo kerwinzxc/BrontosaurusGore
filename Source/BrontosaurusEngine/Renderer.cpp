@@ -1306,7 +1306,17 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 
 	if (msg->myRenderCamera.GetIsShadowCamera() == false)
 	{
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myDeferredRenderer.myIntermediatePackage);
+		ID3D11ShaderResourceView* SRV[3] =
+		{
+			myDeferredRenderer.myIntermediatePackage.GetResource(),
+			myDeferredRenderer.myGbuffer.GetRenderPackage(CGeometryBuffer::eDiffuse).GetDepthResource(),
+			myDeferredRenderer.myGbuffer.GetRenderPackage(CGeometryBuffer::eEmissive).GetDepthResource()
+		};
+
+		DEVICE_CONTEXT->PSSetShaderResources(1, 3, SRV);
+		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eFog);
+
+
 		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	}
 	else

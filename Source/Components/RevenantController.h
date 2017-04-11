@@ -41,6 +41,8 @@ private:
 	float myElapsedChargeRangedAirBarrageAttackTime;
 	float myChargeMeleeAttackDuration;
 	float myElapsedChargeMeleeAttackTime;
+	unsigned short myAttacksUntilChangingStates;
+	unsigned short myUsedAttacksSinceLastStateChange;
 	eRevenantState myState;
 
 	bool myIsflying;

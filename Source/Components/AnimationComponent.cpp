@@ -101,10 +101,23 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eImpStartToJump:
-		it = myAnimationStates.find("jump");
-		if (it != animationEnd)
+		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::jump01)
 		{
-			PushAnimation(it->second);
+			it = myAnimationStates.find("jump");
+			if (it != animationEnd)
+			{
+				PushAnimation(it->second);
+			}
+		}
+		break;
+	case eComponentMessageType::eImpThrowAttack:
+		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::throwAttack01)
+		{
+			it = myAnimationStates.find("ranged");
+			if (it != animationEnd)
+			{
+				PushAnimation(it->second);
+			}
 		}
 		break;
 	case eComponentMessageType::eShoot:

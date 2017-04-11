@@ -20,6 +20,10 @@
 #include "../Particles/ParticleSizeSpawner.h"
 #include "../Particles/ParticleForceUpdater.h"
 #include "../Particles/ParticleFrictionUpdater.h"
+#include "../Particles/ParticleColorUpdater.h"
+#include "../Particles/ParticleSizeUpdate.h"
+#include "../Particles/ParticleRotationSpawner.h"
+#include "../LuaWrapper/file_watcher.h"
 
 
 CParticleEmitter::CParticleEmitter()
@@ -43,29 +47,20 @@ CParticleEmitter::CParticleEmitter()
 
 CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticleEmitter()
 {
-	myEmitterData.name = aJsonValue["name"].GetString();
-	myEmitterData.id = aJsonValue["id"].GetInt();
-
-	myEmitterData.emitter.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
-	myEmitterData.emitter.emissionRate = aJsonValue["emissionRate"].GetUInt();
-
-	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
-	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
-	
-	ParseEmissionArea(aJsonValue["emitter"]);
-	ParseParticle(aJsonValue["particle"]);
-
-
-	Init();
+	Init(aJsonValue);
 }
 
 CParticleEmitter::~CParticleEmitter()
 {
+	std::lock_guard<std::mutex> updateLock(myUpdateMutex);
+	std::lock_guard<std::mutex> renderLock(myRenderMutex);
+	std::lock_guard<std::mutex> bufferLock(myUpdateVBufferMutex);
 	Destroy();
 }
 
 void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode)
 {
+	std::lock_guard<std::mutex> lock(myRenderMutex);
 	const RenderMode renderMode = myEmitterData.render.renderMode;
 	if (!myRenderEffects[static_cast<int>(myEmitterData.render.renderMode)]) return;
 
@@ -124,30 +119,31 @@ void CParticleEmitter::RemoveRef()
 	--myRefCount;
 }
 
+
 void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance)
 {
+	std::lock_guard<std::mutex> lock(myUpdateMutex);
 
 	myCurrentInstaceTransform = aInstance.myToWorldSpace;
-	if(aInstance.IsActive() == false && myEmitterData.emitter.loop == false)
+	if(aInstance.IsActive() == false && aInstance.IsDone() == true && myEmitterData.emitter.loop == false)
 	{
 		return;
 	}
+
+	if (aInstance.myLifetime < 0.f && myEmitterData.emitter.loop == false)
+	{
+		aInstance.Deactivate();
+	}
+
 
 	const float dt = aTime.GetSeconds();
 	aInstance.myLifetime -= dt;
 
-	if(aInstance.myLifetime < 0.f && myEmitterData.emitter.loop == false)
-	{
-		aInstance.Deactivate();
-		return;
-	}
-
 	aInstance.myEmitTimer -= dt;
-
 	while(aInstance.myEmitTimer < 0)
 	{
 		aInstance.myEmitTimer += GetEmitTime();
-		if(aInstance.myParticles.Size() < myEmitterData.emitter.maxNrOfParticles)
+		if(aInstance.IsActive() == true && aInstance.myParticles.Size() < myEmitterData.emitter.maxNrOfParticles)
 		{
 			SParticle particle;
 			particle.position = aInstance.myToWorldSpace.GetPosition();
@@ -159,6 +155,7 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 			aInstance.myParticleLogic.Add(particleLogic);
 		}
 	}
+	
 
 	for(int i = aInstance.myParticles.Size() - 1; i >= 0; --i)
 	{
@@ -175,7 +172,7 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 
 		UpdateParticles(particle, logic, dt);
 	}
-
+	
 }
 
 float CParticleEmitter::GetLifetime() const
@@ -193,8 +190,21 @@ unsigned CParticleEmitter::GetMaxParticles()
 	return myEmitterData.emitter.maxNrOfParticles;
 }
 
-void CParticleEmitter::Init()
+void CParticleEmitter::Init(const CU::CJsonValue& aJsonValue)
 {
+	myEmitterData.name = aJsonValue["name"].GetString();
+	myEmitterData.id = aJsonValue["id"].GetInt();
+
+	myEmitterData.emitter.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
+	myEmitterData.emitter.emissionRate = aJsonValue["emissionRate"].GetUInt();
+
+	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
+	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
+	myEmitterData.emitter.maxRefCount = aJsonValue["maxEmitters"].GetUInt();
+
+	ParseEmissionArea(aJsonValue["emitter"]);
+	ParseParticle(aJsonValue["particle"]);
+
 	unsigned int ShaderType = 0;
 	ShaderType |= EModelBluePrint_Position;
 	ShaderType |= EModelBluePrint_Size;
@@ -284,6 +294,10 @@ void CParticleEmitter::ParseSpawnParameters(const CU::CJsonValue& aJsonValue)
 		{
 			spawner = new Particles::CParticleLifetimeSpawner(value);
 		}
+		else if(type == "rotation")
+		{
+			spawner = new Particles::CParticleRotationSpawner(value);
+		}
 		else
 		{
 			DL_ASSERT("Attempting to add a unknows spawn parameter \"%s\"", type.c_str());
@@ -308,12 +322,19 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 		}
 		else if (type == "friction")
 		{
-
 			updater = new Particles::CParticleFrictionUpdater(value);
+		}
+		else if (type == "colorOverTime")
+		{
+			updater = new Particles::CParticleColorUpdater(value);
+		}
+		else if (type == "sizeOverTime")
+		{
+			updater = new Particles::CParticleSizeUpdate(value);
 		}
 		else
 		{
-			//DL_ASSERT("Attempting to add a unknown update parameter \"%s\"", type.c_str());
+			DL_ASSERT("Attempting to add a unknown update parameter \"%s\"", type.c_str());
 			continue;
 		}
 
@@ -404,6 +425,11 @@ CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& 
 CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode() const
 {
 	return myEmitterData.render.renderMode;
+}
+
+bool CParticleEmitter::CanInstansiate() const
+{
+	return myRefCount < myEmitterData.emitter.maxRefCount;
 }
 
 void CParticleEmitter::ParseRender(const CU::CJsonValue& aJsonValue)

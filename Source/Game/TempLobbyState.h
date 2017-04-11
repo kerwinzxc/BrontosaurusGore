@@ -46,6 +46,7 @@ public:
 	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
 
 private:
+	void GetIPAddress();
 	CTextInstance myTextINstance;
 	
 	eLobbyState myLobbyState;
@@ -53,6 +54,7 @@ private:
 
 	unsigned char myCurrentLine;
 
+	std::wstring myThisComputersIP;
 	std::wstring myIP;
 	std::wstring myName;
 	CU::Time myBlinkeyTimer;

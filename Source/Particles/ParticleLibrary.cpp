@@ -17,7 +17,19 @@ void Particles::CParticleLibrary::Load(const std::string& aPath)
 {
 	CU::CJsonValue particlesFile;
 	std::string errorString = particlesFile.Parse(aPath);
-	if (!errorString.empty()) DL_MESSAGE_BOX(errorString.c_str());
+	if (!errorString.empty())
+	{
+		DL_MESSAGE_BOX(errorString.c_str());
+		return;
+	}
+
+#ifndef _RETAIL_BUILD
+	if(myFile.empty())
+	{
+		WatchFile(aPath);
+	}
+	myFile = aPath;
+#endif
 
 	CU::CJsonValue systemsArray = particlesFile["systems"];
 
@@ -85,7 +97,7 @@ Particles::ParticleEmitterID Particles::CParticleLibrary::GetSystem(const std::s
 		return FoundNone;
 	}
 
-	id->second;
+	return id->second;
 }
 
 CParticleEmitter * Particles::CParticleLibrary::GetSystemP(ParticleEmitterID aParticleEmitter)
@@ -125,3 +137,25 @@ void Particles::CParticleLibrary::LoadSystem(const CU::CJsonValue& aJsonValue)
 
 	myIdEmitterMap[id] = emitter;
 }
+
+#ifndef _RETAIL_BUILD
+void Particles::CParticleLibrary::Reload()
+{
+	std::map<int, CParticleEmitter*>::iterator it;
+	for(it = myIdEmitterMap.begin(); it != myIdEmitterMap.end(); ++it)
+	{
+		delete it->second;
+	}
+	myIdEmitterMap.clear(); 
+	myStringIdMap.clear();
+
+	Load(myFile);
+}
+
+void Particles::CParticleLibrary::WatchFile(const std::string& aPath)
+{
+	const std::wstring watchFile(aPath.begin(), aPath.end());
+	std::function<void(const std::wstring&)> callback = [this](const std::wstring& something) {Reload(); };
+	myFileWatcher.WatchFileChange(watchFile, callback);
+}
+#endif

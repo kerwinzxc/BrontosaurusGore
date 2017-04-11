@@ -24,7 +24,8 @@ namespace AnimationComponentLoader
 	void LoadShoot(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadEquip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadUnequip(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
-	void LoadJump (const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+	void LoadJump(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
+	void LoadRangedAttack(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
 	{
@@ -88,6 +89,12 @@ namespace AnimationComponentLoader
 			{
 				CU::CJsonValue jumpObject = statesObject["jump"];
 				LoadJump(jumpObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("ranged"))
+			{
+				CU::CJsonValue rangedObject = statesObject["ranged"];
+				LoadRangedAttack(rangedObject, aModelComponent, aAnimationStates);
 			}
 		}
 	}
@@ -264,6 +271,41 @@ namespace AnimationComponentLoader
 
 
 			aAnimationStates["jump"] = jumpState;
+		}
+	}
+
+	void LoadRangedAttack(const CU::CJsonValue& aRangedAttackObject, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
+	{
+		SAnimation rangedAttackState;
+		int animationKey = SAnimationState::AnimationStates.Find(aRangedAttackObject["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			rangedAttackState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aRangedAttackObject["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				rangedAttackState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				rangedAttackState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			rangedAttackState.myIsLooping = aRangedAttackObject["loop"].GetBool();
+			if (rangedAttackState.myIsLooping)
+			{
+				if (aRangedAttackObject.HasKey("coolDownTime"))
+				{
+					rangedAttackState.myCoolDownTime = aRangedAttackObject["coolDownTime"].GetFloat();
+				}
+			}
+			else
+			{
+				rangedAttackState.myCoolDownTime = aModelComponent.GetAnimationDuration(eAnimationState::throwAttack01);
+			}
+
+
+			aAnimationStates["ranged"] = rangedAttackState;
 		}
 	}
 }
