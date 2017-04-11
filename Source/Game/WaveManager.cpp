@@ -15,29 +15,27 @@
 #include "../Components/ComponentMessage.h"
 #include "../TShared/NetworkMessage_SetIsRepesentationActive.h"
 
-CWaveManager::CWaveManager()
+CWaveManager::CWaveManager(const short aArenaID, const unsigned char aMaxWaves, const short aKeyID, const std::thread::id aThreadID)
 {
+	myArenaID = aArenaID;
 	myEnemiesInWave.Init(30);
 
-	 myKeyIDToUnlock = 0;
+	 myKeyIDToUnlock = aKeyID;
 
-	myPlayersInsideArena = 0;
 	myWaveCount = 0;
-	myNumberOfPlayers = 0;
-	myNumberOfWavesToSpawn = 0;
-	myResetToWaveCount = 0;
-	myResetToNumberOfWaves = 0;
+	myNumberOfWavesToSpawn = aMaxWaves;
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::ePlayerEnterArena);
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddEnemyToWave);
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
+	//Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::ePlayerEnterArena);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eAddEnemyToWave, aThreadID);
+	//Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
+	//Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 
 }
 
 
 CWaveManager::~CWaveManager()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 }
 
 void CWaveManager::StartWave()
@@ -50,7 +48,7 @@ void CWaveManager::StartWave()
 		DL_PRINT("Wave:");
 		DL_PRINT(std::to_string(myWaveCount).c_str());
 		//DL_PRINT("BroadCast StartWave");
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CStartWaveMessage(myWaveCount));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CStartWaveMessage(myWaveCount,myArenaID));
 	}
 	else
 	{
@@ -89,28 +87,14 @@ void CWaveManager::Update()
 	}
 }
 
-eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
+void CWaveManager::Reset()
 {
-	DL_PRINT("EnemyAdded");
-	myEnemiesInWave.Add(aAddEnemyToWave.GetEnemy());
-
-	return eMessageReturn::eContinue;
+	myWaveCount = 0;
+	myEnemiesInWave.RemoveAll();
 }
 
-eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena)
+void CWaveManager::CloseArena()
 {
-
-	DL_PRINT("WaveManager: PlayerEntered");
-    myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
-	myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
-
-	//myResetToNumberOfWaves = myNumberOfWavesToSpawn;
-	//myResetToWaveCount = myWaveCount;
-
-	myNumberOfWavesToSpawn += aPlayerEnteredArena.GetWaveAmount();
-
-	if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
-	{
 		CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 		door->SetDoorAction(eDoorAction::eClose);
 		door->SetKeyID(myKeyIDToUnlock);
@@ -120,36 +104,72 @@ eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredA
 		door2->SetKeyID(myKeyIDToUnlock);
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
 		myEnemiesInWave.RemoveAll();
-		StartWave();
+}
+
+eMessageReturn CWaveManager::DoEvent(const CAddEnemyToWave & aAddEnemyToWave)
+{
+	if (myArenaID == aAddEnemyToWave.GetArenaID())
+	{
+		DL_PRINT("EnemyAdded");
+		myEnemiesInWave.Add(aAddEnemyToWave.GetEnemy());
 	}
+
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CWaveManager::DoEvent(const CPlayerEnteredArena & aPlayerEnteredArena)
+{
+
+	//DL_PRINT("WaveManager: PlayerEntered");
+	//myPlayersInsideArena += aPlayerEnteredArena.GetPlayerChange();
+	//myKeyIDToUnlock = aPlayerEnteredArena.GetKeyId();
+	//
+	////myResetToNumberOfWaves = myNumberOfWavesToSpawn;
+	////myResetToWaveCount = myWaveCount;
+	//
+	//myNumberOfWavesToSpawn += aPlayerEnteredArena.GetWaveAmount();
+	//
+	//if (myPlayersInsideArena >= CPollingStation::GetInstance()->GetNumberOfPlayers())
+	//{
+	//	CNetworkMessage_DoorMessage* door = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
+	//	door->SetDoorAction(eDoorAction::eClose);
+	//	door->SetKeyID(myKeyIDToUnlock);
+	//	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door));
+	//	CNetworkMessage_DoorMessage* door2 = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
+	//	door2->SetDoorAction(eDoorAction::eLock);
+	//	door2->SetKeyID(myKeyIDToUnlock);
+	//	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(door2));
+	//	myEnemiesInWave.RemoveAll();
+	//	StartWave();
+	//}
 
 	return eMessageReturn::eContinue;
 }
 
 eMessageReturn CWaveManager::DoEvent(const CResetToCheckPointMessage & aResetToCheckpointMessage)
 {
-	myWaveCount = myResetToWaveCount;
-	myNumberOfPlayers = 0;
-	myNumberOfWavesToSpawn = myResetToNumberOfWaves;
-	SComponentMessageData data; data.myInt = 10000;
-	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
-	{
-		myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
-		CNetworkMessage_SetIsRepesentationActive* deactivate = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
-		deactivate->SetActive(false);
-		deactivate->SetNetworkID(myEnemiesInWave[i]->GetNetworkID());
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(deactivate));
-	}
-
-	myEnemiesInWave.RemoveAll();
-
+	//myWaveCount = myResetToWaveCount;
+	//myNumberOfPlayers = 0;
+	//myNumberOfWavesToSpawn = myResetToNumberOfWaves;
+	//SComponentMessageData data; data.myInt = 10000;
+	//for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
+	//{
+	//	myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
+	//	CNetworkMessage_SetIsRepesentationActive* deactivate = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_SetIsRepesentationActive>(ID_ALL);
+	//	deactivate->SetActive(false);
+	//	deactivate->SetNetworkID(myEnemiesInWave[i]->GetNetworkID());
+	//	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(deactivate));
+	//}
+	//
+	//myEnemiesInWave.RemoveAll();
+	//
 	return eMessageReturn::eContinue;
 }
 
 eMessageReturn CWaveManager::DoEvent(const CSetAsNewCheckPointMessage& aSetAsNewCheckPointMessage)
 {
-	myResetToWaveCount = myWaveCount;
-	myResetToNumberOfWaves = myNumberOfWavesToSpawn;
+	//myResetToWaveCount = myWaveCount;
+	//myResetToNumberOfWaves = myNumberOfWavesToSpawn;
 
 	return eMessageReturn::eContinue;
 }
