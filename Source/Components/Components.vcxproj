@@ -410,6 +410,7 @@
     <ClInclude Include="ImpController.h" />
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="KeyPickupComponent.h" />
+    <ClInclude Include="LutComponent.h" />
     <ClInclude Include="MeshColliderComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
@@ -505,6 +506,7 @@
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="KeyPickupComponent.cpp" />
+    <ClCompile Include="LutComponent.cpp" />
     <ClCompile Include="MeshColliderComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />

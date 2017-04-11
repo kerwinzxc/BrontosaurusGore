@@ -92,6 +92,7 @@
 #include "GameObject.h"
 #include "ComponentAnswer.h"
 #include "AnimationComponent.h"
+#include "LutComponent.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -509,6 +510,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
+
+		playerObject->AddComponent(new CLutComponent());
 		
 		GivePlayerWeapons(playerObject);
 
