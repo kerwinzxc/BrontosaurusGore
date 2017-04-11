@@ -353,6 +353,7 @@ void CClient::Update()
 				data.myInt = pickup->GetWeaponPickup();
 
 				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddWeaponIndex, data);
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyOnlyComponents(eComponentMessageType::eGiveYourselfAmmo, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eDoorMessage:

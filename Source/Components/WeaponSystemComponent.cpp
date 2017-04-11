@@ -230,6 +230,16 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		myIsActive = true;
 		break;
 	}
+	case eComponentMessageType::eGiveYourselfAmmo:
+	{
+		SAmmoReplenishData replenishData;
+		replenishData.ammoType = myWeapons[myActiveWeaponIndex]->GetData()->name;
+		replenishData.replenishAmount = 1000;
+		SComponentMessageData giveAmmoData;
+		giveAmmoData.myAmmoReplenishData = &replenishData;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+		break;
+	}
 	default:
 		break;
 	}
