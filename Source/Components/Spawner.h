@@ -9,7 +9,7 @@ class CSpawnerComponent :
 	public CComponent, public Postmaster::ISubscriber
 {
 public:
-	CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID);
+	CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID, const short aArenaID);
 	~CSpawnerComponent();
 	void Update(const float aDeltaTime);
 	void SpawnEnemy();
@@ -25,6 +25,7 @@ private:
 
 	eEnemyTypes myEnemyType;
 
+	short myArenaID;
 	unsigned char mySpawnerId;
 
 	CU::TimeUnit mySpawInterval;
