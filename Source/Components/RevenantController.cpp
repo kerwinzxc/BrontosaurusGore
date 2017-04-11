@@ -105,19 +105,26 @@ void CRevenantController::Update(const float aDeltaTime)
 	break;
 	case eRevenantState::eUseMeleeAttack:
 		ChangeWeapon(2);
-		Attack();
-		myState = eRevenantState::eIdle;
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
+		{
+			Attack();
+			myState = eRevenantState::eIdle;
+		}
 		break;
 	case eRevenantState::eUseRangedAttack:
 		ChangeWeapon(0);
-		Attack();
-		myUsedAttacksSinceLastStateChange++;
-		myState = eRevenantState::eChargingRangedAttack;
-		if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
-			myElapsedChargeRangedAttackTime = 0.0f;
-			myUsedAttacksSinceLastStateChange = 0;
-			myState = eRevenantState::eIdle;
+			Attack();
+			myUsedAttacksSinceLastStateChange++;
+			myState = eRevenantState::eChargingRangedAttack;
+			if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+			{
+				myElapsedChargeRangedAttackTime = 0.0f;
+				myUsedAttacksSinceLastStateChange = 0;
+				myState = eRevenantState::eIdle;
+			}
+		
 		}
 		break;
 	case eRevenantState::eChase:
@@ -142,28 +149,31 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		LookAtPlayer();
 		ChangeWeapon(1);
-		myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
-		if (myElapsedChargeRangedAirBarrageAttackTime >= myChargeRangedAirBarrageAttackDuration)
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
-			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
-			Attack();
-			myUsedAttacksSinceLastStateChange++;
-		}
+			myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
+			if (myElapsedChargeRangedAirBarrageAttackTime >= myChargeRangedAirBarrageAttackDuration)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				Attack();
+				myUsedAttacksSinceLastStateChange++;
+			}
 
-		if(myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
-		{
-			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
-			myElapsedHoverTime = 0.0f;
-			myState = eRevenantState::eFlyDescend;
-			myUsedAttacksSinceLastStateChange = 0;
+			if(myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				myElapsedHoverTime = 0.0f;
+				myState = eRevenantState::eFlyDescend;
+				myUsedAttacksSinceLastStateChange = 0;
+			}
+		/*	myElapsedHoverTime += aDeltaTime;
+			if(myElapsedHoverTime >= myHoverTime)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				myElapsedHoverTime = 0.0f;
+				myState = eRevenantState::eFlyDescend;
+			}*/	
 		}
-	/*	myElapsedHoverTime += aDeltaTime;
-		if(myElapsedHoverTime >= myHoverTime)
-		{
-			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
-			myElapsedHoverTime = 0.0f;
-			myState = eRevenantState::eFlyDescend;
-		}*/
 		break;
 	}
 	case eRevenantState::eFlyDescend:
