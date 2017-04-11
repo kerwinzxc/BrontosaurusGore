@@ -98,6 +98,7 @@ enum class eComponentMessageType
 	eServerChangeWeapon,
 	eAddWeaponIndex,
 	eImpStartToJump,
+	eImpThrowAttack,
 	eEquip,
 	eUnequip,
 	eLength,
