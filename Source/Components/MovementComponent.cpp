@@ -230,7 +230,7 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		myVelocity *= myMaxSpeed;
 	}
 
-	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == 0)
+	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == false)
 	{
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_UP)
 		{
