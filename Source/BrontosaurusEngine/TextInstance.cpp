@@ -147,6 +147,19 @@ void CTextInstance::SetAlignment(eAlignment anAlignment)
 	myAlignemnt = anAlignment;
 }
 
+bool CTextInstance::Empty() const
+{
+	for (const std::wstring& str : myStrings)
+	{
+		if (!str.empty())
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 CTextInstance& CTextInstance::operator=(const CTextInstance& aTextInstance)
 {
 	if (myText != nullptr)
