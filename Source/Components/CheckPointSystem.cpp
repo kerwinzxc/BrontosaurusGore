@@ -53,6 +53,11 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 eMessageReturn CCheckPointSystem::DoEvent(const CRevivePlayerMessage& aRevivePlayerMessage)
 {
 	SComponentQuestionData healthLeftData;
+	if (!CPollingStation::GetInstance() || ! CPollingStation::GetInstance()->GetPlayerObject())
+	{
+		return eMessageReturn::eContinue;
+	}
+
 	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData);
 	if(healthLeftData.myInt <= 0)
 	{
