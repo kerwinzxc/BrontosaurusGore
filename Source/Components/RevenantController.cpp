@@ -15,6 +15,8 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myElapsedHoverTime = 0.0f;
 	myElapsedChargeRangedAttackTime = 0.0f,
 	myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+	myAttacksUntilChangingStates = 3;
+	myUsedAttacksSinceLastStateChange = 0;
 }
 
 CRevenantController::~CRevenantController()
@@ -109,7 +111,14 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eUseRangedAttack:
 		ChangeWeapon(0);
 		Attack();
-		myState = eRevenantState::eIdle;
+		myUsedAttacksSinceLastStateChange++;
+		myState = eRevenantState::eChargingRangedAttack;
+		if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+		{
+			myElapsedChargeRangedAttackTime = 0.0f;
+			myUsedAttacksSinceLastStateChange = 0;
+			myState = eRevenantState::eIdle;
+		}
 		break;
 	case eRevenantState::eChase:
 		LookAtPlayer();
@@ -138,15 +147,23 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
 			Attack();
+			myUsedAttacksSinceLastStateChange++;
 		}
 
-		myElapsedHoverTime += aDeltaTime;
+		if(myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+		{
+			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+			myElapsedHoverTime = 0.0f;
+			myState = eRevenantState::eFlyDescend;
+			myUsedAttacksSinceLastStateChange = 0;
+		}
+	/*	myElapsedHoverTime += aDeltaTime;
 		if(myElapsedHoverTime >= myHoverTime)
 		{
 			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
 			myElapsedHoverTime = 0.0f;
 			myState = eRevenantState::eFlyDescend;
-		}
+		}*/
 		break;
 	}
 	case eRevenantState::eFlyDescend:
@@ -163,6 +180,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eChargingMeleeAttack:
 	{
+		LookAtPlayer();
 		myElapsedChargeMeleeAttackTime += aDeltaTime;
 		if(myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
 		{
@@ -173,6 +191,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eChargingRangedAttack:
 	{
+		LookAtPlayer();
 		myElapsedChargeRangedAttackTime += aDeltaTime;
 		if (myElapsedChargeRangedAttackTime >= myChargeRangedAttackDuration)
 		{
