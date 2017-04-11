@@ -59,25 +59,22 @@ void CRevenantController::Update(const float aDeltaTime)
 		else if (WithinWalkToMeleeRange())
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
+			if(myIsAtJumpPoint == true)
+			{
+				StartCharginRangedAttack();
+			}
 		}
 		else if (WithinShootRange())
 		{
-			myState = eRevenantState::eChargingRangedAttack;
-			unsigned short randomNumber = rand() % 5;
-			if(randomNumber == 0)
-			{
-				myState = eRevenantState::eFlyAscend;
-				ApplyFlightForce();
-			}
-			if (myToPlayer.y > 2.0f)
-			{
-				myState = eRevenantState::eFlyAscend;
-				ApplyFlightForce();
-			}
+			StartCharginRangedAttack();
 		}
 		else if (WithinDetectionRange())
 		{
 			myState = eRevenantState::eChase;
+			if (myIsAtJumpPoint == true)
+			{
+				StartCharginRangedAttack();
+			}
 		}
 		else
 		{
@@ -85,6 +82,10 @@ void CRevenantController::Update(const float aDeltaTime)
 			if(myIsAggressive == true)
 			{
 				myState = eRevenantState::eChase;
+				if (myIsAtJumpPoint == true)
+				{
+					StartCharginRangedAttack();
+				}
 			}
 		}
 	}
@@ -364,4 +365,20 @@ eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aRe
 	myIsAtJumpPoint = false;
 	myIsflying = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
+}
+
+void CRevenantController::StartCharginRangedAttack()
+{
+	myState = eRevenantState::eChargingRangedAttack;
+	unsigned short randomNumber = rand() % 5;
+	if (randomNumber == 0)
+	{
+		myState = eRevenantState::eFlyAscend;
+		ApplyFlightForce();
+	}
+	if (myToPlayer.y > 2.0f)
+	{
+		myState = eRevenantState::eFlyAscend;
+		ApplyFlightForce();
+	}
 }
