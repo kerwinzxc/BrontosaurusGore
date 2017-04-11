@@ -1,6 +1,8 @@
 #pragma once
 
+#include "vector2.h"
 #define self (*this)
+
 
 namespace CU
 {
@@ -83,6 +85,12 @@ namespace CU
 				TYPE g;
 				TYPE b;
 				TYPE a;
+			};
+
+			struct
+			{
+				Vector2<TYPE> xy;
+				Vector2<TYPE> zw;
 			};
 
 #pragma warning(default : 4201)

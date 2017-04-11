@@ -29,7 +29,10 @@ private:
 	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
 	bool CanChangeState();
+	void StartCharginRangedAttack();
 private:
+	CU::Vector3f myJumpPointPosition;
+
 	float myFlightHeight;
 	float myHoverTime;
 	float myStartedFlightHeight;
@@ -46,5 +49,6 @@ private:
 	eRevenantState myState;
 
 	bool myIsflying;
+	bool myIsAtJumpPoint;
 };
 

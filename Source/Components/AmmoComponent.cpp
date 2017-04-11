@@ -70,6 +70,14 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 		
 		break;
 	}
+	case eComponentMessageType::eCheckPointReset:
+	{
+		for(unsigned int i = 0; i < myGeneralAmmoDataList.Size(); i++)
+		{
+			myGeneralAmmoDataList[i]->currentAmmoAmount = myGeneralAmmoDataList[i]->ammoTypeData->maxAmmo;
+		}
+		break;
+	}
 	default:
 		break;
 	}
