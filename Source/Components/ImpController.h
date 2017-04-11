@@ -11,6 +11,7 @@ enum class eImpState
 	eChargingRangedAttack,
 	eChargingMeleeAttack,
 	eChase,
+	eWaitAfterMeleeAttack,
 	eDead
 };
 class CImpController : public CEnemy
@@ -46,6 +47,7 @@ private:
 	float myElapsedChargeAttackTime;
 	float myChargeMeleeAttackDuration;
 	float myElapsedChargeMeleeAttackTime;
+	float myWaitAfterAttackCountDown;
 	eImpState myState;
 
 	bool myIsJumping;
