@@ -89,6 +89,9 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 						SComponentMessageData damageData;
 						damageData.myInt = myWeaponData->projectileData->damage;
 						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+
+						Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+						audio->PostEvent("Impact_Tick");
 					
 					}
 				}
