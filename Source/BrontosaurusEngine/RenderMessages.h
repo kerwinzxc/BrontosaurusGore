@@ -31,6 +31,7 @@ class CStreakEmitterInstance;
 struct SPixelConstantBuffer;
 struct SParticle;
 
+enum ELUTType;
 enum class eRasterizerState : int;
 enum class eBlendState : int;
 enum class eDepthStencilState : int;
@@ -89,6 +90,7 @@ struct SRenderMessage
 		eRenderBar,
 		eCreateGuiElement,
 		eRenderToGui,
+		eLUTFADECOLORGRADE
 	};
 
 	SRenderMessage(const eRenderMessageType aRenderMessageType);
@@ -177,6 +179,14 @@ struct SRenderFullscreenEffectMessage : SRenderMessage
 
 	CFullScreenHelper::eEffectType myEffectType;
 
+};
+
+struct SLutFadeColorGrade : SRenderMessage
+{
+	SLutFadeColorGrade();
+	float myFadeTime;
+	ELUTType myFadeTo;
+	bool myInterrupt;
 };
 
 struct SActivateRenderPackageMessage : SRenderMessage

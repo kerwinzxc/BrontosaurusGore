@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Skybox.h"
 #include "EmitterData.h"
+#include "ELUTType.h"
 
 SRenderMessage::SRenderMessage(const eRenderMessageType aRenderMessageType)
 	: myType(aRenderMessageType)
@@ -223,4 +224,12 @@ SRenderModelBatches::SRenderModelBatches()
 SRenderToGUI::~SRenderToGUI()
 {
 	delete myRenderMessage;
+}
+
+SLutFadeColorGrade::SLutFadeColorGrade()
+	: SRenderMessage(eRenderMessageType::eLUTFADECOLORGRADE)
+{
+	myFadeTo = ELUTType::eDefault;
+	myFadeTime = 1.f;
+	myInterrupt = false;
 }

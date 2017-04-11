@@ -13,6 +13,7 @@
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "ParticleRenderer.h"
 #include "C2DGUIRenderer.h"
+#include "ColorGrader.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -117,9 +118,9 @@ private:
 	} myDistortionData;
 
 private:
-	CTexture* myLut;
 
-	CRenderPackage myColorGradingPackage;
+	CColorGrader myColorGrader;
+
 	CDeferredRenderer myDeferredRenderer;
 	CParticleRenderer myParticleRenderer;
 
