@@ -3,9 +3,6 @@
 #include "BrontosaurusEngine/TextInstance.h"
 #include "GUIElement.h"
 #include "CommonUtilities.h"
-#include "binary_tree.h"
-#include "binary_tree.h"
-#include "binary_tree.h"
 
 
 enum class eMenuThingType
@@ -28,7 +25,7 @@ struct SClickArea
 {
 	int mySpriteID;
 	CU::Vector4f myRect;
-	unsigned myCallbackID;
+	CU::GrowingArray<std::function<void(void)>> myActions;
 };
 
 struct SLayerData
@@ -57,7 +54,7 @@ public:
 	CMenuManager();
 	~CMenuManager();
 
-	void CreateClickArea(const unsigned aCalbackID, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer);
+	void CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer);
 	int CreateSprite(const std::string& aFolder, const CU::Vector2f aPosition, const CU::Vector2f anOrigin, const unsigned char aLayer);
 	unsigned CreateText(const std::string& aFontName, const CU::Vector2f& aPosition, const std::wstring someText, const unsigned char aLayer, const eAlignment anAlignment = eAlignment::eLeft);
 
@@ -68,10 +65,16 @@ public:
 
 	void UpdateMousePosition(const CU::Vector2f& aPosition);
 	CU::Vector2f GetMopusePosition() const;
+	void MousePressed();
+	void MouseReleased();
 
 	const SMenuSprite& GetSprite(unsigned aSpriteId);
+
+	void AddAction(const std::string& aActionName, const std::function<void(std::string)>& aFunction);
 private:
 	static CSpriteInstance* ChoseSpriteInstance(const SMenuSprite& aMenuSprite);
+
+	std::map<std::string, std::function<void(std::string)>> myActions;
 
 	CU::GrowingArray<SMenuSprite> mySpriteInstances;
 	CU::GrowingArray<CTextInstance*> myTextInstances;
@@ -85,6 +88,7 @@ private:
 
 	SGUIElement myGUIElement;
 	int myCurentlyHoveredClickarea;
+	bool myMouseIsPressed;
 };
 
 inline void CMenuManager::UpdateMousePosition(const CU::Vector2f& aPosition)
