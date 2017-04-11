@@ -29,6 +29,7 @@
 #include "LoadCheckPointComponent.h"
 #include "LoadDamageOnCollisionComponent.h"
 #include "LoadHighlightComponent.h"
+#include "LoadTumbleweed.h"
 
 LoadManager* LoadManager::ourInstance = nullptr;
 
@@ -95,6 +96,7 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("ImpController", ClientLoadImp);
 	loader.RegisterComponentLoadFunction("RevenantController", ClientLoadRevenant);
 	loader.RegisterComponentLoadFunction("PinkyController", ClientLoadPinky);
+	loader.RegisterComponentLoadFunction("Tumbleweed", LoadTumbleweed);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);

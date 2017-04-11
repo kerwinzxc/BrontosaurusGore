@@ -8,6 +8,7 @@
 #include "Physics.h"
 #include "PhysicsScene.h"
 #include "PhysicsCharacterController.h"
+#include "SimulationEventCallback.h"
 #include <PxScene.h>
 #include "Components/Component.h"
 #include <PxRigidDynamic.h>
@@ -39,6 +40,7 @@ namespace Physics
 		desc.radius = aDesc.radius;
 		desc.height = aDesc.halfHeight;
 		desc.contactOffset = aDesc.skinWidth;
+		desc.reportCallback = myPhysics->myEventCallback;
 		desc.climbingMode = PxCapsuleClimbingMode::eEASY;
 		desc.material = myPhysics->CreateMaterial(SMaterialData());
 		PxController* controller = myControllerManager->createController(desc);

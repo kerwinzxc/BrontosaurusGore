@@ -1138,5 +1138,6 @@
     <None Include="Include\apex_1.4\nvparameterized\NvSerializer.inl">
       <Filter>Apex\Include\nvparameterized</Filter>
     </None>
+    <None Include="MaterialData.h" />
   </ItemGroup>
 </Project>

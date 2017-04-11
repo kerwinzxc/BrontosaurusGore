@@ -32,6 +32,9 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* CLDShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/cubicLensDistortion.fx", ShaderType);
 	ID3D11PixelShader* colorGrading = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/colorGrading.fx", ShaderType);
 
+	ID3D11PixelShader* fogShader = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/Fog.fx", ShaderType);
+
+
 	ID3D11PixelShader* overlay = SHADERMGR->LoadPixelShader(L"Shaders/FullScreen/overlay.fx", ShaderType);
 	//Jag är en kommentar också Deferred;
 
@@ -69,6 +72,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eMotionBlur)]				= new CEffect(vertexShader, mBlShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCubicLensDistortion)]		= new CEffect(vertexShader, CLDShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eColorGrading)]				= new CEffect(vertexShader, colorGrading, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eFog)]						= new CEffect(vertexShader, fogShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//deferred,
 	myEffects[static_cast<int>(eEffectType::eDeferredAmbient)]			= new CEffect(vertexShader, deferredAmbient, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -81,8 +85,9 @@ CFullScreenHelper::CFullScreenHelper()
 
 	myEffects[static_cast<int>(eEffectType::eLightShafts)]				= new CEffect(lShvertexShader, lShShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eMetaSurface)]				= new CEffect(lShvertexShader, metaSurfaceShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	myEffects[static_cast<int>(eEffectType::eOverlay)] = new CEffect(lShvertexShader, overlay, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	myEffects[static_cast<int>(eEffectType::eAlphaBlend)] = new CEffect(lShvertexShader, alphaBlendShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eOverlay)]					= new CEffect(lShvertexShader, overlay, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	myEffects[static_cast<int>(eEffectType::eAlphaBlend)]				= new CEffect(lShvertexShader, alphaBlendShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
 
 	CreateQuad();
 }
