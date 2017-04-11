@@ -7,6 +7,7 @@
 #include "../TClient/ClientMessageManager.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
 #include "../CommonUtilities/StringHelper.h"
+#include "..\Audio\AudioInterface.h"
 
 CAmmoPickupComponent::CAmmoPickupComponent()
 {
@@ -55,6 +56,8 @@ void CAmmoPickupComponent::DoMyEffect()
 	message->SetID(myNetworkId);
 	message->SetReplenishAmount(myPickupData.replenishAmount);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
+	Audio::CAudioInterface::GetInstance()->PostEvent("Pickup_Ammo");
+
 	if (myPickupData.ammoType == "PlasmaRifle")
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Plasma Rifle ammo!"));

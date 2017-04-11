@@ -69,9 +69,10 @@ namespace
 
 int CParticleEmitterInstance::ourIds = 0;
 
-CParticleEmitterInstance::CParticleEmitterInstance(int anId)
+CParticleEmitterInstance::CParticleEmitterInstance(int anId) : myRefs(0), myIsActive(false)
 {
 	myEmitterID = anId;
+	CParticleEmitterManager::GetInstance().GetEmitter(myEmitterID)->AddRef();
 	myInstanceID = ourIds++;
 
 	Init();
@@ -82,127 +83,13 @@ CParticleEmitterInstance::CParticleEmitterInstance(int anId)
 
 CParticleEmitterInstance::~CParticleEmitterInstance()
 {
-	CEngine* engine = CEngine::GetInstance();
-	assert(engine != nullptr && "CEngine was nullptr");
-	engine->GetParticleEmitterManager().RemoveParticleEmitter(myEmitterID);
+	CParticleEmitterManager::GetInstance().GetEmitter(myEmitterID)->RemoveRef();
 }
 
 
 void CParticleEmitterInstance::Update(const CU::Time& aDeltaTime)
 {
-	//float deltaTime = aDeltaTime.GetSeconds();
-
-	//myLifetime -= deltaTime;
-
-	//if(myLifetime < 0)
-	//{
-	//	if(myEmitterData.ShouldLoop == true)
-	//	{
-	//		myLifetime = myEmitterData.Lifetime;
-	//	}
-	//	else
-	//	{
-	//		myIsActive = false;
-	//	}
-	//}
-
-	//if (myIsActive == true)
-	//{
-	//	myEmitTimer += deltaTime;
-	//	while (myEmitTimer >= myEmitDelta)
-	//	{
-	//		myEmitTimer -= myEmitDelta;
-	//		EmitParticle();
-	//	}
-	//}
-	//if (myParticles.Size() != myParticleLogic.Size())
-	//{
-	//	assert(false && "Particlelist and logiclist missalligned.");
-	//}
-
-	//for (unsigned short i = 0; i < myParticles.Size(); ++i)
-	//{
-	//	myParticleLogic[i].lifetimeLeft -= deltaTime;
-	//	if (myParticleLogic[i].lifetimeLeft <= 0.0f)
-	//	{
-	//		myParticles.RemoveCyclicAtIndex(i);
-	//		myParticleLogic.RemoveCyclicAtIndex(i);
-	//		--i;
-	//		continue;
-	//	}
-
-	//	if (myEmitterData.UseGravity == true)
-	//	{
-	//		myParticleLogic[i].movementDir = myParticleLogic[i].movementDir + (myEmitterData.Gravity * deltaTime);
-	//	}
-
-
-	//	CU::Vector3f deltaMovement = myParticleLogic[i].movementDir * deltaTime;
-	//	float particleLifetime = 1.0f - (myParticleLogic[i].lifetimeLeft / myParticleLogic[i].lifeTime);
-	//	
-
-
-	//	myParticles[i].position += deltaMovement;
-
-
-	//	
-	//	myParticles[i].position.w = myParticleLogic[i].rotation + fLerp(
-	//		myEmitterData.StartRotation, 
-	//		myEmitterData.EndRotation, 
-	//		CalcCurve(particleLifetime, myEmitterData.RotationCurve));
-
-	//	myParticles[i].position.w *= 3.1415f / 180.f;
-
-
-	//	myParticles[i].size = fLerp(
-	//		myEmitterData.StartSize, 
-	//		myEmitterData.EndSize, 
-	//		CalcCurve(particleLifetime, myEmitterData.SizeCurve));
-	//	
-	//	
-	//	
-	//	SEmitterKeyframe startK = {0.0f, myEmitterData.StartColor};
-	//	SEmitterKeyframe endK = {1.0f, myEmitterData.EndColor};
-
-
-	//	for (int j = 0; j < myEmitterData.ColorOverLife.Size(); ++j)
-	//	{
-	//		if (myEmitterData.ColorOverLife[j].time < 0.0f)
-	//			continue;
-
-	//		if (myEmitterData.ColorOverLife[j].time < particleLifetime)
-	//		{
-	//			if (myEmitterData.ColorOverLife[j].time > startK.time)
-	//			{
-	//				startK = myEmitterData.ColorOverLife[j];
-	//			}
-	//		}
-
-
-	//		if (myEmitterData.ColorOverLife[j].time > particleLifetime)
-	//		{
-	//			if (myEmitterData.ColorOverLife[j].time < endK.time)
-	//			{
-	//				endK = myEmitterData.ColorOverLife[j];
-	//			}
-	//		}
-
-	//	}
-
-
-	//	// start is bigger then life
-
-	//	float colorT = (particleLifetime - startK.time) / (endK.time - startK.time);
-
-	//	const float curve = CalcCurve(colorT, myEmitterData.ColorCurve);
-	//	CU::Vector4f colr = vectorFlerp(
-	//		startK.value,
-	//		endK.value,
-	//		curve);
-
-	//	myParticles[i].color = colr;
-
-	//}
+	
 }
 
 void CParticleEmitterInstance::Render(CRenderCamera& aRenderCamera)
@@ -242,6 +129,21 @@ bool CParticleEmitterInstance::IsActive()
 void CParticleEmitterInstance::SetTransformation(const CU::Matrix44f& aMatrix44)
 {
 	myToWorldSpace = aMatrix44;
+}
+
+void CParticleEmitterInstance::AddRef()
+{
+	++myRefs;
+}
+
+void CParticleEmitterInstance::Release()
+{
+	--myRefs;
+}
+
+bool CParticleEmitterInstance::ShouldKeep() const
+{
+	return myRefs > 0 || myIsActive == true || IsDone() == false;
 }
 
 void CParticleEmitterInstance::Init()

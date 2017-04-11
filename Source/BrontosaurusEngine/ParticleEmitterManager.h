@@ -7,6 +7,7 @@
 #include "RenderCamera.h"
 #include "../CommonUtilities/CUTime.h"
 #include "../CommonUtilities/TimerManager.h"
+#include "../Game/ParticleEffectManager.h"
 
 namespace Particles {
 	class CParticleLibrary;
@@ -30,6 +31,7 @@ public:
 	void RemoveParticleEmitter(const Particles::ParticleEmitterID aID);
 	void LoadParticleLibrary(const std::string& aLibraryPath);
 	Particles::ParticleEmitterID GetEmitterInstance(Particles::ParticleEmitterID aId);
+	Particles::ParticleEmitterID GetEmitterInstance(const std::string& aId);
 	Particles::ParticleEmitterID GetParticleEmitterId(const std::string& aSystemId);
 
 	void Release(Particles::ParticleEmitterID anInstanceId);
@@ -45,6 +47,7 @@ public:
 	bool IsActive() const;
 	void SetTransformation(int aInstanceId, const CU::Matrix44f& aMatrix44);
 private:
+	void ReleaseInternal(InstanceID aInstanceId);
 	void ThreadFinished();
 	void InternalRun();
 	CU::GrowingArray<CParticleEmitterInstance*>& GetFreeInstances(Particles::ParticleEmitterID aId);
