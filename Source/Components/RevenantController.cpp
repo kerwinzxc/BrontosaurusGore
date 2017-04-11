@@ -17,6 +17,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
 	myAttacksUntilChangingStates = 3;
 	myUsedAttacksSinceLastStateChange = 0;
+	myIsAtJumpPoint = false;
 }
 
 CRevenantController::~CRevenantController()
@@ -185,25 +186,55 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyDescend:
 	{
-		LookAtPlayer();
-
-		myFlightForce -= gravityAcceleration * aDeltaTime;
-		if(CheckIfInAir() == false)
+		if (myIsAtJumpPoint == true)
 		{
-			myIsflying = false;
-			myFlightForce = 0.0f;
+			LookAtPlayer();
+
+			myFlightForce -= gravityAcceleration * aDeltaTime;
+			if (CheckIfInAir() == false)
+			{
+				myIsflying = false;
+				myFlightForce = 0.0f;
+			}
+		}
+		else
+		{
+			if (myJumpPointPosition == CU::Vector3f::Zero)
+			{
+				myJumpPointPosition = GetNearestJumpPosition();
+			}
+			CU::Vector3f position = GetParent()->GetLocalTransform().GetPosition();
+			CU::Vector3f targetPosition = myJumpPointPosition;
+			if (position.y < targetPosition.y + 2.0f)
+			{
+				myFlightForce = sqrtf((gravityAcceleration)* myFlightHeight * 2);
+			}
+			else
+			{
+				myFlightForce = 0.0f;
+			}
+			myVelocity.z = mySpeed;
+			targetPosition.y = position.y;
+			GetParent()->GetLocalTransform().LookAt(targetPosition);
+			float distance = CU::Vector3f(targetPosition - position).Length();
+			if (distance < 0.5f)
+			{
+				LookAtPlayer();
+				myIsAtJumpPoint = true;
+			}
+
 		}
 		break;
 	}
 	case eRevenantState::eChargingMeleeAttack:
 	{
-		LookAtPlayer();
-		myElapsedChargeMeleeAttackTime += aDeltaTime;
-		if(myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
-		{
-			myElapsedChargeMeleeAttackTime = 0.0f;
-			myState = eRevenantState::eUseMeleeAttack;
-		}
+			LookAtPlayer();
+			myElapsedChargeMeleeAttackTime += aDeltaTime;
+			if (myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
+			{
+				myElapsedChargeMeleeAttackTime = 0.0f;
+				myState = eRevenantState::eUseMeleeAttack;
+			}
 		break;
 	}
 	case eRevenantState::eChargingRangedAttack:
@@ -330,5 +361,7 @@ eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aRe
 {
 	myFlightForce = 0.0f;
 	myState = eRevenantState::eIdle;
+	myIsAtJumpPoint = false;
+	myIsflying = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }

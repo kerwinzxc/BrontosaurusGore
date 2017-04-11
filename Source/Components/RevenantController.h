@@ -30,6 +30,8 @@ private:
 	bool CheckIfInAir();
 	bool CanChangeState();
 private:
+	CU::Vector3f myJumpPointPosition;
+
 	float myFlightHeight;
 	float myHoverTime;
 	float myStartedFlightHeight;
@@ -46,5 +48,6 @@ private:
 	eRevenantState myState;
 
 	bool myIsflying;
+	bool myIsAtJumpPoint;
 };
 
