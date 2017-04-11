@@ -11,7 +11,7 @@
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
 static const float timeUntilIdle = 1.0f;
-static float timeUntilIdleThing = 1.0f;
+static float timeUntilIdleThing = 2.0f;
 static const float originalTimeUntilIdleThing = 3.0f;
 
 CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false), myIsWalking(false)
@@ -92,7 +92,6 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 			spawnPosition.y += 2;
 
 			CTumbleweedFactory::GetInstance()->CreateNewTumbleweed(spawnPosition, direction);
-			DL_PRINT("TumbleWeed spawned");
 
 			timeUntilIdleThing *= 2.0f;
 			myIdleThingCountdown = timeUntilIdleThing;
