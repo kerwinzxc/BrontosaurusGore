@@ -1,5 +1,6 @@
 #pragma once
 #include "Enemy.h"
+
 enum class eImpState
 {
 	eIdle,

@@ -4,6 +4,7 @@
 #include "EnemyTypes.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "../CommonUtilities/vector4.h"
+#include "..\Audio\AudioInterface.h"
 
 class CGameObject;
 class CEnemyRunTowardsComponent;
@@ -61,6 +62,7 @@ protected:
 	CU::Vector3f myToPlayer;
 	CU::Vector3f mySpawnPosition;
 
+	Audio::GameObjectID myAudioID;
 	float myDistToPlayer;
 
 	unsigned int myServerId;
@@ -83,6 +85,7 @@ protected:
 	bool myIsAggressive;
 	char myControllerConstraints;
 private:
+
 	float myHighlightTimer;
 	bool myDoingHighlight;
 };

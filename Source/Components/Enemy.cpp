@@ -28,6 +28,11 @@ CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(
 	myType = aType;
 	myRunTowardsComponentIndex = 999999;
 	myIsAggressive = false;
+
+	if (Audio::CAudioInterface::GetInstance() != nullptr)
+	{
+		myAudioID = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
+	}
 }
 
 CEnemy::~CEnemy()

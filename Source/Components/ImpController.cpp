@@ -40,6 +40,13 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
+	
+	//if (myAudioID != 0)
+	//{
+	//	const CU::Matrix44f transform = GetParent()->GetToWorldTransform();
+	//	Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioID, transform.GetPosition(), {0.f,0.f,0.f});
+	//}
+
 	if(myIsDead == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange() == true)
@@ -83,6 +90,8 @@ void CImpController::Update(const float aDeltaTime)
 		if (myIsDead == true)
 		{
 			myState = eImpState::eDead;
+		//	Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+			//audio->PostEvent("Imp_Death"/*, myAudioID*/);
 		}
 	}
 
