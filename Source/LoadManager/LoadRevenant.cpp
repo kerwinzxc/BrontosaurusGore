@@ -35,7 +35,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.chargeRangedAttackAttackDuration = 2.0f;
+		blueprint.chargeRangedAttackAttackDuration = 0.1f;
 	}
 	if (someData.myData.HasKey("chargeMeleeAttackDuration") == true)
 	{
@@ -44,7 +44,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.chargeMeleeAttackDuration = 1.0f;
+		blueprint.chargeMeleeAttackDuration = 0.5f;
 	}
 	if (someData.myData.HasKey("chargeAirBarrageAttackDuration") == true)
 	{
@@ -53,7 +53,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.chargeAirBarrageAttackDuration = 1.0f;
+		blueprint.chargeAirBarrageAttackDuration = 0.1f;
 	}
 
 	if (someData.myData.HasKey("ShootingRange") == true)
