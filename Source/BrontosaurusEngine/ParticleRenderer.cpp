@@ -100,7 +100,8 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 				changeStateMessage.mySamplerState = eSamplerState::eClamp;
 				mySharedRenderer.SetStates(&changeStateMessage);
 
-				myInteremediate.Activate();
+				DEVICE_CONTEXT->OMSetRenderTargets(4, &myInteremediate.GetRenderTargetView(), aDepthStencilView);
+
 				emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
 			}
 			break;
