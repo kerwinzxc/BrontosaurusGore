@@ -10,7 +10,7 @@ bool CompareLayers(SLayerData aFirstData, SLayerData aSecondData)
 	return aFirstData.myLayer > aSecondData.myLayer;
 }
 
-CMenuManager::CMenuManager() : myPointerSprite(nullptr), myShouldRender(true), myCurentlyHoveredClickarea(-1)
+CMenuManager::CMenuManager() : myPointerSprite(nullptr), myShouldRender(true), myCurentlyHoveredClickarea(-1), myMouseIsPressed(false)
 {
 	myClickAreas.Init(1);
 	mySpriteInstances.Init(1);
@@ -26,12 +26,16 @@ CMenuManager::~CMenuManager()
 {
 }
 
-void CMenuManager::CreateClickArea(const unsigned aCalbackID, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
+void CMenuManager::CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
 {
 	SClickArea clickArea;
 	clickArea.myRect = aRect;
-	clickArea.myCallbackID = aCalbackID;
 	clickArea.mySpriteID = aSpriteID;
+
+	for (int i = 0; i < someActions.Size(); ++i)
+	{
+		clickArea.myActions.Add(bind(myActions[someActions[i]], someArguments[i]));
+	}
 
 	myClickAreas.Add(clickArea);
 
@@ -155,6 +159,12 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnHover;
 				myCurentlyHoveredClickarea = i;
 			}
+
+			//if (myMouseIsPressed == true && mySpriteInstances[myClickAreas[i].mySpriteID].myState == e)
+			{
+
+			}
+
 			hasCollided = true;
 			break;
 		}
@@ -218,9 +228,24 @@ void CMenuManager::Render()
 	}
 }
 
+void CMenuManager::MousePressed()
+{
+	myMouseIsPressed = true;
+}
+
+void CMenuManager::MouseReleased()
+{
+	myMouseIsPressed = false;
+}
+
 const SMenuSprite& CMenuManager::GetSprite(unsigned aSpriteId)
 {
 	return mySpriteInstances.At(aSpriteId);
+}
+
+void CMenuManager::AddAction(const std::string &aActionName, const std::function<void(std::string)> &aFunction)
+{
+	myActions[aActionName] = aFunction;
 }
 
 CSpriteInstance* CMenuManager::ChoseSpriteInstance(const SMenuSprite& aMenuSprite)
