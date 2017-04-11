@@ -153,6 +153,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eFlyHover:
 	{
+		myFlightForce = 0.0f;
 		LookAtPlayer();
 		ChangeWeapon(1);
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
