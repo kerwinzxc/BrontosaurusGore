@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EnemyClientRepresentation.h"
-
+#include "../ThreadedPostmaster/Postmaster.h"
+#include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 
 CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType)
 	:CEnemy(anId, aType)
@@ -9,6 +10,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myPositionInterpolationSpeed = 6.1f;
 	myRotationInterpolationSpeed = 7.1f;
 	myType = aType;
+	myIsAlive = true;
 }
 
 
@@ -23,15 +25,18 @@ void CEnemyClientRepresentation::SetFutureMatrix(const CU::Matrix44f& aMatrix)
 
 void CEnemyClientRepresentation::Update(float aDeltaTime)
 {
-	GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
-	GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
-	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-	SComponentMessageData positiondata;
-	positiondata.myVector3f = GetParent()->GetLocalTransform().GetPosition();
-	GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
+	if(myIsAlive == true)
+	{
+		GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
+		GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		SComponentMessageData positiondata;
+		positiondata.myVector3f = GetParent()->GetLocalTransform().GetPosition();
+		GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 
-	DoDamageHighlight(aDeltaTime);
-	CheckIfOutOfBounds();
+		DoDamageHighlight(aDeltaTime);
+		CheckIfOutOfBounds();
+	}
 }
 
 void  CEnemyClientRepresentation::Init()
@@ -48,12 +53,30 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	case eComponentMessageType::eTookDamage:
 		StartHighlight();
 		break;
+	case eComponentMessageType::eDied:
+	{
+		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
+		SComponentMessageData controllerPositionData;
+		controllerPositionData.myVector3f = hellPosition;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
+		myIsAlive = false;
+		break;
+	}
+	case eComponentMessageType::eCheckPointReset:
+	{
+		SComponentMessageData controllerPositionData;
+		controllerPositionData.myVector3f = GetParent()->GetWorldPosition();
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		myIsAlive = true;
+	}
 	}
 }
 
 void CEnemyClientRepresentation::CheckIfOutOfBounds()
 {
-	if (GetParent()->GetWorldPosition().y < -200.0f)
+	if (GetParent()->GetWorldPosition().y < -100.0f)
 	{
 		SComponentQuestionData healthQuestionData;
 		if(GetParent()->AskComponents(eComponentQuestionType::eGetHealth, healthQuestionData) == true)

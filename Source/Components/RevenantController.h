@@ -23,7 +23,7 @@ public:
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Update(const float aDeltaTime) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
-
+	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
 private:
 	void ApplyFlightForce();
 	void UpdateFlightForces(const float aDeltaTime);

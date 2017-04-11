@@ -5,6 +5,7 @@
 
 #include "../CommonUtilities/JsonValue.h"
 #include "../TShared/AnimationState.h"
+#include "../Game/PollingStation.h"
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 #define NU_HAR_JAG_DRAMATISERAT_KLART_MIN_DÖD 3.14f
@@ -14,7 +15,7 @@ CU::GrowingArray<CAnimationComponent*> CAnimationComponent::ourAnimations(64u);
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
 	, myModelComponent(aModelCompoent)
-	, myUpdateHasRun(false)
+	//, myUpdateHasRun(false)
 {
 	myType = eComponentType::eAnimationComponent;
 
@@ -32,40 +33,49 @@ CAnimationComponent::~CAnimationComponent()
 
 void CAnimationComponent::Update(const CU::Time aDeltaTime)
 {
-	myUpdateHasRun = true;
 	if (myAnimationStack.Empty())
 	{
 		return;
 	}
 
-	if (myAnimationStack.GetLast().myBlendTime > 0.f)
+	SAnimation* currentAnimation = &myAnimationStack.GetLast();
+
+	if (currentAnimation->myBlendTime > 0.f)
 	{
-		if (myAnimationStack.GetLast().myBlendTime < myAnimationStack.GetLast().myAnimationBlend)
+		if (currentAnimation->myBlendTime < currentAnimation->myAnimationBlend)
 		{
-			myAnimationStack.GetLast().myAnimationBlend += aDeltaTime.GetSeconds();
+			currentAnimation->myAnimationBlend += aDeltaTime.GetSeconds();
 		}
 	}
 
-	CU::Vector3f positoin3D = GetParent()->GetToWorldTransform().GetPosition();
-	CU::Vector2f position(positoin3D.x, positoin3D.z);
+	CU::Vector3f position3D = GetParent()->GetToWorldTransform().GetPosition();
+	CU::Vector2f position(position3D.x, position3D.z);
 	CU::Vector2f velocity = position - myLastPosition;
 	myLastPosition = position;
 
-	//now we have the velocity, but not the boundaries for different velocities. lets get that on monday
-	
-	myModelComponent.SetAnimation(myAnimationStack.GetLast().myAnimationKey);
-	myModelComponent.SetNextAnimation(myAnimationStack.GetLast().myNextAnimationKey);
-	myModelComponent.SetAnimationLerpValue(myAnimationStack.GetLast().myAnimationBlend);
-	myModelComponent.SetAnimationLooping(myAnimationStack.GetLast().myIsLooping);
+	float speed = velocity.Length();
 
-
-	if (myAnimationStack.GetLast().myCoolDownTime != -1.f)
+	if (speed > 0.01f && currentAnimation->myAnimationKey == eAnimationState::idle01)
 	{
-		myAnimationStack.GetLast().myCoolDownTime -= aDeltaTime.GetSeconds();
-		DL_PRINT("animation cooldown: %f", myAnimationStack.GetLast().myCoolDownTime);
-		if (myAnimationStack.GetLast().myCoolDownTime <= 0.f)
+		auto& it = myAnimationStates.find("moving");
+		if (it != myAnimationStates.end())
 		{
-			if (myAnimationStack.GetLast().myNextAnimationKey == eAnimationState::invisible)
+			currentAnimation = &it->second;
+			currentAnimation->myAnimationBlend = 0.f;
+		}
+	}
+
+	myModelComponent.SetAnimation(currentAnimation->myAnimationKey);
+	myModelComponent.SetNextAnimation(currentAnimation->myNextAnimationKey);
+	myModelComponent.SetAnimationLerpValue(currentAnimation->myAnimationBlend);
+	myModelComponent.SetAnimationLooping(currentAnimation->myIsLooping);
+
+	if (currentAnimation->myCoolDownTime != -1.f)
+	{
+		currentAnimation->myCoolDownTime -= aDeltaTime.GetSeconds();
+		if (currentAnimation->myCoolDownTime <= 0.f)
+		{
+			if (currentAnimation->myNextAnimationKey == eAnimationState::invisible)
 			{
 				myModelComponent.SetVisibility(false);
 			}
@@ -83,12 +93,20 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
-	if (myAnimationStates.empty() || !myUpdateHasRun) return;
+	if (myAnimationStates.empty()) return;
+
 	auto animationEnd = myAnimationStates.end();
 	auto it = animationEnd;
 
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eImpStartToJump:
+		it = myAnimationStates.find("jump");
+		if (it != animationEnd)
+		{
+			PushAnimation(it->second);
+		}
+		break;
 	case eComponentMessageType::eShoot:
 	case eComponentMessageType::eShootWithNetworking:
 		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::shot01)

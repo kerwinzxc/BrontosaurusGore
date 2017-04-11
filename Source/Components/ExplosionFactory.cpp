@@ -124,7 +124,7 @@ void CExplosionFactory::CreateExplosion()
 	emitterData.RotationCurve = eLerpCurve::eSmootherStep;
 	emitterData.ShouldLoop = false;
 	emitterData.Lifetime = .25f;
-	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent(emitterData);
+	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent("Explosion");
 	newExplosionObject->AddComponent(companent);
 
 	SExplosionBufferData* newSexplosionData = new SExplosionBufferData();

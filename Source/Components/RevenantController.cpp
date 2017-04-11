@@ -72,10 +72,18 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		else
 		{
-			if(myIsDead == true)
+			myState = eRevenantState::eIdle;
+			if(myIsAggressive == true)
 			{
-				myState = eRevenantState::eDead;
+				myState = eRevenantState::eChase;
 			}
+		}
+	}
+	else
+	{
+		if (myIsDead == true)
+		{
+			myState = eRevenantState::eDead;
 		}
 	}
 
@@ -85,6 +93,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	case eRevenantState::eIdle:
 		break;
 	case eRevenantState::eWalkIntoMeleeRange:
+		myFlightForce -= gravityAcceleration * aDeltaTime;
 		LookAtPlayer();
 		myVelocity.z = mySpeed;
 		if (myToPlayer.y > 2.0f)
@@ -189,6 +198,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myIsDead = true;
 		myState = eRevenantState::eDead;
 		myIsflying = false;
+		myFlightForce = 0.0f;
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
@@ -198,14 +208,23 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		}
 	}
 	break;
+	case eComponentMessageType::eNetworkDoDamage:
+	{
+		myIsAggressive = true;
+		break;
+	}
 	case eComponentMessageType::eCheckPointReset:
-		myIsDead = false;
-		SComponentMessageData visibilityData;
-		visibilityData.myBool = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
-		GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
-		myState = eRevenantState::eIdle;
-		myIsflying = false;
+		if (myShouldNotReset == false)
+		{
+			myIsDead = false;
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = true;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+			GetParent()->NotifyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			myFlightForce = 0.0f;
+			myState = eRevenantState::eIdle;
+			myIsflying = false;
+		}
 		break;
 	}
 }
@@ -269,4 +288,11 @@ bool CRevenantController::CanChangeState()
 		break;
 	}
 	return true;
+}
+
+eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	myFlightForce = 0.0f;
+	myState = eRevenantState::eIdle;
+	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }

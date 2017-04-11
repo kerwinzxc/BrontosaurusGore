@@ -5,8 +5,8 @@
 #include "ColliderComponentManager.h"
 
 
-CRigidBodyComponent::CRigidBodyComponent(const SRigidBodyData& aColliderData, Physics::CPhysicsActor* aActor)
-	: CColliderComponent(aColliderData, nullptr, aActor)
+CRigidBodyComponent::CRigidBodyComponent(const SRigidBodyData& aColliderData, Physics::CPhysicsActor* aActor, const bool aIsTrigger)
+	: CColliderComponent(aColliderData, nullptr, aActor, aIsTrigger)
 {
 	myData = aColliderData;
 }

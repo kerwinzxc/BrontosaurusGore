@@ -31,7 +31,7 @@ namespace Physics
 	void CPhysicsActor::SetIsActive(const bool aIsActive)
 	{
 		myPxActor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, !aIsActive);
-	} // är det fler som krashar här eller är det bara jag när jag debuggar? -kyle
+	} // är det fler som krashar här eller är det bara jag när jag debuggar? -kyle //Jag med! -Alex
 
 	bool CPhysicsActor::GetIsActive()
 	{

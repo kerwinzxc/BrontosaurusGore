@@ -29,9 +29,6 @@
     <Filter Include="Updater\Size">
       <UniqueIdentifier>{aeeacdde-5c5b-4365-97a9-41f83b2d726d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Updater\Velocity">
-      <UniqueIdentifier>{2b1e72f8-7d74-4040-a424-f57c34e6f9f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Spawn">
       <UniqueIdentifier>{f2cae2fc-d330-42da-8edd-9be311acd40d}</UniqueIdentifier>
     </Filter>
@@ -49,6 +46,12 @@
     </Filter>
     <Filter Include="Spawn\Lifetime">
       <UniqueIdentifier>{a4b4efa3-09fa-4466-9bd0-c006eacdc6eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Friction">
+      <UniqueIdentifier>{04fcae73-6bfd-444a-a4ff-ab1f5ee9e2fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Updater\Force">
+      <UniqueIdentifier>{3f4299e1-167e-4c68-a7f3-2c9afe8c0419}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,9 +76,6 @@
     <ClInclude Include="ParticleSizeUpdate.h">
       <Filter>Updater\Size</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleVelocityUpdater.h">
-      <Filter>Updater\Velocity</Filter>
-    </ClInclude>
     <ClInclude Include="IParticleSpawner.h">
       <Filter>Spawn\Base</Filter>
     </ClInclude>
@@ -90,6 +90,13 @@
     </ClInclude>
     <ClInclude Include="ParticleVelocitySpawner.h">
       <Filter>Spawn\Velocity</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedefs.h" />
+    <ClInclude Include="ParticleForceUpdater.h">
+      <Filter>Updater\Force</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleFrictionUpdater.h">
+      <Filter>Updater\Friction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +118,6 @@
     <ClCompile Include="ParticleSizeUpdate.cpp">
       <Filter>Updater\Size</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleVelocityUpdater.cpp">
-      <Filter>Updater\Velocity</Filter>
-    </ClCompile>
     <ClCompile Include="IParticleSpawner.cpp">
       <Filter>Spawn\Base</Filter>
     </ClCompile>
@@ -128,6 +132,12 @@
     </ClCompile>
     <ClCompile Include="ParticleVelocitySpawner.cpp">
       <Filter>Spawn\Velocity</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleForceUpdater.cpp">
+      <Filter>Updater\Force</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleFrictionUpdater.cpp">
+      <Filter>Updater\Friction</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

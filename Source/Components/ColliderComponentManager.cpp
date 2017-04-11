@@ -117,7 +117,7 @@ CColliderComponent* CColliderComponentManager::CreateBoxCollider(const SBoxColli
 		return nullptr;
 	}
 	myScene->AddActor(actor);
-	CBoxColliderComponent* component = new CBoxColliderComponent(aBoxColliderData, shape, actor);
+	CBoxColliderComponent* component = new CBoxColliderComponent(aBoxColliderData, shape, actor, aBoxColliderData.IsTrigger);
 	return component;
 }
 
@@ -142,7 +142,7 @@ CColliderComponent* CColliderComponentManager::CreateSphereCollider(const SSpher
 		return nullptr;
 	}
 	myScene->AddActor(actor);
-	CSphereColliderComponent* component = new CSphereColliderComponent(aSphereColliderData, shape, actor);
+	CSphereColliderComponent* component = new CSphereColliderComponent(aSphereColliderData, shape, actor, aSphereColliderData.IsTrigger);
 	return component;
 }
 
@@ -166,7 +166,7 @@ CColliderComponent* CColliderComponentManager::CreateCapsuleCollider(const SCaps
 		return nullptr;
 	}
 	myScene->AddActor(actor);
-	CCapsuleColliderComponent* component = new CCapsuleColliderComponent(aCapsuleColliderData, shape, actor);
+	CCapsuleColliderComponent* component = new CCapsuleColliderComponent(aCapsuleColliderData, shape, actor, aCapsuleColliderData.IsTrigger);
 	return component;
 }
 
@@ -204,7 +204,7 @@ CColliderComponent* CColliderComponentManager::CreateRigidbody(const SRigidBodyD
 
 	actor->SetRotationLock(aRigidbodyData.freezedRotationAxiees);
 	myScene->AddActor(actor);
-	CRigidBodyComponent* component = new CRigidBodyComponent(aRigidbodyData, actor);
+	CRigidBodyComponent* component = new CRigidBodyComponent(aRigidbodyData, actor, aRigidbodyData.IsTrigger);
 	component->SetManager(this);
 	return component;
 }

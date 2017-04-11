@@ -3,8 +3,8 @@
 #include "../Physics/PhysXManager.h"
 
 
-CBoxColliderComponent::CBoxColliderComponent(const SBoxColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor)
-	: CColliderComponent(aColliderData, aShape, aActor)
+CBoxColliderComponent::CBoxColliderComponent(const SBoxColliderData& aColliderData, Physics::CShape* aShape, Physics::CPhysicsActor* aActor, const bool aIsTrigger)
+	: CColliderComponent(aColliderData, aShape, aActor, aIsTrigger)
 {
 }
 

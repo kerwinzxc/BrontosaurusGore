@@ -4,16 +4,18 @@
 #include "ComponentManager.h"
 #include "ParticleEmitterComponentManager.h"
 #include "../BrontosaurusEngine/ParticleEmitterInstance.h"
+#include "ParticleEmitterManager.h"
 
-CParticleEmitterComponent::CParticleEmitterComponent(CParticleEmitterInstance* aEmitterInstance)
+CParticleEmitterComponent::CParticleEmitterComponent(int anId)
 {
-	myParticleInstance = aEmitterInstance;
+	myInstanceId = anId;
 	myType = eComponentType::eParticleEmitter;
 }
 
 
 CParticleEmitterComponent::~CParticleEmitterComponent()
 {
+	CParticleEmitterManager::GetInstance().Release(myInstanceId);
 }
 
 void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
@@ -22,17 +24,18 @@ void CParticleEmitterComponent::Update(CU::Time aDeltaTime)
 	{
 		return;
 	}
-	myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
-	myParticleInstance->Update(aDeltaTime);
+	//myParticleInstance->SetPosition(GetParent()->GetToWorldTransform().GetPosition());
+	CParticleEmitterManager::GetInstance().SetTransformation(myInstanceId, GetParent()->GetToWorldTransform());
+	//myParticleInstance->Update(aDeltaTime);
 }
 void CParticleEmitterComponent::Activate()
 {
-	myParticleInstance->Activate();
+	CParticleEmitterManager::GetInstance().Activate(myInstanceId);
 }
 
 void CParticleEmitterComponent::Deactivate()
 {
-	myParticleInstance->Deactivate();
+	CParticleEmitterManager::GetInstance().Deactivate(myInstanceId);
 }
 
 

@@ -7,6 +7,7 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Physics/PhysicsCharacterController.h"
+#include "../Audio/AudioInterface.h"
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
 
@@ -160,6 +161,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eTakeDamage:
+		//Audio::CAudioInterface::GetInstance()->PostEvent("Impact_Tick"); // hitta något annat ställe om båda spelarna hör detta.//  CWeapon Shoot ?
 		StartHighlight();
 		break;
 	case eComponentMessageType::eCheckPointReset:
@@ -213,11 +215,11 @@ CU::Vector3f CEnemy::ClosestPlayerPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
 	
-	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0)
+	if(ourPlayerObjects.IsInitialized() == false || ourPlayerObjects.Size() == 0 || ourPlayerObjects[0] == nullptr)
 	{
 		return position;
 	}
-	
+
 	CU::Vector3f playerPos = ourPlayerObjects[0]->GetWorldPosition();
 	for(unsigned int i = 0; i < ourPlayerObjects.Size(); ++i)
 	{

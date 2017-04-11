@@ -53,7 +53,7 @@ int LoadRevenant(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.chargeAirBarrageAttackDuration = 2.0f;
+		blueprint.chargeAirBarrageAttackDuration = 1.0f;
 	}
 
 	if (someData.myData.HasKey("ShootingRange") == true)

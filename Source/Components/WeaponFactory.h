@@ -31,6 +31,7 @@ public:
 	void CreateWeapon(unsigned short aWeaponIndex, CGameObject* aObjectToGiveAWeaponTo);
 	void CreateWeapon(const char* aWeaponName, CWeaponSystemComponent* aWeaponSystemToGiveAWeaponTo);
 	short GetWeaponFactoryWeaponIndex(const char* aWeaponName);
+	SWeaponData* GetWeaponDataFromIndex(unsigned int aIndex);
 	void MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon);
 	void LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, bool aIsPlayerWeapon);
 private:

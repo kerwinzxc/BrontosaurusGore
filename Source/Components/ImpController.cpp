@@ -4,6 +4,9 @@
 #include "../Physics/PhysicsCharacterController.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../ThreadedPostmaster/Postmaster.h"
+#include "../TServer/ServerMessageManager.h"
+#include "../TShared/NetworkMessage_AnimationStart.h"
+#include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
 static const float gravityAcceleration = 9.82f * 5;
 
@@ -259,19 +262,10 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 		}
 	}
-	case eComponentMessageType::eOnCollisionEnter:
+	case eComponentMessageType::eNetworkDoDamage:
 	{
-		switch (myState)
-		{
-		case eImpState::eWalkIntoMeleeRange:
-			ApplyJumpForce(myJumpHeight);
-			break;
-		case eImpState::eRunAfterShooting:
-			InitiateWander();
-			break;
-		default:
-			break;
-		}
+		myIsAggressive = true;
+		break;
 	}
 	case eComponentMessageType::eDeactivate:
 		myIsDead = true;
@@ -288,7 +282,10 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 	{
 		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
 		myIsJumping = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eImpStartToJump, SComponentMessageData());
+
+		CNetworkMessage_AnimationStart* jumpMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+		jumpMessage->Init(GetNetworkID(), eComponentMessageType::eImpStartToJump);
+		Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(jumpMessage));
 	}
 }
 
@@ -349,4 +346,11 @@ bool CImpController::CanChangeState()
 		break;
 	}
 	return true;
+}
+
+eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage)
+{
+	myJumpForce = 0.0f;
+	myState = eImpState::eIdle;
+	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }

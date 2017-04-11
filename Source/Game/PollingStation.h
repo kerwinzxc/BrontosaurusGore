@@ -21,6 +21,8 @@ public:
 	void AddKey(const short aKeyId);
 	void ClearKeys();
 	const CU::GrowingArray<short>& GetKeys() const;
+
+	bool CheckIfIsPlayerObject(CGameObject* aGameObjectToCheck);
 private:
 	CGameObject* myPlayerObject;
 	CU::GrowingArray<CGameObject*> myPLayers;

@@ -14,6 +14,7 @@
 #include "ThreadedPostmaster/Postmaster.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "TClient/ServerReadyMessage.h"
+#include "../Audio/AudioInterface.h"
 
 CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::eLoadState)
@@ -51,7 +52,12 @@ void CLoadState::Init()
 		bLM.CreateStateToLoad(myStateStack, myLevelIndex);
 		myPlayState = bLM.GetPlaystate();
 	}
+
 	myLoadingAnimation.Init(new CSpriteInstance("Sprites/LoadingScreen/Loading.dds", { 512.f / WINDOW_SIZE.x, 128.f / WINDOW_SIZE.y }));
+
+	std::string BGMusic;
+	BGMusic = "Music_Level" + std::to_string(myLevelIndex + 1);
+	Audio::CAudioInterface::GetInstance()->PostEvent(BGMusic.c_str());
 }
 
 eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)

@@ -25,6 +25,7 @@ eMessageReturn CCheckPointSystem::DoEvent(const CAddToCheckPointResetList& aAddT
 	if(myObjectsToReset.Find(aAddToCheckPointResetList.GetObjectToReset()) == myObjectsToReset.FoundNone)
 	{
 		myObjectsToReset.Add(aAddToCheckPointResetList.GetObjectToReset());
+		//DL_PRINT("Added thing to reset %u", aAddToCheckPointResetList.GetObjectToReset()->GetId());
 	}
 	return eMessageReturn::eContinue;
 }
@@ -43,6 +44,7 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 		SComponentMessageData respawnData;
 		respawnData.myVector3f = myRespawnPlayerPosition;
 		myObjectsToReset[i]->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+		//DL_PRINT("resseting a object %u", myObjectsToReset[i]->GetId());
 	}
 	myObjectsToReset.RemoveAll();
 	return eMessageReturn::eContinue;
@@ -50,8 +52,18 @@ eMessageReturn CCheckPointSystem::DoEvent(const CResetToCheckPointMessage& aRese
 
 eMessageReturn CCheckPointSystem::DoEvent(const CRevivePlayerMessage& aRevivePlayerMessage)
 {
-	SComponentMessageData respawnData;
-	respawnData.myVector3f = myRespawnPlayerPosition;
-	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+	SComponentQuestionData healthLeftData;
+	if (!CPollingStation::GetInstance() || ! CPollingStation::GetInstance()->GetPlayerObject())
+	{
+		return eMessageReturn::eContinue;
+	}
+
+	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData);
+	if(healthLeftData.myInt <= 0)
+	{
+		SComponentMessageData respawnData;
+		respawnData.myVector3f = myRespawnPlayerPosition;
+		CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eCheckPointReset, respawnData);
+	}
 	return eMessageReturn::eContinue;
 }

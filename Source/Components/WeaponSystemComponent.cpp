@@ -101,24 +101,65 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eAddWeaponWithoutChangingToIt:
 	{
+		if(CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
-		ChangeWeapon2(myWeapons.Size() - 1);
+		//ChangeWeapon2(myWeapons.Size() - 1);
 	}
 	break;
 	case eComponentMessageType::eAddWeapon:
 	{
+		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myString, GetParent());
 		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eAddWeaponIndex:
 	{
+		const char* weaponName = WeaponFactoryPointer->GetWeaponDataFromIndex(aMessageData.myInt)->name.c_str();
+		if (CheckIfAlreadyHaveWeapon(weaponName) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = weaponName;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		WeaponFactoryPointer->CreateWeapon(aMessageData.myInt, GetParent());
 		ChangeWeapon(myWeapons.Size() - 1);
 		break;
 	}
 	case eComponentMessageType::eWeaponFactoryGiveWeaponToWeaponSystem:
 	{
+		if (CheckIfAlreadyHaveWeapon(aMessageData.myString) == true)
+		{
+			SAmmoReplenishData replenishData;
+			replenishData.ammoType = aMessageData.myString;
+			replenishData.replenishAmount = 1000;
+			SComponentMessageData giveAmmoData;
+			giveAmmoData.myAmmoReplenishData = &replenishData;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
+			break;
+		}
 		myWeapons.Add(aMessageData.myWeapon);
 		myWeapons.GetLast()->SetUser(GetParent());
 		WeaponFactoryPointer->MakeWeaponModel(GetParent(), myWeapons.GetLast());
@@ -372,6 +413,18 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 	}
 	default:
 		break;
+	}
+	return false;
+}
+
+bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)
+{
+	for(unsigned int i = 0; i < myWeapons.Size(); i++)
+	{
+		if(myWeapons[i]->GetData()->name == aWeaponName)
+		{
+			return true;
+		}
 	}
 	return false;
 }

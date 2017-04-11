@@ -37,7 +37,6 @@ private:
 
 	CU::Vector2f myLastPosition;
 	CModelComponent& myModelComponent;
-	bool myUpdateHasRun;
 
 	static CU::GrowingArray<CAnimationComponent*> ourAnimations;
 };
