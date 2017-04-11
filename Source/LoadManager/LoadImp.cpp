@@ -68,10 +68,11 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	{
 		// REMOVE THIS LATER, temp just incase LDs stuff were to get corrupted with the name change.
 		blueprint.chargeAttackDuration = someData.myData.at("chargeAttackDuration").GetFloat();
+		blueprint.chargeAttackDuration = 0.1f;
 	}
 	else
 	{
-		blueprint.chargeAttackDuration = 2.0f;
+		blueprint.chargeAttackDuration = 0.1f;
 	}
 	if (someData.myData.HasKey("chargeMeleeAttackDuration") == true)
 	{
@@ -80,7 +81,7 @@ int LoadImp(KLoader::SLoadedComponentData someData)
 	}
 	else
 	{
-		blueprint.chargeMeleeAttackDuration = 1.0f;
+		blueprint.chargeMeleeAttackDuration = 0.5f;
 	}
 
 	if (someData.myData.HasKey("ShootingRange") == true)
