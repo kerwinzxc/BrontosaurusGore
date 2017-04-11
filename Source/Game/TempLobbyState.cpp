@@ -265,7 +265,7 @@ void CTempLobbyState::LobbyMenu()
 	myTextINstance.SetText(L"");
 
 	std::wstring ipAddressStr = L"Your ip address is : " + myThisComputersIP;
-	if (myThisComputersIP.find(L"Failed") != std::string::npos)
+	if (myThisComputersIP.empty())
 	{
 		ipAddressStr = L"We don't know your ip, google it";
 	}
@@ -321,7 +321,7 @@ void CTempLobbyState::LevelSelect()
 	if (myIsPlayer == true)
 	{
 		std::wstring ipStr = L"# Your ip address is " + myThisComputersIP;
-		if (myThisComputersIP.find(L"Failed") != std::string::npos)
+		if (myThisComputersIP.empty())
 		{
 			ipStr = L"# We don't know your ip address, google it :(";
 		}
@@ -540,6 +540,6 @@ void CTempLobbyState::GetIPAddress()
 	
 	if (errorOccured)
 	{
-		myThisComputersIP = L"Failed to retrieve ip address, start command prompt and write ipconfig to check yours";
+		myThisComputersIP.clear();
 	}
 }
