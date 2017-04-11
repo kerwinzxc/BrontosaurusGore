@@ -1,8 +1,12 @@
 #include "stdafx.h"
+
 #include "SimulationEventCallback.h"
-#include "PhysicsActor.h"
 #include "PxSimulationEventCallback.h"
+#include "PhysicsActor.h"
 #include "PxRigidActor.h"
+#include "PxRigidDynamic.h"
+#include "PxShape.h"
+#include "PxRigidBody.h"
 
 namespace Physics
 {
@@ -114,6 +118,21 @@ namespace Physics
 
 	void CSimulationEventCallback::onAdvance(const physx::PxRigidBody*const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count)
 	{
+	}
 
+	void CSimulationEventCallback::onShapeHit(const physx::PxControllerShapeHit& hit)
+	{
+		if (hit.actor->getType() == physx::PxActorType::eRIGID_DYNAMIC)
+		{
+			static_cast<physx::PxRigidDynamic*>(hit.actor)->addForce(hit.dir * 5.f);
+		}
+	}
+
+	void CSimulationEventCallback::onControllerHit(const physx::PxControllersHit& hit)
+	{
+	}
+
+	void CSimulationEventCallback::onObstacleHit(const physx::PxControllerObstacleHit& hit)
+	{
 	}
 }

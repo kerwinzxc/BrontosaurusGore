@@ -87,13 +87,20 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					if(gameObject != myUser)
 					{
 						SComponentMessageData damageData;
+						damageData.myVector4f.y = direction.x;
+						damageData.myVector4f.z = direction.y;
+						damageData.myVector4f.w = direction.z;
 						damageData.myInt = myWeaponData->projectileData->damage;
 						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+
+						Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+						audio->PostEvent("Impact_Tick");
 					
 					}
 				}
 			}
 
+			myElapsedFireTimer = 0.0f;
 			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 			rotatedDirection.Normalize();*/
@@ -111,7 +118,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 				PlaySound(SoundEvent::Fire, direction);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
-				myElapsedFireTimer = 0.0f;
 			
 			}
 		}

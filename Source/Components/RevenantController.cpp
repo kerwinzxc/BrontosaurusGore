@@ -15,6 +15,8 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myElapsedHoverTime = 0.0f;
 	myElapsedChargeRangedAttackTime = 0.0f,
 	myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+	myAttacksUntilChangingStates = 3;
+	myUsedAttacksSinceLastStateChange = 0;
 }
 
 CRevenantController::~CRevenantController()
@@ -103,13 +105,27 @@ void CRevenantController::Update(const float aDeltaTime)
 	break;
 	case eRevenantState::eUseMeleeAttack:
 		ChangeWeapon(2);
-		Attack();
-		myState = eRevenantState::eIdle;
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
+		{
+			Attack();
+			myState = eRevenantState::eIdle;
+		}
 		break;
 	case eRevenantState::eUseRangedAttack:
 		ChangeWeapon(0);
-		Attack();
-		myState = eRevenantState::eIdle;
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
+		{
+			Attack();
+			myUsedAttacksSinceLastStateChange++;
+			myState = eRevenantState::eChargingRangedAttack;
+			if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+			{
+				myElapsedChargeRangedAttackTime = 0.0f;
+				myUsedAttacksSinceLastStateChange = 0;
+				myState = eRevenantState::eIdle;
+			}
+		
+		}
 		break;
 	case eRevenantState::eChase:
 		LookAtPlayer();
@@ -133,19 +149,30 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		LookAtPlayer();
 		ChangeWeapon(1);
-		myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
-		if (myElapsedChargeRangedAirBarrageAttackTime >= myChargeRangedAirBarrageAttackDuration)
+		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
-			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
-			Attack();
-		}
+			myElapsedChargeRangedAirBarrageAttackTime += aDeltaTime;
+			if (myElapsedChargeRangedAirBarrageAttackTime >= myChargeRangedAirBarrageAttackDuration)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				Attack();
+				myUsedAttacksSinceLastStateChange++;
+			}
 
-		myElapsedHoverTime += aDeltaTime;
-		if(myElapsedHoverTime >= myHoverTime)
-		{
-			myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
-			myElapsedHoverTime = 0.0f;
-			myState = eRevenantState::eFlyDescend;
+			if(myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				myElapsedHoverTime = 0.0f;
+				myState = eRevenantState::eFlyDescend;
+				myUsedAttacksSinceLastStateChange = 0;
+			}
+		/*	myElapsedHoverTime += aDeltaTime;
+			if(myElapsedHoverTime >= myHoverTime)
+			{
+				myElapsedChargeRangedAirBarrageAttackTime = 0.0f;
+				myElapsedHoverTime = 0.0f;
+				myState = eRevenantState::eFlyDescend;
+			}*/	
 		}
 		break;
 	}
@@ -163,6 +190,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eChargingMeleeAttack:
 	{
+		LookAtPlayer();
 		myElapsedChargeMeleeAttackTime += aDeltaTime;
 		if(myElapsedChargeMeleeAttackTime >= myChargeMeleeAttackDuration)
 		{
@@ -173,6 +201,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eChargingRangedAttack:
 	{
+		LookAtPlayer();
 		myElapsedChargeRangedAttackTime += aDeltaTime;
 		if (myElapsedChargeRangedAttackTime >= myChargeRangedAttackDuration)
 		{
