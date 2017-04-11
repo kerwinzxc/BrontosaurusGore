@@ -27,6 +27,7 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myElapsedChargeAttackTime = 0.0f;
 	myChargeMeleeAttackDuration = 1.0f;
 	myJumpForce = 0.0f;
+	myWaitAfterAttackCountDown = 0.0f;
 }
 
 CImpController::~CImpController()
@@ -117,8 +118,8 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			Attack();
 			//ChangeClientAnimation(eComponentMessageType::eImpMeleeAttack);
-			myState = eImpState::eIdle;
-			InitiateWander();
+			myState = eImpState::eWaitAfterMeleeAttack;
+			myWaitAfterAttackCountDown = 0.7f;
 		}
 		break;
 	case eImpState::eUseRangedAttack:
@@ -198,6 +199,15 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			myElapsedChargeMeleeAttackTime = 0.0f;
 			myState = eImpState::eUseMeleeAttack;
+		}
+		break;
+	}
+	case eImpState::eWaitAfterMeleeAttack:
+	{
+		myWaitAfterAttackCountDown -= aDeltaTime;
+		if(myWaitAfterAttackCountDown <= 0.0f)
+		{
+			InitiateWander();
 		}
 		break;
 	}
@@ -352,6 +362,9 @@ bool CImpController::CanChangeState()
 		return false;
 		break;
 	case eImpState::eRunAfterShooting:
+		return false;
+		break;
+	case eImpState::eWaitAfterMeleeAttack:
 		return false;
 		break;
 	default:

@@ -53,7 +53,9 @@
     <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="WaveManager.cpp" />
-    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="MenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -111,7 +113,9 @@
     <ClInclude Include="PollingStation.h" />
     <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="WaveManager.h" />
-    <ClInclude Include="MenuState.h" />
+    <ClInclude Include="MenuState.h">
+      <Filter>States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="States">
