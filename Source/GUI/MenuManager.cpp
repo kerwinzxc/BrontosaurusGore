@@ -174,6 +174,15 @@ void CMenuManager::Render()
 		SCreateOrClearGuiElement* elementMessage = new SCreateOrClearGuiElement(L"__Menu", myGUIElement, CU::Vector2ui(1920, 1080));
 		RENDERER.AddRenderMessage(elementMessage);
 
+		SChangeStatesMessage* const changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eAlphaBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		SRenderToGUI*const guiChangeState = new SRenderToGUI(L"__Menu", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
+
 		myLayers.QuickSort(&CompareLayers);
 
 		for (unsigned i = 0; i < myLayers.Size(); ++i)
