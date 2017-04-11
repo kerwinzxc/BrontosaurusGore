@@ -197,7 +197,7 @@ void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFu
 		screenSpacePosition.y -= screenSize.y * currentGuiElement.myOrigin.y;
 
 		const CU::Vector4f screenRect(screenSpacePosition.x, screenSpacePosition.y, screenSpacePosition.x + screenSize.x, screenSpacePosition.y + screenSize.y);
-
+	
 		aFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, screenRect, myElements[i].second);
 	}
 }

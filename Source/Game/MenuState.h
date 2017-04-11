@@ -1,11 +1,13 @@
 #pragma once
 #include "StateStack/State.h"
 #include "GUI/MenuManager.h"
+#include "JsonValue.h"
 
-class CMenuState :State
+class CMenuState :public State
 {
 public:
-	CMenuState(StateStack& aStateStack);
+
+	CMenuState(StateStack& aStateStack, std::string aFile);
 	~CMenuState();
 
 	void Init() override;
@@ -18,9 +20,14 @@ public:
 	bool GetLetThroughUpdate() const override;
 
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
+
 private:
-	
+	static eAlignment LoadAlignment(const CU::CJsonValue& aJsonValue);
+	void LoadElement(const CU::CJsonValue& aJsonValue, const std::string& aFolderpath);
+	void MenuLoad(const std::string& aFile);
+
 	bool myShowStateBelow;
+	CSpriteInstance* myPointerSprite;
 
 	CMenuManager myManager;
 };
