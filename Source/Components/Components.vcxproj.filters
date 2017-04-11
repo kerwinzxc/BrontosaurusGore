@@ -186,5 +186,6 @@
     <ClInclude Include="AnimationComponentLoader.h" />
     <ClInclude Include="TumbleweedController.h" />
     <ClInclude Include="TumbleweedFactory.h" />
+    <ClInclude Include="WeaponPickupData.h" />
   </ItemGroup>
 </Project>
