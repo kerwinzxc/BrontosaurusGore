@@ -91,8 +91,14 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					if(gameObject != myUser)
 					{
 						SComponentMessageData damageData;
+						damageData.myVector4f.y = direction.x;
+						damageData.myVector4f.z = direction.y;
+						damageData.myVector4f.w = direction.z;
 						damageData.myInt = myWeaponData->projectileData->damage;
 						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+
+						Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+						audio->PostEvent("Impact_Tick");
 					
 					}
 				}

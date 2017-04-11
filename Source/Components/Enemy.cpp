@@ -7,7 +7,6 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Physics/PhysicsCharacterController.h"
-#include "../Audio/AudioInterface.h"
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
 
@@ -161,8 +160,9 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eObjectDone:
 		break;
 	case eComponentMessageType::eTakeDamage:
-		//Audio::CAudioInterface::GetInstance()->PostEvent("Impact_Tick"); // hitta något annat ställe om båda spelarna hör detta.//  CWeapon Shoot ?
+	{
 		StartHighlight();
+	}
 		break;
 	case eComponentMessageType::eCheckPointReset:
 	{

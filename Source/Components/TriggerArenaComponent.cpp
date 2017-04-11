@@ -74,7 +74,7 @@ void CTriggerArenaComponent::OnPlayerEnter()
 		myPlayersInTrigger++;
 		DL_PRINT("NumberOfPlayersINside");
 		DL_PRINT(std::to_string(myPlayersInTrigger).c_str());
-		if (myPlayersInTrigger == CPollingStation::GetInstance()->GetNumberOfPlayers())
+		if (myPlayersInTrigger == CPollingStation::GetInstance()->GetNumberOfPlayers() || myKeyIdToLock == -1)
 		{
 			myHaveBeenTriggered = true;
 			Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerEnteredArena(1, myNumberOfWaves, myKeyIdToLock));

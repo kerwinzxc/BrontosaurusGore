@@ -15,6 +15,7 @@ CDoorComponent::CDoorComponent()
 	myIsClosed = true;
 	myShouldReset = true;
 	myIsLocked = false;
+	myAddToCheckpoint = false;
 	myLockId = -1;
 	myNetworkID = 0;
 	myMoveDistance = 15;
@@ -70,14 +71,14 @@ void CDoorComponent::SnapShotDoorState()
 {
 	myResetToIsClosed = myIsClosed;
 	myResetToIsLocked = myIsLocked;
-	myResetToPosition = GetParent()->GetLocalTransform();
+	myResetToPosition = GetParent()->GetToWorldTransform();
 }
 
 void CDoorComponent::ResetToSnapShot()
 {
 	myIsClosed = myResetToIsClosed;
 	myIsLocked = myResetToIsLocked;
-	GetParent()->GetLocalTransform() = (myResetToPosition);
+	GetParent()->SetWorldTransformation(myResetToPosition);
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 }
 
@@ -115,6 +116,12 @@ void CDoorComponent::Update(const CU::Time & aDeltaTime)
 			//GetParent()->SetWorldPosition(myResetToPosition.GetPosition());
 			GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		}
+	}
+
+	if (myAddToCheckpoint == true)
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+		myAddToCheckpoint = false;
 	}
 }
 
@@ -156,6 +163,7 @@ const unsigned char CDoorComponent::GetNetworkID() const
 eMessageReturn CDoorComponent::DoEvent(const CSetAsNewCheckPointMessage & aSetAsNewCheckPointMessage)
 {
 	SnapShotDoorState();
+	myAddToCheckpoint = true;
 	return eMessageReturn::eContinue;
 }
 
@@ -169,6 +177,7 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 		break;
 	case eComponentMessageType::eObjectDone:
 			myOriginPosition = GetParent()->GetWorldPosition();
+			//SnapShotDoorState();
 			Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eSetNewCheckPoint);
 			Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eResetToCheckPointMessage);
 		break;
@@ -220,7 +229,7 @@ eMessageReturn CDoorComponent::DoEvent(const CResetToCheckPointMessage& aResetTo
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 		DL_PRINT("Add door to checkpoint %u", GetParent()->GetId());
-		SnapShotDoorState();
+		//SnapShotDoorState();
 	}
 	return eMessageReturn::eContinue;
 }

@@ -42,7 +42,12 @@ int LoadSphereCollider(KLoader::SLoadedComponentData someData)
 
 	SSphereColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -61,7 +66,12 @@ int LoadCapsuleCollider(KLoader::SLoadedComponentData someData)
 
 	SCapsuleColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -81,7 +91,12 @@ int LoadBoxCollider(KLoader::SLoadedComponentData someData)
 
 	SBoxColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -100,7 +115,12 @@ int LoadMeshCollider(KLoader::SLoadedComponentData someData)
 
 	SMeshColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	//data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -156,7 +176,12 @@ int LoadSphereColliderServer(KLoader::SLoadedComponentData someData)
 
 	SSphereColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -175,7 +200,12 @@ int LoadCapsuleColliderServer(KLoader::SLoadedComponentData someData)
 
 	SCapsuleColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -195,7 +225,12 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 
 	SBoxColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
+
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
@@ -214,7 +249,11 @@ int LoadMeshColliderServer(KLoader::SLoadedComponentData someData)
 
 	SMeshColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
-	data.material = someData.myData.at("material").GetVector3f("xyz");
+	
+	CU::Vector3f material = someData.myData.at("material").GetVector3f("xyz");
+	data.material.aStaticFriction = material.x;
+	data.material.aDynamicFriction = material.y;
+	data.material.aRestitution = material.z;
 	//data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
