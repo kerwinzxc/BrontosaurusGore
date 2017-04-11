@@ -20,6 +20,8 @@
 #include "../Particles/ParticleSizeSpawner.h"
 #include "../Particles/ParticleForceUpdater.h"
 #include "../Particles/ParticleFrictionUpdater.h"
+#include "../Particles/ParticleColorUpdater.h"
+#include "../Particles/ParticleSizeUpdate.h"
 
 
 CParticleEmitter::CParticleEmitter()
@@ -308,12 +310,20 @@ void CParticleEmitter::ParseUpdateParameters(const CU::CJsonValue& aJsonValue)
 		}
 		else if (type == "friction")
 		{
-
 			updater = new Particles::CParticleFrictionUpdater(value);
+		}
+		else if (type == "colorOverTime")
+		{
+			updater = new Particles::CParticleColorUpdater(value);
+		}
+		else if (type == "sizeOverTime")
+		{
+			updater = new Particles::CParticleSizeUpdate(value);
 		}
 		else
 		{
-			DL_ASSERT("Attempting to add a unknows update parameter \"%s\"", type.c_str());
+			DL_ASSERT("Attempting to add a unknown update parameter \"%s\"", type.c_str());
+			continue;
 		}
 
 		myEmitterData.particles.updaters.Add(updater);
