@@ -6,4 +6,5 @@ struct SExplosionData
 	float knockBackForce;
 	healthPoint damage;
 	bool isPlayerFriendly;
+	CU::GrowingArray<std::string> explosionParticles;
 };

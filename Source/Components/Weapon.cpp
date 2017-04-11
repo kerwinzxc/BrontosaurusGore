@@ -11,6 +11,7 @@
 #include "../Audio/AudioInterface.h"
 #include "ParticleEmitterManager.h"
 #include "ParticleEmitterComponent.h"
+#include "../TClient/ClientMessageManager.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
@@ -127,8 +128,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 			
 			}
 		}
-		transform.LookAt(transform.GetPosition() + aDirection);
-		EmitParticles(transform);
+		if (CClientMessageManager::GetInstance() != nullptr)
+		{
+			transform.LookAt(transform.GetPosition() + aDirection);
+			EmitParticles(transform);
+		}
 	}
 }
 void CWeapon::Update(float aDeltaTime)
@@ -198,20 +202,29 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				myElapsedFireTimer = 0.0f;
 			}
 		}
-		localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
-		EmitParticles(localWeaponMatrix);
+		if(CClientMessageManager::GetInstance() != nullptr)
+		{
+			localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
+			EmitParticles(localWeaponMatrix);
+		}
+		
 	}
 }
 
 void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
 {
-	Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("GunSmoke");
+	
 	aMatrix44.SetPosition(aMatrix44.GetPosition() + aMatrix44.myForwardVector * 2.5);
 	aMatrix44.myForwardVector *= -1;
-	CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
-	CParticleEmitterManager::GetInstance().Activate(id);
+	
+	for(int i =  0; i < myWeaponData->fireParticles.Size(); ++i)
+	{
+		Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance(myWeaponData->fireParticles.Size());
+		CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
+		CParticleEmitterManager::GetInstance().Activate(id);
 
-	CParticleEmitterManager::GetInstance().Release(id);
+		CParticleEmitterManager::GetInstance().Release(id);
+	}
 }
 
 
