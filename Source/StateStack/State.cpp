@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "State.h"
 
-#include "../BrontosaurusEngine/Engine.h"
 #include "../BrontosaurusEngine/Renderer.h"
-
 
 State::State(StateStack& aStateStack, const eInputMessengerType aMessengerType, const int aPriority)
 	: CInputMessenger(aMessengerType, aPriority)

@@ -562,7 +562,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerHealthComponent->SetArmor(0);
 
 		playerObject->AddComponent(playerHealthComponent);
-		CTumbleweedFactory::GetInstance()->CreateNewTumbleweed(playerObject->GetWorldPosition());
+		//CTumbleweedFactory::GetInstance()->CreateNewTumbleweed(playerObject->GetWorldPosition());
 
 		/*SBoxColliderData data;
 		data.myHalfExtent = CU::Vector3f(0.25, 0.9, 0.25);

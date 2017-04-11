@@ -355,6 +355,7 @@ eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetTo
 {
 	myJumpForce = 0.0f;
 	myState = eImpState::eIdle;
+	myIsJumping = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }
 

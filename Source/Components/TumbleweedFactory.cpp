@@ -36,7 +36,6 @@ int CTumbleweedFactory::CreateNewTumbleweed(const CU::Vector3f& aPosition)
 {
 	CGameObject* tumbleweedObject = myGameObjectManager->CreateGameObject();
 	CModelComponent* modelComponent = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_thumbleweed_01.fbx");
-	
 	SSphereColliderData sphereData;
 	sphereData.myRadius = 1.25f;
 	sphereData.material.aDynamicFriction = 50.f;
@@ -53,6 +52,35 @@ int CTumbleweedFactory::CreateNewTumbleweed(const CU::Vector3f& aPosition)
 	tumbleweedObject->AddComponent(sphereColliderComponent);
 	tumbleweedObject->AddComponent(rigidBodyComponent);
 	tumbleweedObject->AddComponent(tumbleWeedController);
+	tumbleweedObject->GetLocalTransform().SetPosition(aPosition);
+	tumbleweedObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
+	return tumbleweedObject->GetId();
+}
+
+int CTumbleweedFactory::CreateNewTumbleweed(const CU::Vector3f& aPosition, const CU::Vector3f& aDirection)
+{
+	CGameObject* tumbleweedObject = myGameObjectManager->CreateGameObject();
+	CModelComponent* modelComponent = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_thumbleweed_01.fbx");
+
+	SSphereColliderData sphereData;
+	sphereData.myRadius = 1.25f;
+	sphereData.material.aDynamicFriction = 50.f;
+	sphereData.material.aStaticFriction = 50.f;
+	CColliderComponent* sphereColliderComponent = myColliderComponentManagerPointer->CreateComponent(&sphereData, tumbleweedObject->GetId());
+	SRigidBodyData rigidBodyData;
+	rigidBodyData.mass = 2.0f;
+	CColliderComponent* rigidBodyComponent = myColliderComponentManagerPointer->CreateComponent(&rigidBodyData, tumbleweedObject->GetId());
+	CTumbleweedController* tumbleWeedController = new CTumbleweedController();
+	tumbleWeedController->Init(myColliderComponentManagerPointer->GetScene());
+	tumbleWeedController->SetDirection(aDirection);
+	CComponentManager::GetInstance().RegisterComponent(tumbleWeedController);
+	myTumbleWeedControllers.Add(tumbleWeedController);
+	tumbleweedObject->AddComponent(modelComponent);
+	tumbleweedObject->AddComponent(sphereColliderComponent);
+	tumbleweedObject->AddComponent(rigidBodyComponent);
+	tumbleweedObject->AddComponent(tumbleWeedController);
+	tumbleweedObject->GetLocalTransform().SetPosition(aPosition);
+	tumbleweedObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 	return tumbleweedObject->GetId();
 }
 void CTumbleweedFactory::Update(const float aDeltaTime)
