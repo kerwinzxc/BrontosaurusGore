@@ -53,6 +53,7 @@
     <ClCompile Include="PollingStation.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="WaveManager.cpp" />
+    <ClCompile Include="MenuState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="PollingStation.h" />
     <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="WaveManager.h" />
+    <ClInclude Include="MenuState.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="States">
