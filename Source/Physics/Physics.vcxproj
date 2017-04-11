@@ -742,6 +742,7 @@
     <None Include="Include\apex_1.4\nvparameterized\NvParameterized.inl" />
     <None Include="Include\apex_1.4\nvparameterized\NvParamUtils.inl" />
     <None Include="Include\apex_1.4\nvparameterized\NvSerializer.inl" />
+    <None Include="MaterialData.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.vcxproj">

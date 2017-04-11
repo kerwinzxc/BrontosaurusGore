@@ -46,6 +46,7 @@ public:
 		eOverlay,
 		eAlphaBlend,
 		eMergeDepth,
+		eFog,
 		eSize,
 	};
 

@@ -256,6 +256,7 @@ void CTempLobbyState::Init()
 	myTextINstance.Init();
 	myTextINstance.SetColor({ 1.f,1.f,0.f,1.f });
 	myTextINstance.SetPosition({ 0.3f,0.3f });
+	GetIPAddress();
 }
 
 void CTempLobbyState::LobbyMenu()
@@ -263,7 +264,13 @@ void CTempLobbyState::LobbyMenu()
 	std::wstring string;
 	myTextINstance.SetText(L"");
 
-	myTextINstance.SetTextLine(0, L"#This is the first page of the lobby! Here you will provide the ip adress and a name");
+	std::wstring ipAddressStr = L"Your ip address is : " + myThisComputersIP;
+	if (myThisComputersIP.find(L"Failed") != std::string::npos)
+	{
+		ipAddressStr = L"We don't know your ip, google it";
+	}
+
+	myTextINstance.SetTextLine(0, L"# Welcome! Provide the ip adress (Optional) and a name (Optional). " + ipAddressStr);
 	myTextINstance.SetTextLine(1, L"# You navigate with the arrow keyes and when you are done go down to \"done\" and press enter");
 	myTextINstance.SetTextLine(2, L"# If you are playing with other players and wan't to host you don't have to enter an ip adress");
 	myTextINstance.SetTextLine(3, L"# If you are playing eith other players and wan't to join a host you should enter their IP");
@@ -313,8 +320,14 @@ void CTempLobbyState::LevelSelect()
 
 	if (myIsPlayer == true)
 	{
+		std::wstring ipStr = L"# Your ip address is " + myThisComputersIP;
+		if (myThisComputersIP.find(L"Failed") != std::string::npos)
+		{
+			ipStr = L"# We don't know your ip address, google it :(";
+		}
+
 		myTextINstance.SetTextLine(0, L"# Other players can only join when you are on this screen");
-		myTextINstance.SetTextLine(1, L"# DO NOT SELECT A LEVEL UNTIL ALL OTHER PLAYERS HAVE JONED");
+		myTextINstance.SetTextLine(1, std::move(ipStr));
 		myTextINstance.SetTextLine(2, L"# Please Select level");
 
 		CU::CJsonValue levelsFile;
@@ -465,4 +478,68 @@ eMessageReturn CTempLobbyState::DoEvent(const CLoadLevelMessage& aLoadLevelMessa
 {
 	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
 	return eMessageReturn::eContinue;
+}
+
+#include <algorithm>
+#include <Iphlpapi.h>
+#pragma comment(lib, "IPHLPAPI.lib")
+
+void CTempLobbyState::GetIPAddress()
+{
+	PIP_ADAPTER_ADDRESSES addresses = nullptr;
+	ULONG bufferSize = sizeof(IP_ADAPTER_ADDRESSES);
+	ULONG result = ERROR_SUCCESS;
+	bool errorOccured = false;
+
+	do 
+	{
+		addresses = (PIP_ADAPTER_ADDRESSES)malloc(bufferSize);
+		if (addresses == nullptr)
+		{
+			break;
+		}
+
+		result = GetAdaptersAddresses(AF_INET,
+			GAA_FLAG_SKIP_ANYCAST |
+			GAA_FLAG_SKIP_MULTICAST |
+			GAA_FLAG_SKIP_DNS_SERVER |
+			GAA_FLAG_SKIP_FRIENDLY_NAME, nullptr, addresses, &bufferSize);
+
+		if (result == ERROR_BUFFER_OVERFLOW)
+		{
+			free(addresses);
+			addresses = nullptr;
+		}
+	}
+	while (result == ERROR_BUFFER_OVERFLOW);
+	//addresses->FirstUnicastAddress->Address.lpSockaddr->sa_family;
+
+	do 
+	{
+		if (result == ERROR_SUCCESS)
+		{
+			if (!addresses || !addresses->FirstUnicastAddress || !addresses->FirstUnicastAddress->Address.lpSockaddr)
+			{
+				errorOccured = true;
+				break;
+			}
+
+			SOCKADDR_IN* ipv4 = reinterpret_cast<SOCKADDR_IN*>(addresses->FirstUnicastAddress->Address.lpSockaddr);
+
+			char strBuffer[INET_ADDRSTRLEN] = {};
+			if (inet_ntop(AF_INET, &(ipv4->sin_addr), strBuffer, INET_ADDRSTRLEN) == nullptr)
+			{
+				errorOccured = true;
+				//WSAGetLastError();
+				break;
+			}
+
+			myThisComputersIP = std::wstring(std::begin(strBuffer), std::end(strBuffer));
+		}
+	} while (false);
+	
+	if (errorOccured)
+	{
+		myThisComputersIP = L"Failed to retrieve ip address, start command prompt and write ipconfig to check yours";
+	}
 }

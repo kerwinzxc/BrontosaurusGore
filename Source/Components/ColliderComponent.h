@@ -3,6 +3,7 @@
 #include "..\Physics\PhysicsActor.h"
 #include "..\Physics\IPhysicsCallback.h"
 #include "..\Physics\CollisionLayers.h"
+#include "..\Physics\MaterialData.h"
 
 namespace Physics
 {
@@ -20,7 +21,8 @@ struct SColliderData
 		eRigidbody,
 		eMesh
 	} myType = eColliderType::eNone;
-	CU::Vector3f material;
+	
+	Physics::SMaterialData material;
 	CU::Vector3f center;
 
 	Physics::ECollisionLayer myLayer = Physics::ECollisionLayer::eDefault;
