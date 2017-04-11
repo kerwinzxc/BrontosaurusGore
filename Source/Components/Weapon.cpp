@@ -97,6 +97,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				}
 			}
 
+			myElapsedFireTimer = 0.0f;
 			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 			rotatedDirection.Normalize();*/
@@ -114,7 +115,6 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 				PlaySound(SoundEvent::Fire, direction);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
-				myElapsedFireTimer = 0.0f;
 			
 			}
 		}
