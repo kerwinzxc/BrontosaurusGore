@@ -121,11 +121,13 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 
 				PlaySound(SoundEvent::Fire, direction);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
-				EmitParticles(transform);
+				
 				myElapsedFireTimer = 0.0f;
 			
 			}
 		}
+		transform.LookAt(transform.GetPosition() + aDirection);
+		EmitParticles(transform);
 	}
 }
 void CWeapon::Update(float aDeltaTime)
@@ -170,7 +172,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 			shootPosition = cameraPositionData.myVector3f;
 			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
 		}
-
+		CU::Matrix44f localWeaponMatrix;
 		for (int i = 0; i < myWeaponData->projectilesFiredPerShot; ++i)
 		{
 			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
@@ -184,24 +186,27 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
 			
 				shootPosition = myUser->GetWorldPosition();
-				CU::Matrix44f localWeaponMatrix = myUser->GetToWorldTransform();
+				localWeaponMatrix = myUser->GetToWorldTransform();
 				localWeaponMatrix.Move(shootDisplacment);
 				shootPosition = localWeaponMatrix.GetPosition();
 
 
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
-				EmitParticles(localWeaponMatrix);
+				
 				myElapsedFireTimer = 0.0f;
-
 			}
 		}
+		localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
+		EmitParticles(localWeaponMatrix);
 	}
 }
 
-void CWeapon::EmitParticles(const CU::Matrix44f& aMatrix44)
+void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
 {
 	Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("GunSmoke");
+	aMatrix44.SetPosition(aMatrix44.GetPosition() + aMatrix44.myForwardVector * 2.5);
+	aMatrix44.myForwardVector *= -1;
 	CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
 	CParticleEmitterManager::GetInstance().Activate(id);
 

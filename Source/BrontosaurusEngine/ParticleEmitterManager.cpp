@@ -81,7 +81,15 @@ Particles::ParticleEmitterID CParticleEmitterManager::GetEmitterInstance(Particl
 
 	if (freeInstances.Size() == 0)
 	{
-		result = new CParticleEmitterInstance(aId);
+		CParticleEmitter* emitter = GetEmitter(aId);
+		if(emitter != nullptr && emitter->CanInstansiate() == true)
+		{
+			result = new CParticleEmitterInstance(aId);	
+		}
+		else
+		{
+			return Particles::CParticleLibrary::FoundNone;
+		}
 	}
 	else
 	{
@@ -122,8 +130,6 @@ void CParticleEmitterManager::Release(Particles::ParticleEmitterID anInstanceId)
 		{
 			CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(myInstances[i]->GetEmitterId());
 			myInstances[i]->Release();
-			freeInstances.Add(myInstances[i]);
-			myInstances.RemoveCyclicAtIndex(i);
 			break;
 		}
 	}
@@ -197,7 +203,7 @@ void CParticleEmitterManager::Update(const CU::Time aDeltaTime)
 		}
 		else
 		{
-			Release(myInstances[i]->GetInstanceID());
+			ReleaseInternal(myInstances[i]->GetInstanceID());
 		}
 	}
 }
@@ -240,6 +246,20 @@ void CParticleEmitterManager::SetTransformation(int aInstanceId, const CU::Matri
 		if (myInstances[i]->GetInstanceID() == aInstanceId)
 		{
 			myInstances[i]->SetTransformation(aMatrix44);
+			break;
+		}
+	}
+}
+
+void CParticleEmitterManager::ReleaseInternal(InstanceID aInstanceId)
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		if (myInstances[i]->GetInstanceID() == aInstanceId)
+		{
+			CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(myInstances[i]->GetEmitterId());
+			freeInstances.Add(myInstances[i]);
+			myInstances.RemoveCyclicAtIndex(i);
 			break;
 		}
 	}

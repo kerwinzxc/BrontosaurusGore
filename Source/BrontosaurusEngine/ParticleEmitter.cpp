@@ -47,9 +47,6 @@ CParticleEmitter::CParticleEmitter()
 
 CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticleEmitter()
 {
-	
-
-
 	Init(aJsonValue);
 }
 
@@ -128,26 +125,25 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 	std::lock_guard<std::mutex> lock(myUpdateMutex);
 
 	myCurrentInstaceTransform = aInstance.myToWorldSpace;
-	if(aInstance.IsActive() == false && myEmitterData.emitter.loop == false)
+	if(aInstance.IsActive() == false && aInstance.IsDone() == true && myEmitterData.emitter.loop == false)
 	{
 		return;
 	}
+
+	if (aInstance.myLifetime < 0.f && myEmitterData.emitter.loop == false)
+	{
+		aInstance.Deactivate();
+	}
+
 
 	const float dt = aTime.GetSeconds();
 	aInstance.myLifetime -= dt;
 
-	if(aInstance.myLifetime < 0.f && myEmitterData.emitter.loop == false)
-	{
-		aInstance.Deactivate();
-		return;
-	}
-
 	aInstance.myEmitTimer -= dt;
-
 	while(aInstance.myEmitTimer < 0)
 	{
 		aInstance.myEmitTimer += GetEmitTime();
-		if(aInstance.myParticles.Size() < myEmitterData.emitter.maxNrOfParticles)
+		if(aInstance.IsActive() == true && aInstance.myParticles.Size() < myEmitterData.emitter.maxNrOfParticles)
 		{
 			SParticle particle;
 			particle.position = aInstance.myToWorldSpace.GetPosition();
@@ -159,6 +155,7 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 			aInstance.myParticleLogic.Add(particleLogic);
 		}
 	}
+	
 
 	for(int i = aInstance.myParticles.Size() - 1; i >= 0; --i)
 	{
@@ -175,7 +172,7 @@ void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterIns
 
 		UpdateParticles(particle, logic, dt);
 	}
-
+	
 }
 
 float CParticleEmitter::GetLifetime() const
@@ -203,6 +200,7 @@ void CParticleEmitter::Init(const CU::CJsonValue& aJsonValue)
 
 	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
 	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
+	myEmitterData.emitter.maxRefCount = aJsonValue["maxEmitters"].GetUInt();
 
 	ParseEmissionArea(aJsonValue["emitter"]);
 	ParseParticle(aJsonValue["particle"]);
@@ -427,6 +425,11 @@ CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode(const std::string& 
 CParticleEmitter::RenderMode CParticleEmitter::GetRenderMode() const
 {
 	return myEmitterData.render.renderMode;
+}
+
+bool CParticleEmitter::CanInstansiate() const
+{
+	return myRefCount < myEmitterData.emitter.maxRefCount;
 }
 
 void CParticleEmitter::ParseRender(const CU::CJsonValue& aJsonValue)

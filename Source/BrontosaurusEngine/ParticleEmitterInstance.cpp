@@ -72,6 +72,7 @@ int CParticleEmitterInstance::ourIds = 0;
 CParticleEmitterInstance::CParticleEmitterInstance(int anId) : myRefs(0), myIsActive(false)
 {
 	myEmitterID = anId;
+	CParticleEmitterManager::GetInstance().GetEmitter(myEmitterID)->AddRef();
 	myInstanceID = ourIds++;
 
 	Init();
@@ -82,9 +83,7 @@ CParticleEmitterInstance::CParticleEmitterInstance(int anId) : myRefs(0), myIsAc
 
 CParticleEmitterInstance::~CParticleEmitterInstance()
 {
-	CEngine* engine = CEngine::GetInstance();
-	assert(engine != nullptr && "CEngine was nullptr");
-	engine->GetParticleEmitterManager().RemoveParticleEmitter(myEmitterID);
+	CParticleEmitterManager::GetInstance().GetEmitter(myEmitterID)->RemoveRef();
 }
 
 
@@ -144,7 +143,7 @@ void CParticleEmitterInstance::Release()
 
 bool CParticleEmitterInstance::ShouldKeep() const
 {
-	return myRefs > 0 || myIsActive == true;
+	return myRefs > 0 || myIsActive == true || IsDone() == false;
 }
 
 void CParticleEmitterInstance::Init()

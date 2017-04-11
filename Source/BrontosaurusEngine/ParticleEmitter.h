@@ -85,7 +85,7 @@ public:
 	float GetEmitTime();
 	unsigned GetMaxParticles();
 	CParticleEmitter::RenderMode GetRenderMode() const;
-	
+	bool CanInstansiate() const;
 
 private:
 	void Init(const CU::CJsonValue& aJsonValue);
@@ -139,6 +139,7 @@ private:
 		Spread spread;
 		
 		Value value;
+		unsigned maxRefCount;
 	};
 
 	struct RenderStruct
