@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DamageOnCollisionComponent.h"
 #include "DamageOnCollisionCollidedObjectData.h"
+#include "PollingStation.h"
 
 CDamageOnCollisionComponent::CDamageOnCollisionComponent()
 {
@@ -26,21 +27,27 @@ void CDamageOnCollisionComponent::Receive(const eComponentMessageType aMessageTy
 	{
 	case eComponentMessageType::eOnCollisionEnter:
 	case eComponentMessageType::eOnTriggerEnter:
-		if (myPassiveCollidedWithObjectsDataList.Size() > 0)
+		if(CPollingStation::GetInstance()->CheckIfIsPlayerObject(aMessageData.myComponent->GetParent()) == true)
 		{
-			AddToActiveList(aMessageData.myComponent->GetParent());
-			DealDamage(myActiveCollidedWithObjectsDataList.Size() - 1);
-		}
-		else
-		{
-			CreateEmptySlotForPassiveBuffer();
-			Receive(aMessageType, aMessageData);
+			if (myPassiveCollidedWithObjectsDataList.Size() > 0)
+			{
+				AddToActiveList(aMessageData.myComponent->GetParent());
+				DealDamage(myActiveCollidedWithObjectsDataList.Size() - 1);
+			}
+			else
+			{
+				CreateEmptySlotForPassiveBuffer();
+				Receive(aMessageType, aMessageData);
+			}
 		}
 		break;
 	case eComponentMessageType::eOnCollisionExit:
 	case eComponentMessageType::eOnTriggerExit:
 	{
-		RemoveFromActiveList(aMessageData.myComponent->GetParent());
+		if (CPollingStation::GetInstance()->CheckIfIsPlayerObject(aMessageData.myComponent->GetParent()) == true)
+		{
+			RemoveFromActiveList(aMessageData.myComponent->GetParent());
+		}
 		break;
 	}
 	default:

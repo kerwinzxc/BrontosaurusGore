@@ -20,11 +20,11 @@ namespace CU
 	template<typename ObjectType, typename SizeType>
 	struct CopyArray<false, ObjectType, SizeType>
 	{
-		static void DoCopy(ObjectType aCopyToArray[], const ObjectType aCopyFromArray[], const SizeType aElementsToCopy)
+		static void DoCopy(ObjectType aCopyToArray[], ObjectType aCopyFromArray[], const SizeType aElementsToCopy)
 		{
 			for (SizeType i = 0; i < aElementsToCopy; ++i)
 			{
-				aCopyToArray[i] = aCopyFromArray[i];
+				aCopyToArray[i] = std::move(aCopyFromArray[i]);
 			}
 		}
 	};

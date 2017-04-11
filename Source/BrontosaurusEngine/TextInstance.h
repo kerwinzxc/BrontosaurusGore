@@ -48,6 +48,7 @@ public:
 	void SetAlignment(eAlignment anAlignment);
 
 	CTextInstance& operator=(const CTextInstance& aTextInstance);
+	bool Empty() const;
 
 private:
 	CU::GrowingArray<std::wstring> myStrings;
@@ -115,7 +116,7 @@ inline std::wstring CTextInstance::GetText() const
 		if (i != 0)
 		{
 			DL_PRINT_WARNING("Warning slow! please consider just getting a separete line");
-			string += '/n';
+			string += L'/n';
 		}
 		string += myStrings[i];
 	}
