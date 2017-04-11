@@ -4,6 +4,8 @@
 
 Texture2D renderPackage : register(t1);
 Texture2D depthPackage	: register(t2);
+Texture2D depthPackage2 : register(t3);
+
 
 SamplerState Sampler
 {
@@ -25,7 +27,7 @@ PixelOutput PS_PosTex(PosTex_InputPixel input)
 {
 	PixelOutput output;
 	output.color = renderPackage.SampleLevel(Sampler, input.tex, 0);
-	//output.color = DistanceFog(input, output.color);
+	output.color = DistanceFog(input, output.color);
 	return output;
 }
 
@@ -38,6 +40,12 @@ float3 CameraPosition(float4x4 aCameraSpace)
 	return cameraPosition.xyz;
 }
 
+
+float GetDepth(float2 uv)
+{
+	float depth = depthPackage2.Sample(Sampler, uv).x;
+	return (depth == 1.0f) ? depthPackage.Sample(Sampler, uv).x : depth;
+}
 
 float3 WorldPosition(float2 uv, float depth)
 {
@@ -53,8 +61,8 @@ float3 WorldPosition(float2 uv, float depth)
 	return worldPosition.xyz;
 }
 
-static const float lFogStart = 100.0f;
-static const float lFogEnd = 350.0f;
+static const float lFogStart = 60.0f;
+static const float lFogEnd = 250.0f;
 float4 DistanceFog(PosTex_InputPixel aInput, float4 aColorInput)
 {
 
@@ -62,24 +70,28 @@ float4 DistanceFog(PosTex_InputPixel aInput, float4 aColorInput)
 	{
 		discard;
 	}
-	float depth = depthPackage.SampleLevel(Sampler, aInput.tex, 0).x;
+	float depth = GetDepth(aInput.tex);
 	float3 worldPosition = WorldPosition(aInput.tex, depth);
 
 	float3 cameraPosition = CameraPosition(cameraSpace);
 
 	float4 inputColor = aColorInput; //Color From PBL
 
-	float4 fogColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float4 fogColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	float3 CamVec = (cameraPosition - worldPosition);
 
-	float SubOp = (length(CamVec) - fogStart);
-	float SubOp41 = (fogEnd - fogStart); 
+	float SubOp = (length(CamVec) - lFogStart);
+	float SubOp41 = (lFogEnd - lFogStart);
 
 	float SatOp = saturate((SubOp / SubOp41));
 	float PowOp = pow((1.0 - SatOp), 2.0);
-	int mipLevel = lerp(0, 5, PowOp);
 	float4 LerpOp = lerp(fogColor, inputColor, PowOp);
-	float4 VectorConstruct = float4(LerpOp.xyz.x, LerpOp.xyz.y, LerpOp.xyz.z, 1.0);
+	float4 VectorConstruct = float4(LerpOp.x, LerpOp.y, LerpOp.z, 1.0);
+
+
+	//return float4(depth.xxx, 1.0f);
+	//return float4(normalize(cameraPosition), 1.0f);
+
 	return VectorConstruct;
 }
