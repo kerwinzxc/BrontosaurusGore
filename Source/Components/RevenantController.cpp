@@ -18,6 +18,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myAttacksUntilChangingStates = 3;
 	myUsedAttacksSinceLastStateChange = 0;
 	myIsAtJumpPoint = false;
+	myChillAtJumpPointCountDown = 0.0f;
 }
 
 CRevenantController::~CRevenantController()
@@ -37,6 +38,14 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CRevenantController::Update(const float aDeltaTime)
 {
+	if(myChillAtJumpPointCountDown > 0)
+	{
+		myChillAtJumpPointCountDown -= aDeltaTime;
+		if(myChillAtJumpPointCountDown <= 0)
+		{
+			myIsAtJumpPoint = false;
+		}
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myFlightForce;
 	if(myIsflying == false)
@@ -222,6 +231,7 @@ void CRevenantController::Update(const float aDeltaTime)
 			{
 				LookAtPlayer();
 				myIsAtJumpPoint = true;
+				myChillAtJumpPointCountDown = rand() % 7 + 3;
 			}
 
 		}
