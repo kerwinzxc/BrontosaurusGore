@@ -22,6 +22,8 @@
 #include "../Particles/ParticleFrictionUpdater.h"
 #include "../Particles/ParticleColorUpdater.h"
 #include "../Particles/ParticleSizeUpdate.h"
+#include "../Particles/ParticleRotationSpawner.h"
+#include "../LuaWrapper/file_watcher.h"
 
 
 CParticleEmitter::CParticleEmitter()
@@ -45,29 +47,23 @@ CParticleEmitter::CParticleEmitter()
 
 CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticleEmitter()
 {
-	myEmitterData.name = aJsonValue["name"].GetString();
-	myEmitterData.id = aJsonValue["id"].GetInt();
-
-	myEmitterData.emitter.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
-	myEmitterData.emitter.emissionRate = aJsonValue["emissionRate"].GetUInt();
-
-	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
-	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
 	
-	ParseEmissionArea(aJsonValue["emitter"]);
-	ParseParticle(aJsonValue["particle"]);
 
 
-	Init();
+	Init(aJsonValue);
 }
 
 CParticleEmitter::~CParticleEmitter()
 {
+	std::lock_guard<std::mutex> updateLock(myUpdateMutex);
+	std::lock_guard<std::mutex> renderLock(myRenderMutex);
+	std::lock_guard<std::mutex> bufferLock(myUpdateVBufferMutex);
 	Destroy();
 }
 
 void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode)
 {
+	std::lock_guard<std::mutex> lock(myRenderMutex);
 	const RenderMode renderMode = myEmitterData.render.renderMode;
 	if (!myRenderEffects[static_cast<int>(myEmitterData.render.renderMode)]) return;
 
@@ -126,8 +122,10 @@ void CParticleEmitter::RemoveRef()
 	--myRefCount;
 }
 
+
 void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance)
 {
+	std::lock_guard<std::mutex> lock(myUpdateMutex);
 
 	myCurrentInstaceTransform = aInstance.myToWorldSpace;
 	if(aInstance.IsActive() == false && myEmitterData.emitter.loop == false)
@@ -195,8 +193,20 @@ unsigned CParticleEmitter::GetMaxParticles()
 	return myEmitterData.emitter.maxNrOfParticles;
 }
 
-void CParticleEmitter::Init()
+void CParticleEmitter::Init(const CU::CJsonValue& aJsonValue)
 {
+	myEmitterData.name = aJsonValue["name"].GetString();
+	myEmitterData.id = aJsonValue["id"].GetInt();
+
+	myEmitterData.emitter.maxNrOfParticles = aJsonValue["maxNumOfParticles"].GetUInt();
+	myEmitterData.emitter.emissionRate = aJsonValue["emissionRate"].GetUInt();
+
+	myEmitterData.emitter.loop = aJsonValue["loop"].GetBool();
+	myEmitterData.emitter.lifetime = aJsonValue["lifetime"].GetFloat();
+
+	ParseEmissionArea(aJsonValue["emitter"]);
+	ParseParticle(aJsonValue["particle"]);
+
 	unsigned int ShaderType = 0;
 	ShaderType |= EModelBluePrint_Position;
 	ShaderType |= EModelBluePrint_Size;
@@ -285,6 +295,10 @@ void CParticleEmitter::ParseSpawnParameters(const CU::CJsonValue& aJsonValue)
 		else if(type == "lifetime")
 		{
 			spawner = new Particles::CParticleLifetimeSpawner(value);
+		}
+		else if(type == "rotation")
+		{
+			spawner = new Particles::CParticleRotationSpawner(value);
 		}
 		else
 		{

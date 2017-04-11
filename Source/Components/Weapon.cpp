@@ -9,6 +9,8 @@
 #include "../Physics/PhysicsActor.h"
 #include "../Physics/PhysicsActorDynamic.h"
 #include "../Audio/AudioInterface.h"
+#include "ParticleEmitterManager.h"
+#include "ParticleEmitterComponent.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
@@ -48,14 +50,16 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		CU::Vector3f shootPosition = myUser->GetWorldPosition();
-		CU::Vector3f cameraPosition = shootPosition;
+		CU::Matrix44f transform = myUser->GetToWorldTransform();
+		//CU::Vector3f shootPosition = myUser->GetWorldPosition();
+		CU::Vector3f cameraPosition = transform.GetPosition();
 		SComponentQuestionData cameraPositionData;
 		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
 		{
-			shootPosition = cameraPositionData.myVector3f;
-			cameraPosition = shootPosition;
-			shootPosition += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
+			CU::Vector3f position =  cameraPositionData.myVector3f;
+			cameraPosition = position;
+			position += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
+			transform.SetPosition(position);
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
@@ -68,11 +72,11 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
@@ -102,15 +106,16 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
 				if(myWeaponObject != nullptr)
 				{
-					shootPosition = myWeaponObject->GetWorldPosition();
+					CU::Vector3f position = myWeaponObject->GetWorldPosition();
 					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
 					localWeaponMatrix.Move(shootDisplacment);
-					shootPosition = localWeaponMatrix.GetPosition();
-				
+					position = localWeaponMatrix.GetPosition();
+					transform.SetPosition(position);
 				}
 
 				PlaySound(SoundEvent::Fire, direction);
-				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
+				EmitParticles(transform);
 				myElapsedFireTimer = 0.0f;
 			
 			}
@@ -180,12 +185,23 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				EmitParticles(localWeaponMatrix);
 				myElapsedFireTimer = 0.0f;
 
 			}
 		}
 	}
 }
+
+void CWeapon::EmitParticles(const CU::Matrix44f& aMatrix44)
+{
+	Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("GunSmoke");
+	CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
+	CParticleEmitterManager::GetInstance().Activate(id);
+
+	CParticleEmitterManager::GetInstance().Release(id);
+}
+
 
 void CWeapon::PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection)
 {

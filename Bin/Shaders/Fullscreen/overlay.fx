@@ -18,7 +18,6 @@ PixelOutput PS_PosTex(PosTex_InputPixel input)
     float4 resource1 = renderPackage1.SampleLevel(Sampler, input.tex, 0).rgba;
     float4 resource2 = renderPackage2.SampleLevel(Sampler, input.tex, 0).rgba;
     
-
     PixelOutput output;
     output.color = float4(resource1.rgba + float4(resource2.rgb * resource2.a, resource2.a));
     return output;

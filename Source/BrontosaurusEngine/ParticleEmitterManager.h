@@ -30,6 +30,7 @@ public:
 	void RemoveParticleEmitter(const Particles::ParticleEmitterID aID);
 	void LoadParticleLibrary(const std::string& aLibraryPath);
 	Particles::ParticleEmitterID GetEmitterInstance(Particles::ParticleEmitterID aId);
+	Particles::ParticleEmitterID GetEmitterInstance(const std::string& aId);
 	Particles::ParticleEmitterID GetParticleEmitterId(const std::string& aSystemId);
 
 	void Release(Particles::ParticleEmitterID anInstanceId);

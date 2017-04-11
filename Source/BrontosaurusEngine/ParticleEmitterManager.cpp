@@ -78,6 +78,7 @@ Particles::ParticleEmitterID CParticleEmitterManager::GetEmitterInstance(Particl
 {
 	CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(aId);
 	CParticleEmitterInstance* result = nullptr;
+
 	if (freeInstances.Size() == 0)
 	{
 		result = new CParticleEmitterInstance(aId);
@@ -87,8 +88,14 @@ Particles::ParticleEmitterID CParticleEmitterManager::GetEmitterInstance(Particl
 		result = freeInstances[freeInstances.Size() - 1];
 		freeInstances.RemoveCyclicAtIndex(freeInstances.Size() -1);
 	}
+	result->AddRef();
 	myInstances.Add(result);
 	return result->GetInstanceID();
+}
+
+Particles::ParticleEmitterID CParticleEmitterManager::GetEmitterInstance(const std::string& aId)
+{
+	return GetParticleEmitterId(aId);
 }
 
 Particles::ParticleEmitterID CParticleEmitterManager::GetParticleEmitterId(const std::string& aSystemId)
@@ -114,6 +121,7 @@ void CParticleEmitterManager::Release(Particles::ParticleEmitterID anInstanceId)
 		if(myInstances[i]->GetInstanceID() == anInstanceId)
 		{
 			CU::GrowingArray<CParticleEmitterInstance*>& freeInstances = GetFreeInstances(myInstances[i]->GetEmitterId());
+			myInstances[i]->Release();
 			freeInstances.Add(myInstances[i]);
 			myInstances.RemoveCyclicAtIndex(i);
 			break;
@@ -175,14 +183,21 @@ CParticleEmitter* CParticleEmitterManager::GetEmitter(Particles::ParticleEmitter
 
 void CParticleEmitterManager::Update(const CU::Time aDeltaTime)
 {
-	for(int i = 0; i < myInstances.Size(); ++i)
+	for(int i = myInstances.Size() - 1; i >=0 ; --i)
 	{
-		CParticleEmitter* emitter = GetEmitter(myInstances[i]->GetEmitterId());
-		if(emitter != nullptr)
+		if (myInstances[i]->ShouldKeep() == true)
 		{
-			CParticleEmitterInstance& instance = *myInstances[i];
-			emitter->UpdateInstance(aDeltaTime, instance);
-			int i = 0;
+			CParticleEmitter* emitter = GetEmitter(myInstances[i]->GetEmitterId());
+			if(emitter != nullptr)
+			{
+				CParticleEmitterInstance& instance = *myInstances[i];
+				emitter->UpdateInstance(aDeltaTime, instance);
+				int i = 0;
+			}
+		}
+		else
+		{
+			Release(myInstances[i]->GetInstanceID());
 		}
 	}
 }

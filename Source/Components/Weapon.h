@@ -31,6 +31,7 @@ public:
 
 	void CosmeticShoot(const CU::Vector3f& aDirection); // Alex
 private:
+	void EmitParticles(const CU::Matrix44f& aMatrix44);
 	enum class SoundEvent
 	{
 		Fire,
