@@ -62,6 +62,12 @@ void CRevenantController::Update(const float aDeltaTime)
 		else if (WithinShootRange())
 		{
 			myState = eRevenantState::eChargingRangedAttack;
+			unsigned short randomNumber = rand() % 5;
+			if(randomNumber == 0)
+			{
+				myState = eRevenantState::eFlyAscend;
+				ApplyFlightForce();
+			}
 			if (myToPlayer.y > 2.0f)
 			{
 				myState = eRevenantState::eFlyAscend;
