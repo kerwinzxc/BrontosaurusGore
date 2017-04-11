@@ -1,4 +1,6 @@
 #pragma once
+#include "MaterialData.h"
+
 namespace physx
 {
 	class PxPhysics;
@@ -20,20 +22,9 @@ namespace Physics
 	class CSimulationEventCallback;
 	struct SCharacterControllerInitParams;
 
-	const float defMatStaticFriction = 0.5f;
-	const float defMatDynamicFriction = 0.5f;
-	const float defMatRestitution = 0.5f;
-
-	struct SMaterialData
-	{
-		float aStaticFriction = defMatStaticFriction;
-		float aDynamicFriction = defMatDynamicFriction;
-		float aRestitution = defMatRestitution;
-	};
-
-
 	class CPhysics
 	{
+		friend class CCharacterControllerManager;
 		class CFoundation;
 
 	public:

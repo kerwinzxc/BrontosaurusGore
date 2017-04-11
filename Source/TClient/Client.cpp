@@ -71,7 +71,7 @@
 #include "../ThreadedPostmaster/RevivePlayerMessage.h"
 
 #include "../Game/PollingStation.h"
-
+#include "../Components/AmmoReplenishData.h"
 //temp!!! hoppas jag...
 #include "../CommonUtilities/JsonValue.h"
 #include "../CommonUtilities/WindowsHelper.h"
@@ -322,6 +322,12 @@ void CClient::Update()
 			{
 				CNetWorkMessage_PickupAmmo* pickup = currentMessage->CastTo<CNetWorkMessage_PickupAmmo>();
 				CPickupComponentManager::GetInstance()->DeactivateAmmoPack(pickup->GetID());
+				SComponentMessageData data;
+				SAmmoReplenishData ammoData;
+				ammoData.replenishAmount = pickup->GetReplenishAmount();
+				ammoData.ammoType = "PlasmaRifle";
+				data.myAmmoReplenishData = &ammoData;
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
 			}
 			break;
 			case ePackageType::ePickupArmor:

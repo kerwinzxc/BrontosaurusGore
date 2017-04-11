@@ -58,6 +58,8 @@ private:
 	bool myResetToIsClosed;
 	bool myResetToIsLocked;
 
+	bool myAddToCheckpoint;
+
 	unsigned char myNetworkID;
 
 };
