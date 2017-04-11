@@ -64,6 +64,7 @@ public:
 	};
 
 	CModel();
+	CModel(CModel&& aTemporary);
 	CModel(const CModel& aCopy);
 	~CModel();
 
