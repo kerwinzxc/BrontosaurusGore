@@ -141,7 +141,7 @@ private:
 		Value value;
 		unsigned maxRefCount;
 	};
-
+	
 	struct RenderStruct
 	{
 		RenderMode renderMode = RenderMode::eMetaBall;

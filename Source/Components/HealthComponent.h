@@ -32,5 +32,7 @@ private:
 	armorPoint myArmor;
 
 	bool myIsAlive;
+	CU::Vector3f myLastHitNormal;
+	CU::Vector3f myLastHitPosition;
 };
 

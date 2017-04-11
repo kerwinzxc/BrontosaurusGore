@@ -31,6 +31,10 @@ enum class eComponentQuestionType
 	eGetWeapons,
 	eIsEnemy,
 	eHaveTriggerCollision,
+
+	eHitPosition,
+	eLastHitNormal,
+	eLastHitPosition,
 	eLength,
 };
 

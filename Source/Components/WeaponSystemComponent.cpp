@@ -411,6 +411,12 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 		return true; 
 		break;
 	}
+	case eComponentQuestionType::eLastHitNormal:
+		aQuestionData.myVector3f = myWeapons[myActiveWeaponIndex]->GetLastHitNormal();
+		break;
+	case eComponentQuestionType::eLastHitPosition:
+		aQuestionData.myVector3f = myWeapons[myActiveWeaponIndex]->GetLastHitPosition();
+		break;
 	default:
 		break;
 	}

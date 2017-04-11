@@ -180,9 +180,9 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 		newWeaponData->fireParticles.Init(1);
 		if(aJsonValue[i].HasKey("FireParticles"))
 		{
-			for (int j = 0; j < aJsonValue[i]["ExplosionParticles"].Size(); ++j)
+			for (int j = 0; j < aJsonValue[i]["FireParticles"].Size(); ++j)
 			{
-				newWeaponData->fireParticles.Add(aJsonValue[i]["ExplosionParticles"][j].GetString());
+				newWeaponData->fireParticles.Add(aJsonValue[i]["FireParticles"][j].GetString());
 			}
 		}
 		
