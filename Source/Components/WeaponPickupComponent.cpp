@@ -63,6 +63,7 @@ void CWeaponPickupComponent::DoMyEffect()
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up the BFG"));
 	}
+	else
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a " + CU::StringToWString(myWeaponPickup)));
 	}
