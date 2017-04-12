@@ -343,7 +343,26 @@ void CHUD::Render()
 
 		RENDERER.AddRenderMessage(createOrClearGui);
 
+		SChangeStatesMessage* changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eEmilBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		SRenderToGUI* guiChangeState = new SRenderToGUI(L"healthAndArmour", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
+
 		myHealthAndArmorSprite->RenderToGUI(L"healthAndArmour");
+
+		 changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eEndBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		guiChangeState = new SRenderToGUI(L"healthAndArmour", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
+
 		myHealthBar->RenderToGUI(L"healthAndArmour");
 		myArmourBar->RenderToGUI(L"healthAndArmour");
 		myHealthNumber.RenderToGUI(L"healthAndArmour");
@@ -359,7 +378,26 @@ void CHUD::Render()
 
 		RENDERER.AddRenderMessage(createOrClearGui);
 
+		SChangeStatesMessage* changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eEmilBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		SRenderToGUI* guiChangeState = new SRenderToGUI(L"weapon", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
+
 		myWeaponSprite->RenderToGUI(L"weapon");
+
+		changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eEndBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		guiChangeState = new SRenderToGUI(L"weapon", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
+
 		myAmmoNumber.RenderToGUI(L"weapon");
 		//myWeaponHUDHasChanged = false;
 	}
@@ -369,6 +407,15 @@ void CHUD::Render()
 		SCreateOrClearGuiElement* createOrClearGui = new SCreateOrClearGuiElement(L"crosshairs", myCrosshairElement.myGuiElement, myCrosshairElement.myPixelSize);
 
 		RENDERER.AddRenderMessage(createOrClearGui);
+
+		SChangeStatesMessage* const changeStatesMessage = new SChangeStatesMessage();
+		changeStatesMessage->myBlendState = eBlendState::eAddBlend;
+		changeStatesMessage->myDepthStencilState = eDepthStencilState::eDisableDepth;
+		changeStatesMessage->myRasterizerState = eRasterizerState::eNoCulling;
+		changeStatesMessage->mySamplerState = eSamplerState::eClamp;
+
+		SRenderToGUI*const guiChangeState = new SRenderToGUI(L"crosshairs", changeStatesMessage);
+		RENDERER.AddRenderMessage(guiChangeState);
 
 		//myCrosshairSprite->RenderToGUI(L"crosshairs");
 		myActiveCrosshairSprite->RenderToGUI(L"crosshairs");

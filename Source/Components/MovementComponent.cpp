@@ -6,11 +6,12 @@
 #include "../TShared/NetworkMessage_Position.h"
 #include "../Audio/AudioInterface.h"
 #include "../BrontosaurusEngine/TextInstance.h"
+#include "TumbleweedFactory.h"
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
-static const float timeUntilIdle = 3.0f;
-static float timeUntilIdleThing = 3.0f;
+static const float timeUntilIdle = 1.0f;
+static float timeUntilIdleThing = 2.0f;
 static const float originalTimeUntilIdleThing = 3.0f;
 
 CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(MovementMode::Default), myNoclipProssed(false), mySpeedMultiplier(1), myIncrementPressed(false), myDecrementPressed(false), myIsWalking(false)
@@ -82,15 +83,15 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 		if (myIdleThingCountdown < 0.0f)
 		{
 			CU::Matrix44f tempMatrix = GetParent()->GetToWorldTransform();
-			tempMatrix.Move(CU::Vector3f(0.0f, 0.0f, 3.0f));
+			tempMatrix.Move(CU::Vector3f(0.0f, 0.0f, 20.0f));
 			CU::Vector3f directionPosition = tempMatrix.GetPosition();
-			tempMatrix.Rotate(PI / 2.0f, CU::Axees::Y);
-			tempMatrix.Move(CU::Vector3f(0.0f, 0.0f, 3.0f));
+			tempMatrix.Move(CU::Vector3f(25.0f, 0.0f, 0.0f));
 			CU::Vector3f spawnPosition = tempMatrix.GetPosition();
 			CU::Vector3f direction = directionPosition - spawnPosition;
 			direction.Normalize();
+			spawnPosition.y += 2;
 
-			//do stuff.
+			CTumbleweedFactory::GetInstance()->CreateNewTumbleweed(spawnPosition, direction);
 
 			timeUntilIdleThing *= 2.0f;
 			myIdleThingCountdown = timeUntilIdleThing;
@@ -229,7 +230,7 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		myVelocity *= myMaxSpeed;
 	}
 
-	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == 0)
+	if ((myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_DOWN) == false)
 	{
 		if (myControllerConstraints & Physics::EControllerConstraintsFlag::eCOLLISION_UP)
 		{
@@ -258,6 +259,8 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 				myElapsedFallCheckTime = 0.0f;
 				myCanDoubleJump = true;
 				myJumpForce = 0.0f;
+				if(myIsNotFalling == false)
+					Audio::CAudioInterface::GetInstance()->PostEvent("Player_Land");
 			}
 		}
 	}
@@ -430,6 +433,5 @@ void CMovementComponent::ApplyJumpForce(float aJumpHeight)
 void CMovementComponent::ResetIdle()
 {
 	myIdleCountdown = timeUntilIdle;
-	timeUntilIdleThing = originalTimeUntilIdleThing;
 	myIdleThingCountdown = originalTimeUntilIdleThing;
 }

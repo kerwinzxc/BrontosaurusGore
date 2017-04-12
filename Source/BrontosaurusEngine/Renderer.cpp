@@ -161,12 +161,13 @@ void CRenderer::Render()
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myColorGradingPackage);
 
 	int blup;//temp
+
 	myGUIRenderer.DoRenderQueues(*this, blup);
 
 	SChangeStatesMessage changeStateMessage;
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.myBlendState = eBlendState::eEmilBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	SetStates(&changeStateMessage);
 	myGUIRenderer.RenderWholeGuiToPackage(myGUIRenderer.GetInputPackage(), myFullScreenHelper);
@@ -266,7 +267,7 @@ void CRenderer::RenderGUI()
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
+	changeStateMessage.myBlendState = eBlendState::eEndBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 
 	SetStates(&changeStateMessage);
@@ -711,6 +712,38 @@ void CRenderer::CreateBlendStates()
 		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
 		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eOverlay)] = blendState;
+	}
+	{
+		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
+
+		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
+		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eEmilBlend)] = blendState;
+	}
+	{
+		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
+
+		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
+		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eEndBlend)] = blendState;
 	}
 }
 

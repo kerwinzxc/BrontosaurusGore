@@ -8,6 +8,7 @@
 #include "binary_tree.h"
 #include "EmitterData.h"
 #include "../CommonUtilities/matrix44.h"
+#include "../LuaWrapper/file_watcher.h"
 
 
 namespace Particles
@@ -71,7 +72,6 @@ public:
 
 	~CParticleEmitter();
 
-	//DEPRECATED
 	void UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance);
 
 	void Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode);
@@ -85,8 +85,10 @@ public:
 	float GetEmitTime();
 	unsigned GetMaxParticles();
 	CParticleEmitter::RenderMode GetRenderMode() const;
+	bool CanInstansiate() const;
+
 private:
-	void Init();
+	void Init(const CU::CJsonValue& aJsonValue);
 
 	void InitialVelocity(SParticleLogic& aParticleLogic);
 	void SpawnParticle(SParticle& aParticle, SParticleLogic& aParticleLogic);
@@ -137,8 +139,9 @@ private:
 		Spread spread;
 		
 		Value value;
+		unsigned maxRefCount;
 	};
-
+	
 	struct RenderStruct
 	{
 		RenderMode renderMode = RenderMode::eMetaBall;
@@ -179,4 +182,10 @@ private:
 	std::mutex myUpdateVBufferMutex;
 	unsigned int myRefCount;
 	CU::Matrix44f myCurrentInstaceTransform;
+	
+
+#ifndef _RETAIL_BUILD
+	std::mutex myUpdateMutex;
+	std::mutex myRenderMutex;
+#endif
 };

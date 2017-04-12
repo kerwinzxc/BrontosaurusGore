@@ -53,6 +53,9 @@
     <Filter Include="Updater\Force">
       <UniqueIdentifier>{3f4299e1-167e-4c68-a7f3-2c9afe8c0419}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spawn\Rotation">
+      <UniqueIdentifier>{cb2f886f-1698-4c57-ab06-0942eb868185}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ParticleLibrary.h">
@@ -98,6 +101,9 @@
     <ClInclude Include="ParticleFrictionUpdater.h">
       <Filter>Updater\Friction</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleRotationSpawner.h">
+      <Filter>Spawn\Rotation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ParticleLibrary.cpp">
@@ -138,6 +144,9 @@
     </ClCompile>
     <ClCompile Include="ParticleFrictionUpdater.cpp">
       <Filter>Updater\Friction</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRotationSpawner.cpp">
+      <Filter>Spawn\Rotation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,8 @@
 
 
 #include "../CommonUtilities/WindowsHelper.h"
+#include "MenuState.h"
+
 CGame::CGame()
 {
 }
@@ -38,6 +40,7 @@ void CGame::Init()
 	myClient.StartClient();
 
 	myStateStack.PushState(new CTempLobbyState(myStateStack));
+	//myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/MainMenu.json"));
 
 	//if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
 	//{

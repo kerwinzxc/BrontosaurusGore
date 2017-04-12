@@ -61,8 +61,10 @@ float3 WorldPosition(float2 uv, float depth)
 	return worldPosition.xyz;
 }
 
-static const float lFogStart = 60.0f;
+static const float lFogStart = 40.0f;
 static const float lFogEnd = 250.0f;
+static const float4 lFogColor = float4(0.45f, 0.4f, 0.5f, 1.0f);
+
 float4 DistanceFog(PosTex_InputPixel aInput, float4 aColorInput)
 {
 
@@ -77,7 +79,7 @@ float4 DistanceFog(PosTex_InputPixel aInput, float4 aColorInput)
 
 	float4 inputColor = aColorInput; //Color From PBL
 
-	float4 fogColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
+	float4 fogColor = lFogColor;
 
 	float3 CamVec = (cameraPosition - worldPosition);
 

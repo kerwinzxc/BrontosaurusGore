@@ -10,6 +10,7 @@ CParticleEmitterComponent::CParticleEmitterComponent(int anId)
 {
 	myInstanceId = anId;
 	myType = eComponentType::eParticleEmitter;
+	CParticleEmitterManager::GetInstance().Activate(myInstanceId);
 }
 
 

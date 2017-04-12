@@ -177,6 +177,16 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 		newWeaponData->fireRate = aJsonValue[i].at("FireRate").GetFloat();
 		newWeaponData->randomSpreadAngle = aJsonValue[i].at("RandomSpreadAngle").GetInt();
 		newWeaponData->projectilesFiredPerShot = aJsonValue[i].at("ProjectilesFiredPerShot").GetInt();
+		newWeaponData->fireParticles.Init(1);
+		if(aJsonValue[i].HasKey("FireParticles"))
+		{
+			for (int j = 0; j < aJsonValue[i]["FireParticles"].Size(); ++j)
+			{
+				newWeaponData->fireParticles.Add(aJsonValue[i]["FireParticles"][j].GetString());
+			}
+		}
+		
+		
 
 		newProjectileData->projectileModelFilePath = aJsonValue[i].at("ProjectileModel").GetString().c_str();
 		newProjectileData->damage = static_cast<healthPoint>(aJsonValue[i].at("Damage").GetFloat());
@@ -189,11 +199,20 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 		if (newProjectileData->shouldExplodeOnImpact == true)
 		{
 			SExplosionData* newExplosionData = new SExplosionData();
+			newExplosionData->explosionParticles.Init(1);
 			newExplosionData->radius = aJsonValue[i].at("ExplosionRange").GetFloat();
 			newExplosionData->knockBackForce = aJsonValue[i].at("ExplosionKnockBackForce").GetFloat();
 			newExplosionData->damage = static_cast<healthPoint>(aJsonValue[i].at("ExplosionDamage").GetFloat());
 			newProjectileData->explosionData = newExplosionData;
 			newExplosionData->isPlayerFriendly = aIsPlayerWeapon;
+			if(aJsonValue[i].HasKey("ExplosionParticles"))
+			{
+				for (int j = 0; j < aJsonValue[i]["ExplosionParticles"].Size(); ++j)
+				{
+					newExplosionData->explosionParticles.Add(aJsonValue[i]["ExplosionParticles"][j].GetString());
+				}
+			}
+			
 		}
 		else
 		{

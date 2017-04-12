@@ -23,25 +23,32 @@
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModel::CModel()
-	: myForwardEffect(nullptr)
-	, myDeferredEffect(nullptr)
-	, mySurface(nullptr)
-	, myFramework(nullptr)
-	, myLODModels(4)
+	: myLODModels(4)
+	, myInstanceBufferData(64)
 	, myCbuffer(nullptr)
-	, myBoneBuffer(nullptr)
 	, myLightBuffer(nullptr)
 	, myPixelBuffer(nullptr)
-	, myScene(nullptr)
-	, myIsInitialized(false)
-	, myIsAlphaModel(false)
+	, myInstanceBuffer(nullptr)
+	, myBoneBuffer(nullptr)
 	, mySceneAnimator(nullptr)
 	, myBindposeSceneAnimator(nullptr)
-	, myInstanceBuffer(nullptr)
+	, myDeferredEffect(nullptr)
+	, myForwardEffect(nullptr)
+	, mySurface(nullptr)
+	, myFramework(nullptr)
+	, myScene(nullptr)
 	, myVertexSize(0)
 	, myRefCount(0)
-	, myInstanceBufferData(2)
+	, myRadius(0.f)
+	, myIsInitialized(false)
+	, myIsAlphaModel(false)
 {
+}
+
+CModel::CModel(CModel&& aTemporary)
+	: CModel()
+{
+	*this = std::move(aTemporary);
 }
 
 CModel::CModel(const CModel& aCopy)
@@ -73,7 +80,7 @@ CModel::~CModel()
 	SAFE_DELETE(mySurface);
 
 	mySceneAnimator = nullptr;
-	SAFE_DELETE(myBindposeSceneAnimator);
+	//SAFE_DELETE(myBindposeSceneAnimator); MEMORY LEEK, but I cannot fix it right now
 }
 
 bool CModel::Initialize(CEffect* aEffect, CSurface* aSurface)
@@ -570,21 +577,7 @@ CU::Matrix44f CModel::GetBoneTransform(const float aTime, const eAnimationState 
 
 CModel& CModel::operator=(CModel&& aModel)
 {
-	SAFE_DELETE(myForwardEffect);
-	myForwardEffect = aModel.myForwardEffect;
-	aModel.myForwardEffect = nullptr;
-
-	SAFE_DELETE(myDeferredEffect);
-	myDeferredEffect = aModel.myDeferredEffect;
-	aModel.myDeferredEffect = nullptr;
-
-
-	SAFE_DELETE(mySurface);
-	mySurface = aModel.mySurface;
-	aModel.mySurface = nullptr;
-
-	myFramework = aModel.myFramework;
-	aModel.myFramework = nullptr;
+	mySceneAnimators = std::move(aModel.mySceneAnimators);
 
 	for (unsigned int i = 0; i < myLODModels.Size(); ++i)
 	{
@@ -615,48 +608,64 @@ CModel& CModel::operator=(CModel&& aModel)
 		lodModel.myIndexCount = otherLodModel.myIndexCount;
 	}
 
+	myInstanceBufferData = std::move(aModel.myInstanceBufferData);
+	myInstanceBufferData.RemoveAll();
+
+	SAFE_RELEASE(myCbuffer);
 	myCbuffer = aModel.myCbuffer;
 	aModel.myCbuffer = nullptr;
+
+	SAFE_RELEASE(myLightBuffer);
 	myLightBuffer = aModel.myLightBuffer;
 	aModel.myLightBuffer = nullptr;
 
+	SAFE_RELEASE(myPixelBuffer);
+	myPixelBuffer = aModel.myPixelBuffer;
+	aModel.myPixelBuffer = nullptr;
 
+	SAFE_RELEASE(myInstanceBuffer);
 	myInstanceBuffer = aModel.myInstanceBuffer;
 	aModel.myInstanceBuffer = nullptr;
 
-	myIsInitialized = aModel.myIsInitialized.load();
-	aModel.myIsInitialized = false;
+	SAFE_RELEASE(myBoneBuffer);
+	myBoneBuffer = aModel.myBoneBuffer;
+	aModel.myBoneBuffer = nullptr;
+	
+	mySceneAnimator = aModel.mySceneAnimator;
 
-	myVertexSize = aModel.myVertexSize;
-	aModel.myVertexSize = 0;
+	//SAFE_DELETE(myBindposeSceneAnimator);
+	//if (aModel.myBindposeSceneAnimator)
+	//{
+	//	myBindposeSceneAnimator = new CSceneAnimator(*aModel.myBindposeSceneAnimator);
+	//}
+	myBindposeSceneAnimator = aModel.myBindposeSceneAnimator;
 
+	SAFE_DELETE(myDeferredEffect);
+	myDeferredEffect = aModel.myDeferredEffect;
+	aModel.myDeferredEffect = nullptr;
+
+	SAFE_DELETE(myForwardEffect);
+	myForwardEffect = aModel.myForwardEffect;
+	aModel.myForwardEffect = nullptr;
+
+	SAFE_DELETE(mySurface);
+	mySurface = aModel.mySurface;
+	aModel.mySurface = nullptr;
+
+	myFramework = aModel.myFramework;
 	myScene = aModel.myScene;
-	aModel.myScene = nullptr;
+	myVertexSize = aModel.myVertexSize;
+	myRefCount = aModel.myRefCount;
+	myRadius = aModel.myRadius;
+	myIsInitialized = aModel.myIsInitialized.load();
+	myIsAlphaModel = aModel.myIsAlphaModel;
 
 	return *this;
 }
+
 CModel& CModel::operator=(const CModel& aModel)
 {
-
-	SAFE_DELETE(myForwardEffect);
-	if (aModel.myForwardEffect != nullptr)
-	{
-		myForwardEffect = new CEffect(*aModel.myForwardEffect);
-	}
-	SAFE_DELETE(myDeferredEffect);
-	if (aModel.myDeferredEffect != nullptr)
-	{
-		myDeferredEffect = new CEffect(*aModel.myDeferredEffect);
-	}
-
-
-	SAFE_DELETE(mySurface);
-	if (aModel.mySurface != nullptr)
-	{
-		mySurface = new CSurface(*aModel.mySurface);
-	}
-
-	myFramework = aModel.myFramework;
+	mySceneAnimators = aModel.mySceneAnimators;
 
 	for (unsigned int i = 0; i < myLODModels.Size(); ++i)
 	{
@@ -687,20 +696,65 @@ CModel& CModel::operator=(const CModel& aModel)
 		lodModel.myIndexCount = otherLodModel.myIndexCount;
 	}
 
+	if (myInstanceBufferData.IsInitialized())
+	{
+		myInstanceBufferData.Reserve(aModel.myInstanceBufferData.Capacity());
+	}
+	else
+	{
+		myInstanceBufferData.Init(aModel.myInstanceBufferData.Capacity());
+	}
+
+	myInstanceBufferData.RemoveAll();
+
+	SAFE_RELEASE(myCbuffer);
 	myCbuffer = aModel.myCbuffer;
 	SAFE_ADD_REF(myCbuffer);
+
+	SAFE_RELEASE(myLightBuffer);
 	myLightBuffer = aModel.myLightBuffer;
 	SAFE_ADD_REF(myLightBuffer);
 
+	SAFE_RELEASE(myPixelBuffer);
+	myPixelBuffer = aModel.myPixelBuffer;
+	SAFE_ADD_REF(myPixelBuffer);
+
+	SAFE_RELEASE(myInstanceBuffer);
 	myInstanceBuffer = aModel.myInstanceBuffer;
 	SAFE_ADD_REF(myInstanceBuffer);
 
+	SAFE_RELEASE(myBoneBuffer);
+	myBoneBuffer = aModel.myBoneBuffer;
+	SAFE_ADD_REF(myBoneBuffer);
 
-	myIsInitialized = aModel.myIsInitialized.load();
+	mySceneAnimator = aModel.mySceneAnimator;
+	myBindposeSceneAnimator = aModel.myBindposeSceneAnimator;
 
-	myVertexSize = aModel.myVertexSize;
+	SAFE_DELETE(myDeferredEffect);
+	if (aModel.myDeferredEffect != nullptr)
+	{
+		myDeferredEffect = new CEffect(*aModel.myDeferredEffect);
+	}
 
+	SAFE_DELETE(myForwardEffect);
+	if (aModel.myForwardEffect != nullptr)
+	{
+		myForwardEffect = new CEffect(*aModel.myForwardEffect);
+	}
+
+	SAFE_DELETE(mySurface);
+	if (aModel.mySurface != nullptr)
+	{
+		mySurface = new CSurface(*aModel.mySurface);
+	}
+
+	myFramework = aModel.myFramework;
 	myScene = aModel.myScene;
+	myVertexSize = aModel.myVertexSize;
+	myRefCount = aModel.myRefCount;
+	myRadius = aModel.myRadius;
+	myIsInitialized = aModel.myIsInitialized.load();
+	myIsAlphaModel = aModel.myIsAlphaModel;
 
 	return *this;
 }

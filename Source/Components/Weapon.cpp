@@ -9,6 +9,9 @@
 #include "../Physics/PhysicsActor.h"
 #include "../Physics/PhysicsActorDynamic.h"
 #include "../Audio/AudioInterface.h"
+#include "ParticleEmitterManager.h"
+#include "ParticleEmitterComponent.h"
+#include "../TClient/ClientMessageManager.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
@@ -48,14 +51,16 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		CU::Vector3f shootPosition = myUser->GetWorldPosition();
-		CU::Vector3f cameraPosition = shootPosition;
+		CU::Matrix44f transform = myUser->GetToWorldTransform();
+		//CU::Vector3f shootPosition = myUser->GetWorldPosition();
+		CU::Vector3f cameraPosition = transform.GetPosition();
 		SComponentQuestionData cameraPositionData;
 		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
 		{
-			shootPosition = cameraPositionData.myVector3f;
-			cameraPosition = shootPosition;
-			shootPosition += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
+			CU::Vector3f position =  cameraPositionData.myVector3f;
+			cameraPosition = position;
+			position += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
+			transform.SetPosition(position);
 		}
 
 		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
@@ -68,15 +73,17 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				Physics::SRaycastHitData hitData;
 				if(myWeaponObject != nullptr)
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(shootPosition, direction, myWeaponData->projectileData->maximumTravelRange);
+					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
 				}
 				if(hitData.hit == true)
 				{
 					const Physics::EActorType actorType = hitData.actor->GetType();
+					myLastHitNormal = hitData.normal;
+					myLastHitPosition = hitData.position;
 					/*if (actorType == Physics::EActorType::eDynamic)
 					{
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
@@ -87,6 +94,12 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					if(gameObject != myUser)
 					{
 						SComponentMessageData damageData;
+
+						damageData.myVector3f = myLastHitNormal;
+						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitNormal, damageData);
+						damageData.myVector3f = myLastHitPosition;
+						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitPosition, damageData);
+
 						damageData.myVector4f.y = direction.x;
 						damageData.myVector4f.z = direction.y;
 						damageData.myVector4f.w = direction.z;
@@ -109,17 +122,24 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
 				if(myWeaponObject != nullptr)
 				{
-					shootPosition = myWeaponObject->GetWorldPosition();
+					CU::Vector3f position = myWeaponObject->GetWorldPosition();
 					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
 					localWeaponMatrix.Move(shootDisplacment);
-					shootPosition = localWeaponMatrix.GetPosition();
-				
+					position = localWeaponMatrix.GetPosition();
+					transform.SetPosition(position);
 				}
 
 				PlaySound(SoundEvent::Fire, direction);
-				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
+				
+				
 			
 			}
+		}
+		if (CClientMessageManager::GetInstance() != nullptr)
+		{
+			transform.LookAt(transform.GetPosition() + aDirection);
+			EmitParticles(transform);
 		}
 	}
 }
@@ -165,7 +185,7 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 			shootPosition = cameraPositionData.myVector3f;
 			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
 		}
-
+		CU::Matrix44f localWeaponMatrix;
 		for (int i = 0; i < myWeaponData->projectilesFiredPerShot; ++i)
 		{
 			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
@@ -179,19 +199,53 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
 			
 				shootPosition = myUser->GetWorldPosition();
-				CU::Matrix44f localWeaponMatrix = myUser->GetToWorldTransform();
+				localWeaponMatrix = myUser->GetToWorldTransform();
 				localWeaponMatrix.Move(shootDisplacment);
 				shootPosition = localWeaponMatrix.GetPosition();
 
 
 				PlaySound(SoundEvent::Fire, aDirection);
 				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				
 				myElapsedFireTimer = 0.0f;
-
 			}
 		}
+		if(CClientMessageManager::GetInstance() != nullptr)
+		{
+			localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
+			EmitParticles(localWeaponMatrix);
+		}
+		
 	}
 }
+
+const CU::Vector3f& CWeapon::GetLastHitNormal() const
+{
+	return myLastHitNormal;
+}
+
+const CU::Vector3f& CWeapon::GetLastHitPosition() const
+{
+	return myLastHitPosition;
+}
+
+
+void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
+{
+	
+	aMatrix44.SetPosition(aMatrix44.GetPosition() + aMatrix44.myForwardVector * 2.5);
+	aMatrix44.myForwardVector *= -1;
+	
+	for(int i =  0; i < myWeaponData->fireParticles.Size(); ++i)
+	{
+		Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance(myWeaponData->fireParticles[i]);
+		CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
+		CParticleEmitterManager::GetInstance().Activate(id);
+
+		CParticleEmitterManager::GetInstance().Release(id);
+	}
+}
+
 
 void CWeapon::PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection)
 {

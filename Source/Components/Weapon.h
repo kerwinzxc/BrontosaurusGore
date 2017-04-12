@@ -30,7 +30,10 @@ public:
 	void Unequip(const std::function<void(void)>& aOnUnequippedCallback);
 
 	void CosmeticShoot(const CU::Vector3f& aDirection); // Alex
+	const CU::Vector3f& GetLastHitNormal() const;
+	const CU::Vector3f& GetLastHitPosition() const;
 private:
+	void EmitParticles(CU::Matrix44f aMatrix44);
 	enum class SoundEvent
 	{
 		Fire,
@@ -48,6 +51,8 @@ private:
 	float myElapsedFireTimer;
 	Audio::GameObjectID myAudioId;
 	CU::Vector3f mySoundDirection;
+	CU::Vector3f myLastHitNormal;
+	CU::Vector3f myLastHitPosition;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)

@@ -4,6 +4,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/DeactivateExplosionMessage.h"
 #include "PollingStation.h"
+#include "ParticleEmitterManager.h"
 
 CExplosionComponent::CExplosionComponent()
 {
@@ -34,14 +35,16 @@ void CExplosionComponent::Receive(const eComponentMessageType aMessageType, cons
 			aMessageData.myComponent->GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
 			myCollidedWithGameObjects.Add(aMessageData.myComponent->GetParent());
 		}
-		break;
-	}
+		break;	}
 	case eComponentMessageType::eActivateExplosion:
 	{
+
+		myData = aMessageData.myExplosionData;
+		DoParticles();
 		myIsActive = true;
 		myElapsedLivingTime = 0.0f;
-		myData = aMessageData.myExplosionData;
 		myCollidedWithGameObjects.RemoveAll();
+		
 		break;
 	}
 	default:
@@ -51,6 +54,23 @@ void CExplosionComponent::Receive(const eComponentMessageType aMessageType, cons
 void CExplosionComponent::Destroy()
 {
 
+}
+
+void CExplosionComponent::DoParticles()
+{
+
+		const CU::Matrix44f transform = GetParent()->GetToWorldTransform();
+		
+
+		for (int i = 0; i < myData->explosionParticles.Size(); ++i)
+		{
+			const Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance(myData->explosionParticles[i]);
+			CParticleEmitterManager::GetInstance().SetTransformation(id, transform);
+			CParticleEmitterManager::GetInstance().Activate(id);
+
+			CParticleEmitterManager::GetInstance().Release(id);
+		}
+	
 }
 
 void CExplosionComponent::Update(float aDeltaTime)

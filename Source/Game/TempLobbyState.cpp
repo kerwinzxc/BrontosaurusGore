@@ -72,7 +72,7 @@ void CTempLobbyState::Select()
 				{
 					myCurrentLine = 0;
 				}
-			} while (IsSelectable(myCurrentLine) == false);
+			} while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty());
 			break;
 		case 6:
 			//myLobbyState = eLobbyState::eEnterName;
@@ -86,9 +86,9 @@ void CTempLobbyState::Select()
 				{
 					myCurrentLine = 0;
 				}
-			} while (IsSelectable(myCurrentLine) == false);
+			} while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty());
 			break;
-		case 8:
+		case 7:
 			Conect();
 			break;
 		default: break;
@@ -195,7 +195,7 @@ void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 				{
 					myCurrentLine = myTextINstance.GetTextLines().Size() - 1;
 				}
-			} while (IsSelectable(myCurrentLine) == false);
+			} while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty());
 		}
 		break;
 	case CU::eKeys::DOWN:
@@ -211,7 +211,7 @@ void CTempLobbyState::HandleKeyPress(const CU::SInputMessage& aInputMessage)
 				{
 					myCurrentLine = 0;
 				}
-			} while (IsSelectable(myCurrentLine) == false);
+			} while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty());
 		}
 		break;
 	case CU::eKeys::RETURN:
@@ -295,7 +295,7 @@ void CTempLobbyState::LobbyMenu()
 	myTextINstance.SetTextLine(nameLine, string);
 
 
-	myTextINstance.SetTextLine(8, L"Done");
+	myTextINstance.SetTextLine(7, L"Done");
 
 
 	if (myCurrentLine < myTextINstance.GetTextLines().Size() && myCurrentLine >= 0)
@@ -398,7 +398,7 @@ eStateStatus CTempLobbyState::Update(const CU::Time& aDeltaTime)
 	myCurrentLine = CLAMP(myCurrentLine, 0, myTextINstance.GetTextLines().Size() - 1);
 	if (!(myLobbyState == eLobbyState::eConecting || (myLobbyState == eLobbyState::eSelectLevel && myIsPlayer == false)))
 	{
-		while (IsSelectable(myCurrentLine) == false)
+		while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty())
 		{
 			if (myCurrentLine < myTextINstance.GetTextLines().Size() - 1)
 			{

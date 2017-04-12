@@ -43,8 +43,8 @@ eMessageReturn CExplosionFactory::DoEvent(const CCreateExplosionMessage& aCreate
 		myPassiveExplosions.RemoveCyclicAtIndex(0);
 		SComponentMessageData EXuPlosssiioooooooonData;
 		EXuPlosssiioooooooonData.myExplosionData = &aCreateExplosionMessage.GetExplosionData();
-		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eActivateExplosion, EXuPlosssiioooooooonData);
 		myActiveExplosions.GetLast()->gameObject->SetWorldPosition(aCreateExplosionMessage.GetPosition());
+		myActiveExplosions.GetLast()->gameObject->NotifyComponents(eComponentMessageType::eActivateExplosion, EXuPlosssiioooooooonData);
 		myActiveExplosions.GetLast()->gameObject->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		myActiveExplosions.GetLast()->gameObject->NotifyOnlyComponents(eComponentMessageType::eActivateEmitter, SComponentMessageData());
 		SComponentMessageData visibilityData;
@@ -124,8 +124,8 @@ void CExplosionFactory::CreateExplosion()
 	emitterData.RotationCurve = eLerpCurve::eSmootherStep;
 	emitterData.ShouldLoop = false;
 	emitterData.Lifetime = .25f;
-	CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent("Explosion");
-	newExplosionObject->AddComponent(companent);
+	//CParticleEmitterComponent* companent = CParticleEmitterComponentManager::GetInstance().CreateComponent("Explosion");
+	//newExplosionObject->AddComponent(companent);
 
 	SExplosionBufferData* newSexplosionData = new SExplosionBufferData();
 	newSexplosionData->gameObject = newExplosionObject;
