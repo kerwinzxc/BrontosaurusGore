@@ -5,6 +5,8 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
 #include "../TClient/ClientMessageManager.h"
+#include "..\game\PollingStation.h"
+#include "..\Audio\AudioInterface.h"
 
 CHealthComponent::CHealthComponent(unsigned int aNetworkID) : myNetworkID(aNetworkID)
 {
@@ -138,6 +140,11 @@ void CHealthComponent::Destroy()
 
 void CHealthComponent::TakeDamage(const healthPoint aDamage)
 {
+	if (CPollingStation::GetInstance()->CheckIfIsPlayerObject(GetParent()) == true)
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Hurt");
+	}
+
 	if(aDamage < 0)
 	{
 		Heal(-aDamage);
