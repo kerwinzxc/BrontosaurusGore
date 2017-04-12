@@ -91,7 +91,7 @@ void CImpController::Update(const float aDeltaTime)
 		if (myIsDead == true)
 		{
 			myState = eImpState::eDead;
-		//	Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+		//	Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance(); // blir nullptr
 			//audio->PostEvent("Imp_Death"/*, myAudioID*/);
 		}
 	}
@@ -261,6 +261,10 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 		myState = eImpState::eDead;
 		myIsDead = true;
+
+		//Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance(); // blir nullptr
+		//audio->PostEvent("Imp_Death"/*, myAudioID*/);
+
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
