@@ -25,6 +25,7 @@ public:
 	void Update(const float aDeltaTime) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
+	inline void Sthap() override;
 private:
 	void ApplyFlightForce();
 	void UpdateFlightForces(const float aDeltaTime);
@@ -53,5 +54,10 @@ private:
 
 	bool myIsflying;
 	bool myIsAtJumpPoint;
+	bool myShouldntExist;
 };
 
+inline void CRevenantController::Sthap()
+{
+	myShouldntExist = true;
+}

@@ -23,7 +23,10 @@ void CEnemyComponentManager::Update(const float aDeltaTime)
 {
 	for (unsigned int i = 0; i < myEnemies.Size(); ++i)
 	{
-		myEnemies[i]->Update(aDeltaTime);
+		if(myEnemies[i] != nullptr)
+		{
+			myEnemies[i]->Update(aDeltaTime);
+		}
 	}
 }
 
@@ -138,6 +141,13 @@ void CEnemyComponentManager::DeleteComponent(CEnemy* anEnemy)
 
 CEnemyComponentManager::~CEnemyComponentManager()
 {
+	/*for (unsigned int i = 0; i < myEnemies.Size(); i++)
+	{
+		myEnemies[i]->Sthap();
+		
+	}*/
+	CEnemy::playerDontFuckTHisUp();
+	myEnemies.RemoveAll();
 }
 
 void CEnemyComponentManager::Init(CWeaponSystemManager* aWeaponSystemComponentManagerPointer)

@@ -376,3 +376,11 @@ const CU::Vector3f CEnemy::GetNearestJumpPosition()
 
 	return playerPos;
 }
+
+void CEnemy::playerDontFuckTHisUp()
+{
+	ourPlayerObjects.RemoveAll();
+	ourPlayerObjects.Destroy();
+	ourEnemyRunTowardsComponents.RemoveAll();
+	ourEnemyRunTowardsComponents.Destroy();
+}
