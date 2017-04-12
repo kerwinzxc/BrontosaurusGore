@@ -289,12 +289,22 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 
 ID3D11DepthStencilView* CDeferredRenderer::GetDepthStencil()
 {
-	return myGbuffer.GetRenderPackage(CGeometryBuffer::eRMAO).GetDepthStencilView();
+	return myGbuffer.GetRenderPackage(CGeometryBuffer::eDiffuse).GetDepthStencilView();
 }
 
 ID3D11ShaderResourceView* CDeferredRenderer::GetDepthResource()
 {
 	return myGbuffer.GetRenderPackage(CGeometryBuffer::eDiffuse).GetDepthResource();
+}
+
+CRenderPackage& CDeferredRenderer::GetFirstPackage()
+{
+	return myGbuffer.GetRenderPackage(CGeometryBuffer::eDiffuse);
+}
+
+CRenderPackage& CDeferredRenderer::GetSecondPackage()
+{
+	return myGbuffer.GetRenderPackage(CGeometryBuffer::eEmissive);
 }
 
 void CDeferredRenderer::ActivateIntermediate()

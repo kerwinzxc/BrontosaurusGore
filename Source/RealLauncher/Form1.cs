@@ -74,18 +74,18 @@ namespace RealLauncher
             wh = myScreen.myResolutions[comboBox1.SelectedIndex].height;
             ww = myScreen.myResolutions[comboBox1.SelectedIndex].width;
 
-            ProcessStartInfo startinfo1 = new ProcessStartInfo();
-            startinfo1.CreateNoWindow = false;
-            startinfo1.UseShellExecute = false;
-            startinfo1.FileName = "TServer_Applictaion_x64_Release.exe";
-            //startinfo.Arguments = "-height " + wh + " -width " + ww + " -fullscreen " + fullscreen;
-            Process.Start(startinfo1);
+            //ProcessStartInfo startinfo1 = new ProcessStartInfo();
+            //startinfo1.CreateNoWindow = false;
+            //startinfo1.UseShellExecute = false;
+            //startinfo1.FileName = "TServer_Applictaion_x64_Release.exe";
+            ////startinfo.Arguments = "-height " + wh + " -width " + ww + " -fullscreen " + fullscreen;
+            //Process.Start(startinfo1);
 
 
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.CreateNoWindow = false;
             startinfo.UseShellExecute = false;
-            startinfo.FileName = "BrontosaurusGore_Release.exe";
+            startinfo.FileName = "./BrontosaurusGore_Retail.exe";
             startinfo.Arguments = "-height " + wh + " -width " + ww + " -fullscreen " + fullscreen;
             Process.Start(startinfo);
 

@@ -39,6 +39,7 @@ void GS_PosSizeColor(point InputGeometry input[1], inout TriangleStream<InputPix
         vertex.worldPosition = vertex.position;
         //vertex.position = mul(rotationMatrix, vertex.position);
         vertex.position = mul(projectionSpace, vertex.position);
+        vertex.screenPos = vertex.position.xyz / vertex.position.w;
         float3 center = input[0].position.xyz;
         vertex.uv = uv_coord[i % 4];
         vertex.color = input[0].color;

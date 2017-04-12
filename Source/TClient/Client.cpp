@@ -308,6 +308,9 @@ void CClient::Update()
 			case ePackageType::ePickupHealth:
 			{
 				CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
+				SComponentMessageData data;
+				data.myInt = pickup->GetReplenishAmount();
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eHeal, data);
 				CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 			}
 			break;
@@ -348,6 +351,10 @@ void CClient::Update()
 			case ePackageType::ePickupArmor:
 			{
 				CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+
+				SComponentMessageData data;
+				data.myInt = pickup->GetReplenishAmount();
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddArmor, data);
 				CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
 			}
 			break;

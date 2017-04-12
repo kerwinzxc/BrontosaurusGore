@@ -10,8 +10,12 @@ public:
 
 	const int GetID();
 	void SetID(const int aId);
+
+	void SetReplenishAmount(const short aValue);
+	const short GetReplenishAmount() const;
 private:
 	int myNetworkID;
+	short myReplenishAmount;
 
 	void DoSerialize(StreamType& aStream) override;
 	void DoDeserialize(StreamType& aStream) override;

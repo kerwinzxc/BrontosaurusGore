@@ -52,15 +52,19 @@ CParticleEmitter::CParticleEmitter(const CU::CJsonValue& aJsonValue) : CParticle
 
 CParticleEmitter::~CParticleEmitter()
 {
+#ifndef _RETAIL_BUILD
 	std::lock_guard<std::mutex> updateLock(myUpdateMutex);
 	std::lock_guard<std::mutex> renderLock(myRenderMutex);
+#endif
 	std::lock_guard<std::mutex> bufferLock(myUpdateVBufferMutex);
 	Destroy();
 }
 
 void CParticleEmitter::Render(const CU::Matrix44f & aToWorldSpace, const CU::GrowingArray<SParticle, unsigned int, false>& aParticleList, RenderMode aRenderMode)
 {
+#ifndef _RETAIL_BUILD
 	std::lock_guard<std::mutex> lock(myRenderMutex);
+#endif
 	const RenderMode renderMode = myEmitterData.render.renderMode;
 	if (!myRenderEffects[static_cast<int>(myEmitterData.render.renderMode)]) return;
 
@@ -122,8 +126,9 @@ void CParticleEmitter::RemoveRef()
 
 void CParticleEmitter::UpdateInstance(const CU::Time& aTime, CParticleEmitterInstance& aInstance)
 {
+#ifndef _RETAIL_BUILD
 	std::lock_guard<std::mutex> lock(myUpdateMutex);
-
+#endif
 	myCurrentInstaceTransform = aInstance.myToWorldSpace;
 	if(aInstance.IsActive() == false && aInstance.IsDone() == true && myEmitterData.emitter.loop == false)
 	{

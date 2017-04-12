@@ -18,7 +18,7 @@ public:
 	~CDXFramework();
 	void ClearScreen();
 	void ClearDepthStencil();
-	void CreateDepthStencil(const int aWidth, const int aHeight, ID3D11DepthStencilView *& aDepthStencilView, ID3D11ShaderResourceView *& aDepthStencilResource);
+	void CreateDepthStencil(const int aWidth, const int aHeight, ID3D11DepthStencilView *& aDepthStencilView, ID3D11ShaderResourceView *& aDepthStencilResource, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT_D24_UNORM_S8_UINT);
 	void Resize(const unsigned int aWidth, const unsigned int aHeight);
 	void SetViewPort(const unsigned int aWidth, const unsigned int aHeight, const float aMinDepth, const float aMaxDepth, const float aTopLeftX, const float aTopLeftY);
 	void Render();
@@ -33,9 +33,9 @@ public:
 	inline ID3D11DeviceContext* GetDeviceContext();
 	inline IDXGISwapChain& GetSwapChain();
 
+	DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
 private:
 	bool CollectAdapters(CU::Vector2<unsigned int> aWindowSize, CU::Vector2<int>& aNumDenumerator, IDXGIAdapter*& outAdapter);
-	DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
 	DXGI_FORMAT GetDepthSRVFormat(DXGI_FORMAT depthformat);
 
 private:
