@@ -27,9 +27,7 @@ void CTumbleweedController::Update(const float aDeltaTime)
 	myAddForceCountdown -= aDeltaTime;
 	if(myAddForceCountdown < 0.0f)
 	{
-		SComponentMessageData addForceData;
-		addForceData.myVector3f = myDirection * myForce;
-		GetParent()->NotifyComponents(eComponentMessageType::eAddForce, addForceData);
+		AddForce();
 		RandomizeForce();
 		//RandomizeDirection();
 		RandomizeTime();
@@ -87,4 +85,11 @@ void CTumbleweedController::RandomizeForce()
 {
 	myForce = fmod(rand(), 3000.f);
 	myForce += 2000.f;
+}
+
+void CTumbleweedController::AddForce()
+{
+	SComponentMessageData addForceData;
+	addForceData.myVector3f = myDirection * myForce;
+	GetParent()->NotifyComponents(eComponentMessageType::eAddForce, addForceData);
 }

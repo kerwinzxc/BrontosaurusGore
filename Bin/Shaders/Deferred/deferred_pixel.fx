@@ -69,6 +69,7 @@ PixelOutput PS_PosNormBinormTanTex(PosNormBinormTanTex_InputPixel input)
 	float4 emissivecol = emissive.Sample(samplerWrap, input.uv);
 	emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
 	output.emissive = emissivecol + GetHighlight(output.normal.xyz, highlightColor);
+	output.emissive.a = 0.0f;
 	output.emissive = saturate(output.emissive);
 	return output;
 }
@@ -94,14 +95,11 @@ PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputPi
 	output.RMAO = RMAO.Sample(samplerWrap, input.uv);
 
 	float4 emissivecol = emissive.Sample(samplerWrap, input.uv);
-	//emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
+	emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
 	output.emissive = emissivecol + GetHighlight(output.normal.xyz, input.highlight);
-	output.emissive.a = 1.0f;
-	//output.emissive = saturate(output.emissive);
-
+	//output.emissive.a = 1.0f;
+	output.emissive = saturate(output.emissive);
 	output.diffuse.rgb += output.emissive.rgb;
-	output.RMAO.a = length(output.emissive.rgb);
-
 	return output;
 }
 
@@ -128,7 +126,7 @@ float4 GetHighlight(float3 normal, float4 aHighlightColor)
 
 	const float fresnelValue = abs(dot(NormalFromTexture(normal),cameraDirWorld));
 
-	const float lol = fresnelValue / aHighlightColor.a;
+	const float lol = fresnelValue / (aHighlightColor.a * 0.5f);
 	const float alphaValue = saturate(1 - lol * lol * lol);
 
 	
@@ -139,7 +137,7 @@ float4 GetHighlight(float3 normal, float4 aHighlightColor)
 	// 	HighLight.a = 1.f;
 	// }
 
-	return float4(HighLight, alphaValue * aHighlightColor.a);
+	return float4(HighLight, aHighlightColor.a) * alphaValue;
 }
 
 float3 NormalFromTexture(float3 normal)
