@@ -117,16 +117,14 @@ private:
 	class CCameraComponent* myCameraComponent;
 	friend struct SEncapsulationBreaker;
 
-
 	CLutComponent* myPlayerLut;
-
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
 
 	//Super temp ta bort när guit börjar ta form
-	CTextInstance* myPlayerHealthText;
-	CTextInstance* myPlayerArmorText;
+	//CTextInstance* myPlayerHealthText;
+	//CTextInstance* myPlayerArmorText;
 
 };
 

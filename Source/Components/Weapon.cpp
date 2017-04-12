@@ -12,6 +12,7 @@
 #include "ParticleEmitterManager.h"
 #include "ParticleEmitterComponent.h"
 #include "../TClient/ClientMessageManager.h"
+#include "..\CommonUtilities\DL_Debug.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
@@ -348,6 +349,7 @@ bool CWeapon::CanShoot()
 	return false;
 }
 
+volatile static int onlyOnce = 1;
 void CWeapon::Equip()
 {
 	if (myWeaponObject != nullptr)
@@ -357,6 +359,17 @@ void CWeapon::Equip()
 		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityTrue);
 
 		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eEquip, SComponentMessageData());
+
+
+
+		onlyOnce++; //Don't question it.
+		if (myWeaponData->isMeleeWeapon == false)
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+		if (myWeaponData->isMeleeWeapon == true && onlyOnce == 3)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+			onlyOnce = 1;
+		}
 	}
 }
 

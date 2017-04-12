@@ -23,7 +23,7 @@ int LoadPointLightComponent(KLoader::SLoadedComponentData someData)
 		int id = KLoader::CKevinLoader::GetInstance().GetCurrentObjectIndex();
 		CGameObject* parent = reinterpret_cast<CGameObject*>(CComponentManager::GetInstance().GetComponent(id));
 		Lights::SDirectionalLight directionalLight;
-		directionalLight.direction = parent->GetToWorldTransform().myForwardVector;
+		directionalLight.direction = -parent->GetToWorldTransform().myForwardVector;
 		directionalLight.intensity = someData.myData.at("intensity").GetFloat();
 		directionalLight.color = someData.myData.at("color").GetVector4f("xyzw") / 255.f;
 		CPointLightComponentManager::GetInstance().AddDirectionalLightToScene(directionalLight);
