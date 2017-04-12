@@ -18,6 +18,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myAttacksUntilChangingStates = 3;
 	myUsedAttacksSinceLastStateChange = 0;
 	myIsAtJumpPoint = false;
+	myChillAtJumpPointCountDown = 0.0f;
 }
 
 CRevenantController::~CRevenantController()
@@ -37,6 +38,14 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CRevenantController::Update(const float aDeltaTime)
 {
+	if(myChillAtJumpPointCountDown > 0)
+	{
+		myChillAtJumpPointCountDown -= aDeltaTime;
+		if(myChillAtJumpPointCountDown <= 0)
+		{
+			myIsAtJumpPoint = false;
+		}
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myFlightForce;
 	if(myIsflying == false)
@@ -59,25 +68,22 @@ void CRevenantController::Update(const float aDeltaTime)
 		else if (WithinWalkToMeleeRange())
 		{
 			myState = eRevenantState::eWalkIntoMeleeRange;
+			if(myIsAtJumpPoint == true)
+			{
+				StartCharginRangedAttack();
+			}
 		}
 		else if (WithinShootRange())
 		{
-			myState = eRevenantState::eChargingRangedAttack;
-			unsigned short randomNumber = rand() % 5;
-			if(randomNumber == 0)
-			{
-				myState = eRevenantState::eFlyAscend;
-				ApplyFlightForce();
-			}
-			if (myToPlayer.y > 2.0f)
-			{
-				myState = eRevenantState::eFlyAscend;
-				ApplyFlightForce();
-			}
+			StartCharginRangedAttack();
 		}
 		else if (WithinDetectionRange())
 		{
 			myState = eRevenantState::eChase;
+			if (myIsAtJumpPoint == true)
+			{
+				StartCharginRangedAttack();
+			}
 		}
 		else
 		{
@@ -85,6 +91,10 @@ void CRevenantController::Update(const float aDeltaTime)
 			if(myIsAggressive == true)
 			{
 				myState = eRevenantState::eChase;
+				if (myIsAtJumpPoint == true)
+				{
+					StartCharginRangedAttack();
+				}
 			}
 		}
 	}
@@ -221,6 +231,7 @@ void CRevenantController::Update(const float aDeltaTime)
 			{
 				LookAtPlayer();
 				myIsAtJumpPoint = true;
+				myChillAtJumpPointCountDown = rand() % 7 + 3;
 			}
 
 		}
@@ -364,4 +375,20 @@ eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aRe
 	myIsAtJumpPoint = false;
 	myIsflying = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
+}
+
+void CRevenantController::StartCharginRangedAttack()
+{
+	myState = eRevenantState::eChargingRangedAttack;
+	unsigned short randomNumber = rand() % 5;
+	if (randomNumber == 0)
+	{
+		myState = eRevenantState::eFlyAscend;
+		ApplyFlightForce();
+	}
+	if (myToPlayer.y > 2.0f)
+	{
+		myState = eRevenantState::eFlyAscend;
+		ApplyFlightForce();
+	}
 }

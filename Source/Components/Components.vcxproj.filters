@@ -82,7 +82,6 @@
     <ClCompile Include="AnimationComponentLoader.cpp" />
     <ClCompile Include="TumbleweedController.cpp" />
     <ClCompile Include="TumbleweedFactory.cpp" />
-    <ClCompile Include="LutComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -187,6 +186,6 @@
     <ClInclude Include="AnimationComponentLoader.h" />
     <ClInclude Include="TumbleweedController.h" />
     <ClInclude Include="TumbleweedFactory.h" />
-    <ClInclude Include="LutComponent.h" />
+    <ClInclude Include="WeaponPickupData.h" />
   </ItemGroup>
 </Project>

@@ -106,6 +106,12 @@ void CPinkyController::Update(const float aDeltaTime)
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
 		myVelocity.z = myChargeSpeed;
+		if(GetIfSidesAreColliding() == true)
+		{
+			myIsCharging = false;
+			myElapsedChargeCooldownTime = 0.0f;
+			myState = ePinkyState::eChargeCooldown;
+		}
 		KeepWithinChargeDist();
 		break;
 	case ePinkyState::eChargeCooldown:

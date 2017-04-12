@@ -29,6 +29,7 @@ private:
 	void UpdateFlightForces(const float aDeltaTime);
 	bool CheckIfInAir();
 	bool CanChangeState();
+	void StartCharginRangedAttack();
 private:
 	CU::Vector3f myJumpPointPosition;
 
@@ -43,6 +44,7 @@ private:
 	float myElapsedChargeRangedAirBarrageAttackTime;
 	float myChargeMeleeAttackDuration;
 	float myElapsedChargeMeleeAttackTime;
+	float myChillAtJumpPointCountDown;
 	unsigned short myAttacksUntilChangingStates;
 	unsigned short myUsedAttacksSinceLastStateChange;
 	eRevenantState myState;

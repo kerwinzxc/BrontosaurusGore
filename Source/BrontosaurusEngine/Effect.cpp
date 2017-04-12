@@ -35,7 +35,7 @@ CEffect::CEffect(const CEffect& aEffect)
 	myLayout = aEffect.myLayout;
 
 	myTopology = aEffect.myTopology;
-
+	myPixelInstancedShader = aEffect.myPixelInstancedShader;
 	myVertexInstancedShader = aEffect.myVertexInstancedShader;
 	myInstancedLayout = aEffect.myInstancedLayout;
 }

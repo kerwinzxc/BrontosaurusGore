@@ -461,6 +461,7 @@
     <ClInclude Include="WeaponData.h" />
     <ClInclude Include="WeaponFactory.h" />
     <ClInclude Include="WeaponPickupComponent.h" />
+    <ClInclude Include="WeaponPickupData.h" />
     <ClInclude Include="WeaponSoundData.h" />
     <ClInclude Include="WeaponSystemComponent.h" />
     <ClInclude Include="WeaponSystemManager.h" />
