@@ -8,7 +8,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
 #include "../Game/PollingStation.h"
-
+#include "..\Audio\AudioInterface.h"
 
 CDoorComponent::CDoorComponent()
 {
@@ -204,6 +204,8 @@ void CDoorComponent::Receive(const eComponentMessageType aMessageType, const SCo
 					lockdoorMessage->SetDoorAction(eDoorAction::eUnlock);
 					lockdoorMessage->SetID(myNetworkID);
 					Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(lockdoorMessage));
+
+					Audio::CAudioInterface::GetInstance()->PostEvent("Door_Unlock");
 
 					CNetworkMessage_DoorMessage* opendoorMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_DoorMessage>(ID_ALL);
 					opendoorMessage->SetDoorAction(eDoorAction::eOpen);

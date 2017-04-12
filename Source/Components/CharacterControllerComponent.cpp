@@ -90,7 +90,6 @@ void CCharacterControllerComponent::OnTriggerEnter(Physics::CPhysicsCallbackActo
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerEnter, data);
-	DL_PRINT("TriggerEnter");
 }
 
 void CCharacterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
@@ -99,7 +98,6 @@ void CCharacterControllerComponent::OnTriggerExit(Physics::CPhysicsCallbackActor
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyComponents(eComponentMessageType::eOnTriggerExit, data);
-	DL_PRINT("TriggerExit");
 }
 
 void CCharacterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
@@ -108,7 +106,6 @@ void CCharacterControllerComponent::OnCollisionEnter(Physics::CPhysicsCallbackAc
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionEnter, data);
-	DL_PRINT("ColEnter");
 }
 
 void CCharacterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
@@ -117,6 +114,5 @@ void CCharacterControllerComponent::OnCollisionExit(Physics::CPhysicsCallbackAct
 	SComponentMessageData data;
 	data.myComponent = static_cast<CComponent*>(compPtr);
 	GetParent()->NotifyComponents(eComponentMessageType::eOnCollisionExit, data);
-	DL_PRINT("ColExit");
 }
 
