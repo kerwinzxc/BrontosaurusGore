@@ -5,6 +5,7 @@
 #include "../GUI/GUIElement.h"
 #include "Queue.h"
 #include "Colour.h"
+#include <atomic>
 
 
 class CSprite;
@@ -36,6 +37,8 @@ public:
 
 	void RenderBar(const SRenderBarMessage* const aRenderMessage);
 
+	void Clear();
+	void QueuClear();
 private:
 
 	std::unordered_map<std::wstring,unsigned char> myElementIndexMap;
@@ -55,5 +58,7 @@ private:
 
 		bool myIsInited;
 	}myBarData;
+
+	std::atomic_bool myShouldClear;
 };
 

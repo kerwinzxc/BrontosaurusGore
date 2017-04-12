@@ -89,6 +89,7 @@ struct SRenderMessage
 		eRenderBar,
 		eCreateGuiElement,
 		eRenderToGui,
+		eClearGui,
 	};
 
 	SRenderMessage(const eRenderMessageType aRenderMessageType);
@@ -370,4 +371,9 @@ struct SRenderToGUI : SRenderMessage
 
 	const std::wstring myElementName;
 	SRenderMessage* myRenderMessage;
+};
+
+struct SClearGui: SRenderMessage
+{
+	SClearGui() : SRenderMessage(eRenderMessageType::eClearGui){}
 };

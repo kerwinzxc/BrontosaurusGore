@@ -26,6 +26,9 @@ private:
 	void LoadElement(const CU::CJsonValue& aJsonValue, const std::string& aFolderpath);
 	void MenuLoad(const std::string& aFile);
 
+	static void ExitGame(std::string notUsed);
+	void PushTempLobby(std::string notUsed) const;
+
 	bool myShowStateBelow;
 	CSpriteInstance* myPointerSprite;
 

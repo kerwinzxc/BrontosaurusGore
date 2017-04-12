@@ -53,6 +53,8 @@ public:
 	inline SRendererSettings& GetSettings();
 	const CU::Camera& GetCamera();
 	void SetStates(const SChangeStatesMessage* aState);
+
+	void ClearGui();
 private:
 	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	void RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount);

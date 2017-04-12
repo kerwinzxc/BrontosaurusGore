@@ -34,6 +34,8 @@ C2DGUIRenderer::C2DGUIRenderer()
 	myBarData.myVSConstBuffer = nullptr;
 	myBarData.myPSConstBuffer = nullptr;
 	myBarData.myVertexBuffer = nullptr;
+
+	myShouldClear = false;
 }
 
 
@@ -158,6 +160,13 @@ void C2DGUIRenderer::RemoveElement(const std::wstring& anElementName)
 
 void C2DGUIRenderer::RenderWholeGuiToPackage(CRenderPackage& aTargetPackage, CFullScreenHelper & aFullScreenHelper)
 {
+	if (myShouldClear == true)
+	{
+		Clear();
+		myShouldClear = false;
+		return;
+	}
+
 	const CU::Vector2f targetSize = aTargetPackage.GetSize();
 
 	for (unsigned char i = 0; i < myElements.Size(); ++i)
@@ -295,4 +304,20 @@ void C2DGUIRenderer::RenderBar(const SRenderBarMessage* const aRenderMessage)
 	UINT offset = 0;
 	FRAMEWORK->GetDeviceContext()->IASetVertexBuffers(0, 1, &myBarData.myVertexBuffer, &stride, &offset);
 	FRAMEWORK->GetDeviceContext()->Draw(6, 1);
+}
+
+void C2DGUIRenderer::Clear()
+{
+	myElementIndexMap.clear();
+	for (int i = 0; i < myElements.Size(); ++i)
+	{
+		delete myElements[i].second;
+	}
+	myElements.RemoveAll();
+	myRenderQueus.RemoveAll();
+}
+
+void C2DGUIRenderer::QueuClear()
+{
+	myShouldClear = true;
 }
