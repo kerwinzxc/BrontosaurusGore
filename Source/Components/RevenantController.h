@@ -12,6 +12,7 @@ enum class eRevenantState
 	eChargingRangedAttack,
 	eChargingMeleeAttack,
 	eChase,
+	eWaitBeforeChangingState,
 	eDead
 };
 class CRevenantController : public CEnemy
@@ -45,6 +46,7 @@ private:
 	float myChargeMeleeAttackDuration;
 	float myElapsedChargeMeleeAttackTime;
 	float myChillAtJumpPointCountDown;
+	float myWaitBeforeChangingStateCountdown;
 	unsigned short myAttacksUntilChangingStates;
 	unsigned short myUsedAttacksSinceLastStateChange;
 	eRevenantState myState;

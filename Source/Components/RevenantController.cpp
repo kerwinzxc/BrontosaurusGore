@@ -19,6 +19,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myUsedAttacksSinceLastStateChange = 0;
 	myIsAtJumpPoint = false;
 	myChillAtJumpPointCountDown = 0.0f;
+	myWaitBeforeChangingStateCountdown = 0.0f;
 }
 
 CRevenantController::~CRevenantController()
@@ -140,6 +141,11 @@ void CRevenantController::Update(const float aDeltaTime)
 				myElapsedChargeRangedAttackTime = 0.0f;
 				myUsedAttacksSinceLastStateChange = 0;
 				myState = eRevenantState::eIdle;
+				if(myIsAtJumpPoint == true)
+				{
+					myState = eRevenantState::eWaitBeforeChangingState;
+					myWaitBeforeChangingStateCountdown = 1.0f;
+				}
 			}
 		
 		}
@@ -259,6 +265,15 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		break;
 	}
+	case eRevenantState::eWaitBeforeChangingState:
+	{
+		myWaitBeforeChangingStateCountdown -= aDeltaTime;
+		if(myWaitBeforeChangingStateCountdown <= 0)
+		{
+			myState = eRevenantState::eIdle;
+		}
+		break;
+	}
 	case eRevenantState::eDead:
 		break;
 	default:
@@ -360,6 +375,9 @@ bool CRevenantController::CanChangeState()
 		return false;
 		break;
 	case eRevenantState::eUseRangedAttack:
+		return false;
+		break;
+	case eRevenantState::eWaitBeforeChangingState:
 		return false;
 		break;
 	default:
