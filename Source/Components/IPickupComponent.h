@@ -19,6 +19,8 @@ public:
 	virtual const bool GetShouldReset() const;
 
 	virtual void DoMyEffect() = 0;
+
+	void Update(const float aDeltaTime);
 protected:
 	int myNetworkId;
 private:

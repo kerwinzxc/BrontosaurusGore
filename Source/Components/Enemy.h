@@ -4,6 +4,7 @@
 #include "EnemyTypes.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "../CommonUtilities/vector4.h"
+#include "..\Audio\AudioInterface.h"
 
 class CGameObject;
 class CEnemyRunTowardsComponent;
@@ -49,6 +50,7 @@ protected:
 	virtual inline bool WithinAttackRange();
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
+	virtual void DoDeathEffect() {} // only in clientRepresentaion.
 	void LookAtPlayer();
 	bool GetIfSidesAreColliding();
 	const CU::Vector3f GetNearestJumpPosition();
@@ -62,6 +64,7 @@ protected:
 	CU::Vector3f myToPlayer;
 	CU::Vector3f mySpawnPosition;
 
+	Audio::GameObjectID myAudioID;
 	float myDistToPlayer;
 
 	unsigned int myServerId;
@@ -85,6 +88,7 @@ protected:
 	char myControllerConstraints;
 	float myBloodSplatterTimer;
 private:
+
 	float myHighlightTimer;
 	bool myDoingHighlight;
 };

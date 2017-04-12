@@ -41,6 +41,7 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
+
 	if(myIsDead == false && CanChangeState() == true)
 	{
 		if (WithinAttackRange() == true)
@@ -252,6 +253,7 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 		myState = eImpState::eDead;
 		myIsDead = true;
+
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{

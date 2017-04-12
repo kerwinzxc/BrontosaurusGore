@@ -3,6 +3,11 @@
 #include "PollingStation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "../BrontosaurusEngine/Engine.h"
+
+#define VERTICAL_OFFSET 0.25f
+#define VERTICAL_RATE 1.0f
+
 
 IPickupComponent::IPickupComponent()
 {
@@ -51,6 +56,12 @@ void IPickupComponent::Receive(const eComponentMessageType aMessageType, const S
 			message.myComponentTypeAdded = myType;
 			GetParent()->NotifyComponents(eComponentMessageType::eAddComponent, message);
 		}
+		if (aMessageData.myComponent == this)
+		{
+			GetParent()->GetLocalTransform().myPosition.y += VERTICAL_OFFSET;
+			GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		}
+
 		break;
 	case eComponentMessageType::eOnTriggerEnter:
 		if (aMessageData.myComponent->GetParent() == CPollingStation::GetInstance()->GetPlayerObject())
@@ -91,4 +102,17 @@ void IPickupComponent::DoMyEffect()
 	SComponentMessageData data;
 	data.myBool = false;
 	GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
+}
+
+void IPickupComponent::Update(const float aDeltaTime)
+{
+
+	GetParent()->GetLocalTransform().RotateAroundAxis(aDeltaTime * PI * 0.5f, CU::Axees::Y);
+	float offset = sin(ENGINE->GetTime().GetSeconds() * PI * VERTICAL_RATE);
+
+	offset *= VERTICAL_OFFSET;
+	offset *= aDeltaTime;
+	
+	GetParent()->GetLocalTransform().myPosition.y += offset;
+	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 }
