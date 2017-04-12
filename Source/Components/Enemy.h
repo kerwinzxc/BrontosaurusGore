@@ -24,6 +24,7 @@ public:
 	virtual void Attack();
 	virtual void Update(const float aDeltaTime) = 0;
 	void StartHighlight();
+	void DoSplatter();
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 	void KillEverythingThenResetItAgain(const bool aFlag);

@@ -33,6 +33,10 @@ enum class eComponentQuestionType
 	eIsEnemy,
 	eHaveTriggerCollision,
 	eGetWeaponFactoryIndexOfSpecificWeapon,
+
+	eHitPosition,
+	eLastHitNormal,
+	eLastHitPosition,
 	eLength,
 };
 

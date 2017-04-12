@@ -88,7 +88,7 @@ void CTempLobbyState::Select()
 				}
 			} while (IsSelectable(myCurrentLine) == false && !myTextINstance.Empty());
 			break;
-		case 8:
+		case 7:
 			Conect();
 			break;
 		default: break;

@@ -9,6 +9,7 @@
 #include "../Physics/PhysicsCharacterController.h"
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
+#include "ParticleEmitterManager.h"
 
 #define nej false
 #define ja true
@@ -146,6 +147,25 @@ void CEnemy::StartHighlight()
 	myHighlightTimer = HighlightDuration;
 }
 
+void CEnemy::DoSplatter()
+{
+	SComponentQuestionData questionData;
+	GetParent()->AskComponents(eComponentQuestionType::eLastHitNormal,questionData);
+	const CU::Vector3f normal = questionData.myVector3f;
+	GetParent()->AskComponents(eComponentQuestionType::eLastHitPosition, questionData);
+	const CU::Vector3f position = questionData.myVector3f;
+
+	CU::Matrix44f transformation;
+	transformation.SetPosition(position);
+	transformation.LookAt(position + normal);
+
+	Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("Blood");
+	CParticleEmitterManager::GetInstance().SetTransformation(id, transformation);
+	CParticleEmitterManager::GetInstance().Activate(id);
+
+	CParticleEmitterManager::GetInstance().Release(id);
+}
+
 void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
 	switch (aMessageType)
@@ -166,6 +186,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 		break;
 	case eComponentMessageType::eTakeDamage:
 	{
+		DoSplatter();
 		StartHighlight();
 	}
 		break;
