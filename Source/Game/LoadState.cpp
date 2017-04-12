@@ -15,6 +15,7 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "TClient/ServerReadyMessage.h"
 #include "../Audio/AudioInterface.h"
+#include "PollingStation.h"
 
 CLoadState::CLoadState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::eLoadState)
@@ -58,6 +59,8 @@ void CLoadState::Init()
 	std::string BGMusic;
 	BGMusic = "Music_Level" + std::to_string(myLevelIndex + 1);
 	Audio::CAudioInterface::GetInstance()->PostEvent(BGMusic.c_str());
+
+	CPollingStation::GetInstance()->SetCurrentLevelIndex(myLevelIndex);
 }
 
 eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)

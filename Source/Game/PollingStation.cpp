@@ -8,6 +8,7 @@ CPollingStation::CPollingStation()
 {
 	assert(ourInstance == nullptr);
 	ourInstance = this;
+	myCurrentLevelIndex = 1337;
 	myKeys.Init(1);
 	myPLayers.Init(2);
 	myUnlockedWeaponIDs.Init(4);
@@ -74,4 +75,14 @@ bool CPollingStation::CheckIfIsPlayerObject(CGameObject* aGameObjectToCheck)
 		return false;
 	}
 	return true;
+}
+
+void CPollingStation::SetCurrentLevelIndex(unsigned char aLevelIndex)
+{
+	myCurrentLevelIndex = aLevelIndex;
+}
+
+unsigned char CPollingStation::GetCurrentLevelIndex() const
+{
+	return myCurrentLevelIndex;
 }
