@@ -325,7 +325,22 @@ void CClient::Update()
 				SComponentMessageData data;
 				SAmmoReplenishData ammoData;
 				ammoData.replenishAmount = pickup->GetReplenishAmount();
-				ammoData.ammoType = "PlasmaRifle";
+
+				switch (pickup->GetWeaponID())
+				{
+				case 0:
+					ammoData.ammoType = "PlasmaRifle";
+					break;
+				case 1:
+					ammoData.ammoType = "PlasmaRifle";
+					break;
+				case 2:
+					break;
+					ammoData.ammoType = "PlasmaRifle";
+				default:
+					ammoData.ammoType = "PlasmaRifle";
+					break;
+				}
 				data.myAmmoReplenishData = &ammoData;
 				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eGiveAmmo, data);
 			}

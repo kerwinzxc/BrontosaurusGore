@@ -58,6 +58,19 @@ void CAmmoPickupComponent::DoMyEffect()
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
 	Audio::CAudioInterface::GetInstance()->PostEvent("Pickup_Ammo");
 
+	if (myPickupData.ammoType == "BFG")
+	{
+		message->SetWeaponID(0);
+	}
+	else if (myPickupData.ammoType == "Shotgun")
+	{
+		message->SetWeaponID(1);
+	}
+	else
+	{
+		message->SetWeaponID(2);
+	}
+
 	if (myPickupData.ammoType == "PlasmaRifle")
 	{
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Plasma Rifle ammo!"));
