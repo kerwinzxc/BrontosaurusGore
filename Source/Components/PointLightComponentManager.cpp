@@ -44,6 +44,11 @@ void CPointLightComponentManager::Update(const CU::Time aDeltaTime)
 	}
 }
 
+void CPointLightComponentManager::AddDirectionalLightToScene(const Lights::SDirectionalLight& aDirectionalLight)
+{
+	myScene.AddDirectionalLight(aDirectionalLight);
+}
+
 CPointLightComponentManager::CPointLightComponentManager(CScene& aScene)
 	: myScene(aScene)
 	, myComponents(10)

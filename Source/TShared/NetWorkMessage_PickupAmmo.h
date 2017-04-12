@@ -11,11 +11,15 @@ public:
 	const int GetID();
 	void SetID(const int aId);
 
+	void SetWeaponID(const short aID);
+	const short GetWeaponID() const;
+
 	const void SetReplenishAmount(const short aReplenishAmount);
-	const int GetReplenishAmount() const;
+	const short GetReplenishAmount() const;
 private:
 	int myNetworkID;
 	short myReplenishAmount;
+	short myWeaponID;
 
 
 	void DoSerialize(StreamType& aStream) override;

@@ -24,7 +24,7 @@ namespace CU
 		{
 			for (SizeType i = 0; i < aElementsToCopy; ++i)
 			{
-				aCopyToArray[i] = std::move(aCopyFromArray[i]);
+				aCopyToArray[i] = aCopyFromArray[i];
 			}
 		}
 	};

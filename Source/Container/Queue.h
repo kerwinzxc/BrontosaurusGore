@@ -55,7 +55,7 @@ Container::IQueue<T, QueueLimit>::~IQueue()
 template <typename T, unsigned int QueueLimit = 5000>
 void Container::IQueue<T, QueueLimit>::CheckQueueLength() const
 {
-	assert(Size() < 20000 && "Queue overflow, messages are probably never handled.");
+	assert(Size() < 2000000 && "Queue overflow, messages are probably never handled.");
 }
 
 template <typename T, unsigned int QueueLimit = 5000>

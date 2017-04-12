@@ -26,11 +26,12 @@ CMenuManager::~CMenuManager()
 {
 }
 
-void CMenuManager::CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
+void CMenuManager::CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const int aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
 {
 	SClickArea clickArea;
 	clickArea.myRect = aRect;
 	clickArea.mySpriteID = aSpriteID;
+	clickArea.myActions.Init(1);
 
 	for (int i = 0; i < someActions.Size(); ++i)
 	{
@@ -151,18 +152,22 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 		{
 			if (myCurentlyHoveredClickarea != i)
 			{
-				if (myCurentlyHoveredClickarea > -1)
+				if (myCurentlyHoveredClickarea > -1 && myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0)
 				{
 					mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
 				}
 
-				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnHover;
+				
 				myCurentlyHoveredClickarea = i;
 			}
 
-			//if (myMouseIsPressed == true && mySpriteInstances[myClickAreas[i].mySpriteID].myState == e)
+			if (myMouseIsPressed == true && myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0 && mySpriteInstances[myClickAreas[i].mySpriteID].myState != eMenuButtonState::eOnClick)
 			{
-
+				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnClick;
+			}
+			else if (myClickAreas[i].mySpriteID >= 0)
+			{
+				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnHover;
 			}
 
 			hasCollided = true;
@@ -172,7 +177,10 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 
 	if (hasCollided == false && myCurentlyHoveredClickarea > -1)
 	{
-		mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
+		if (myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0)
+		{
+			mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
+		}
 		myCurentlyHoveredClickarea = -1;
 	}
 }
@@ -217,15 +225,14 @@ void CMenuManager::Render()
 			default: break;
 			}
 		}
+
+		if (myPointerSprite != nullptr)
+		{
+			myPointerSprite->RenderToGUI(L"__Menu");
+		}
 	}
 
-	if (myPointerSprite != nullptr)
-	{
-		SCreateOrClearGuiElement* elementMessage = new SCreateOrClearGuiElement(L"__MousePointer", myGUIElement, CU::Vector2ui(1920, 1080));
-		RENDERER.AddRenderMessage(elementMessage);
 
-		myPointerSprite->RenderToGUI(L"__MousePointer");
-	}
 }
 
 void CMenuManager::MousePressed()
@@ -236,6 +243,14 @@ void CMenuManager::MousePressed()
 void CMenuManager::MouseReleased()
 {
 	myMouseIsPressed = false;
+
+	if (myCurentlyHoveredClickarea >= 0)
+	{
+		for (int i = 0; i < myClickAreas[myCurentlyHoveredClickarea].myActions.Size(); ++i)
+		{
+			myClickAreas[myCurentlyHoveredClickarea].myActions[i]();
+		}
+	}
 }
 
 const SMenuSprite& CMenuManager::GetSprite(unsigned aSpriteId)

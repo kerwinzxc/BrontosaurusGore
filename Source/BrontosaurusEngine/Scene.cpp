@@ -17,7 +17,6 @@
 #define PlayerOneCamera myRenderCameras[Intify(eCameraType::ePlayerOneCamera)]
 #define USE_SHADOWS
 
-
 CScene::CScene()
 {
 	myModels.Init(4096);
@@ -27,7 +26,7 @@ CScene::CScene()
 	mySkybox = nullptr;
 	myCubemap = nullptr;
 
-	myShadowMap = new CCascadeShadowMap(0, 0.1f, 250.f);
+	myShadowMap = new CCascadeShadowMap(0, 0.1f, 150.f);
 	CParticleEmitterComponentManager::GetInstance().SetScene(this);
 }
 
@@ -86,18 +85,24 @@ void CScene::Render()
 	statemsg.mySamplerState = eSamplerState::eDeferred;
 	PlayerOneCamera.AddRenderMessage(new SChangeStatesMessage(statemsg));
 
-	/*for (unsigned int i = 0; i < myPointLights.Size(); ++i)
+	for (unsigned int i = 0; i < myPointLights.Size(); ++i)
 	{
 		if (myPointLights[i].GetIsActive() == false)
 		{
 			continue;
 		}
-	
+
+		CU::Sphere lightSphere;
+		lightSphere.myCenterPos = myPointLights[i].GetPosition();
+		lightSphere.myRadius = myPointLights[i].GetRange();
+
+		if (PlayerOneCamera.GetCamera().IsInside(lightSphere) == false)
+			continue;
+
 		SRenderPointLight pointlightMessage;
 		pointlightMessage.pointLight = myPointLights[i].GetData();
 		PlayerOneCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
-		WeaponCamera.AddRenderMessage(new SRenderPointLight(pointlightMessage));
-	}*/
+	}
 
 	for (unsigned int i = 0; i < myModels.Size(); ++i)
 	{

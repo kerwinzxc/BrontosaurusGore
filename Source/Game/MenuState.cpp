@@ -4,9 +4,20 @@
 #include "EInputReturn.h"
 #include "JsonValue.h"
 #include "EMouseButtons.h"
+#include "EKeyboardKeys.h"
+#include "StateStack/StateStack.h"
+#include "PostMaster/QuitGame.h"
+#include "ThreadedPostmaster/Postmaster.h"
+#include "TempLobbyState.h"
+#include "RenderMessages.h"
+#include "Engine.h"
+#include "Renderer.h"
 
 CMenuState::CMenuState(StateStack& aStateStack, std::string aFile): State(aStateStack, eInputMessengerType::eMainMenu), myShowStateBelow(false), myPointerSprite(nullptr)
 {
+	myManager.AddAction("ExitGame", bind(&CMenuState::ExitGame, std::placeholders::_1));
+	myManager.AddAction("PushTempLobby", bind(&CMenuState::PushTempLobby, this, std::placeholders::_1));
+
 	MenuLoad(aFile);
 }
 
@@ -35,6 +46,7 @@ void CMenuState::OnEnter(const bool aLetThroughRender)
 
 void CMenuState::OnExit(const bool aLetThroughRender)
 {
+	RENDERER.ClearGui();
 }
 
 CU::eInputReturn CMenuState::RecieveInput(const CU::SInputMessage& aInputMessage)
@@ -57,12 +69,17 @@ CU::eInputReturn CMenuState::RecieveInput(const CU::SInputMessage& aInputMessage
 		}
 		break;
 	case CU::eInputType::eScrollWheelChanged: break;
-	case CU::eInputType::eKeyboardPressed: break;
+	case CU::eInputType::eKeyboardPressed:
+		if (aInputMessage.myKey == CU::eKeys::F7)
+		{
+			PushTempLobby("");
+		}
+		break;
 	case CU::eInputType::eKeyboardReleased: break;
 	default: break;
 	}
 
-	return CU::eInputReturn::eKeepSecret;
+	return CU::eInputReturn::ePassOn;
 }
 
 eAlignment CMenuState::LoadAlignment(const CU::CJsonValue& aJsonValue)
@@ -97,7 +114,7 @@ void CMenuState::LoadElement(const CU::CJsonValue& aJsonValue,const std::string 
 
 		for (int i = 0; i < actionArray.Size(); ++i)
 		{
-			actions.Add(actionArray.at(i).at("action").GetString());
+			actions.Add(actionArray.at(i).at("type").GetString());
 			arguments.Add(actionArray.at(i).at("argument").GetString());
 		}
 
@@ -141,4 +158,15 @@ void CMenuState::MenuLoad(const std::string& aFile)
 	{
 		LoadElement(elementArray.at(i), folderPath);
 	}
+}
+
+void CMenuState::ExitGame(std::string /* not used*/)
+{
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CQuitGame);
+}
+
+void CMenuState::PushTempLobby(std::string /*notUsed*/) const
+{
+
+	myStateStack.PushState(new CTempLobbyState(myStateStack)); 
 }

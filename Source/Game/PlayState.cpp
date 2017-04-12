@@ -93,6 +93,7 @@
 #include "ComponentAnswer.h"
 #include "AnimationComponent.h"
 #include "LutComponent.h"
+#include "PointLightComponentManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -141,7 +142,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
-
+	CPointLightComponentManager::Destroy();
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpointComponentManager::DestoryInstance();
@@ -251,6 +252,8 @@ void CPlayState::Load()
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+
+	Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
 }
 
 void CPlayState::Init()
@@ -259,14 +262,6 @@ void CPlayState::Init()
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
 	CEnemyClientRepresentationManager::GetInstance().Init(myWeaponSystemManager);
-	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
-	myPlayerHealthText = new CTextInstance();
-	myPlayerHealthText->Init();
-	myPlayerHealthText->SetPosition(CU::Vector2f(0.1f, 0.825f));
-
-	myPlayerArmorText = new CTextInstance();
-	myPlayerArmorText->Init();
-	myPlayerArmorText->SetPosition(CU::Vector2f(0.1f, 0.8f));
 }
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
@@ -288,18 +283,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myHUD.Update(aDeltaTime);
 
 	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
-	SComponentQuestionData healthData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetHealth, healthData);
-	SComponentQuestionData maxHealthData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxHealth, maxHealthData);
 
-	myPlayerHealthText->SetText(L"Health: " +std::to_wstring(healthData.myInt) + L"/" + std::to_wstring(maxHealthData.myInt));
-
-	SComponentQuestionData armorData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetArmor, armorData);
-	SComponentQuestionData maxArmorthData;
-	CPollingStation::GetInstance()->GetPlayerObject()->AskComponents(eComponentQuestionType::eGetMaxArmor, maxArmorthData);
-	myPlayerArmorText->SetText(L"Armor: " + std::to_wstring(armorData.myInt) + L"/" + std::to_wstring(maxArmorthData.myInt));
 
 	CTumbleweedFactory::GetInstance()->Update(aDeltaTime.GetSeconds());
 	
@@ -318,9 +302,6 @@ void CPlayState::Render()
 	myScene->Render();
 
 	myHUD.Render();
-
-	myPlayerHealthText->Render();
-	myPlayerArmorText->Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
@@ -372,11 +353,11 @@ void CPlayState::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
 	CDoorManager::Create();
-
 	CParticleEmitterComponentManager::Create();
 
 	myScene = new CScene();
 
+	CPointLightComponentManager::Create(*myScene);
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager();
