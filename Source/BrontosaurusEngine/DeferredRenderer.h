@@ -41,6 +41,8 @@ public:
 	void DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRenderer& aRenderer);
 	ID3D11DepthStencilView* GetDepthStencil();
 	ID3D11ShaderResourceView* GetDepthResource();
+	CRenderPackage& GetFirstPackage();
+	CRenderPackage& GetSecondPackage();
 private:
 	void DoAmbientLighting(CFullScreenHelper& aFullscreenHelper);
 	void DoDirectLighting(CFullScreenHelper& aFullscreenHelper);

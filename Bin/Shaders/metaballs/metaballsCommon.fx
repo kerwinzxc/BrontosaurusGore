@@ -26,7 +26,8 @@ struct InputPixel
     float radius : RADIUS;
     
     float2 uv : TEXCOORD;
-    float2 crap : CRAP;
+    float3 screenPos : SCREEN_POS;
+    float3 crap : CRAP;
 };
 
 struct InputGeometry

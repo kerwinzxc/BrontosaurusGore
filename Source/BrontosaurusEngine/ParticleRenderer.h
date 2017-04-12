@@ -23,10 +23,9 @@ public:
 
 
 	
-	void DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,ID3D11ShaderResourceView* aDepthResourceView);
+	void DoRenderQueue(ID3D11ShaderResourceView* aDepthResource);
 	CRenderPackage& GetIntermediatePackage();
-
-	
+	void SetDepthStuff(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResource);
 private:
 	void SetBlendParticlesState();
 	void InitPointLightModel();
@@ -69,6 +68,7 @@ private:
 		CRenderPackage surfaceRMAO;
 		CRenderPackage sulfaceAlpha;
 	}myParticleGBuffer;
+
 	CRenderPackage myInteremediate;
 	CRenderPackage myTempIntermediate;
 	CRenderPackage myProcessed;
@@ -79,5 +79,7 @@ private:
 	ID3D11Buffer* mySpotLightBuffer;
 	ID3D11ShaderResourceView* myDepthStencilResourceToUse;
 	CLightModel* myLightModel;
+	ID3D11DepthStencilView* myUseDepthStencil;
+	ID3D11ShaderResourceView* mySecondaryDepthStencil;
 };
 

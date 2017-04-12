@@ -1,6 +1,8 @@
 #include "nurbsCommon.fx"
 
 Texture2D sprite : register (t1);
+
+Texture2D weaponDepth : register(t20);
 SamplerState Sampler;
 
 struct PixelOut
@@ -46,8 +48,21 @@ float3 GetNormal(const InputPixel input)
     return texturized;
 }
 
+void Discard(InputPixel input)
+{
+    const float depth = input.screenPos.z;
+    const float2 screenUv = (input.screenPos.xy + float2(1.f,1.f)) / 2.f;
+    const float wDepth = weaponDepth.SampleLevel(Sampler, float2(screenUv.x, 1.f - screenUv.y),0).r;
+
+    if(wDepth != 1.f)
+    {
+        discard;
+    }
+}
+
 PixelOut PS_PosSizeColor(const InputPixel input)
 {
+    Discard(input);
     const float2 dif = input.worldPosition.xy - input.center.xy;
     const float dist = length(dif);
     const float interpol = saturate(dist / input.radius);

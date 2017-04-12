@@ -4,8 +4,9 @@
 #include "DXFramework.h"
 #include "ScreenGrab/ScreenGrab.h"
 #include <vector2.h>
+#include <minwinbase.h>
 
-CRenderPackage::CRenderPackage()
+CRenderPackage::CRenderPackage(): myDepthTexture(nullptr), myDepthTarget(nullptr)
 {
 	myTexture = nullptr;
 	myResource = nullptr;
@@ -20,6 +21,7 @@ CRenderPackage::~CRenderPackage()
 	SAFE_RELEASE(myTexture);
 	SAFE_RELEASE(myResource);
 	SAFE_RELEASE(myTarget);
+	SAFE_RELEASE(myDepthTarget);
 	SAFE_RELEASE(myDepth);
 	SAFE_RELEASE(myDepthResource);
 	SAFE_DELETE(myViewport);
@@ -48,8 +50,9 @@ void CRenderPackage::Init(const CU::Vector2ui & aSize, ID3D11Texture2D * aTextur
 
 	result = DEVICE->CreateRenderTargetView(myTexture, NULL, &myTarget);
 	CHECK_RESULT(result, "Couldn't create render target view for the RenderPackage");
-	
-	FRAMEWORK->CreateDepthStencil(static_cast<unsigned int>(myViewport->Width), static_cast<unsigned int>(myViewport->Height), myDepth, myDepthResource );
+
+	FRAMEWORK->CreateDepthStencil(static_cast<unsigned int>(myViewport->Width), static_cast<unsigned int>(myViewport->Height), myDepth, myDepthResource);
+
 }
 
 void CRenderPackage::ReInit(const CU::Vector2ui& aSize, ID3D11Texture2D* aTexture, DXGI_FORMAT aFormat)
@@ -95,6 +98,14 @@ void CRenderPackage::Activate(CRenderPackage& aRenderPackage)
 
 	context->OMSetRenderTargets(2, &renderTargets[0], myDepth);
 	context->RSSetViewports(2, &viewPorts[0]);
+}
+
+void CRenderPackage::ActivateToDepth()
+{
+	ID3D11DeviceContext* context = DEVICE_CONTEXT;
+
+	context->OMSetRenderTargets(1, &myDepthTarget, myDepth);
+	context->RSSetViewports(1, myViewport);
 }
 
 ID3D11ShaderResourceView *& CRenderPackage::GetDepthResource()
@@ -186,6 +197,7 @@ void CRenderPackage::operator=(const CRenderPackage& aRight)
 
 
 
+
 void CRenderPackage::CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat)
 {
 	D3D11_TEXTURE2D_DESC textureDesc;
@@ -204,5 +216,26 @@ void CRenderPackage::CreateTexture2D(const int aWidth, const int aHeight, DXGI_F
 	textureDesc.MiscFlags = 0;
 
 	HRESULT result = DEVICE->CreateTexture2D(&textureDesc, NULL, &myTexture);
+	CHECK_RESULT(result, "Failed to create Texture2D for the renderPackage.");
+}
+
+void CRenderPackage::CreateDepthTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat)
+{
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
+	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
+	// Set up the description of the depth buffer.
+	depthBufferDesc.Width = aWidth;
+	depthBufferDesc.Height = aHeight;
+	depthBufferDesc.MipLevels = 1;
+	depthBufferDesc.ArraySize = 1;
+	depthBufferDesc.Format = FRAMEWORK->GetDepthResourceFormat(aFormat);
+	depthBufferDesc.SampleDesc.Count = 1;				//MSAA magic set too 4 for better stuffs
+	depthBufferDesc.SampleDesc.Quality = 0;				//MSAA magic set to 1 to enable magic
+	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	depthBufferDesc.CPUAccessFlags = 0;
+	depthBufferDesc.MiscFlags = 0;
+
+	HRESULT result = DEVICE->CreateTexture2D(&depthBufferDesc, NULL, &myDepthTexture);
 	CHECK_RESULT(result, "Failed to create Texture2D for the renderPackage.");
 }
