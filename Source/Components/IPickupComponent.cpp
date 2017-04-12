@@ -33,6 +33,7 @@ void IPickupComponent::SetActive(const bool aFlag)
 		data.myBool = aFlag;
 		GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, data);
 	}
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 }
 
 void IPickupComponent::SetNetworkId(const int aID)
