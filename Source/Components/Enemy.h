@@ -20,7 +20,7 @@ public:
 	virtual inline void SetEnemyData(const SEnemyBlueprint* aData);
 	static void SetPlayerObject(CGameObject* aPlayerObj);
 	static void AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTowardsComponent);
-
+	static void playerDontFuckTHisUp();
 	virtual void Attack();
 	virtual void Update(const float aDeltaTime) = 0;
 	void StartHighlight();
@@ -31,6 +31,7 @@ public:
 	virtual	void ChangeWeapon(const unsigned int aIndex);
 	inline eEnemyTypes GetEnemyType();
 	inline void SetType(const eEnemyTypes aType);
+	virtual inline void Sthap();
 
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
 	virtual void Init();
@@ -146,4 +147,9 @@ inline const bool CEnemy::GetIsDead() const
 inline const unsigned short CEnemy::GetNetworkID() const
 {
 	return myServerId;
+}
+
+inline void CEnemy::Sthap()
+{
+
 }
