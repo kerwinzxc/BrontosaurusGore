@@ -137,6 +137,30 @@ void CPickupComponentManager::DeactivateWeaponPickup(const int aId)
 	myWeaponPickups.at(aId)->SetActive(false);
 }
 
+void CPickupComponentManager::Update(const float aDeltaTime)
+{
+	for (std::pair<const int, IPickupComponent*> comp : myAmmoPacks)
+	{
+		comp.second->Update(aDeltaTime);
+	}
+	for (std::pair<const int, IPickupComponent*> comp : myArmorPacks)
+	{
+		comp.second->Update(aDeltaTime);
+	}
+	for (std::pair<const int, IPickupComponent*> comp : myHealthPacks)
+	{
+		comp.second->Update(aDeltaTime);
+	}
+	for (std::pair<const int, IPickupComponent*> comp : myKeyPickups)
+	{
+		comp.second->Update(aDeltaTime);
+	}
+	for (std::pair<const int, IPickupComponent*> comp : myWeaponPickups)
+	{
+		comp.second->Update(aDeltaTime);
+	}
+}
+
 CPickupComponentManager::CPickupComponentManager()
 {
 }

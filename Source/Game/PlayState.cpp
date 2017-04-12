@@ -281,7 +281,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myExplosionComponentManager->Update(aDeltaTime);
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
-	
+	CPickupComponentManager::GetInstance()->Update(aDeltaTime.GetSeconds());
+
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
 	myHUD.Update(aDeltaTime);
