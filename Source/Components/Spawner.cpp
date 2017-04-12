@@ -11,8 +11,9 @@
 #include "../Game/PollingStation.h"
 #include "EnemyTypes.h"
 
-CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID)
+CSpawnerComponent::CSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes aEnemyType, std::thread::id aID, const short aArenaID)
 {
+	myArenaID = aArenaID;
 	mySpawInterval = 5.0f;
 	myWaves = aWaves;
 
@@ -60,7 +61,7 @@ void CSpawnerComponent::SpawnEnemy()
 	myEnemy = CEnemyFactory::GetInstance()->CreateEnemy(myEnemyType, GetParent()->GetLocalTransform().GetPosition());
 	GetParent()->GetLocalTransform().GetPosition().Print();
 
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddEnemyToWave(myEnemy));
+	Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CAddEnemyToWave(myEnemy, myArenaID));
 }
 
 void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -79,16 +80,19 @@ void CSpawnerComponent::Receive(const eComponentMessageType aMessageType, const 
 
 eMessageReturn CSpawnerComponent::DoEvent(const CStartWaveMessage & aStartWaveMessage)
 {
-	for (unsigned int i = 0; i < myWaves.Size(); i++)
+	if (myArenaID == aStartWaveMessage.GetArenaID())
 	{
-		//unsigned short it = myWaves[i];
-		if (myWaves[i] == aStartWaveMessage.GetWave())
+		for (unsigned int i = 0; i < myWaves.Size(); i++)
 		{
-			for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); i++)
+			//unsigned short it = myWaves[i];
+			if (myWaves[i] == aStartWaveMessage.GetWave())
 			{
-				SpawnEnemy();
+				for (unsigned int i = 0; i < CPollingStation::GetInstance()->GetNumberOfPlayers(); i++)
+				{
+					SpawnEnemy();
+				}
+				break;
 			}
-			break;
 		}
 	}
 

@@ -12,6 +12,7 @@
 #include "../Components/GameObjectManager.h"
 #include "../Components/NetworkComponentManager.h"
 #include "../Components/MovementComponentManager.h"
+#include "../Components/ArenaTriggerComponentManager.h"
 
 #include "../Components/AmmoComponentManager.h"
 #include "../Components/WeaponSystemManager.h"
@@ -47,7 +48,7 @@ CGameServer::CGameServer():
 	, myWeaponSystemManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, mySpawnerManager(nullptr)
-	,myWaveManager(nullptr)
+	,myArenaTriggerManager(nullptr)
 {
 	CU::ThreadPool::Create();
 	myThreadPool = CU::ThreadPool::GetInstance();
@@ -146,7 +147,7 @@ void CGameServer::CreateManagersAndFactories()
 	myWeaponSystemManager = new CWeaponSystemManager(myWeaponFactory);
 	myDamageOnCollisionComponentManager = new CDamageOnCollisionComponentManager();
 	mySpawnerManager = new CSpawnerManager();
-	myWaveManager = new CWaveManager();
+	myArenaTriggerManager = new CArenaTriggerComponentManager(myThreadID);
 
 
 	myColliderComponentManager = new CColliderComponentManager();
@@ -180,6 +181,7 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 	SAFE_DELETE(mySpawnerManager);
 	SAFE_DELETE(myCheckPointSystem);
+	SAFE_DELETE(myArenaTriggerManager);
 }
 
 bool CGameServer::Update(CU::Time aDeltaTime)
@@ -194,7 +196,11 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	{
 		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 		//mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
-		myWaveManager->Update();
+
+		if (myIsLoaded == true)
+		{
+			myArenaTriggerManager->Update();
+		}
 		myTime = 0;
 	}
 
