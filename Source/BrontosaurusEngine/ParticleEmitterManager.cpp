@@ -11,7 +11,7 @@
 
 CParticleEmitterManager* CParticleEmitterManager::ourInstance = nullptr;
 
-CParticleEmitterManager::CParticleEmitterManager(): myIsActive(true), myThreadFinished(false)
+CParticleEmitterManager::CParticleEmitterManager(): myIsActive(true), myThreadFinished(true)
 {
 	myParticleEmitterComp.Init(16);
 	myInstances.Init(10);
@@ -231,6 +231,8 @@ void CParticleEmitterManager::Run()
 	work.SetFinishedCallback(callback);
 	myTimerManager.CreateTimer();
 	myTimerManager.UpdateTimers();
+
+	myThreadFinished = false;
 	CU::ThreadPool::GetInstance()->AddWork(work);
 }
 

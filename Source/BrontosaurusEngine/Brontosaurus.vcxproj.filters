@@ -278,6 +278,8 @@
       <Filter>Texture</Filter>
     </ClInclude>
     <ClInclude Include="GeometryBuffer.h" />
+    <ClInclude Include="ColorGrader.h" />
+    <ClInclude Include="ELUTType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -432,6 +434,7 @@
       <Filter>Texture</Filter>
     </ClCompile>
     <ClCompile Include="GeometryBuffer.cpp" />
+    <ClCompile Include="ColorGrader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -449,5 +452,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="SColorGradeFade.h" />
   </ItemGroup>
 </Project>

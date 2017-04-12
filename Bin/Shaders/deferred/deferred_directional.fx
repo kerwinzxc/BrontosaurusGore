@@ -337,60 +337,10 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	
 	float1 pixelCamDepth = length(worldPosition - cameraPosition);
 
-	float shadow = ShadowBuffer(worldPosition, pixelCamDepth, uv); // * lambert; ?? Cool? nee kommer bli bajs
+	float shadow = ShadowBuffer(worldPosition, pixelCamDepth, uv);
 
 	float3 finalColor = (directionDiffuse + directionSpecularity);
 	finalColor *= directionalLight.intensity * shadow;
 	output.color = float4(finalColor, fullAlbedo.a);
-	//output.color = float4(shadow.xxx, fullAlbedo.a);
-
-
-	//static const float4 depthColors[4] =
-	//{
-	//	float4(1.0f, 0.0f, 0.0f, 1.0f),
-	//	float4(0.0f, 1.0f, 0.0f, 1.0f),
-	//	float4(0.0f, 0.0f, 1.0f, 1.0f),
-	//	float4(1.0f, 1.0f, 0.0f, 1.0f)
-	//};
-	
-	//uint cascadeIndex = 3;
-	//[unroll]
-	//for (uint i = 0; i < NUM_CASCADES - 1; ++i)
-	//{
-	//	if (pixelCamDepth > cascadeEnds[i])
-	//	{
-	//		if (pixelCamDepth < cascadeEnds[i + 1])
-	//		{
-	//			cascadeIndex = i;
-	//		}
-	//	}
-	//}
-	//if (pixelCamDepth > cascadeEnds[NUM_CASCADES - 1])
-	//{
-	//	cascadeIndex = NUM_CASCADES - 1;
-	//}
-	
-	//output.color *= depthColors[cascadeIndex];
-
-	//float2 texCord = uv;
-	//cascadeIndex = 2;
-	//texCord.x *= cascades[cascadeIndex].rect.z - cascades[cascadeIndex].rect.x;
-	//texCord.x += cascades[cascadeIndex].rect.x;
-	//texCord.y *= cascades[cascadeIndex].rect.w - cascades[cascadeIndex].rect.y;
-	//texCord.y += cascades[cascadeIndex].rect.y;
-	//output.color.rgb = shadowBuffer.Sample(samplerWrap, texCord).xyz;
-	//output.color.a = 1.0f;
-
-
-
-
-	//float4 shadowCamPosition = float4(worldPosition, 1.0f);
-	//shadowCamPosition = mul(cascades[0].invTransform, shadowCamPosition);
-	//shadowCamPosition = mul(cascades[0].projection, shadowCamPosition);
-	//shadowCamPosition /= shadowCamPosition.w;
-
-	//output.color.rgb = normalize(abs(shadowCamPosition)).xyz;
-
-	//output.color = float4(shadow, 0.0f, 0.0f, 1.0f);
 	return output;
 }

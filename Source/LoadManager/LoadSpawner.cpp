@@ -32,13 +32,18 @@ int LoadSpawnerComponent(KLoader::SLoadedComponentData someData)
 	}
 
 
+	if (someData.myData.HasKey("ArenaID") == false)
+	{
+		DL_MESSAGE_BOX("Missing ArenaID for a Spawner, find and repair it and I will give you an idea for a bad gameshow, for a small fee");
+	}
+
 	//loopa igenom den arrayen
 	//skapa en wave lista för varje element
 	//hämta ut varje array i den arrayen
 	//loopa igenom dem arrayerna
 	//fyll varje wave lista med fiender från dessa arrayer
 
-	CSpawnerComponent* spawner = loadManager.GetCurrentGameServer().GetSpawnerManager()->CreateSpawnerComponent(waveList, someData.myData.at("EnemyType").GetEnum<eEnemyTypes>(), loadManager.GetCurrentGameServer().GetThreadID());
+	CSpawnerComponent* spawner = loadManager.GetCurrentGameServer().GetSpawnerManager()->CreateSpawnerComponent(waveList, someData.myData.at("EnemyType").GetEnum<eEnemyTypes>(), loadManager.GetCurrentGameServer().GetThreadID(), someData.myData.at("ArenaID").GetShort());
 
 	return spawner->GetId();
 }

@@ -4,7 +4,7 @@
 #include "Message.h"
 
 
-CAddEnemyToWave::CAddEnemyToWave(CEnemy * aEnemy): IMessage(eMessageType::eAddEnemyToWave), myEnemyInWave(aEnemy)
+CAddEnemyToWave::CAddEnemyToWave(CEnemy * aEnemy, const short aArenaID): IMessage(eMessageType::eAddEnemyToWave), myEnemyInWave(aEnemy), myArenaID(aArenaID)
 {
 }
 
@@ -14,7 +14,7 @@ CAddEnemyToWave::~CAddEnemyToWave()
 
 Postmaster::Message::IMessage * CAddEnemyToWave::Copy()
 {
-	return new CAddEnemyToWave(myEnemyInWave);
+	return new CAddEnemyToWave(myEnemyInWave, myArenaID);
 }
 
 eMessageReturn CAddEnemyToWave::DoEvent(::Postmaster::ISubscriber & aSubscriber) const
@@ -25,5 +25,10 @@ eMessageReturn CAddEnemyToWave::DoEvent(::Postmaster::ISubscriber & aSubscriber)
 CEnemy * CAddEnemyToWave::GetEnemy() const
 {
 	return myEnemyInWave;
+}
+
+const short CAddEnemyToWave::GetArenaID() const
+{
+	return myArenaID;
 }
 

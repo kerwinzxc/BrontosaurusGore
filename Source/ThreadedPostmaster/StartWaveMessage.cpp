@@ -4,7 +4,7 @@
 #include "../CommonUtilities/DL_Debug.h"
 
 
-CStartWaveMessage::CStartWaveMessage(const unsigned char aWave) : IMessage(eMessageType::eSpawnWave), myWave(aWave)
+CStartWaveMessage::CStartWaveMessage(const unsigned char aWave, const short aArenaID) : IMessage(eMessageType::eSpawnWave), myWave(aWave), myArenaID(aArenaID)
 {
 	DL_PRINT("StartWaveMessage");
 }
@@ -15,7 +15,7 @@ CStartWaveMessage::~CStartWaveMessage()
 
 Postmaster::Message::IMessage * CStartWaveMessage::Copy()
 {
-	return new CStartWaveMessage(myWave);
+	return new CStartWaveMessage(myWave, myArenaID);
 }
 
 eMessageReturn CStartWaveMessage::DoEvent(::Postmaster::ISubscriber & aSubscriber) const
@@ -26,4 +26,9 @@ eMessageReturn CStartWaveMessage::DoEvent(::Postmaster::ISubscriber & aSubscribe
 const unsigned short CStartWaveMessage::GetWave() const
 {
 	return myWave;
+}
+
+const short CStartWaveMessage::GetArenaID() const
+{
+	return myArenaID;
 }

@@ -82,6 +82,8 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 				if(hitData.hit == true)
 				{
 					const Physics::EActorType actorType = hitData.actor->GetType();
+					myLastHitNormal = hitData.normal;
+					myLastHitPosition = hitData.position;
 					/*if (actorType == Physics::EActorType::eDynamic)
 					{
 						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
@@ -92,6 +94,12 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					if(gameObject != myUser)
 					{
 						SComponentMessageData damageData;
+
+						damageData.myVector3f = myLastHitNormal;
+						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitNormal, damageData);
+						damageData.myVector3f = myLastHitPosition;
+						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitPosition, damageData);
+
 						damageData.myVector4f.y = direction.x;
 						damageData.myVector4f.z = direction.y;
 						damageData.myVector4f.w = direction.z;
@@ -211,6 +219,17 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 	}
 }
 
+const CU::Vector3f& CWeapon::GetLastHitNormal() const
+{
+	return myLastHitNormal;
+}
+
+const CU::Vector3f& CWeapon::GetLastHitPosition() const
+{
+	return myLastHitPosition;
+}
+
+
 void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
 {
 	
@@ -219,7 +238,7 @@ void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
 	
 	for(int i =  0; i < myWeaponData->fireParticles.Size(); ++i)
 	{
-		Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance(myWeaponData->fireParticles.Size());
+		Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance(myWeaponData->fireParticles[i]);
 		CParticleEmitterManager::GetInstance().SetTransformation(id, aMatrix44);
 		CParticleEmitterManager::GetInstance().Activate(id);
 

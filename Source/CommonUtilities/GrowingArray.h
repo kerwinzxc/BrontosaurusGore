@@ -97,6 +97,7 @@ namespace CU
 
 		inline void QuickSort(const std::function<bool(ObjectType, ObjectType)>& aCompareFunction);
 
+		inline void Reserve(const SizeType aNewSize);
 		inline void Resize(const SizeType aNewSize);
 		inline void Resize(const SizeType aNewSize, const ObjectType& aObject);
 		inline void Destroy();
@@ -727,6 +728,17 @@ namespace CU
 	inline bool GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::HasIndex(const SizeType aIndex) const
 	{
 		return aIndex >= 0 && aIndex < Size();
+	}
+
+	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>
+	void CU::GrowingArray<ObjectType, SizeType, USE_SAFE_MODE>::Reserve(const SizeType aNewSize)
+	{
+		assert(IsInitialized() == true && "GrowingArray not yet initialized.");
+
+		if (Capacity() < aNewSize)
+		{
+			Reallocate(aNewSize);
+		}
 	}
 
 	template<typename ObjectType, typename SizeType, bool USE_SAFE_MODE>

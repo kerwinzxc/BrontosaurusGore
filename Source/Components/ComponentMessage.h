@@ -102,6 +102,8 @@ enum class eComponentMessageType
 	eEquip,
 	eUnequip,
 	eGiveYourselfAmmo,
+	eSetLastHitNormal,
+	eSetLastHitPosition,
 	eLength,
 };
 

@@ -14,9 +14,9 @@ CSpawnerManager::~CSpawnerManager()
 {
 }
 
-CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes& eEnemyType,  std::thread::id aID)
+CSpawnerComponent* CSpawnerManager::CreateSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes& eEnemyType,  std::thread::id aID, const short aArenaID)
 {
-	CSpawnerComponent* spawner = new CSpawnerComponent(aWaves, eEnemyType, aID);
+	CSpawnerComponent* spawner = new CSpawnerComponent(aWaves, eEnemyType, aID, aArenaID);
 	CComponentManager::GetInstance().RegisterComponent(spawner);
 	mySpawners.Add(spawner);
 	return spawner;

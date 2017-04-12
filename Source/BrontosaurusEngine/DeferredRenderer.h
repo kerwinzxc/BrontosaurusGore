@@ -88,9 +88,11 @@ private:
 		eRoughness,
 		eMetalness,
 		eAO,
+		eRMAO,
 		eSSAO,
 		eIntermediate,
 		eHighlight,
+		eEmissive
 	} myRenderMode;
 	CU::InputWrapper* myInputWrapper;
 	void HandleInput();

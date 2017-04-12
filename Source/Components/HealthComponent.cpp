@@ -87,30 +87,49 @@ void CHealthComponent::Receive(const eComponentMessageType aMessageType, const S
 			AddArmor(aMessageData.myInt);
 		}
 		break;
+	case eComponentMessageType::eSetLastHitNormal:
+		myLastHitNormal = aMessageData.myVector3f;
+		break;
+	case eComponentMessageType::eSetLastHitPosition:
+		myLastHitPosition = aMessageData.myVector3f;
+		break;;
 	default:
 		break;
 	}
 }
 bool CHealthComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData)
 {
+	bool answered = false;
 	switch (aQuestionType)
 	{
 	case eComponentQuestionType::eGetHealth:
 		aQuestionData.myInt = myCurrentHealth;
+		answered = true;
 		break;
 	case eComponentQuestionType::eGetMaxHealth:
 		aQuestionData.myInt = myMaxHeath;
+		answered = true;
 		break;
 	case eComponentQuestionType::eGetArmor:
 		aQuestionData.myInt = myArmor;
+		answered = true;
 		break;
 	case eComponentQuestionType::eGetMaxArmor:
 		aQuestionData.myInt = myMaxArmor;
+		answered = true;
+		break;
+	case eComponentQuestionType::eLastHitNormal:
+		aQuestionData.myVector3f = myLastHitNormal;
+		answered = true;
+		break;
+	case eComponentQuestionType::eLastHitPosition:
+		aQuestionData.myVector3f = myLastHitPosition;
+		answered = true;
 		break;
 	default:
 		break;
 	}
-	return false;
+	return answered;
 }
 void CHealthComponent::Destroy()
 {
@@ -131,7 +150,7 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
 		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 		myIsAlive = false;
-		//kom du hit sätt en break point i model componets recive eDied! //varför?
+		//kom du hit sätt en break point i model componets recive eDied! //varför? // jag undrar också mvh carl (från edvubs dator)
 
 	}
 	else

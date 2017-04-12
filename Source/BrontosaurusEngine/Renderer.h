@@ -13,6 +13,7 @@
 #include "../ThreadedPostmaster/Subscriber.h"
 #include "ParticleRenderer.h"
 #include "C2DGUIRenderer.h"
+#include "ColorGrader.h"
 
 struct ID3D11RasterizerState;
 struct ID3D11DepthStencilState;
@@ -56,7 +57,7 @@ public:
 
 	void ClearGui();
 private:
-	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
+	bool HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	void RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount);
 
 	void Bloom();
@@ -119,9 +120,9 @@ private:
 	} myDistortionData;
 
 private:
-	CTexture* myLut;
 
-	CRenderPackage myColorGradingPackage;
+	CColorGrader myColorGrader;
+
 	CDeferredRenderer myDeferredRenderer;
 	CParticleRenderer myParticleRenderer;
 

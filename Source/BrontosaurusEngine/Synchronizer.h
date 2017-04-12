@@ -28,6 +28,7 @@ public:
 	~CSynchronizer();
 
 	inline type operator[](const size_type aIndex);
+	inline type& operator()(const size_type aIndex);
 	inline void operator <<(type aObject);
 	inline operator int()const;
 	inline size_type operator!() const;
@@ -48,6 +49,11 @@ private:
 	volatile bool myHasFresh;
 };
 
+template<typename type, typename sizeType /*= std::uint32_t*/>
+type& CSynchronizer<type, sizeType>::operator()(const size_type aIndex)
+{
+	return myBuffers[myReadFrom][aIndex];
+}
 
 template<typename type, typename sizeType>
 inline void CSynchronizer<type, sizeType>::ClearAll()
