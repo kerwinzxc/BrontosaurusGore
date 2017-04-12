@@ -223,7 +223,7 @@ float4 GetCascadeProjectionSpacePosition(uint cascadeIndex, float3 worldPosition
 	return pixelCascadePos;
 }
 
-#define SHADOWMAP_TEXTURESIZE 2048.f
+#define SHADOWMAP_TEXTURESIZE 4096.f
 #define LOOP_SNURR 3
 static float2 shadowmapTexelSize = 1.0f / SHADOWMAP_TEXTURESIZE;
 
@@ -256,7 +256,7 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 	{
 		for (int y = -LOOP_SNURR; y <= LOOP_SNURR; ++y)
 		{
-			float pcfDepth = shadowBuffer.SampleLevel(samplerWrap, texCoord + float2(x, y) * shadowmapTexelSize /** ((float)(cascadeIndex + 1) / (float)NUM_CASCADES)*/, 0).x;
+			float pcfDepth = shadowBuffer.SampleLevel(samplerWrap, texCoord + float2(x, y) * shadowmapTexelSize, 0).x;
 			shadow += pixelPosCascade.z - bias > pcfDepth ? 0.0 : 1.0;
 			samples += 1.0f;
 		}
