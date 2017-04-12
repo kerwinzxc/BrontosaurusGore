@@ -115,7 +115,7 @@ unsigned CMenuManager::CreateText(const std::string& aFontName, const CU::Vector
 	myTextInstances.Add(newText);
 
 	myShouldRender = true;
-	myLayers.Add({ aLayer, mySpriteInstances.Size() - 1, eMenuThingType::eText });
+	myLayers.Add({ aLayer, myTextInstances.Size() - 1, eMenuThingType::eText });
 	return myTextInstances.Size() - 1;
 }
 
