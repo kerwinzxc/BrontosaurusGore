@@ -97,11 +97,11 @@ void LoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("RevenantController", ClientLoadRevenant);
 	loader.RegisterComponentLoadFunction("PinkyController", ClientLoadPinky);
 	loader.RegisterComponentLoadFunction("Tumbleweed", LoadTumbleweed);
+	loader.RegisterComponentLoadFunction("Light", LoadPointLightComponent);
 
 	//loader.RegisterComponentLoadFunction("CircleCollider", LoadCircleCollider);
 	//loader.RegisterComponentLoadFunction("SoundComponent", LoadSoundComponent);
 	//loader.RegisterComponentLoadFunction("FireComponent", LoadFireComponent);
-	//loader.RegisterComponentLoadFunction("PointLightComponent", LoadPointLightComponent);
 }
 
 LoadManager::LoadManager(CPlayState& aPlayState, CScene& aScene)

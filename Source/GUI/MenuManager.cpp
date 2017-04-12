@@ -26,7 +26,7 @@ CMenuManager::~CMenuManager()
 {
 }
 
-void CMenuManager::CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const unsigned aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
+void CMenuManager::CreateClickArea(CU::GrowingArray<std::string> someActions, CU::GrowingArray<std::string> someArguments, const int aSpriteID, CU::Vector4f aRect, const unsigned char aLayer)
 {
 	SClickArea clickArea;
 	clickArea.myRect = aRect;
@@ -152,7 +152,7 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 		{
 			if (myCurentlyHoveredClickarea != i)
 			{
-				if (myCurentlyHoveredClickarea > -1)
+				if (myCurentlyHoveredClickarea > -1 && myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0)
 				{
 					mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
 				}
@@ -161,11 +161,11 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 				myCurentlyHoveredClickarea = i;
 			}
 
-			if (myMouseIsPressed == true && mySpriteInstances[myClickAreas[i].mySpriteID].myState != eMenuButtonState::eOnClick)
+			if (myMouseIsPressed == true && myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0 && mySpriteInstances[myClickAreas[i].mySpriteID].myState != eMenuButtonState::eOnClick)
 			{
 				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnClick;
 			}
-			else
+			else if (myClickAreas[i].mySpriteID >= 0)
 			{
 				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnHover;
 			}
@@ -177,7 +177,10 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 
 	if (hasCollided == false && myCurentlyHoveredClickarea > -1)
 	{
-		mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
+		if (myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0)
+		{
+			mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
+		}
 		myCurentlyHoveredClickarea = -1;
 	}
 }

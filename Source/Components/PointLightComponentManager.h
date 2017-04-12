@@ -3,6 +3,11 @@
 class PointLightComponent;
 class CScene;
 
+namespace Lights
+{
+	struct SDirectionalLight;
+}
+
 class CPointLightComponentManager
 {
 public:
@@ -12,6 +17,8 @@ public:
 
 	PointLightComponent* CreateAndRegisterComponent();
 	void Update(const CU::Time aDeltaTime);
+
+	void AddDirectionalLightToScene(const Lights::SDirectionalLight& aDirectionalLight);
 
 private:
 	CPointLightComponentManager(CScene& aScene);
