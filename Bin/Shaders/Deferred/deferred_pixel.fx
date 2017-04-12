@@ -94,9 +94,14 @@ PixelOutput PS_PosNormBinormTanTexInstanced(PosNormBinormTanTexInstanced_InputPi
 	output.RMAO = RMAO.Sample(samplerWrap, input.uv);
 
 	float4 emissivecol = emissive.Sample(samplerWrap, input.uv);
-	emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
+	//emissivecol.a = length(emissivecol.rgb) > 0.0f ? 1.0f : 0.0f;
 	output.emissive = emissivecol + GetHighlight(output.normal.xyz, input.highlight);
-	output.emissive = saturate(output.emissive);
+	output.emissive.a = 1.0f;
+	//output.emissive = saturate(output.emissive);
+
+	output.diffuse.rgb += output.emissive.rgb;
+	output.RMAO.a = length(output.emissive.rgb);
+
 	return output;
 }
 
