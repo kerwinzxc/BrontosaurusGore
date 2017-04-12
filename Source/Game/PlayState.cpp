@@ -251,6 +251,8 @@ void CPlayState::Load()
 	float time = loadPlaystateTimer.GetDeltaTime().GetMilliseconds();
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
+
+	Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
 }
 
 void CPlayState::Init()
