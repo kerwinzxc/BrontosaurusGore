@@ -130,6 +130,14 @@ namespace Physics
 
 	void CSimulationEventCallback::onControllerHit(const physx::PxControllersHit& hit)
 	{
+		CPhysicsCallbackActor* actor = static_cast<CPhysicsCallbackActor*>(hit.controller->getActor()->userData);
+		IPhysicsCallback* actorCallback = actor->GetCallbackData();
+
+		CPhysicsCallbackActor* otherActor = static_cast<CPhysicsCallbackActor*>(hit.other->getActor()->userData);
+		IPhysicsCallback* otherActorCallback = otherActor->GetCallbackData();
+
+		
+
 	}
 
 	void CSimulationEventCallback::onObstacleHit(const physx::PxControllerObstacleHit& hit)
