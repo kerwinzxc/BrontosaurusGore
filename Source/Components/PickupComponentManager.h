@@ -31,6 +31,7 @@ public:
 	void DeactivateArmorPack(const int aId);
 	void DeactivateKeyPickup(const int aId);
 	void DeactivateWeaponPickup(const int aId);
+	void Update(const float aDeltaTime);
 private:
 	std::map<int, CHealthPickupComponent*> myHealthPacks;
 	std::map<int, CAmmoPickupComponent*> myAmmoPacks;
