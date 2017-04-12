@@ -17,6 +17,7 @@ public:
 	void RandomizeDirection();
 	void SetDirection(const CU::Vector3f& aDirection);
 	void RandomizeTime();
+	void AddForce();
 private:
 	Physics::CPhysicsScene* myPhysicsScene;
 	CU::Vector3f myDirection;
