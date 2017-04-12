@@ -28,14 +28,20 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myChargeMeleeAttackDuration = 1.0f;
 	myJumpForce = 0.0f;
 	myWaitAfterAttackCountDown = 0.0f;
+	myShouldntExist = false;
 }
 
 CImpController::~CImpController()
 {
+	myIsDead = true;
 }
 
 void CImpController::Update(const float aDeltaTime)
 {
+	if(myShouldntExist == true)
+	{
+		return;
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myJumpForce;
 	SendTransformationToServer();
