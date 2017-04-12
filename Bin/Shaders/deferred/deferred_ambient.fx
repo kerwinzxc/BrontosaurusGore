@@ -146,5 +146,6 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 ambientSpecularity = ambientLightSpec * ambientOcclusion * fresnel;
 
 	output.color = float4(ambientDiffuse + ambientSpecularity, fullAlbedo.a);
+	output.color += float4(ambientDiffuse * RMAO.a, 0.0f);
 	return output;
 }

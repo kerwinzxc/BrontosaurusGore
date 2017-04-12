@@ -40,6 +40,11 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		positiondata.myVector3f = GetParent()->GetLocalTransform().GetPosition();
 		GetParent()->NotifyComponents(eComponentMessageType::eSetControllerPosition, positiondata);
 
+		if(myBloodSplatterTimer > 0.f)
+		{
+			myBloodSplatterTimer -= aDeltaTime;
+		}
+
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
 	}
@@ -57,6 +62,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	{
 	case eComponentMessageType::eTakeDamage:
 	case eComponentMessageType::eTookDamage:
+		DoSplatter();
 		StartHighlight();
 		break;
 	case eComponentMessageType::eDied:

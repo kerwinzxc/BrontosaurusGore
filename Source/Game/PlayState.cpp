@@ -92,6 +92,7 @@
 #include "GameObject.h"
 #include "ComponentAnswer.h"
 #include "AnimationComponent.h"
+#include "LutComponent.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -307,7 +308,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
-
+	myPlayerLut->Update(aDeltaTime.GetSeconds());
 	return myStatus;
 }
 
@@ -509,6 +510,9 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
+
+		myPlayerLut = new CLutComponent();
+		playerObject->AddComponent(myPlayerLut);
 		
 		GivePlayerWeapons(playerObject);
 

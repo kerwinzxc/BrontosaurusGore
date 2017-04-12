@@ -37,6 +37,7 @@ enum class eDepthStencilState : int;
 enum class eSamplerState : int;
 enum class eAlignment : int;
 
+enum ELUTType : char;
 
 typedef unsigned int ParticleEmitterID;
 
@@ -89,6 +90,7 @@ struct SRenderMessage
 		eRenderBar,
 		eCreateGuiElement,
 		eRenderToGui,
+		eLUTFADECOLORGRADE
 	};
 
 	SRenderMessage(const eRenderMessageType aRenderMessageType);
@@ -177,6 +179,13 @@ struct SRenderFullscreenEffectMessage : SRenderMessage
 
 	CFullScreenHelper::eEffectType myEffectType;
 
+};
+
+struct SLutFadeColorGrade : SRenderMessage
+{
+	SLutFadeColorGrade();
+	float myFadeTime;
+	ELUTType myFadeTo, myFadeFrom;
 };
 
 struct SActivateRenderPackageMessage : SRenderMessage

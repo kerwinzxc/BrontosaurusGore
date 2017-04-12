@@ -100,7 +100,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 				changeStateMessage.mySamplerState = eSamplerState::eClamp;
 				mySharedRenderer.SetStates(&changeStateMessage);
 
-				DEVICE_CONTEXT->OMSetRenderTargets(4, &myInteremediate.GetRenderTargetView(), aDepthStencilView);
+				DEVICE_CONTEXT->OMSetRenderTargets(1, &myInteremediate.GetRenderTargetView(), aDepthStencilView);
 
 				emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
 			}
@@ -127,7 +127,6 @@ CRenderPackage& CParticleRenderer::GetIntermediatePackage()
 
 void CParticleRenderer::SetBlendParticlesState()
 {
-
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eReadOnly;

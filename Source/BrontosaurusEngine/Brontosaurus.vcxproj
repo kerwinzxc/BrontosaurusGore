@@ -384,8 +384,10 @@
     <ClInclude Include="C2DGUIRenderer.h" />
     <ClInclude Include="CascadeBuffer.h" />
     <ClInclude Include="CascadeShadowMap.h" />
+    <ClInclude Include="ColorGrader.h" />
     <ClInclude Include="Cubemap.h" />
     <ClInclude Include="DeferredRenderer.h" />
+    <ClInclude Include="ELUTType.h" />
     <ClInclude Include="GeometryBuffer.h" />
     <ClInclude Include="HighlightComponent.h" />
     <ClInclude Include="LightModel.h" />
@@ -464,6 +466,7 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="C2DGUIRenderer.cpp" />
     <ClCompile Include="CascadeShadowMap.cpp" />
+    <ClCompile Include="ColorGrader.cpp" />
     <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
     <ClCompile Include="GeometryBuffer.cpp" />
@@ -549,6 +552,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="SColorGradeFade.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

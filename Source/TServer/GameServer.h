@@ -14,6 +14,7 @@ class CWeaponFactory;
 class CMovementComponentManager;
 class CSpawnerManager;
 class CWaveManager;
+class CArenaTriggerComponentManager;
 
 class CGameServer
 {
@@ -42,6 +43,7 @@ public:
 	CSpawnerManager* GetSpawnerManager();
 	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 	inline CColliderComponentManager* GetColliderComponentManager();
+	inline CArenaTriggerComponentManager* GetArenaTriggerManager();
 private:
 	CU::GrowingArray<CServerPlayerNetworkComponent*> myPlayersNetworkComponents;
 	CGameObjectManager* myGameObjectManager;
@@ -52,7 +54,8 @@ private:
 	CDamageOnCollisionComponentManager* myDamageOnCollisionComponentManager;
 	CSpawnerManager* mySpawnerManager;
 	CCheckPointSystem* myCheckPointSystem;
-	CWaveManager* myWaveManager;
+
+	CArenaTriggerComponentManager* myArenaTriggerManager;
 
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
@@ -87,4 +90,9 @@ inline CDamageOnCollisionComponentManager* CGameServer::GetDamageOnCollisionComp
 inline CColliderComponentManager* CGameServer::GetColliderComponentManager()
 {
 	return myColliderComponentManager;
+}
+
+inline CArenaTriggerComponentManager * CGameServer::GetArenaTriggerManager()
+{
+	return myArenaTriggerManager;
 }

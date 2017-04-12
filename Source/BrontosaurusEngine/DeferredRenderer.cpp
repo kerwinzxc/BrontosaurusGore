@@ -232,6 +232,9 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 	case ERenderMode::eNormal:
 		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.GetRenderPackage(CGeometryBuffer::eNormal));
 		break;
+	case ERenderMode::eRMAO:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.GetRenderPackage(CGeometryBuffer::eRMAO));
+		break;
 	case ERenderMode::eRoughness:
 		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyR, &myGbuffer.GetRenderPackage(CGeometryBuffer::eRMAO));
 		break;
@@ -243,6 +246,10 @@ void CDeferredRenderer::DoLightingPass(CFullScreenHelper& aFullscreenHelper, CRe
 		break;
 	case ERenderMode::eSSAO:
 		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopyB, &myGbuffer.GetRenderPackage(CGeometryBuffer::eRMAO));
+		break;
+	case ERenderMode::eEmissive:
+	case ERenderMode::eHighlight:
+		aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.GetRenderPackage(CGeometryBuffer::eEmissive));
 		break;
 	case ERenderMode::eIntermediate:
 		changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
@@ -366,10 +373,10 @@ void CDeferredRenderer::DoHighlight(CFullScreenHelper& aFullscreenHelper, CRende
 	SChangeStatesMessage changeStateMessage;
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
-	changeStateMessage.myBlendState = eBlendState::eOverlay;
+	changeStateMessage.myBlendState = eBlendState::eEmilBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	aRenderer.SetStates(&changeStateMessage);
-	aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.GetRenderPackage(CGeometryBuffer::eEmissive));
+	//aFullscreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGbuffer.GetRenderPackage(CGeometryBuffer::eEmissive));
 }
 
 void CDeferredRenderer::DoSSAO(CFullScreenHelper& aFullscreenHelper)
@@ -418,6 +425,14 @@ void CDeferredRenderer::HandleInput()
 	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F6))
 	{
 		myRenderMode = ERenderMode::eSSAO;
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F7))
+	{
+		myRenderMode = (ERenderMode)((int)ERenderMode::eEmissive | (int)ERenderMode::eHighlight);
+	}
+	else if (myInputWrapper->IsKeyboardKeyDown(CU::eKeys::F8))
+	{
+		myRenderMode = ERenderMode::eRMAO;
 	}
 }
 #endif

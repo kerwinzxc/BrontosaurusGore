@@ -86,6 +86,7 @@ protected:
 	bool myShouldNotReset;
 	bool myIsAggressive;
 	char myControllerConstraints;
+	float myBloodSplatterTimer;
 private:
 
 	float myHighlightTimer;

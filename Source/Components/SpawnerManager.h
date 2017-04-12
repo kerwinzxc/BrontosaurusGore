@@ -9,7 +9,7 @@ public:
 	CSpawnerManager();
 	~CSpawnerManager();
 
-	CSpawnerComponent* CreateSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes& eEnemyType, std::thread::id aID);
+	CSpawnerComponent* CreateSpawnerComponent(const CU::GrowingArray<unsigned short>& aWaves, const eEnemyTypes& eEnemyType, std::thread::id aID, const short aArenaID);
 	void Update(const float aDeltaTIme);
 private:
 	CU::GrowingArray<CSpawnerComponent*> mySpawners;

@@ -29,6 +29,7 @@
 #include "../ThreadedPostmaster/PostOffice.h"
 #include "TextureManager.h"
 #include "Texture.h"
+#include "RenderMessages.h"
 
 #define HDR_FORMAT DXGI_FORMAT_R32G32B32A32_FLOAT
 
@@ -59,9 +60,7 @@ CRenderer::CRenderer() : myParticleRenderer(*this, myFullScreenHelper)
 	changeStateMessage.myBlendState = eBlendState::eNoBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp0Wrap1;
 
-	myLut = &TEXTUREMGR.LoadTexture("Lut/defaultLUT.dds");
-	CU::Vector2ui windowSize = ENGINE->GetWindow()->GetWindowSize();
-	myColorGradingPackage.Init(windowSize);
+
 
 
 	SetStates(&changeStateMessage);
@@ -157,8 +156,6 @@ void CRenderer::Render()
 
 	AntiAliasing();
 	DoColorGrading();
-	myIntermediatePackage.Activate();
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myColorGradingPackage);
 
 	int blup;//temp
 
@@ -912,7 +909,10 @@ void CRenderer::DoRenderQueue()
 		{
 			break;
 		}
-		HandleRenderMessage(renderMessage, drawCalls);
+		if (!HandleRenderMessage(renderMessage, drawCalls))
+		{
+			SAFE_DELETE(mySynchronizer(i));
+		}
 	}
 	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DrawCallsCount(drawCalls));
@@ -942,7 +942,7 @@ const CU::Camera& CRenderer::GetCamera()
 	return myCamera;
 }
 
-void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
+bool CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
 {
 	switch (aRenderMesage->myType)
 	{
@@ -1028,6 +1028,12 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 
 		model->Render(msg->myRenderParams);
 		++aDrawCallCount;
+		break;
+	}
+	case SRenderMessage::eRenderMessageType::eLUTFADECOLORGRADE:
+	{
+		SLutFadeColorGrade* msg = static_cast<SLutFadeColorGrade*>(aRenderMesage);
+		myColorGrader.SetData(msg->myFadeTo, msg->myFadeFrom, msg->myFadeTime);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderModelDepth:
@@ -1258,6 +1264,8 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	default: break;
 	}
+
+	return true;
 }
 
 void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount)
@@ -1327,8 +1335,9 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 
 void CRenderer::DoColorGrading()
 {
-	myColorGradingPackage.Clear();
-	myColorGradingPackage.Activate();
-	DEVICE_CONTEXT->PSSetShaderResources(2, 1, myLut->GetShaderResourceViewPointer());
-	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eColorGrading, &myIntermediatePackage);
+	//myColorGradingPackage.Clear();
+	//myColorGradingPackage.Activate();
+	//DEVICE_CONTEXT->PSSetShaderResources(2, 1, myLut->GetShaderResourceViewPointer());
+	//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eColorGrading, &myIntermediatePackage);
+	myColorGrader.DoColorGrading(myIntermediatePackage, myFullScreenHelper, myTimers.GetTimer(myOncePerFrameBufferTimer).GetDeltaTime().GetSeconds());
 }
