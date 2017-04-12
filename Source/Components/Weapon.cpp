@@ -347,7 +347,8 @@ void CWeapon::Equip()
 
 
 		onlyOnce++; //Don't question it.
-		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+		if (myWeaponData->isMeleeWeapon == false)
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
 		if (myWeaponData->isMeleeWeapon == true && onlyOnce == 3)
 		{
 			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
