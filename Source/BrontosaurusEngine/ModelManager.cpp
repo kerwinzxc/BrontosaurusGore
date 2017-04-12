@@ -18,12 +18,22 @@
 DECLARE_ANIMATION_ENUM_AND_STRINGS;
 
 CModelManager::CModelManager()
-	: myModelList(64)
+	: myModelList(128)
 {
 }
 
 CModelManager::~CModelManager()
 {
+	for (CModel& model : myModelList)
+	{
+		if (!model.mySceneAnimators.empty())
+		{
+			for (auto& garbageNow : model.mySceneAnimators)
+			{
+				garbageNow.second.Release();
+			}
+		}
+	}
 }
 
 const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelPath)
@@ -48,6 +58,7 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 		{
 			myModelList.Pop();
 			myModels.erase(aModelPath);
+			DL_PRINT_WARNING("Failed to load model %s", aModelPath.c_str());
 			return NULL_MODEL;
 		}
 
@@ -138,6 +149,13 @@ void CModelManager::RemoveModel(const ModelId aModelID)
 	if (myModelList[aModelID].GetRefCount() <= 0)
 	{
 		myFreeModelIDs.Push(aModelID);
+		if (!myModelList[aModelID].mySceneAnimators.empty())
+		{
+			for (auto& garbageNow : myModelList[aModelID].mySceneAnimators)
+			{
+				garbageNow.second.Release();
+			}
+		}
 		myModelList[aModelID] = CModel();
 	}
 }

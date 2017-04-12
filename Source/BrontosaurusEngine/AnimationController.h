@@ -70,7 +70,7 @@ class CSceneAnimator
 public:
 
 	CSceneAnimator(): Skeleton(0), CurrentAnimIndex(-1) {}
-	~CSceneAnimator(){ Release(); }
+	~CSceneAnimator(){ /*Release();*/ }
 
 	bool CarlSave(const std::string& aFilePath);
 	bool CarlSaveRecursive(CBone& aChild, CU::CSerilizerSaver& aSaver);
