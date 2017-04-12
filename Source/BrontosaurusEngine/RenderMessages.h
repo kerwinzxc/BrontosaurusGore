@@ -90,7 +90,7 @@ struct SRenderMessage
 		eRenderBar,
 		eCreateGuiElement,
 		eRenderToGui,
-		eLUTFADECOLORGRADE
+		eLUTFADECOLORGRADE,
 		eClearGui,
 	};
 

@@ -59,6 +59,6 @@ private:
 		bool myIsInited;
 	}myBarData;
 
-	std::atomic_bool myShouldClear;
+	volatile std::atomic_char myShouldClear;
 };
 
