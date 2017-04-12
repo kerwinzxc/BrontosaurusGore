@@ -18,6 +18,7 @@ public:
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
 	void CheckIfOutOfBounds();
 protected:
+	void DoDeathEffect() override;
 	unsigned myComponentId;
 	CU::Matrix44f myFutureMatrix;
 	float myPositionInterpolationSpeed;

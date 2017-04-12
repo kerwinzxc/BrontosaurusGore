@@ -50,6 +50,7 @@ protected:
 	virtual inline bool WithinAttackRange();
 	virtual inline bool OutsideAttackRange();
 	virtual inline bool WithinWalkToMeleeRange();
+	virtual void DoDeathEffect() {} // only in clientRepresentaion.
 	void LookAtPlayer();
 	bool GetIfSidesAreColliding();
 	const CU::Vector3f GetNearestJumpPosition();

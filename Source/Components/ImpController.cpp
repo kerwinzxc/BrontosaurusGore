@@ -41,12 +41,6 @@ void CImpController::Update(const float aDeltaTime)
 	SendTransformationToServer();
 	UpdateJumpForces(aDeltaTime);
 	float newPlayerDistance = CU::Vector3f(myToPlayer.x, 0.0f, myToPlayer.z).Length2();
-	
-	//if (myAudioID != 0)
-	//{
-	//	const CU::Matrix44f transform = GetParent()->GetToWorldTransform();
-	//	Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioID, transform.GetPosition(), {0.f,0.f,0.f});
-	//}
 
 	if(myIsDead == false && CanChangeState() == true)
 	{
@@ -91,8 +85,6 @@ void CImpController::Update(const float aDeltaTime)
 		if (myIsDead == true)
 		{
 			myState = eImpState::eDead;
-		//	Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance(); // blir nullptr
-			//audio->PostEvent("Imp_Death"/*, myAudioID*/);
 		}
 	}
 
@@ -261,9 +253,6 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 	{
 		myState = eImpState::eDead;
 		myIsDead = true;
-
-		//Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance(); // blir nullptr
-		//audio->PostEvent("Imp_Death"/*, myAudioID*/);
 
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)

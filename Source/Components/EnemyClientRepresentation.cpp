@@ -27,6 +27,12 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 {
 	if(myIsAlive == true)
 	{
+		if (myAudioID != 0)
+		{
+			const CU::Matrix44f transform = GetParent()->GetToWorldTransform();
+			Audio::CAudioInterface::GetInstance()->SetGameObjectPosition(myAudioID, transform.GetPosition(), {0.f,0.f,0.f});
+		}
+
 		GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
 		GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
@@ -55,6 +61,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		break;
 	case eComponentMessageType::eDied:
 	{
+		DoDeathEffect();
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = hellPosition;
@@ -98,6 +105,24 @@ void CEnemyClientRepresentation::CheckIfOutOfBounds()
 		//{
 		//	parentTransform.SetPosition(data.myVector3f);
 		//}
+	}
+}
+
+void CEnemyClientRepresentation::DoDeathEffect()
+{
+	switch (myType)
+	{
+	case eEnemyTypes::eImp:
+		Audio::CAudioInterface::GetInstance()->PostEvent("Imp_Death", myAudioID);
+		break;
+	case eEnemyTypes::eRevenant:
+		Audio::CAudioInterface::GetInstance()->PostEvent("Revenant_Death", myAudioID);
+		break;
+	case eEnemyTypes::ePinky:
+		Audio::CAudioInterface::GetInstance()->PostEvent("Pinky_Death", myAudioID);
+		break;
+	default:
+		break;
 	}
 }
 
