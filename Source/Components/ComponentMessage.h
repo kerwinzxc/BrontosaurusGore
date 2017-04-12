@@ -46,6 +46,7 @@ enum class eComponentType : unsigned char;
 enum class eComponentMessageType
 {
 	eAddComponent,
+	eShootWithoutAmmo,
 	ePlaySound,
 	eMoving,
 	eAddArmor,

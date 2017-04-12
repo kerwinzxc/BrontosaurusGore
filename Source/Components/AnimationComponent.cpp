@@ -120,6 +120,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 			}
 		}
 		break;
+	case eComponentMessageType::eShootWithoutAmmo:
 	case eComponentMessageType::eShoot:
 	case eComponentMessageType::eShootWithNetworking:
 		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::shot01)

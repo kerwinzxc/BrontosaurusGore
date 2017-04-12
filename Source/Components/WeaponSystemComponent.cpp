@@ -64,6 +64,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		break;
 	}
+	case eComponentMessageType::eShootWithoutAmmo:
+		if (myIsActive == true)
+		{
+			myWeapons[myActiveWeaponIndex]->Shoot(CU::Vector3f::Zero, false);
+		}
+		break;
 	case eComponentMessageType::eServerShoot:
 	{
 		if(myIsActive == true)

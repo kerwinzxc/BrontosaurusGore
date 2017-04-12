@@ -37,6 +37,10 @@ void CAmmoComponent::Receive(const eComponentMessageType aMessageType, const SCo
 				shootData.myVector3f = aMessageData.myAmmoCheckData->shootingDirection;
 				GetParent()->NotifyComponents(eComponentMessageType::eShoot, shootData);
 			}
+			else
+			{
+				GetParent()->NotifyComponents(eComponentMessageType::eShootWithoutAmmo, SComponentMessageData());
+			}
 		}
 		else
 		{
