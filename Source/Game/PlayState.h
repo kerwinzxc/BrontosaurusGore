@@ -18,7 +18,7 @@ namespace Physics
 	class CPhysics;
 }
 
-
+class CLutComponent;
 class CGameObjectManager;
 class CScene;
 class CModelComponentManager;
@@ -116,6 +116,10 @@ private:
 	CCheckPointSystem* myCheckPointSystem;
 	class CCameraComponent* myCameraComponent;
 	friend struct SEncapsulationBreaker;
+
+
+	CLutComponent* myPlayerLut;
+
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;

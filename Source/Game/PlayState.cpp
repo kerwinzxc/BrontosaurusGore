@@ -308,7 +308,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	{
 		myColliderComponentManager->Update();
 	}
-
+	myPlayerLut->Update(aDeltaTime.GetSeconds());
 	return myStatus;
 }
 
@@ -511,7 +511,8 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->AddComponent(weaponSystenComponent);
 		playerObject->AddComponent(ammoComponent);
 
-		playerObject->AddComponent(new CLutComponent());
+		myPlayerLut = new CLutComponent();
+		playerObject->AddComponent(myPlayerLut);
 		
 		GivePlayerWeapons(playerObject);
 
