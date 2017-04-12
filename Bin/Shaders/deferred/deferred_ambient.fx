@@ -146,6 +146,7 @@ Output PS_PosTex(PosTex_InputPixel inputPixel)
 	float3 ambientSpecularity = ambientLightSpec * ambientOcclusion * fresnel;
 
 	output.color = float4(ambientDiffuse + ambientSpecularity, fullAlbedo.a);
-	output.color += float4(ambientDiffuse * RMAO.a, 0.0f);
+	float4 emissive = deferred_emissive.SampleLevel(samplerWrap, uv, 0);
+	output.color += float4(emissive.xyz, 0.0f);
 	return output;
 }
