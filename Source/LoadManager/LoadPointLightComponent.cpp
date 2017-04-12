@@ -5,12 +5,29 @@
 #include "ComponentManager.h"
 #include "PointLightComponent.h"
 #include "PointLightComponentManager.h"
+#include "GameObject.h"
 
 int LoadPointLightComponent(KLoader::SLoadedComponentData someData)
 {
-	PointLightComponent* pointLight = CPointLightComponentManager::GetInstance().CreateAndRegisterComponent();
-	pointLight->SetColor(someData.myData.at("Color").GetVector3f());
-	pointLight->SetIntensity(someData.myData.at("Intensity").GetFloat());
-	pointLight->SetRange(someData.myData.at("Range").GetFloat());
-	return pointLight->GetId();
+
+	if (someData.myData.HasKey("range"))
+	{
+		PointLightComponent* pointLight = CPointLightComponentManager::GetInstance().CreateAndRegisterComponent();
+		pointLight->SetColor(CU::Vector3f(someData.myData.at("color").GetVector4f("xyzw") / 255.f));
+		pointLight->SetIntensity(someData.myData.at("intensity").GetFloat());
+		pointLight->SetRange(someData.myData.at("range").GetFloat());
+		return pointLight->GetId();
+	}
+	else
+	{
+		int id = KLoader::CKevinLoader::GetInstance().GetCurrentObjectIndex();
+		CGameObject* parent = reinterpret_cast<CGameObject*>(CComponentManager::GetInstance().GetComponent(id));
+		Lights::SDirectionalLight directionalLight;
+		directionalLight.direction = parent->GetToWorldTransform().myForwardVector;
+		directionalLight.intensity = someData.myData.at("intensity").GetFloat();
+		directionalLight.color = someData.myData.at("color").GetVector4f("xyzw") / 255.f;
+		CPointLightComponentManager::GetInstance().AddDirectionalLightToScene(directionalLight);
+
+		return NULL_COMPONENT;
+	}
 }

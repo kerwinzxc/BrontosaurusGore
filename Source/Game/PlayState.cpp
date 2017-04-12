@@ -93,6 +93,7 @@
 #include "ComponentAnswer.h"
 #include "AnimationComponent.h"
 #include "LutComponent.h"
+#include "PointLightComponentManager.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -141,7 +142,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myExplosionComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 
-
+	CPointLightComponentManager::Destroy();
 	CDoorManager::Destroy();
 	CNetworkComponentManager::Destroy();
 	CCheckpointComponentManager::DestoryInstance();
@@ -374,11 +375,11 @@ void CPlayState::CreateManagersAndFactories()
 	CNetworkComponentManager::Create();
 	CHealthComponentManager::Create();
 	CDoorManager::Create();
-
 	CParticleEmitterComponentManager::Create();
 
 	myScene = new CScene();
 
+	CPointLightComponentManager::Create(*myScene);
 	myGameObjectManager = new CGameObjectManager();
 	myModelComponentManager = new CModelComponentManager(*myScene);
 	myEnemyComponentManager = new CEnemyComponentManager();
