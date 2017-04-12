@@ -26,13 +26,21 @@ private:
 	void LoadElement(const CU::CJsonValue& aJsonValue, const std::string& aFolderpath);
 	void MenuLoad(const std::string& aFile);
 
+	void PushMenu(std::string aMenu) const;
+
 	static void ExitGame(std::string notUsed);
 	void PushTempLobby(std::string notUsed) const;
+	void PopMenues(std::string aNumberOfMenues) const;
+	void PushLevel(std::string aLevelIndexString) const;
+	static void StartServer(std::string notUsed);
+	static void ConnectLocal(std::string anIp);
 
 	bool myShowStateBelow;
 	CSpriteInstance* myPointerSprite;
 
 	CMenuManager myManager;
+	bool myIsInFocus;
+	static char ourMenuesToPop;
 };
 
 inline bool CMenuState::GetLetThroughRender() const
