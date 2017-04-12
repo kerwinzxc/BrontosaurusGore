@@ -18,7 +18,7 @@
 CU::GrowingArray<CGameObject*> CEnemy::ourPlayerObjects;
 CU::GrowingArray<CEnemyRunTowardsComponent*> CEnemy::ourEnemyRunTowardsComponents;
 
-CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(0), myDetectionRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myWalkToMeleeRange2(0), myIsAttacking(false), myControllerConstraints(0), myHighlightTimer(0), myDoingHighlight(false)
+CEnemy::CEnemy(unsigned int aId, eEnemyTypes aType): myDistToPlayer(0), mySpeed(0), myDetectionRange2(0), myWeaponRange2(0), myStartAttackRange2(0), myStopAttackRange2(0), myWalkToMeleeRange2(0), myIsAttacking(false), myControllerConstraints(0), myBloodSplatterTimer(0), myHighlightTimer(0), myDoingHighlight(false)
 {
 	myIsDead = false;
 	myServerId = aId;
@@ -44,6 +44,11 @@ void CEnemy::UpdateBaseMemberVars(const float aDeltaTime)
 	myPos = GetParent()->GetWorldPosition();
 	myToPlayer = myClosestPlayerPos - myPos;
 	myDistToPlayer = myToPlayer.Length2();
+
+	if(myBloodSplatterTimer > 0)
+	{
+		myBloodSplatterTimer -= aDeltaTime;
+	}
 
 	DoDamageHighlight(aDeltaTime);
 }
@@ -144,21 +149,26 @@ void CEnemy::StartHighlight()
 
 void CEnemy::DoSplatter()
 {
-	SComponentQuestionData questionData;
-	GetParent()->AskComponents(eComponentQuestionType::eLastHitNormal,questionData);
-	const CU::Vector3f normal = questionData.myVector3f;
-	GetParent()->AskComponents(eComponentQuestionType::eLastHitPosition, questionData);
-	const CU::Vector3f position = questionData.myVector3f;
+	if(myBloodSplatterTimer <= 0.f)
+	{
+		myBloodSplatterTimer = .25f;
+		SComponentQuestionData questionData;
+		GetParent()->AskComponents(eComponentQuestionType::eLastHitNormal, questionData);
+		const CU::Vector3f normal = questionData.myVector3f;
+		GetParent()->AskComponents(eComponentQuestionType::eLastHitPosition, questionData);
+		const CU::Vector3f position = questionData.myVector3f;
 
-	CU::Matrix44f transformation;
-	transformation.SetPosition(position);
-	transformation.LookAt(position + normal);
+		CU::Matrix44f transformation;
+		transformation.SetPosition(position);
+		transformation.LookAt(position + normal);
 
-	Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("Blood");
-	CParticleEmitterManager::GetInstance().SetTransformation(id, transformation);
-	CParticleEmitterManager::GetInstance().Activate(id);
+		Particles::ParticleEmitterID id = CParticleEmitterManager::GetInstance().GetEmitterInstance("Blood");
+		CParticleEmitterManager::GetInstance().SetTransformation(id, transformation);
+		CParticleEmitterManager::GetInstance().Activate(id);
 
-	CParticleEmitterManager::GetInstance().Release(id);
+		CParticleEmitterManager::GetInstance().Release(id);
+	}
+	
 }
 
 void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
@@ -181,8 +191,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 		break;
 	case eComponentMessageType::eTakeDamage:
 	{
-		DoSplatter();
-		StartHighlight();
+		
 	}
 		break;
 	case eComponentMessageType::eCheckPointReset:
