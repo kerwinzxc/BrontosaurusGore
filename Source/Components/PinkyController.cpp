@@ -19,6 +19,7 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myIsCharging = false;
 	myGravityForce = 0.0f;
 	myElapsedChargeMeleeAttackTime = 0.0f;
+	mySHouldntExist = false;
 }
 
 CPinkyController::~CPinkyController()
@@ -38,6 +39,10 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CPinkyController::Update(const float aDeltaTime)
 {
+	if(mySHouldntExist == true)
+	{
+		return;
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myGravityForce -= gravityAcceleration * aDeltaTime;
 	myVelocity.y = myGravityForce;

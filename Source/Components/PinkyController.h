@@ -23,6 +23,7 @@ public:
 	virtual void SetEnemyData(const SEnemyBlueprint* aData) override;
 	void Update(const float aDeltaTime) override;
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData) override;
+	inline void Sthap() override;
 
 private:
 	void HandleGrounded();
@@ -42,7 +43,12 @@ private:
 	float myElapsedChargeMeleeAttackTime;
 	ePinkyState myState;
 	bool myIsCharging;
+	bool mySHouldntExist;
 	healthPoint myChargeDamage;
 	CU::Vector3f myStartChargeLocation;
 };
 
+inline void CPinkyController::Sthap()
+{
+	mySHouldntExist = true;
+}
