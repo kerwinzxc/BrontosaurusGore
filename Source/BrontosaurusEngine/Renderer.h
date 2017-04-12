@@ -55,7 +55,7 @@ public:
 	const CU::Camera& GetCamera();
 	void SetStates(const SChangeStatesMessage* aState);
 private:
-	void HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
+	bool HandleRenderMessage(SRenderMessage* aRenderMesage, int& aDrawCallCount);
 	void RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount);
 
 	void Bloom();

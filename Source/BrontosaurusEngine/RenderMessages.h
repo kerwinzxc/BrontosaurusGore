@@ -31,13 +31,13 @@ class CStreakEmitterInstance;
 struct SPixelConstantBuffer;
 struct SParticle;
 
-enum ELUTType;
 enum class eRasterizerState : int;
 enum class eBlendState : int;
 enum class eDepthStencilState : int;
 enum class eSamplerState : int;
 enum class eAlignment : int;
 
+enum ELUTType : char;
 
 typedef unsigned int ParticleEmitterID;
 
@@ -185,8 +185,7 @@ struct SLutFadeColorGrade : SRenderMessage
 {
 	SLutFadeColorGrade();
 	float myFadeTime;
-	ELUTType myFadeTo;
-	bool myInterrupt;
+	ELUTType myFadeTo, myFadeFrom;
 };
 
 struct SActivateRenderPackageMessage : SRenderMessage

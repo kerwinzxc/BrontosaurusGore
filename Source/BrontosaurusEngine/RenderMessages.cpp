@@ -229,7 +229,6 @@ SRenderToGUI::~SRenderToGUI()
 SLutFadeColorGrade::SLutFadeColorGrade()
 	: SRenderMessage(eRenderMessageType::eLUTFADECOLORGRADE)
 {
-	myFadeTo = ELUTType::eDefault;
+	myFadeTo = myFadeFrom = ELUTType::eDefault;
 	myFadeTime = 1.f;
-	myInterrupt = false;
 }

@@ -909,7 +909,10 @@ void CRenderer::DoRenderQueue()
 		{
 			break;
 		}
-		HandleRenderMessage(renderMessage, drawCalls);
+		if (!HandleRenderMessage(renderMessage, drawCalls))
+		{
+			SAFE_DELETE(mySynchronizer(i));
+		}
 	}
 	//PostMaster::GetInstance().SendLetter(Message(eMessageType::eDrawCallsThisFrame, DrawCallsCount(drawCalls)));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new DrawCallsCount(drawCalls));
@@ -939,7 +942,7 @@ const CU::Camera& CRenderer::GetCamera()
 	return myCamera;
 }
 
-void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
+bool CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawCallCount)
 {
 	switch (aRenderMesage->myType)
 	{
@@ -1030,7 +1033,7 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eLUTFADECOLORGRADE:
 	{
 		SLutFadeColorGrade* msg = static_cast<SLutFadeColorGrade*>(aRenderMesage);
-		myColorGrader.PushFade(msg->myFadeTo, msg->myFadeTime, msg->myInterrupt);
+		myColorGrader.SetData(msg->myFadeTo, msg->myFadeFrom, msg->myFadeTime);
 		break;
 	}
 	case SRenderMessage::eRenderMessageType::eRenderModelDepth:
@@ -1261,6 +1264,8 @@ void CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	}
 	default: break;
 	}
+
+	return true;
 }
 
 void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCallCount)
