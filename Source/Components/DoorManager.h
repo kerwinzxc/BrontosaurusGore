@@ -26,6 +26,8 @@ public:
 
 	 void CloseDoor(const unsigned char aNetworkID);
 	 void CloseDoor(const short aKeyId);
+
+	 bool DoesDoorExist(const short aKeyId, const bool aNetworked = false);
 private:
 	std::map<int, CDoorComponent*> myDoors;
 

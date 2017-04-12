@@ -393,6 +393,13 @@ void CClient::Update()
 					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eUnlock:
+
+					if(CDoorManager::GetInstance()->DoesDoorExist(doorMesssage->GetKeyID()))
+						Audio::CAudioInterface::GetInstance()->PostEvent("Door_Unlock");
+					else if(CDoorManager::GetInstance()->DoesDoorExist(doorMesssage->GetNetworkID(), true))
+						Audio::CAudioInterface::GetInstance()->PostEvent("Door_Unlock");
+
+
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
