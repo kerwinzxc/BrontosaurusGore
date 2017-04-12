@@ -36,10 +36,13 @@ void CPlayerNetworkComponent::Receive(const eComponentMessageType aMessageType, 
 	{
 		SComponentQuestionData data;
 		CU::Matrix44f transform = GetParent()->GetToWorldTransform();
-		if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraObject, data) == true)
-		{
-			transform = data.myGameObject->GetLocalTransform() * GetParent()->GetToWorldTransform();
-		}
+		transform.GetPosition().y += 1;
+		/*	if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraObject, data) == true)
+			{
+				transform = data.myGameObject->GetLocalTransform() * GetParent()->GetToWorldTransform();
+			}*/
+
+
 
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CPlayerPositionMessage(transform, myID));
 	}

@@ -23,6 +23,7 @@ const CU::Matrix44f CNetworkMessage_PlayerPositionMessage::GetTransformation()
 {
 	CU::Matrix44f transform = Physics::QuatToMatrix(myRotation);
 	transform.SetPosition(myPosition);
+
 	return transform;
 }
 
