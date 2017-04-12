@@ -8,6 +8,7 @@
 #include "../ThreadedPostmaster/GameEventMessage.h"
 #include "AmmoReplenishData.h"
 #include "WeaponPickupData.h"
+#include "..\Audio\AudioInterface.h"
 
 CWeaponPickupComponent::CWeaponPickupComponent()
 {
@@ -28,6 +29,9 @@ void CWeaponPickupComponent::SetWeaponPickup(const std::string& aWeaponName)
 
 void CWeaponPickupComponent::DoMyEffect()
 {
+	Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+
+
 	SComponentMessageData data;
 	data.myString = myWeaponPickup.c_str();
 	CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddWeapon,data);

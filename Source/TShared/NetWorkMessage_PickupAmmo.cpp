@@ -27,12 +27,22 @@ void CNetWorkMessage_PickupAmmo::SetID(const int aId)
 	myNetworkID = aId;
 }
 
+void CNetWorkMessage_PickupAmmo::SetWeaponID(const short aID)
+{
+	myWeaponID = aID;
+}
+
+const short CNetWorkMessage_PickupAmmo::GetWeaponID() const
+{
+	return myWeaponID;
+}
+
 const void CNetWorkMessage_PickupAmmo::SetReplenishAmount(const short aReplenishAmount)
 {
 	myReplenishAmount = aReplenishAmount;
 }
 
-const int CNetWorkMessage_PickupAmmo::GetReplenishAmount() const
+const short CNetWorkMessage_PickupAmmo::GetReplenishAmount() const
 {
 	return myReplenishAmount;
 }
@@ -41,6 +51,7 @@ void CNetWorkMessage_PickupAmmo::DoSerialize(StreamType & aStream)
 	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myNetworkID, aStream);
 	serialize(myReplenishAmount, aStream);
+	serialize(myWeaponID, aStream);
 }
 
 void CNetWorkMessage_PickupAmmo::DoDeserialize(StreamType & aStream)
@@ -48,4 +59,5 @@ void CNetWorkMessage_PickupAmmo::DoDeserialize(StreamType & aStream)
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myNetworkID = deserialize<int>(aStream);
 	myReplenishAmount = deserialize<short>(aStream);
+	myWeaponID = deserialize<short>(aStream);
 }

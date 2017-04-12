@@ -17,4 +17,5 @@ struct SWeaponData
 	unsigned short randomSpreadAngle;
 	unsigned short projectilesFiredPerShot;
 	CU::GrowingArray<std::string> fireParticles;
+	bool isMeleeWeapon;
 };

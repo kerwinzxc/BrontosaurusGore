@@ -185,7 +185,10 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 				newWeaponData->fireParticles.Add(aJsonValue[i]["FireParticles"][j].GetString());
 			}
 		}
-		
+
+		newWeaponData->isMeleeWeapon = false;
+		if(newWeaponData->name == "MeleeWeapon")
+			newWeaponData->isMeleeWeapon = true;
 		
 
 		newProjectileData->projectileModelFilePath = aJsonValue[i].at("ProjectileModel").GetString().c_str();
