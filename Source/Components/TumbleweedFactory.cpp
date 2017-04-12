@@ -54,6 +54,7 @@ int CTumbleweedFactory::CreateNewTumbleweed(const CU::Vector3f& aPosition)
 	tumbleweedObject->AddComponent(tumbleWeedController);
 	tumbleweedObject->GetLocalTransform().SetPosition(aPosition);
 	tumbleweedObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
+	tumbleWeedController->AddForce();
 	return tumbleweedObject->GetId();
 }
 
@@ -81,6 +82,7 @@ int CTumbleweedFactory::CreateNewTumbleweed(const CU::Vector3f& aPosition, const
 	tumbleweedObject->AddComponent(tumbleWeedController);
 	tumbleweedObject->GetLocalTransform().SetPosition(aPosition);
 	tumbleweedObject->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
+	tumbleWeedController->AddForce();
 	return tumbleweedObject->GetId();
 }
 void CTumbleweedFactory::Update(const float aDeltaTime)
