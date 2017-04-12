@@ -12,6 +12,7 @@
 #include "ParticleEmitterManager.h"
 #include "ParticleEmitterComponent.h"
 #include "../TClient/ClientMessageManager.h"
+#include "..\CommonUtilities\DL_Debug.h"
 
 CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene) : myAudioId(0)
 {
@@ -93,6 +94,22 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection)
 					CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
 					if(gameObject != myUser)
 					{
+						//SComponentQuestionData healthLeftData;
+						//if (gameObject->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData) == true)
+						//{
+						//	if (healthLeftData.myInt <= 0)
+						//	{
+						//		DL_PRINT("Removing dead shit");
+						//		CU::Vector3f hellPosition(0.0f, 0.0f, 0.0f);
+						//		gameObject->GetLocalTransform().SetPosition(hellPosition);
+						//		SComponentMessageData positioonData;
+						//		positioonData.myVector3f = hellPosition;
+						//		gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, positioonData);
+						//		gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+						//		Shoot(aDirection);
+						//		return;
+						//	}
+						//}
 						SComponentMessageData damageData;
 
 						damageData.myVector3f = myLastHitNormal;
@@ -332,6 +349,7 @@ bool CWeapon::CanShoot()
 	return false;
 }
 
+volatile static int onlyOnce = 1;
 void CWeapon::Equip()
 {
 	if (myWeaponObject != nullptr)
@@ -341,6 +359,17 @@ void CWeapon::Equip()
 		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, visibilityTrue);
 
 		myWeaponObject->NotifyOnlyComponents(eComponentMessageType::eEquip, SComponentMessageData());
+
+
+
+		onlyOnce++; //Don't question it.
+		if (myWeaponData->isMeleeWeapon == false)
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+		if (myWeaponData->isMeleeWeapon == true && onlyOnce == 3)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+			onlyOnce = 1;
+		}
 	}
 }
 

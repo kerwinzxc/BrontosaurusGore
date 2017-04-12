@@ -4,6 +4,7 @@
 #include "EInputReturn.h"
 #include "JsonValue.h"
 #include "EMouseButtons.h"
+#include "EKeyboardKeys.h"
 #include "StateStack/StateStack.h"
 #include "PostMaster/QuitGame.h"
 #include "ThreadedPostmaster/Postmaster.h"
@@ -98,7 +99,12 @@ CU::eInputReturn CMenuState::RecieveInput(const CU::SInputMessage& aInputMessage
 		}
 		break;
 	case CU::eInputType::eScrollWheelChanged: break;
-	case CU::eInputType::eKeyboardPressed: break;
+	case CU::eInputType::eKeyboardPressed:
+		if (aInputMessage.myKey == CU::eKeys::F7)
+		{
+			PushTempLobby("");
+		}
+		break;
 	case CU::eInputType::eKeyboardReleased: break;
 	default: break;
 	}

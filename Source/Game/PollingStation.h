@@ -23,7 +23,12 @@ public:
 	const CU::GrowingArray<short>& GetKeys() const;
 
 	bool CheckIfIsPlayerObject(CGameObject* aGameObjectToCheck);
+
+	void SetCurrentLevelIndex(unsigned char aLevelIndex);
+	unsigned char GetCurrentLevelIndex() const;
+
 private:
+	unsigned short myCurrentLevelIndex;
 	CGameObject* myPlayerObject;
 	CU::GrowingArray<CGameObject*> myPLayers;
 

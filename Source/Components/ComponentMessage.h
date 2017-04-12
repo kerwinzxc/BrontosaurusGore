@@ -104,6 +104,7 @@ enum class eComponentMessageType
 	eGiveYourselfAmmo,
 	eSetLastHitNormal,
 	eSetLastHitPosition,
+	eDoStuffBeforeDie,
 	eLength,
 };
 

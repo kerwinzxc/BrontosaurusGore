@@ -25,6 +25,5 @@ public:
 private:
 	Physics::CPhysicsCharacterController* myController;
 	CU::Vector3f myCenter;
-	bool myIsActive;
 };
 

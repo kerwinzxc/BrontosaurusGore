@@ -12,8 +12,9 @@ Texture2D deferred_normal               : register(t2);
 Texture2D deferred_roughnessMetalnessAO : register(t3);
 Texture2D deferred_emissive             : register(t4);
 Texture2D deferred_depth                : register(t5);
+Texture2D deferred_depth2				: register(t6);
 
-Texture2D shadowBuffer                  : register(t6);
+
 
 //**********************************************//
 //					SAMPLERS					//
@@ -163,12 +164,18 @@ float3 CameraPosition()
 	return cameraPosition.xyz;
 }
 
+float GetDepth(float2 uv)
+{
+	float depth = deferred_depth2.Sample(SamplerClamp, uv).x;
+	return (depth == 1.0f) ? deferred_depth.Sample(SamplerClamp, uv).x : depth;
+}
+
 Output PS_PosNormBinormTanTex(LightModel_InputPixel inputPixel)
 {
 	Output output;
 	
 	float2 uv = (inputPixel.uv / inputPixel.uv.w).xy;
-	float1 depth = deferred_depth.Sample(samplerWrap, uv).x;
+	float1 depth = GetDepth(uv);
 	float4 fullAlbedo = deferred_diffuse.Sample(samplerWrap, uv).rgba;
 
 	// if (depth >= DEPTH_BIAS)

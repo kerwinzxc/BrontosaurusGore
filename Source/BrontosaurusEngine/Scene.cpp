@@ -26,7 +26,7 @@ CScene::CScene()
 	mySkybox = nullptr;
 	myCubemap = nullptr;
 
-	myShadowMap = new CCascadeShadowMap(0, 0.1f, 250.f);
+	myShadowMap = new CCascadeShadowMap(0, 0.1f, 150.f);
 	CParticleEmitterComponentManager::GetInstance().SetScene(this);
 }
 

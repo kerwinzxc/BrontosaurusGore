@@ -2,11 +2,9 @@
 #include "../PostMaster/MessageType.h"
 #include "../ThreadedPostmaster/Subscriber.h"
 
-
 CLoadLevelMessage::CLoadLevelMessage(const int aLevelIndex): IMessage(eMessageType::eNetworkMessage), myLevelIndex(aLevelIndex)
 {
 }
-
 
 CLoadLevelMessage::~CLoadLevelMessage()
 {
