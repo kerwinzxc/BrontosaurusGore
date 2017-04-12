@@ -66,7 +66,7 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("PinkyController", LoadPinky);
 	loader.RegisterComponentLoadFunction("BoxCollider", LoadBoxColliderServer);
 	loader.RegisterComponentLoadFunction("SpawnerComponent", LoadSpawnerComponent);
-	//loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereColliderServer);
+	loader.RegisterComponentLoadFunction("SphereCollider", LoadSphereColliderServer);
 	loader.RegisterComponentLoadFunction("CapsuleCollider", LoadCapsuleColliderServer);
 	loader.RegisterComponentLoadFunction("MeshCollider", LoadMeshColliderServer);
 	//loader.RegisterComponentLoadFunction("Rigidbody", LoadRigidBodyServer);
