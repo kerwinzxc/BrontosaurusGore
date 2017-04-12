@@ -58,7 +58,23 @@ bool Postmaster::Threaded::CPostOffice::GetIsActive()
 
 void Postmaster::Threaded::CPostOffice::SetActive(bool anActive)
 {
-	myIsActive = false;
+
+	myIsActive = anActive;
+
+	if (myIsActive == false)
+	{
+		myMessageQueue.DeleteAll();
+		myOutgoingQueue.DeleteAll();
+
+		while (myNarrowMessageQueue.IsEmpty() == false)
+		{
+			delete myNarrowMessageQueue.Pop().message;
+		}
+		while (myOutgoingNarrowQueue.IsEmpty() == false)
+		{
+			delete myOutgoingNarrowQueue.Pop().message;
+		}
+	}
 }
 
 void Postmaster::Threaded::CPostOffice::AppendMessages(Container::CLocklessQueue<Postmaster::Message::IMessage*>& aBufferQueue)

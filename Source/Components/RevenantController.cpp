@@ -80,6 +80,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		else if (WithinDetectionRange())
 		{
+			myIsAggressive = true;
 			myState = eRevenantState::eChase;
 			if (myIsAtJumpPoint == true)
 			{

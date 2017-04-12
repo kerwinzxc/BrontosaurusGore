@@ -6,6 +6,7 @@
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../ThreadedPostmaster/GameEventMessage.h"
+#include "..\Audio\AudioInterface.h"
 
 CKeyPickupComponent::CKeyPickupComponent()
 {
@@ -35,6 +36,7 @@ void CKeyPickupComponent::DoMyEffect()
 	CNetworkMessage_PickupKey* message = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_PickupKey>(ID_ALL_BUT_ME);
 	message->SetID(myNetworkId);
 	message->SetLockID(myLockId);
+	Audio::CAudioInterface::GetInstance()->PostEvent("Pickup_Key");
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(message));
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a key!"));
 }

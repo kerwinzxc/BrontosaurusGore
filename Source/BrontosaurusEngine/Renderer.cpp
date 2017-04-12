@@ -147,7 +147,7 @@ void CRenderer::Render()
 	//SetStates(&changeStateMessage);
 
 	renderTo->Activate();
-	
+
 	Downsample(*renderTo);
 	//HDR();
 	Bloom();
@@ -169,7 +169,7 @@ void CRenderer::Render()
 	SetStates(&changeStateMessage);
 	myGUIRenderer.RenderWholeGuiToPackage(myGUIRenderer.GetInputPackage(), myFullScreenHelper);
 	RenderGUI();
-	
+
 	myBackBufferPackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myIntermediatePackage);
 
@@ -272,7 +272,7 @@ void CRenderer::RenderGUI()
 	myIntermediatePackage.Activate();
 	myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myGUIRenderer.GetInputPackage());
 
-	ID3D11ShaderResourceView* srvs [2] = 
+	ID3D11ShaderResourceView* srvs[2] =
 	{
 		nullptr,
 		nullptr
@@ -937,6 +937,11 @@ void CRenderer::SetStates(const SChangeStatesMessage* aState) //change from peka
 	//}
 }
 
+void CRenderer::ClearGui()
+{
+	myGUIRenderer.QueuClear();
+}
+
 const CU::Camera& CRenderer::GetCamera()
 {
 	return myCamera;
@@ -1124,7 +1129,7 @@ bool CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	case SRenderMessage::eRenderMessageType::eChangeStates:
 	{
 		SChangeStatesMessage* msg = static_cast<SChangeStatesMessage*>(aRenderMesage);
-		if(msg->mySamplerState == eSamplerState::eDeferred) myDeferredRenderer.AddRenderMessage(msg);
+		if (msg->mySamplerState == eSamplerState::eDeferred) myDeferredRenderer.AddRenderMessage(msg);
 		SetStates(msg);
 		break;
 	}
@@ -1261,6 +1266,11 @@ bool CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);
 		else renderTo->Activate();
 		break;
+	}
+	case SRenderMessage::eRenderMessageType::eClearGui:
+	{
+		myGUIRenderer.Clear();
+		break; 
 	}
 	default: break;
 	}
