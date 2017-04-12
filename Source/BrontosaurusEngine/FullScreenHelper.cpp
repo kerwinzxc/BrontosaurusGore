@@ -55,6 +55,8 @@ CFullScreenHelper::CFullScreenHelper()
 	ID3D11PixelShader* metaSurfaceShader = SHADERMGR->LoadPixelShader(L"Shaders/metaballs/metaSurface.fx", ShaderType);
 	ID3D11PixelShader* alphaBlendShader = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/alphaBlend.fx", ShaderType);
 
+	ID3D11PixelShader* combineDepth = SHADERMGR->LoadPixelShader(L"Shaders/Fullscreen/combineDepth.fx", ShaderType);
+
 	myEffects[static_cast<int>(eEffectType::eCopy)]						= new CEffect(vertexShader, cpyShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyR)]					= new CEffect(vertexShader, cpyShaderR, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eCopyG)]					= new CEffect(vertexShader, cpyShaderG, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -87,7 +89,7 @@ CFullScreenHelper::CFullScreenHelper()
 	myEffects[static_cast<int>(eEffectType::eMetaSurface)]				= new CEffect(lShvertexShader, metaSurfaceShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eOverlay)]					= new CEffect(lShvertexShader, overlay, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	myEffects[static_cast<int>(eEffectType::eAlphaBlend)]				= new CEffect(lShvertexShader, alphaBlendShader, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
+	myEffects[static_cast<int>(eEffectType::eCombineDepth)]				= new CEffect(lShvertexShader, combineDepth, nullptr, inputLayout, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	CreateQuad();
 }

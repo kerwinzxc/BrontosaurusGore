@@ -7,7 +7,7 @@
 #include "ThreadedPostmaster/GameEventMessage.h"
 
 
-CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(nullptr), myCurrentTime(0), myWaitTime(2.f)
+CGameEventMessenger::CGameEventMessenger() : myInTweener(nullptr), myOutTweener(nullptr), myCurrentTime(0), myWaitTime(0.75f)
 {
 }
 
@@ -31,18 +31,14 @@ void CGameEventMessenger::Update(const float aDeltaTime)
 	{
 		CU::Vector4f colour = myText.GetColor();
 
-		if (myInTweener->IsFinished() == false)
-		{
-			myInTweener->Update((aDeltaTime));
-			colour.a = myInTweener->GetValue();
-		}
-		else if (myCurrentTime < myWaitTime)
+		colour.a = 1.0f;
+		if (myCurrentTime < myWaitTime)
 		{
 			myCurrentTime += aDeltaTime;
 		}
 		else if (myOutTweener->IsFinished() == false)
 		{
-			myOutTweener->Update(aDeltaTime);
+			myOutTweener->Update(aDeltaTime * 2);
 			colour.a = myOutTweener->GetValue();
 		}
 		else if (myTextQueue.Size() > 0)

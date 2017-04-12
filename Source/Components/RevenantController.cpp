@@ -20,6 +20,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myIsAtJumpPoint = false;
 	myChillAtJumpPointCountDown = 0.0f;
 	myWaitBeforeChangingStateCountdown = 0.0f;
+	myShouldntExist = false;
 }
 
 CRevenantController::~CRevenantController()
@@ -39,6 +40,10 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 
 void CRevenantController::Update(const float aDeltaTime)
 {
+	if(myShouldntExist == true)
+	{
+		return;
+	}
 	if(myChillAtJumpPointCountDown > 0)
 	{
 		myChillAtJumpPointCountDown -= aDeltaTime;

@@ -1,6 +1,7 @@
 #include "metaballsCommon.fx"
 
 Texture2D sprite : register (t1);
+Texture2D weaponDepth : register(t20);
 SamplerState Sampler;
 
 struct PixelOut
@@ -15,8 +16,6 @@ float GetZ(const InputPixel input, float difLength)
 {
     
     float output = 0;
-
-    
 
     const float radius2 = input.radius * input.radius;
     const float diffLength2 = difLength * difLength;
@@ -46,8 +45,21 @@ float3 GetNormal(const InputPixel input)
     return normalize(texturized);
 }
 
+void Discard(InputPixel input)
+{
+    const float depth = input.screenPos.z;
+    const float2 screenUv = (input.screenPos.xy + float2(1.f,1.f)) / 2.f;
+    const float wDepth = weaponDepth.SampleLevel(Sampler, float2(screenUv.x, 1.f - screenUv.y),0).r;
+
+    if(wDepth != 1.f)
+    {
+        discard;
+    }
+}
+
 PixelOut PS_PosSizeColor(InputPixel input)
 {
+    Discard(input);
     const float3 dif = input.worldPosition.xyz - input.center.xyz;
     const float dist = length(dif);
     const float interpol = saturate((dist) / (input.radius));

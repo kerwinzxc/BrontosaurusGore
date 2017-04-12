@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DXFramework.h"
+#include "picojson.h"
 
 CDXFramework::CDXFramework()
 {
@@ -342,7 +343,7 @@ void CDXFramework::Shutdown()
 	}
 }
 
-void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D11DepthStencilView*& aDepthStencilView, ID3D11ShaderResourceView*& aDepthStencilResource)
+void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D11DepthStencilView*& aDepthStencilView, ID3D11ShaderResourceView*& aDepthStencilResource, ID3D11Texture2D * aTexture, DXGI_FORMAT aFormat)
 {	
 	if (aDepthStencilView != nullptr)
 		aDepthStencilView->Release();
@@ -350,7 +351,7 @@ void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D1
 	ID3D11Texture2D* depthStencilBuffer = nullptr;
 
 
-	HRESULT result;
+	HRESULT result = S_OK;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	// Initialize the description of the depth buffer.
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -360,19 +361,24 @@ void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D1
 	depthBufferDesc.Height = aHeight;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.Format = GetDepthResourceFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
+	depthBufferDesc.Format = GetDepthResourceFormat(aFormat);
 	depthBufferDesc.SampleDesc.Count = 1;				//MSAA magic set too 4 for better stuffs
 	depthBufferDesc.SampleDesc.Quality = 0;				//MSAA magic set to 1 to enable magic
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
-	result = myDevice->CreateTexture2D(&depthBufferDesc, NULL, &depthStencilBuffer);
+
+	depthStencilBuffer = aTexture;
+	if(depthStencilBuffer == nullptr)
+	{
+		result = myDevice->CreateTexture2D(&depthBufferDesc, NULL, &depthStencilBuffer);
+	}
 	CHECK_RESULT(result, "Failed to create Texture2D.");
 	
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	// Set up the depth stencil view description.
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.Format = aFormat;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // Set to D3D11_DSV_DIMENSION_TEXTURE2DMS for some sort of multiSampling whaop
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 	// Create the depth stencil view.
@@ -382,7 +388,7 @@ void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D1
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
 	ZeroMemory(&srvd, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	srvd.Format = GetDepthSRVFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
+	srvd.Format = GetDepthSRVFormat(aFormat);
 	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvd.Texture2D.MipLevels = 1;
 
@@ -390,7 +396,6 @@ void CDXFramework::CreateDepthStencil(const int aWidth, const int aHeight, ID3D1
 	CHECK_RESULT(result, "Failed to create Shader Resouce View.");
 
 	depthStencilBuffer->Release();
-
 }
 
 
