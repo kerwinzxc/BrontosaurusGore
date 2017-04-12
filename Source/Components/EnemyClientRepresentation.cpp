@@ -48,6 +48,16 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
 	}
+
+	if (myIsAlive == false)
+	{
+		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
+		SComponentMessageData controllerPositionData;
+		controllerPositionData.myVector3f = hellPosition;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		GetParent()->SetWorldPosition(hellPosition);
+	}
 }
 
 void  CEnemyClientRepresentation::Init()
@@ -62,16 +72,24 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	{
 	case eComponentMessageType::eTakeDamage:
 	case eComponentMessageType::eTookDamage:
+		DL_PRINT("Wants to take damage");
+		if(myIsAlive == false)
+		{
+			DL_PRINT("dead enemy wants to take damage");
+		}
 		DoSplatter();
 		StartHighlight();
 		break;
-	case eComponentMessageType::eDied:
+	case eComponentMessageType::eDoStuffBeforeDie:
 	{
 		DoDeathEffect();
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = hellPosition;
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		GetParent()->SetWorldPosition(hellPosition);
+		myFutureMatrix.SetPosition(hellPosition);
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		myIsAlive = false;
@@ -82,6 +100,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = GetParent()->GetWorldPosition();
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 		myIsAlive = true;
 	}
 	}

@@ -5,6 +5,8 @@
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "../TShared/NetworkMessage_TakeDamage.h"
 #include "../TClient/ClientMessageManager.h"
+#include "..\game\PollingStation.h"
+#include "..\Audio\AudioInterface.h"
 
 CHealthComponent::CHealthComponent(unsigned int aNetworkID) : myNetworkID(aNetworkID)
 {
@@ -138,6 +140,11 @@ void CHealthComponent::Destroy()
 
 void CHealthComponent::TakeDamage(const healthPoint aDamage)
 {
+	if (CPollingStation::GetInstance()->CheckIfIsPlayerObject(GetParent()) == true)
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Hurt");
+	}
+
 	if(aDamage < 0)
 	{
 		Heal(-aDamage);
@@ -148,6 +155,7 @@ void CHealthComponent::TakeDamage(const healthPoint aDamage)
 	{
 		myCurrentHealth = 0;
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CAddToCheckPointResetList(GetParent()));
+		GetParent()->NotifyComponents(eComponentMessageType::eDoStuffBeforeDie, SComponentMessageData());
 		GetParent()->NotifyComponents(eComponentMessageType::eDied, SComponentMessageData());
 		myIsAlive = false;
 		//kom du hit sätt en break point i model componets recive eDied! //varför? // jag undrar också mvh carl (från edvubs dator)

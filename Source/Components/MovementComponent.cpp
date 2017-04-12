@@ -7,6 +7,7 @@
 #include "../Audio/AudioInterface.h"
 #include "../BrontosaurusEngine/TextInstance.h"
 #include "TumbleweedFactory.h"
+#include "..\Game\PollingStation.h"
 
 #define vodi void
 static const float gravityAcceleration = 9.82f * 2.0f;
@@ -241,10 +242,10 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		}
 		myJumpForce -= gravityAcceleration * aDeltaTime.GetSeconds();
 	}
-	if (GetParent()->GetLocalTransform().GetPosition().y < -100.0f)
-	{
-		myJumpForce = 0.0f;
-	}
+	//if (GetParent()->GetLocalTransform().GetPosition().y < -100.0f)
+	//{
+	//	myJumpForce = 0.0f;
+	//}
 	myVelocity.y += myJumpForce;
 
 	SComponentQuestionData groundeddata;
@@ -277,23 +278,15 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
 		parentTransform.SetPosition(data.myVector3f);
-		if (parentTransform.GetPosition().y < -100.0f)
+		if ((parentTransform.GetPosition().y < -100.0f && CPollingStation::GetInstance()->GetCurrentLevelIndex() != 3) ||
+			(parentTransform.GetPosition().y < -1000.0f && CPollingStation::GetInstance()->GetCurrentLevelIndex() == 3))
 		{
 			SComponentMessageData takeDamageData;
 			takeDamageData.myInt = 10000;
 			GetParent()->NotifyComponents(eComponentMessageType::eTakeDamage, takeDamageData);
 			myVelocity = CU::Vector3f::Zero;
-			//Teleport stuff back code
-			//CU::Vector3f teleportPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
-			////parentTransform.SetPosition(parentTransform.GetPosition().x, parentTransform.GetPosition().y * -1, parentTransform.GetPosition().z);
-			//SComponentQuestionData data;
-			//data.myVector4f = (teleportPosition - parentTransform.GetPosition()) ;
-			//data.myVector4f.w = aDeltaTime.GetSeconds();
-			//if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
-			//{
-			//	parentTransform.SetPosition(data.myVector3f);
-			//}
 		}
+
 		NotifyParent(eComponentMessageType::eMoving, SComponentMessageData());
 	}
 
