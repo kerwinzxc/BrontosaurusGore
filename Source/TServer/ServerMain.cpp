@@ -49,6 +49,9 @@
 #include "../ThreadedPostmaster/ResetToCheckPointMessage.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
 #include "../CommonUtilities/ThreadNamer.h"
+#include "../Components/CheckPointComponent.h"
+#include "../Components/CheckpointComponentManager.h"
+#include "../ThreadedPostmaster/SetAsNewCheckPointMessage.h"
 
 
 
@@ -570,6 +573,9 @@ bool CServerMain::Update()
 			case ePackageType::eSetCheckpointMessage:
 			{
 				CNetworkMessage_SetCheckpointMessage* doormessage = currentMessage->CastTo<CNetworkMessage_SetCheckpointMessage>();
+				//CCheckPointComponent* checkpointComponent = CCheckpointComponentManager::GetInstance()->GetComponent(doormessage->GetId());
+				//checkpointComponent->SetAsNewCheckPointWithNetwork();
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSetAsNewCheckPointMessage(CU::Vector3f::Zero));
 				SendTo(doormessage);
 			}
 			break;
