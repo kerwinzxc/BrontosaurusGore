@@ -53,6 +53,7 @@ private:
 	CU::Vector3f myLastHitNormal;
 	CU::Vector3f myLastHitPosition;
 	float myDeltaTime;
+	bool myIsFiring;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)

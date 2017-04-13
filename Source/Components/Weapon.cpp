@@ -23,6 +23,7 @@ CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene
 	myPhysicsScene = aPhysicsScene;
 	mySoundDirection = { 0.0f, 0.0f, 1.0f };
 	myDeltaTime = 0.0f;
+	myIsFiring = false;
 	if (Audio::CAudioInterface::GetInstance() != nullptr)
 	{
 		myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
@@ -291,17 +292,31 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection)
 	switch (aSoundEvent)
 	{
 	case SoundEvent::Fire: 
+		myIsFiring = true;
 		eventId = myWeaponData->soundData.fire;
 		break;
 	case SoundEvent::Reload: 
 		eventId = myWeaponData->soundData.reload;
 		break;
-	default: break;
+	default: 
+		myIsFiring = false;
+		break;
 	}
+
+	if (myWeaponData->isMeleeWeapon == true)
+	{
+		if (myIsFiring == true)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Start");
+		}
+		// Loop stop, throttle start; is handled in weaponSystemComponent, recieve, eKeyReleased.
+		return;
+	}
+
+
 	if(eventId.empty() == false)
 	{
-		
-
 		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str(),myAudioId);
 	}
 }
@@ -382,12 +397,22 @@ void CWeapon::Equip()
 
 
 		onlyOnce++; //Don't question it.
-		if (myWeaponData->isMeleeWeapon == false)
-			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
-		if (myWeaponData->isMeleeWeapon == true && onlyOnce == 3)
+		if (onlyOnce == 3)
 		{
-			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+
+			 if (myWeaponData->isMeleeWeapon == true)
+			{
+				Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+				Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+			}
+
 			onlyOnce = 1;
+		}
+
+		if (myWeaponData->isMeleeWeapon == false)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
 		}
 	}
 }
