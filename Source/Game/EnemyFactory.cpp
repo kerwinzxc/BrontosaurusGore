@@ -251,7 +251,10 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_Pinky_01.fbx");
 		controllerDesc.halfHeight = 1.47f;
 		controllerDesc.radius = 2.08f;
-		controllerDesc.center.y = -0.88f;
+		controllerDesc.center.y = -1.88f;
+		CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
+		CComponentManager::GetInstance().RegisterComponent(damaageHandler);
+		repesention->AddComponent(damaageHandler);
 	}
 	break;
 	default:
@@ -272,9 +275,6 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc, repesention->GetId());
 	repesention->AddComponent(CollisionController);
-	CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
-	CComponentManager::GetInstance().RegisterComponent(damaageHandler);
-	repesention->AddComponent(damaageHandler);
 
 	DL_PRINT("EnemyRepesentationNetworkID:");
 	DL_PRINT(std::to_string(enemy->GetNetworkID()).c_str());

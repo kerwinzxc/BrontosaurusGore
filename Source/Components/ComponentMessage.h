@@ -109,6 +109,7 @@ enum class eComponentMessageType
 	eRevenantMelee,
 	eRevenantStartJump,
 	eRevenantThrowAttack,
+	eUpdatePinky,
 	eLength,
 };
 
