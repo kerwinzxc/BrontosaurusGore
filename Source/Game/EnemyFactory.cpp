@@ -246,7 +246,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	break;
 	case eEnemyTypes::ePinky:
 	{
-		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
+		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_Pinky_01.fbx");
 		controllerDesc.halfHeight = 1.47f;
 		controllerDesc.radius = 1.08f;
 		controllerDesc.center.y = -0.88f;
