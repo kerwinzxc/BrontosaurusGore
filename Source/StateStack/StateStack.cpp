@@ -9,6 +9,7 @@
 #include "../Game/PauseMenu.h"
 #include "../Game/LoadState.h"
 #include "../Game/CreditsState.h"
+#include "../Game/MenuState.h"
 
 StateStack::StateStack()
 	: myStates(8)
@@ -82,6 +83,8 @@ eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
 	//	static_cast<MainMenuState*>(GetCurrentState())->SetIsGoingToLevelSelect(true);
 	//	PushState(new LevelSelectState(*this));
 	//	break;
+	case PushState::eState::eMenu:
+		PushState(new CMenuState(*this ,"Json/Menu/LevelSelectMenu.json"));
 	default: 
 		break;
 	}

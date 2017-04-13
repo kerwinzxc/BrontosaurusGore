@@ -1,6 +1,6 @@
 #pragma once
-#include "BrontosaurusEngine/SpriteInstance.h"
-#include "BrontosaurusEngine/TextInstance.h"
+#include "../BrontosaurusEngine/SpriteInstance.h"
+#include "../BrontosaurusEngine/TextInstance.h"
 #include "GUIElement.h"
 #include "CommonUtilities.h"
 #include "binary_tree.h"

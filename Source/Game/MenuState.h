@@ -1,8 +1,8 @@
 #pragma once
-#include "StateStack/State.h"
-#include "GUI/MenuManager.h"
+#include "../StateStack/State.h"
+#include "../GUI/MenuManager.h"
 #include "JsonValue.h"
-#include "ThreadedPostmaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 struct STextInput
 {
@@ -47,10 +47,14 @@ private:
 	bool PopMenues(std::string aNumberOfMenues);
 	bool PushLevel(std::string aLevelIndexString);
 	static bool StartServer(std::string notUsed);
-	static bool ConnectLocal(std::string anIp);
+	bool ConnectLocal(std::string anIp);
 	bool SetCurrentTextInput(std::string aTexINputIndex);
 	bool CheckIp(std::string aTextInput);
+	bool SetName(std::string aTextInput);
+	bool SetIp(std::string aTextInput);
+	bool Conect(std::string notusese);
 
+	void GetIPAddress();
 	CU::GrowingArray<STextInput> myTextInputs;
 	int myCurrentTextInput;
 
@@ -59,13 +63,14 @@ private:
 
 	CMenuManager myManager;
 	bool myIsInFocus;
+	std::wstring myThisComputersIP;
 	static char ourMenuesToPop;
 
 	bool myBlinkeyBool;
 	float myBlinkeyTimer;
 
-	std::wstring myName;
-	std::wstring myIp;
+	std::string myName;
+	std::string myIp;
 };
 
 inline bool CMenuState::GetLetThroughRender() const
