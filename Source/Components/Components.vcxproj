@@ -427,6 +427,7 @@
     <ClInclude Include="RevenantController.h" />
     <ClInclude Include="RigidBodyComponent.h" />
     <ClInclude Include="ServerPlayerNetworkComponent.h" />
+    <ClInclude Include="ShowTitleComponent.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="SphereColliderComponent.h" />
@@ -540,6 +541,7 @@
     <ClCompile Include="ParticleEmitterComponent.cpp" />
     <ClCompile Include="ParticleEmitterComponentManager.cpp" />
     <ClCompile Include="ServerPlayerNetworkComponent.cpp" />
+    <ClCompile Include="ShowTitleComponent.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SpawnerManager.cpp" />
     <ClCompile Include="SphereColliderComponent.cpp" />

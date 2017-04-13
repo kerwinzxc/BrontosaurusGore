@@ -94,6 +94,8 @@
 #include "AnimationComponent.h"
 #include "LutComponent.h"
 #include "PointLightComponentManager.h"
+#include "BrontosaurusEngine/SpriteInstance.h"
+#include "ShowTitleComponent.h"
 #include "Renderer.h"
 #include "MenuState.h"
 
@@ -118,6 +120,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 	, myIsCutscene(false)
+	, myTitle(nullptr)
 {
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
@@ -228,8 +231,17 @@ void CPlayState::Load()
 
 	if (levelsArray[myLevelIndex].GetString() == "Intro")
 	{
-		myIsCutscene = true;
+		myIsCutscene = 1;
 		Audio::CAudioInterface::GetInstance()->PostEvent("Intro_Audio");
+		myTitle = new CSpriteInstance("Sprites/Menu/Main/Title/default.dds");
+		myTitle->SetPivot({ 0.5f, 0.5f });
+		myTitle->SetPosition({ 0.5f, 0.5f });
+	}
+	else if (levelsArray[myLevelIndex].GetString() == "Outro")
+	{
+		myIsCutscene = 2;
+		
+		Audio::CAudioInterface::GetInstance()->PostEvent("Outro_Audio");
 	}
 
 	Lights::SDirectionalLight dirLight;
@@ -313,6 +325,19 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 		myColliderComponentManager->Update();
 	}
 	myPlayerLut->Update(aDeltaTime.GetSeconds());
+
+	if (myIsCutscene)
+	{
+		if (myTitle)
+		{
+			if (myTitleComponent)
+			{
+				myTitleComponent->Update(aDeltaTime.GetSeconds());
+				myTitle->SetAlpha(myTitleComponent->GetAlpha());
+			}
+		}
+	}
+
 	return myStatus;
 }
 
@@ -322,6 +347,13 @@ void CPlayState::Render()
 
 	if (myIsCutscene == false)
 		myHUD.Render();
+
+	if (myIsCutscene == true)
+	{
+		if(myTitle)
+			myTitle->Render();
+	}
+
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
@@ -522,6 +554,12 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (myIsCutscene == true)
 		{
 			myMovementComponent->SetIntroFallMode();
+			if (myTitle)
+			{
+				myTitleComponent = new CShowTitleComponent();
+				playerObject->AddComponent(myTitleComponent);
+
+			}
 		}
 
 		if (myIsCutscene == false)
