@@ -39,6 +39,8 @@ CMenuState::CMenuState(StateStack& aStateStack, std::string aFile) : State(aStat
 	myManager.AddAction("SelectTextInput", [this](std::string string)-> bool { return SetCurrentTextInput(string); });
 	myManager.AddAction("CheckIp", [this](std::string string)-> bool { return CheckIp(string); });
 	myManager.AddAction("SetName", [this](std::string string)-> bool { return SetName(string); });
+	myManager.AddAction("Conect", [this](std::string string)-> bool { return Conect(string); });
+	myManager.AddAction("SetIp", [this](std::string string)-> bool { return SetIp(string); });
 
 	MenuLoad(aFile);
 }
@@ -419,7 +421,8 @@ bool CMenuState::Conect(std::string aTextInput)
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, myIp));
 	return true;
 }
-#include <algorithm>
+
+
 #include <Iphlpapi.h>
 #pragma comment(lib, "IPHLPAPI.lib")
 
