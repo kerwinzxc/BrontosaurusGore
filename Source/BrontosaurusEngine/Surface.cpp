@@ -131,9 +131,9 @@ const CU::Vector2ui& CSurface::GetTextureSize() const
 
 CU::Vector2f CSurface::GetTextureSizeFloat() const
 {
-	if (myTextures.Size() > 0)
+	if (myTextures.Size() > 0 && myTextures.GetFirst() != nullptr)
 	{
-		return CU::Vector2f(myTextures[0]->GetSize());
+		return CU::Vector2f(myTextures.GetFirst()->GetSize());
 	}
 
 	return CU::Vector2f::Zero;
