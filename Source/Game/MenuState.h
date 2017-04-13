@@ -1,8 +1,8 @@
 #pragma once
-#include "StateStack/State.h"
-#include "GUI/MenuManager.h"
+#include "../StateStack/State.h"
+#include "../GUI/MenuManager.h"
 #include "JsonValue.h"
-#include "ThreadedPostmaster/Subscriber.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
 struct STextInput
 {

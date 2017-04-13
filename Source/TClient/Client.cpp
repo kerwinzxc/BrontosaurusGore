@@ -76,6 +76,7 @@
 #include "../CommonUtilities/JsonValue.h"
 #include "../CommonUtilities/WindowsHelper.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
+#include "../PostMaster/PushState.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0), myCurrentTime(0), myPositionWaitTime(0)
@@ -437,6 +438,7 @@ void CClient::Update()
 				string += CU::StringToWString(conectMessage->myClientName);
 				string += L" has conected!";
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::eMenu, 1));
 			}
 			break;
 			case ePackageType::eDisconected:
