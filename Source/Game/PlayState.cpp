@@ -416,7 +416,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	transformation.SetPosition(0, -1.8, 0);
 	modelObject->SetWorldTransformation(transformation);
 	
-	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Meshes/M_Player_01.fbx");
+	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Animations/M_Player_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);

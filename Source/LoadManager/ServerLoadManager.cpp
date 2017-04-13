@@ -60,7 +60,6 @@ void CServerLoadManager::RegisterFunctions()
 	loader.RegisterComponentLoadFunction("MovementComponent", ServerLoadMovementComponent);
 	loader.RegisterComponentLoadFunction("Enemy", LoadEnemy); 
 	loader.RegisterComponentLoadFunction("WeaponSystemComponent", LoadWeaponSystemServerComponent);
-	loader.RegisterComponentLoadFunction("DamageOnCollisionComponent", LoadDamageOnCollisionComponentForServer);
 	loader.RegisterComponentLoadFunction("ImpController", LoadImp);
 	loader.RegisterComponentLoadFunction("RevenantController", LoadRevenant);
 	loader.RegisterComponentLoadFunction("PinkyController", LoadPinky);
