@@ -53,6 +53,7 @@ private:
 	CU::Vector3f myLastHitNormal;
 	CU::Vector3f myLastHitPosition;
 	float myDeltaTime;
+	float myClickSoundCoolDown;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)
