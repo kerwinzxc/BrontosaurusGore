@@ -5,6 +5,7 @@
 CGeometryBuffer::CGeometryBuffer()
 {
 	myFramework = nullptr;
+	refcount = 1;
 }
 
 CGeometryBuffer::~CGeometryBuffer()
