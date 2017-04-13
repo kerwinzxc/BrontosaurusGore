@@ -44,6 +44,7 @@ public:
 	inline CDamageOnCollisionComponentManager* GetDamageOnCollisionComponentManager() const;
 	inline CColliderComponentManager* GetColliderComponentManager();
 	inline CArenaTriggerComponentManager* GetArenaTriggerManager();
+	inline const short GetCurrentLevelIndex();
 private:
 	CU::GrowingArray<CServerPlayerNetworkComponent*> myPlayersNetworkComponents;
 	CGameObjectManager* myGameObjectManager;
@@ -65,6 +66,7 @@ private:
 	std::thread::id myThreadID;
 
 
+	short myLevelIndex;
 
 	bool myIsRunning;
 	bool myInGame;
@@ -95,4 +97,9 @@ inline CColliderComponentManager* CGameServer::GetColliderComponentManager()
 inline CArenaTriggerComponentManager * CGameServer::GetArenaTriggerManager()
 {
 	return myArenaTriggerManager;
+}
+
+inline const short CGameServer::GetCurrentLevelIndex()
+{
+	return myLevelIndex;
 }
