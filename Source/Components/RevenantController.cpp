@@ -20,6 +20,7 @@ CRevenantController::CRevenantController(unsigned int aId, eEnemyTypes aType)
 	myIsAtJumpPoint = false;
 	myChillAtJumpPointCountDown = 0.0f;
 	myWaitBeforeChangingStateCountdown = 0.0f;
+	myShouldntExist = false;
 }
 
 CRevenantController::~CRevenantController()
@@ -34,11 +35,18 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeMeleeAttackDuration = revenantData->chargeMeleeAttackDuration;
 	myChargeRangedAttackDuration = revenantData->chargeRangedAttackAttackDuration;
 	myChargeRangedAirBarrageAttackDuration = revenantData->chargeAirBarrageAttackDuration;
+	myChargeMeleeAttackDuration = 0.5f;
+	myChargeRangedAttackDuration = 0.1f;
+	myChargeRangedAirBarrageAttackDuration = 0.1;
 	CEnemy::SetEnemyData(aData);
 }
 
 void CRevenantController::Update(const float aDeltaTime)
 {
+	if(myShouldntExist == true)
+	{
+		return;
+	}
 	if(myChillAtJumpPointCountDown > 0)
 	{
 		myChillAtJumpPointCountDown -= aDeltaTime;
@@ -127,14 +135,20 @@ void CRevenantController::Update(const float aDeltaTime)
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+
+			ChangeClientAnimation(eComponentMessageType::eRevenantMelee);
 			myState = eRevenantState::eIdle;
 		}
+
 		break;
 	case eRevenantState::eUseRangedAttack:
+		LookAtPlayer();
 		ChangeWeapon(0);
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+
+			ChangeClientAnimation(eComponentMessageType::eRevenantThrowAttack);
 			myUsedAttacksSinceLastStateChange++;
 			myState = eRevenantState::eChargingRangedAttack;
 			if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
@@ -162,8 +176,11 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantAttackAir);
 		if(myFlightForce <= 0.0f)
 		{
+
 			myState = eRevenantState::eFlyHover;
 			myElapsedHoverTime = 0.0f;
 		}
@@ -210,6 +227,7 @@ void CRevenantController::Update(const float aDeltaTime)
 			myFlightForce -= gravityAcceleration * aDeltaTime;
 			if (CheckIfInAir() == false)
 			{
+				ChangeClientAnimation(eComponentMessageType::eRevenantLand);
 				myIsflying = false;
 				myFlightForce = 0.0f;
 			}
@@ -268,6 +286,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eWaitBeforeChangingState:
 	{
+		LookAtPlayer();
 		myWaitBeforeChangingStateCountdown -= aDeltaTime;
 		if(myWaitBeforeChangingStateCountdown <= 0)
 		{
@@ -402,11 +421,15 @@ void CRevenantController::StartCharginRangedAttack()
 	unsigned short randomNumber = rand() % 5;
 	if (randomNumber == 0)
 	{
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantStartJump);
 		myState = eRevenantState::eFlyAscend;
 		ApplyFlightForce();
 	}
 	if (myToPlayer.y > 2.0f)
 	{
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantStartJump);
 		myState = eRevenantState::eFlyAscend;
 		ApplyFlightForce();
 	}

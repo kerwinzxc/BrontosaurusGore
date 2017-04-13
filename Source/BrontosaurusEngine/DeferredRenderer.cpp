@@ -165,6 +165,8 @@ void CDeferredRenderer::DoRenderQueue(CRenderer& aRenderer)
 	}
 
 	myRenderMessages.RemoveAll();
+	myGbuffer.UnbindInput();
+	myGbuffer.UnbindOutput();
 }
 
 void CDeferredRenderer::AddRenderMessage(SRenderMessage* aRenderMessage)

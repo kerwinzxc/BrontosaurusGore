@@ -1,9 +1,20 @@
 #pragma once
-#include "StateStack/State.h"
-#include "GUI/MenuManager.h"
+#include "../StateStack/State.h"
+#include "../GUI/MenuManager.h"
 #include "JsonValue.h"
+#include "../ThreadedPostmaster/Subscriber.h"
 
-class CMenuState :public State
+struct STextInput
+{
+	STextInput(): myInputIsValid(true), myTextInstance(nullptr)
+	{
+	}
+
+	bool myInputIsValid;
+	CTextInstance* myTextInstance;
+};
+
+class CMenuState :public State, Postmaster::ISubscriber
 {
 public:
 
@@ -21,26 +32,45 @@ public:
 
 	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
+	eMessageReturn DoEvent(const KeyCharPressed& aCharPressed) override;
+	eMessageReturn DoEvent(const CConectedMessage& aCharPressed) override;
+	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage) override;
+
 private:
 	static eAlignment LoadAlignment(const CU::CJsonValue& aJsonValue);
 	void LoadElement(const CU::CJsonValue& aJsonValue, const std::string& aFolderpath);
 	void MenuLoad(const std::string& aFile);
+	bool PushMenu(std::string aMenu);
 
-	void PushMenu(std::string aMenu) const;
+	static bool ExitGame(std::string notUsed);
+	bool PushTempLobby(std::string);
+	bool PopMenues(std::string aNumberOfMenues);
+	bool PushLevel(std::string aLevelIndexString);
+	static bool StartServer(std::string notUsed);
+	bool ConnectLocal(std::string anIp);
+	bool SetCurrentTextInput(std::string aTexINputIndex);
+	bool CheckIp(std::string aTextInput);
+	bool SetName(std::string aTextInput);
+	bool SetIp(std::string aTextInput);
+	bool Conect(std::string notusese);
 
-	static void ExitGame(std::string notUsed);
-	void PushTempLobby(std::string notUsed) const;
-	void PopMenues(std::string aNumberOfMenues) const;
-	void PushLevel(std::string aLevelIndexString) const;
-	static void StartServer(std::string notUsed);
-	static void ConnectLocal(std::string anIp);
+	void GetIPAddress();
+	CU::GrowingArray<STextInput> myTextInputs;
+	int myCurrentTextInput;
 
 	bool myShowStateBelow;
 	CSpriteInstance* myPointerSprite;
 
 	CMenuManager myManager;
 	bool myIsInFocus;
+	std::wstring myThisComputersIP;
 	static char ourMenuesToPop;
+
+	bool myBlinkeyBool;
+	float myBlinkeyTimer;
+
+	std::string myName;
+	std::string myIp;
 };
 
 inline bool CMenuState::GetLetThroughRender() const

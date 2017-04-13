@@ -28,14 +28,20 @@ CImpController::CImpController(unsigned int aId, eEnemyTypes aType)
 	myChargeMeleeAttackDuration = 1.0f;
 	myJumpForce = 0.0f;
 	myWaitAfterAttackCountDown = 0.0f;
+	myShouldntExist = false;
 }
 
 CImpController::~CImpController()
 {
+	myIsDead = true;
 }
 
 void CImpController::Update(const float aDeltaTime)
 {
+	if(myShouldntExist == true)
+	{
+		return;
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myVelocity.y = myJumpForce;
 	SendTransformationToServer();
@@ -240,7 +246,9 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 	myWanderDuration = impData->wanderDuration;
 	myAttacksUntillRunningAway = impData->attacksUntillRunningAway;
 	myChargeMeleeAttackDuration = impData->chargeMeleeAttackDuration;
+	myChargeMeleeAttackDuration = 0.5f;
 	myChargeRangedAttackDuration = impData->chargeAttackDuration;
+	myChargeRangedAttackDuration = 0.1f;
 	CEnemy::SetEnemyData(aData);
 }
 
@@ -294,10 +302,15 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 {
 	if(myIsJumping == false) 
 	{
-		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-		myIsJumping = true;
+		float yPosition = GetParent()->GetWorldPosition().y;
+		if(yPosition < ClosestPlayerPosition().y || yPosition < myWanderToPosition.y)
+		{
+			myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+			myIsJumping = true;
 
-		ChangeClientAnimation(eComponentMessageType::eImpStartToJump);
+			ChangeClientAnimation(eComponentMessageType::eImpStartToJump);
+		
+		}
 		//CNetworkMessage_AnimationStart* jumpMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
 		//jumpMessage->Init(GetNetworkID(), eComponentMessageType::eImpStartToJump);
 		//Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(jumpMessage));
@@ -336,6 +349,10 @@ void CImpController::InitiateWander()
 	myState = eImpState::eRunAfterShooting;
 	myUsedAttackSinceLastRunning = 0;
 	myWanderToPosition = GetNearestJumpPosition();
+	if(myWanderToPosition == GetParent()->GetWorldPosition())
+	{
+		myState = eImpState::eIdle;
+	}
 }
 
 bool CImpController::CanChangeState()
@@ -372,11 +389,4 @@ eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetTo
 	myState = eImpState::eIdle;
 	myIsJumping = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
-}
-
-void CImpController::ChangeClientAnimation(const eComponentMessageType aMessageType) const
-{
-	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
-	animationMessage->Init(GetNetworkID(), aMessageType);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
 }

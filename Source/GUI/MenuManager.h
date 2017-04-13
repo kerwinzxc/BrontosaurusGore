@@ -1,8 +1,9 @@
 #pragma once
-#include "BrontosaurusEngine/SpriteInstance.h"
-#include "BrontosaurusEngine/TextInstance.h"
+#include "../BrontosaurusEngine/SpriteInstance.h"
+#include "../BrontosaurusEngine/TextInstance.h"
 #include "GUIElement.h"
 #include "CommonUtilities.h"
+#include "binary_tree.h"
 
 
 enum class eMenuThingType
@@ -25,7 +26,7 @@ struct SClickArea
 {
 	int mySpriteID;
 	CU::Vector4f myRect;
-	CU::GrowingArray<std::function<void(void)>> myActions;
+	CU::GrowingArray<std::function<bool(void)>> myActions;
 };
 
 struct SLayerData
@@ -71,18 +72,19 @@ public:
 
 	const SMenuSprite& GetSprite(unsigned aSpriteId);
 
-	void AddAction(const std::string& aActionName, const std::function<void(std::string)>& aFunction);
+	void AddAction(const std::string& aActionName, const std::function<bool(std::string)>& aFunction);
+	CTextInstance* GetTextInstance(const int aTextInputTextInstanceIndex);
 private:
 	static CSpriteInstance* ChoseSpriteInstance(const SMenuSprite& aMenuSprite);
 
-	std::map<std::string, std::function<void(std::string)>> myActions;
+	std::map<std::string, std::function<bool(std::string)>> myActions;
 
 	CU::GrowingArray<SMenuSprite> mySpriteInstances;
 	CU::GrowingArray<CTextInstance*> myTextInstances;
 	CU::GrowingArray<SClickArea> myClickAreas;
 	CU::GrowingArray<SLayerData> myLayers;
 
-	CU::Vector2f myMousePosition;
+	static CU::Vector2f ourMousePosition;
 	CSpriteInstance* myPointerSprite;
 
 	bool myShouldRender;
@@ -94,18 +96,18 @@ private:
 
 inline void CMenuManager::UpdateMousePosition(const CU::Vector2f& aPosition)
 {
-	myMousePosition = aPosition;
+	ourMousePosition = aPosition;
 
-	myMousePosition.x = CLAMP(myMousePosition.x, 0, 1);
-	myMousePosition.y = CLAMP(myMousePosition.y, 0, 1);
+	ourMousePosition.x = CLAMP(ourMousePosition.x, 0, 1);
+	ourMousePosition.y = CLAMP(ourMousePosition.y, 0, 1);
 
 	if (myPointerSprite != nullptr)
 	{
-		myPointerSprite->SetPosition(myMousePosition);
+		myPointerSprite->SetPosition(ourMousePosition);
 	}
 }
 
 inline CU::Vector2f CMenuManager::GetMopusePosition() const
 {
-	return myMousePosition;
+	return ourMousePosition;
 }

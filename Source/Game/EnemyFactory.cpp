@@ -24,7 +24,8 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "CommonUtilities/CommonUtilities.h"
-
+#include "PinkyClientDamageHandler.h"
+#include "ComponentManager.h"
 
 CEnemyFactory* CEnemyFactory::ourInstance = nullptr;
 
@@ -88,7 +89,7 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myImpBluePrint.wanderDistance = impstats.at("FleeDistance").GetFloat();
 	myImpBluePrint.wanderAngle = impstats.at("FleeAngle").GetFloat();
 
-	myImpBluePrint.shootingRange = 0;
+	myImpBluePrint.shootingRange = 20.0f;
 
 
 	CU::CJsonValue revenantStats = value.at(alevel).at("Revenant");
@@ -102,7 +103,8 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myRevenantBluePrint.chargeAirBarrageAttackDuration = revenantStats.at("ChargeBarrageAttackDuration").GetFloat();
 	myRevenantBluePrint.chargeMeleeAttackDuration = revenantStats.at("ChargeMeleeAttackDuration").GetFloat();
 	myRevenantBluePrint.chargeRangedAttackAttackDuration = revenantStats.at("ChargeRangedAttackDuration").GetFloat();
-	
+	myRevenantBluePrint.shootingRange = 20.0f;
+
 	CU::CJsonValue pinkyStats = value.at(alevel).at("Pinky");
 
 	myPinkyBluePrint.Health = pinkyStats.at("Health").GetInt();
@@ -116,6 +118,7 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myPinkyBluePrint.chargeSpeed = pinkyStats.at("ChargeSpeed").GetFloat();
 	myPinkyBluePrint.windupChargeTime = pinkyStats.at("ChargingChargeDuration").GetFloat();
 	myPinkyBluePrint.chargeDamage = pinkyStats.at("ChargeDamage").GetFloat();
+	myPinkyBluePrint.shootingRange = 20.0f;
 }
 
 CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3f & aPosition)
@@ -245,10 +248,13 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	break;
 	case eEnemyTypes::ePinky:
 	{
-		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
+		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_Pinky_01.fbx");
 		controllerDesc.halfHeight = 1.47f;
-		controllerDesc.radius = 1.08f;
-		controllerDesc.center.y = -0.88f;
+		controllerDesc.radius = 2.08f;
+		controllerDesc.center.y = -1.88f;
+		CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
+		CComponentManager::GetInstance().RegisterComponent(damaageHandler);
+		repesention->AddComponent(damaageHandler);
 	}
 	break;
 	default:

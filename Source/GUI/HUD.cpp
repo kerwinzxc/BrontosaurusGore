@@ -136,7 +136,7 @@ void CHUD::UpdateHealthAndArmour()
 		numberString += std::to_wstring(myCurrentMaxHealth);
 
 		myHealthNumber.SetText(numberString);
-		myHealthBar->SetLevel(myCurrentHealth / myCurrentMaxHealth);
+		myHealthBar->SetLevel(static_cast<float>(myCurrentHealth) / myCurrentMaxHealth);
 
 		myHealthAndArmourHasChanged = true;
 	}
@@ -156,7 +156,7 @@ void CHUD::UpdateHealthAndArmour()
 		armourString += std::to_wstring(myCurrentMaxArmour);
 
 		myArmourNumber.SetText(armourString);
-		myArmourBar->SetLevel(myCurrentArmour / myCurrentMaxArmour);
+		myArmourBar->SetLevel(static_cast<float>(myCurrentArmour) / myCurrentMaxArmour);
 
 		myHealthAndArmourHasChanged = true;
 	}
@@ -170,14 +170,24 @@ void CHUD::UpdateWeapon()
 
 	if (ammoQuestion.myAmmoLeftData->ammoLeft != myCurrentAmmo || ammoQuestion.myAmmoLeftData->maxAmmo != myCurrentMaxAmmo)
 	{
-		myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
-		myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
+		if (std::string(ammoQuestion.myAmmoLeftData->weaponName) != "MeleeWeapon")
+		{
+			myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
+			myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
 
-		std::wstring ammoString = std::to_wstring(myCurrentAmmo);
-		ammoString += L"/";
-		ammoString += std::to_wstring(myCurrentMaxAmmo);
-		myAmmoNumber.SetText(ammoString);
-		myWeaponHUDHasChanged = true;
+			std::wstring ammoString = std::to_wstring(myCurrentAmmo);
+			ammoString += L"/";
+			ammoString += std::to_wstring(myCurrentMaxAmmo);
+			myAmmoNumber.SetText(ammoString);
+			myWeaponHUDHasChanged = true;
+		}
+		else
+		{
+			myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
+			myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
+			myAmmoNumber.SetText(L"");
+			myWeaponHUDHasChanged = true;
+		}
 	}
 
 	if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)

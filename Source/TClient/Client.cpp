@@ -76,6 +76,7 @@
 #include "../CommonUtilities/JsonValue.h"
 #include "../CommonUtilities/WindowsHelper.h"
 #include "../TShared/NetworkMessage_WeaponChange.h"
+#include "../PostMaster/PushState.h"
 
 
 CClient::CClient() : myMainTimer(0), myState(eClientState::DISCONECTED), myId(0), myServerIp(""), myServerPingTime(0), myServerIsPinged(false), myPlayerPositionUpdated(false), myRoundTripTime(0), myCurrentTime(0), myPositionWaitTime(0)
@@ -294,9 +295,12 @@ void CClient::Update()
 					break;
 				case CNetworkMessage_WeaponShoot::Shooter::Enemy:
 				{
-					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
-					target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
-					target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					if (CEnemyClientRepresentationManager::CheckIfCreated() == true)
+					{
+						CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
+						target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+						target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					}
 				}
 				break;
 				default: break;
@@ -308,6 +312,9 @@ void CClient::Update()
 			case ePackageType::ePickupHealth:
 			{
 				CNetworkMessage_PickupHealth* pickup = currentMessage->CastTo<CNetworkMessage_PickupHealth>();
+				SComponentMessageData data;
+				data.myInt = pickup->GetReplenishAmount();
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eHeal, data);
 				CPickupComponentManager::GetInstance()->DeactivateHealthPack(pickup->GetID());
 			}
 			break;
@@ -335,8 +342,8 @@ void CClient::Update()
 					ammoData.ammoType = "PlasmaRifle";
 					break;
 				case 2:
-					break;
 					ammoData.ammoType = "PlasmaRifle";
+					break;
 				default:
 					ammoData.ammoType = "PlasmaRifle";
 					break;
@@ -348,6 +355,10 @@ void CClient::Update()
 			case ePackageType::ePickupArmor:
 			{
 				CNetworkmessage_PickupArmor* pickup = currentMessage->CastTo<CNetworkmessage_PickupArmor>();
+
+				SComponentMessageData data;
+				data.myInt = pickup->GetReplenishAmount();
+				CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eAddArmor, data);
 				CPickupComponentManager::GetInstance()->DeactivateArmorPack(pickup->GetID());
 			}
 			break;
@@ -393,6 +404,13 @@ void CClient::Update()
 					CDoorManager::GetInstance()->OpenDoor(doorMesssage->GetNetworkID());
 					break;
 				case eDoorAction::eUnlock:
+
+					if(CDoorManager::GetInstance()->DoesDoorExist(doorMesssage->GetKeyID()))
+						Audio::CAudioInterface::GetInstance()->PostEvent("Door_Unlock");
+					else if(CDoorManager::GetInstance()->DoesDoorExist(doorMesssage->GetNetworkID(), true))
+						Audio::CAudioInterface::GetInstance()->PostEvent("Door_Unlock");
+
+
 					if (doorMesssage->GetKeyID() != -1)
 					{
 						CDoorManager::GetInstance()->UnlockDoor(doorMesssage->GetKeyID());
@@ -420,6 +438,7 @@ void CClient::Update()
 				string += CU::StringToWString(conectMessage->myClientName);
 				string += L" has conected!";
 				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(string));
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new PushState(PushState::eState::eMenu, 1));
 			}
 			break;
 			case ePackageType::eDisconected:

@@ -132,3 +132,24 @@ void CDoorManager::CloseDoor(const short aKeyId)
 		}
 	}
 }
+
+bool CDoorManager::DoesDoorExist(const short aKeyId, const bool aNetworked)
+{
+	if (aNetworked == false)
+	{
+		for (auto door : myDoors)
+		{
+			if (door.second->GetLockId() == aKeyId)
+				return true;
+		}
+	}
+	else
+	{
+		for (auto door : myDoors)
+		{
+			if (door.first == aKeyId)
+				return true;
+		}
+	}
+	return false;
+}

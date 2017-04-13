@@ -19,6 +19,7 @@ CPinkyController::CPinkyController(unsigned int aId, eEnemyTypes aType)
 	myIsCharging = false;
 	myGravityForce = 0.0f;
 	myElapsedChargeMeleeAttackTime = 0.0f;
+	mySHouldntExist = false;
 }
 
 CPinkyController::~CPinkyController()
@@ -33,11 +34,16 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeSpeed = pinkyData->chargeSpeed;
 	myChargeDistance2 = pinkyData->chargeDistance * pinkyData->chargeDistance;
 	myMeleeAttackChargeDuration = pinkyData->chargeMeleeAttackDuration;
+	myMeleeAttackChargeDuration = 0.5f;
 	CEnemy::SetEnemyData(aData);
 }
 
 void CPinkyController::Update(const float aDeltaTime)
 {
+	if(mySHouldntExist == true)
+	{
+		return;
+	}
 	UpdateBaseMemberVars(aDeltaTime);
 	myGravityForce -= gravityAcceleration * aDeltaTime;
 	myVelocity.y = myGravityForce;
@@ -46,7 +52,7 @@ void CPinkyController::Update(const float aDeltaTime)
 
 	if (myIsDead == false && myIsCharging == false && CanChangeState() == true)
 	{
-		if (WithinAttackRange())
+		/*if (WithinAttackRange())
 		{
 			myState = ePinkyState::eChargingMeleeAttack;
 		}
@@ -54,7 +60,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		{
 			myState = ePinkyState::eWalkIntoMeleeRange;
 		}
-		else if (WithinShootRange())
+		else */if (WithinShootRange())
 		{
 			myState = ePinkyState::eWindupCharge;
 			myWindupChargeTime = 0.0f;
@@ -68,7 +74,7 @@ void CPinkyController::Update(const float aDeltaTime)
 			myState = ePinkyState::eIdle;
 			if(myIsAggressive == true)
 			{
-				myState = ePinkyState::eWalkIntoMeleeRange;
+				myState = ePinkyState::eChase;
 			}
 		}
 	}
@@ -92,6 +98,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		myVelocity.z = mySpeed;
 		break;
 	case ePinkyState::eWindupCharge:
+		ChangeClientAnimation(eComponentMessageType::ePinkyLoadChange);
 		myElapsedWindupTime += aDeltaTime;
 		LookAtPlayer();
 		if(myElapsedWindupTime >= myWindupChargeTime)
@@ -99,21 +106,31 @@ void CPinkyController::Update(const float aDeltaTime)
 			myElapsedWindupTime = 0.0f;
 			myState = ePinkyState::eStartCharge;
 			myIsCharging = true;
+
 		}
 		break;
 	case ePinkyState::eStartCharge:
 		myStartChargeLocation = myPos;
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
+	{
+		ChangeClientAnimation(eComponentMessageType::ePinkyCharge);
 		myVelocity.z = myChargeSpeed;
-		if(GetIfSidesAreColliding() == true)
+		//if(GetIfSidesAreColliding() == true)
+		myLastFramePostion.Print();
+		GetParent()->GetWorldPosition().Print();
+		float distance = CU::Vector3f(myLastFramePostion - GetParent()->GetWorldPosition()).Length();
+		float minmoveChargesak = myChargeSpeed * aDeltaTime * 0.1f;
+		if(distance < minmoveChargesak)
 		{
 			myIsCharging = false;
 			myElapsedChargeCooldownTime = 0.0f;
 			myState = ePinkyState::eChargeCooldown;
 		}
 		KeepWithinChargeDist();
+		myLastFramePostion = GetParent()->GetWorldPosition();
 		break;
+	}
 	case ePinkyState::eChargeCooldown:
 		LookAtPlayer();
 		UpdateChargeCooldown(aDeltaTime);
@@ -155,12 +172,12 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 	break;
 	case eComponentMessageType::eOnCollisionEnter:
 	{
-		if(myIsCharging == true)
+		/*if(myIsCharging == true)
 		{
 			myIsCharging = false;
 			myElapsedChargeCooldownTime = 0.0f;
 			myState = ePinkyState::eChargeCooldown;
-		}
+		}*/
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:

@@ -9,6 +9,7 @@
 #include "RigidBodyComponent.h"
 #include "Physics\PhysicsCharacterController.h"
 #include "CharacterControllerComponent.h"
+#include "../Game/PollingStation.h"
 
 #define TO_RADIANS(x) (x) * (3.1415f / 180.f)
 
@@ -162,7 +163,11 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.radius = someData.myData.at("radius").GetFloat();
-	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
+	data.radius += 1.7f;
+	float height = someData.myData.at("height").GetFloat();
+	height += 0.7f;
+	height /= 2.0f;
+	data.halfHeight = height;
 	
 	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data, parent->GetId());
 	return component->GetId();
@@ -222,6 +227,9 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 	CGameObject* parent = GetCurrentObject();
 	CU::Vector3f scale = parent->GetToWorldTransform().GetScale();
 	CU::Vector3f parentPos = parent->GetToWorldTransform().GetPosition();
+	parent->GetLocalTransform().GetPosition().z += 20.0f;
+	GET_SERVERLOADMANAGER(loadManager);
+	short levelIndex = loadManager.GetCurrentGameServer().GetCurrentLevelIndex();
 
 	SBoxColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
@@ -234,6 +242,12 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
+
+	if(levelIndex < 3)
+	{
+		parent->GetLocalTransform().GetPosition().z -= 20.0f;
+	}
+
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myHalfExtent = someData.myData.at("size").GetVector3f("xyz") * scale * 0.5f;
 
@@ -294,6 +308,7 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1; // ska vara med?
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.radius = someData.myData.at("radius").GetFloat();
+	data.radius -= 0.5f;
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
 	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data, parent->GetId());

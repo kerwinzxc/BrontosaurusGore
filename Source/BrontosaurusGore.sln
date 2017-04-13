@@ -46,6 +46,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{E830
 		..\Bin\Shaders\gui_shader.fx = ..\Bin\Shaders\gui_shader.fx
 		..\Bin\Shaders\line_shader.fx = ..\Bin\Shaders\line_shader.fx
 		..\Bin\Shaders\line_shader_3d.fx = ..\Bin\Shaders\line_shader_3d.fx
+		..\Bin\Shaders\metaballs\metaballsCommon.fx = ..\Bin\Shaders\metaballs\metaballsCommon.fx
+		..\Bin\Shaders\metaballs\metaballsGeometry.fx = ..\Bin\Shaders\metaballs\metaballsGeometry.fx
+		..\Bin\Shaders\metaballs\metaballsSpherePixel.fx = ..\Bin\Shaders\metaballs\metaballsSpherePixel.fx
+		..\Bin\Shaders\metaballs\metaballsVertex.fx = ..\Bin\Shaders\metaballs\metaballsVertex.fx
+		..\Bin\Shaders\metaballs\metaSurface.fx = ..\Bin\Shaders\metaballs\metaSurface.fx
 		..\Bin\Shaders\oncePerFrame.fx = ..\Bin\Shaders\oncePerFrame.fx
 		..\Bin\Shaders\particle_shader.fx = ..\Bin\Shaders\particle_shader.fx
 		..\Bin\Shaders\pixel_shader.fx = ..\Bin\Shaders\pixel_shader.fx
@@ -113,6 +118,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starter", "Starter\Starter.csproj", "{97047827-BF3D-478D-8467-686F75536A01}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Particles", "Particles\Particles.vcxproj", "{8FF3AFBC-CE14-4748-A2B6-6E48FC5761F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs", "Metaballs", "{E6F9C05F-1504-4E54-91EC-B9855116334E}"
+	ProjectSection(SolutionItems) = preProject
+		..\Bin\Shaders\metaballs\metaballsCommon.fx = ..\Bin\Shaders\metaballs\metaballsCommon.fx
+		..\Bin\Shaders\metaballs\metaballsGeometry.fx = ..\Bin\Shaders\metaballs\metaballsGeometry.fx
+		..\Bin\Shaders\metaballs\metaballsSpherePixel.fx = ..\Bin\Shaders\metaballs\metaballsSpherePixel.fx
+		..\Bin\Shaders\metaballs\metaballsVertex.fx = ..\Bin\Shaders\metaballs\metaballsVertex.fx
+		..\Bin\Shaders\metaballs\metaSurface.fx = ..\Bin\Shaders\metaballs\metaSurface.fx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -521,5 +535,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1A77405A-3C30-4C71-BB69-48D3AC474F0E} = {E8308878-AF21-4BF8-9E80-4D5265BFC105}
 		{B6224D03-7AF6-4A48-8A12-FD98FFD3BB42} = {E8308878-AF21-4BF8-9E80-4D5265BFC105}
+		{E6F9C05F-1504-4E54-91EC-B9855116334E} = {E8308878-AF21-4BF8-9E80-4D5265BFC105}
 	EndGlobalSection
 EndGlobal

@@ -185,10 +185,6 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 				newWeaponData->fireParticles.Add(aJsonValue[i]["FireParticles"][j].GetString());
 			}
 		}
-
-		newWeaponData->isMeleeWeapon = false;
-		if(newWeaponData->name == "MeleeWeapon")
-			newWeaponData->isMeleeWeapon = true;
 		
 
 		newProjectileData->projectileModelFilePath = aJsonValue[i].at("ProjectileModel").GetString().c_str();
@@ -204,6 +200,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 			SExplosionData* newExplosionData = new SExplosionData();
 			newExplosionData->explosionParticles.Init(1);
 			newExplosionData->radius = aJsonValue[i].at("ExplosionRange").GetFloat();
+			newExplosionData->radius *= newExplosionData->radius;
 			newExplosionData->knockBackForce = aJsonValue[i].at("ExplosionKnockBackForce").GetFloat();
 			newExplosionData->damage = static_cast<healthPoint>(aJsonValue[i].at("ExplosionDamage").GetFloat());
 			newProjectileData->explosionData = newExplosionData;
@@ -234,6 +231,13 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 
 		newAmmoData->maxAmmo = aJsonValue[i].at("MaxAmmoAmount").GetInt();
 		newAmmoData->ammoForWeaponName = newWeaponData->name;
+
+		newWeaponData->isMeleeWeapon = false;
+		if (newWeaponData->name == "MeleeWeapon")
+		{
+			newWeaponData->isMeleeWeapon = true;
+			newWeaponData->soundData.fire = "Player_Chainsaw_Loop_Start";
+		}
 
 		myWeaponDataList.Add(newWeaponData);
 		myAmmoDataList.Add(newAmmoData);

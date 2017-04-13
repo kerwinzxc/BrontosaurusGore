@@ -2,6 +2,7 @@
 #include "EnemyClientRepresentation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "PollingStation.h"
 
 CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType)
 	:CEnemy(anId, aType)
@@ -48,7 +49,9 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
 	}
-
+	SComponentMessageData updateData;
+	updateData.myFloat = aDeltaTime;
+	GetParent()->NotifyComponents(eComponentMessageType::eUpdatePinky, updateData);
 	if (myIsAlive == false)
 	{
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
@@ -72,11 +75,6 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	{
 	case eComponentMessageType::eTakeDamage:
 	case eComponentMessageType::eTookDamage:
-		DL_PRINT("Wants to take damage");
-		if(myIsAlive == false)
-		{
-			DL_PRINT("dead enemy wants to take damage");
-		}
 		DoSplatter();
 		StartHighlight();
 		break;
@@ -108,7 +106,13 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 
 void CEnemyClientRepresentation::CheckIfOutOfBounds()
 {
-	if (GetParent()->GetWorldPosition().y < -100.0f)
+	short levelIndex = CPollingStation::GetInstance()->GetCurrentLevelIndex();
+	float zKillValue = -100.0f;
+	if(levelIndex = 3)
+	{
+		zKillValue = -1000.0f;
+	}
+	if (GetParent()->GetWorldPosition().y < zKillValue)
 	{
 		SComponentQuestionData healthQuestionData;
 		if(GetParent()->AskComponents(eComponentQuestionType::eGetHealth, healthQuestionData) == true)

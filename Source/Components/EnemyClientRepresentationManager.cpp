@@ -2,6 +2,7 @@
 #include "EnemyClientRepresentationManager.h"
 #include "WeaponSystemManager.h"
 #include "WeaponSystemComponent.h"
+#include "PinkyClientDamageHandler.h"
 
 CEnemyClientRepresentationManager* CEnemyClientRepresentationManager::ourInstance = nullptr;
 
@@ -89,6 +90,9 @@ void CEnemyClientRepresentationManager::Init(CWeaponSystemManager* aWeaponSystem
 		{
 			addWeaponData.myString = "PinkyMeleeAttack";
 			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
+			CComponentManager::GetInstance().RegisterComponent(damaageHandler);
+			myRepresentations.at(enemyRepresentation.first)->GetParent()->AddComponent(damaageHandler);
 			break;
 		}
 		default:

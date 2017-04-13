@@ -16,7 +16,7 @@ public:
 	~CWeapon();
 
 	void TryToShoot(const CU::Vector3f& aDirection);
-	void Shoot(const CU::Vector3f& aDirection);
+	void Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo = true);
 	void Update(float aDeltaTime);
 	void RotateXAxees(const float aRotationAmount);
 	void SetModelVisibility(bool aVisibility);
@@ -43,7 +43,6 @@ private:
 
 	CU::Vector3f RandomizedDirection(const CU::Vector3f& aDirection);
 private:
-	
 	SWeaponData* myWeaponData;
 	CGameObject* myUser;
 	CGameObject* myWeaponObject;
@@ -53,6 +52,9 @@ private:
 	CU::Vector3f mySoundDirection;
 	CU::Vector3f myLastHitNormal;
 	CU::Vector3f myLastHitPosition;
+	float myDeltaTime;
+	bool myIsFiring;
+	float myClickSoundCoolDown;
 };
 
 inline void CWeapon::SetUser(CGameObject* aUser)

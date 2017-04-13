@@ -42,6 +42,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		break;
 	case eComponentMessageType::eKeyReleased:
 		HandleKeyReleased(aMessageData);
+		if (myActiveWeaponIndex == 0 && myIsShooting == false)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start");
+		}
 		break;
 	//case eComponentMessageType::eTryToShoot:
 	//{
@@ -64,6 +69,12 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		}
 		break;
 	}
+	case eComponentMessageType::eShootWithoutAmmo:
+		if (myIsActive == true)
+		{
+			myWeapons[myActiveWeaponIndex]->Shoot(CU::Vector3f::Zero, false);
+		}
+		break;
 	case eComponentMessageType::eServerShoot:
 	{
 		if(myIsActive == true)
@@ -79,7 +90,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 
 				CU::Vector3f shootDirection = targetPosition - shootPosition;
 				shootDirection.Normalize();
-				myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
+				//myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
 
 				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
@@ -371,6 +382,11 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 void CWeaponSystemComponent::ChangeWeapon2(unsigned int aIndex)
 {
 	ChangeWeaponLocal(aIndex);
+	if (aIndex != 1) // just to be safe
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+	}
 }
 
 void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
@@ -382,11 +398,9 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
 			{
 				CWeapon* nextWeapon = myWeapons[aIndex];
-				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
-				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				auto onUnequippedCallback = [nextWeapon, this, aIndex]()
 				{
-					nextWeapon->Equip();
-					activeWeaponIndex = aIndex;
+					this->ChangeWeaponCallback(aIndex);
 				};
 
 				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
@@ -399,6 +413,7 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 				nextWeapon->Equip();
 				activeWeaponIndex = aIndex;
 			}
+			
 		}
 	}
 }
@@ -440,6 +455,12 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 		break;
 	}
 	return false;
+}
+
+void CWeaponSystemComponent::ChangeWeaponCallback(unsigned aIndex)
+{
+	myActiveWeaponIndex = aIndex;
+	myWeapons[myActiveWeaponIndex]->Equip();
 }
 
 bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)

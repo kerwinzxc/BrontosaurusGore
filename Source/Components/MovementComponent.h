@@ -15,8 +15,8 @@ public:
 
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 
-	
 	void Update(const CU::Time aDeltaTime);
+	void SetIntroFallMode();
 private:
 	void SwapMovementMode();
 	bool IsWalking() const;
@@ -65,5 +65,7 @@ private:
 	bool myIncrementPressed;
 	bool myDecrementPressed;
 	bool myIsWalking;
+
+	bool myUseConstantVelosity;
 	Audio::GameObjectID myAudioId;
 };

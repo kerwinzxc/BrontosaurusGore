@@ -46,6 +46,7 @@ enum class eComponentType : unsigned char;
 enum class eComponentMessageType
 {
 	eAddComponent,
+	eShootWithoutAmmo,
 	ePlaySound,
 	eMoving,
 	eAddArmor,
@@ -105,6 +106,14 @@ enum class eComponentMessageType
 	eSetLastHitNormal,
 	eSetLastHitPosition,
 	eDoStuffBeforeDie,
+	eRevenantMelee,
+	eRevenantStartJump,
+	eRevenantThrowAttack,
+	eUpdatePinky,
+	eRevenantLand,
+	eRevenantAttackAir,
+	ePinkyCharge,
+	ePinkyLoadChange,
 	eLength,
 };
 

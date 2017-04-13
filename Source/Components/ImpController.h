@@ -27,6 +27,7 @@ public:
 
 	bool CheckIfInAir();
 	void ApplyJumpForce(float aJumpHeight);
+	inline void Sthap() override;
 private:
 	inline bool ShouldJumpAfterPlayer();
 	void UpdateJumpForces(const float aDeltaTime);
@@ -34,7 +35,6 @@ private:
 	void InitiateWander();
 	bool CanChangeState();
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
-	void ChangeClientAnimation(const eComponentMessageType aMessageType) const;
 
 private:
 	CU::Vector3f myWanderToPosition;
@@ -52,6 +52,7 @@ private:
 	eImpState myState;
 
 	bool myIsJumping;
+	bool myShouldntExist;
 	unsigned char myWanderAngle;
 	short myAttacksUntillRunningAway;
 	short myUsedAttackSinceLastRunning;
@@ -60,4 +61,9 @@ private:
 inline bool CImpController::ShouldJumpAfterPlayer()
 {
 	return (myToPlayer.y > 2.0f) && (myIsJumping == false);
+}
+
+inline void CImpController::Sthap()
+{
+	myShouldntExist = true;
 }

@@ -37,7 +37,6 @@ public:
 	CRenderPackage& GetRenderPackage(const EGeometryPackage aPackageType);
 
 	bool IsInited();
-
 private:
 	CU::StaticArray<CRenderPackage, NUM_GB_PACKAGES> myPackages;
 	CDXFramework* myFramework;

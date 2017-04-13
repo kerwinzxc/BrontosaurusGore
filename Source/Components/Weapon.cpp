@@ -22,6 +22,9 @@ CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene
 	myWeaponObject = nullptr;
 	myPhysicsScene = aPhysicsScene;
 	mySoundDirection = { 0.0f, 0.0f, 1.0f };
+	myDeltaTime = 0.0f;
+	myClickSoundCoolDown = 0.0f;
+	myIsFiring = false;
 	if (Audio::CAudioInterface::GetInstance() != nullptr)
 	{
 		myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
@@ -48,120 +51,144 @@ void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 	}
 }
 
-void CWeapon::Shoot(const CU::Vector3f& aDirection)
+void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		CU::Matrix44f transform = myUser->GetToWorldTransform();
-		//CU::Vector3f shootPosition = myUser->GetWorldPosition();
-		CU::Vector3f cameraPosition = transform.GetPosition();
-		SComponentQuestionData cameraPositionData;
-		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
+		if (aHaveAmmo == true)
 		{
-			CU::Vector3f position =  cameraPositionData.myVector3f;
-			cameraPosition = position;
-			position += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
-			transform.SetPosition(position);
-		}
-
-		for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
-		{
-			CU::Vector3f direction = RandomizedDirection(aDirection);
-			direction.Normalize();
-
-			if (myWeaponData->projectileData->shouldRayCast == true)
+			CU::Matrix44f transform = myUser->GetToWorldTransform();
+			//CU::Vector3f shootPosition = myUser->GetWorldPosition();
+			CU::Vector3f cameraPosition = transform.GetPosition();
+			SComponentQuestionData cameraPositionData;
+			if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
 			{
-				Physics::SRaycastHitData hitData;
-				if(myWeaponObject != nullptr)
+				CU::Vector3f position = cameraPositionData.myVector3f;
+				cameraPosition = position;
+				position += CU::Vector3f(0.f, 0.f, 0.55f) * myUser->GetToWorldTransform().GetRotation();
+				transform.SetPosition(position);
+			}
+
+			for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
+			{
+				CU::Vector3f direction = RandomizedDirection(aDirection);
+				direction.Normalize();
+
+				if (myWeaponData->projectileData->shouldRayCast == true)
 				{
-					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
+					Physics::SRaycastHitData hitData;
+					if (myWeaponObject != nullptr)
+					{
+						hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
+					}
+					else
+					{
+						hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
+					}
+					if (hitData.hit == true)
+					{
+						const Physics::EActorType actorType = hitData.actor->GetType();
+						myLastHitNormal = hitData.normal;
+						myLastHitPosition = hitData.position;
+						/*if (actorType == Physics::EActorType::eDynamic)
+						{
+							static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
+							static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
+						};*/
+
+						CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
+						if (gameObject != myUser)
+						{
+							//SComponentQuestionData healthLeftData;
+							//if (gameObject->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData) == true)
+							//{
+							//	if (healthLeftData.myInt <= 0)
+							//	{
+							//		DL_PRINT("Removing dead shit");
+							//		CU::Vector3f hellPosition(0.0f, 0.0f, 0.0f);
+							//		gameObject->GetLocalTransform().SetPosition(hellPosition);
+							//		SComponentMessageData positioonData;
+							//		positioonData.myVector3f = hellPosition;
+							//		gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, positioonData);
+							//		gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+							//		Shoot(aDirection);
+							//		return;
+							//	}
+							//}
+							SComponentMessageData damageData;
+
+							damageData.myVector3f = myLastHitNormal;
+							gameObject->NotifyComponents(eComponentMessageType::eSetLastHitNormal, damageData);
+							damageData.myVector3f = myLastHitPosition;
+							gameObject->NotifyComponents(eComponentMessageType::eSetLastHitPosition, damageData);
+
+							damageData.myVector4f.y = direction.x;
+							damageData.myVector4f.z = direction.y;
+							damageData.myVector4f.w = direction.z;
+							damageData.myInt = myWeaponData->projectileData->damage;
+							gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+
+							Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
+							audio->PostEvent("Impact_Tick");
+
+						}
+					}
+				}
+
+				myElapsedFireTimer = 0.0f;
+				/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
+				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
+				rotatedDirection.Normalize();*/
+				if (CProjectileFactory::GetInstance() != nullptr)
+				{
+					CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+					if (myWeaponObject != nullptr)
+					{
+						CU::Vector3f position = myWeaponObject->GetWorldPosition();
+						CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+						localWeaponMatrix.Move(shootDisplacment);
+						position = localWeaponMatrix.GetPosition();
+						transform.SetPosition(position);
+					}
+
+					PlaySound(SoundEvent::Fire, direction);
+					CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
+
+
+
+				}
+			}
+			if (CClientMessageManager::GetInstance() != nullptr)
+			{
+				transform.LookAt(transform.GetPosition() + aDirection);
+				EmitParticles(transform);
+			}
+		}
+		else
+		{
+			if (myClickSoundCoolDown <= 0)
+			{
+				if (myWeaponData->name == "Shotgun")
+				{
+					myClickSoundCoolDown = myWeaponData->fireRate - 0.3f;
 				}
 				else
 				{
-					hitData = myPhysicsScene->Raycast(transform.GetPosition(), direction, myWeaponData->projectileData->maximumTravelRange);
+					myClickSoundCoolDown = myWeaponData->fireRate;
 				}
-				if(hitData.hit == true)
-				{
-					const Physics::EActorType actorType = hitData.actor->GetType();
-					myLastHitNormal = hitData.normal;
-					myLastHitPosition = hitData.position;
-					/*if (actorType == Physics::EActorType::eDynamic)
-					{
-						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddForce(aDirection * 1000);
-						static_cast<Physics::CPhysicsActorDynamic*>(hitData.actor)->AddTorque(aDirection * 1000);
-					};*/
-
-					CGameObject* gameObject = static_cast<CComponent*>(hitData.actor->GetCallbackData()->GetUserData())->GetParent();
-					if(gameObject != myUser)
-					{
-						//SComponentQuestionData healthLeftData;
-						//if (gameObject->AskComponents(eComponentQuestionType::eGetHealth, healthLeftData) == true)
-						//{
-						//	if (healthLeftData.myInt <= 0)
-						//	{
-						//		DL_PRINT("Removing dead shit");
-						//		CU::Vector3f hellPosition(0.0f, 0.0f, 0.0f);
-						//		gameObject->GetLocalTransform().SetPosition(hellPosition);
-						//		SComponentMessageData positioonData;
-						//		positioonData.myVector3f = hellPosition;
-						//		gameObject->NotifyComponents(eComponentMessageType::eSetControllerPosition, positioonData);
-						//		gameObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
-						//		Shoot(aDirection);
-						//		return;
-						//	}
-						//}
-						SComponentMessageData damageData;
-
-						damageData.myVector3f = myLastHitNormal;
-						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitNormal, damageData);
-						damageData.myVector3f = myLastHitPosition;
-						gameObject->NotifyComponents(eComponentMessageType::eSetLastHitPosition, damageData);
-
-						damageData.myVector4f.y = direction.x;
-						damageData.myVector4f.z = direction.y;
-						damageData.myVector4f.w = direction.z;
-						damageData.myInt = myWeaponData->projectileData->damage;
-						gameObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-
-						Audio::CAudioInterface* audio = Audio::CAudioInterface::GetInstance();
-						audio->PostEvent("Impact_Tick");
-					
-					}
-				}
+				Audio::CAudioInterface::GetInstance()->PostEvent("Player_OutOfAmmo");
 			}
-
-			myElapsedFireTimer = 0.0f;
-			/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
-			rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
-			rotatedDirection.Normalize();*/
-			if(CProjectileFactory::GetInstance() != nullptr)
-			{
-				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
-				if(myWeaponObject != nullptr)
-				{
-					CU::Vector3f position = myWeaponObject->GetWorldPosition();
-					CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
-					localWeaponMatrix.Move(shootDisplacment);
-					position = localWeaponMatrix.GetPosition();
-					transform.SetPosition(position);
-				}
-
-				PlaySound(SoundEvent::Fire, direction);
-				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
-				
-				
-			
-			}
-		}
-		if (CClientMessageManager::GetInstance() != nullptr)
-		{
-			transform.LookAt(transform.GetPosition() + aDirection);
-			EmitParticles(transform);
 		}
 	}
+
 }
 void CWeapon::Update(float aDeltaTime)
 {
+	myDeltaTime = aDeltaTime;
+	if (myClickSoundCoolDown > 0)
+	{
+		myClickSoundCoolDown -= aDeltaTime;
+	}
 	if (myAudioId != 0)
 	{
 		const CU::Matrix44f transform = myUser->GetToWorldTransform();
@@ -272,17 +299,31 @@ void CWeapon::PlaySound(SoundEvent aSoundEvent, const CU::Vector3f& aDirection)
 	switch (aSoundEvent)
 	{
 	case SoundEvent::Fire: 
+		myIsFiring = true;
 		eventId = myWeaponData->soundData.fire;
 		break;
 	case SoundEvent::Reload: 
 		eventId = myWeaponData->soundData.reload;
 		break;
-	default: break;
+	default: 
+		myIsFiring = false;
+		break;
 	}
+
+	if (myWeaponData->isMeleeWeapon == true)
+	{
+		if (myIsFiring == true)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Start");
+		}
+		// Loop stop, throttle start; is handled in weaponSystemComponent, recieve, eKeyReleased.
+		return;
+	}
+
+
 	if(eventId.empty() == false)
 	{
-		
-
 		Audio::CAudioInterface::GetInstance()->PostEvent(eventId.c_str(),myAudioId);
 	}
 }
@@ -363,12 +404,22 @@ void CWeapon::Equip()
 
 
 		onlyOnce++; //Don't question it.
-		if (myWeaponData->isMeleeWeapon == false)
-			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
-		if (myWeaponData->isMeleeWeapon == true && onlyOnce == 3)
+		if (onlyOnce == 3)
 		{
-			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+
+			 if (myWeaponData->isMeleeWeapon == true)
+			{
+				Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+				Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+			}
+
 			onlyOnce = 1;
+		}
+
+		if (myWeaponData->isMeleeWeapon == false)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
 		}
 	}
 }

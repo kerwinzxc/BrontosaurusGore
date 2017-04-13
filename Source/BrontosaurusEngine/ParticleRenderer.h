@@ -28,6 +28,7 @@ public:
 	void SetDepthStuff(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResource);
 private:
 	void SetBlendParticlesState();
+	void SetSpriteBlendState();
 	void InitPointLightModel();
 
 	void SortParticles(CU::GrowingArray<SParticle, unsigned, false> &aGrowings);
@@ -35,7 +36,7 @@ private:
 	void UpdateCameraBuffer(const CU::Matrix44f& aMatrix44, const CU::Matrix44f& aProjectionInverse);
 
 	
-	void SetSRV();
+	void SetSRV(bool aUseAlpha = true);
 	void SetCBuffer();
 	void DoAmbientLighting();
 	void RenderDirectionalLight(SRenderMessage* aRenderMessage);

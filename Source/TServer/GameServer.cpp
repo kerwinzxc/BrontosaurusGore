@@ -58,6 +58,7 @@ CGameServer::CGameServer():
 	myPlayersNetworkComponents.Init(5);
 
 	myThreadID = std::this_thread::get_id();
+	myLevelIndex = -1;
 }
 
 
@@ -103,9 +104,9 @@ void CGameServer::Load(const int aLevelIndex)
 
 	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
-	int myLevelIndex = aLevelIndex;
+	myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
-	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += levelsArray[myLevelIndex].GetString(); 
 	levelPath += "/LevelData.json";
 
 	const KLoader::eError loadError = loader.LoadFile(levelPath);
@@ -162,6 +163,7 @@ void CGameServer::CreateManagersAndFactories()
 
 void CGameServer::DestroyManagersAndFactories()
 {
+	SAFE_DELETE(myEnemyComponentManager);
 	CComponentManager::DestroyInstance();
 	CNetworkComponentManager::Destroy();
 	CHealthComponentManager::GetInstance()->Destroy();
@@ -177,7 +179,6 @@ void CGameServer::DestroyManagersAndFactories()
 	SAFE_DELETE(myAmmoComponentManager);
 	SAFE_DELETE(myWeaponFactory);
 	SAFE_DELETE(myWeaponSystemManager);
-	SAFE_DELETE(myEnemyComponentManager);
 	SAFE_DELETE(myDamageOnCollisionComponentManager);
 	SAFE_DELETE(mySpawnerManager);
 	SAFE_DELETE(myCheckPointSystem);
@@ -194,7 +195,10 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 	const float updateFrequecy = 0.016f * 1000;
 	if(myTime > updateFrequecy)
 	{
-		myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		if (myIsLoaded == true && myEnemyComponentManager->GetIsInited() == true)
+		{
+			myEnemyComponentManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
+		}
 		//mySpawnerManager->Update(aDeltaTime.GetSeconds() + (updateFrequecy / 1000.0f));
 
 		if (myIsLoaded == true)

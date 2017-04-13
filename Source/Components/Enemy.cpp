@@ -10,6 +10,7 @@
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
 #include "ParticleEmitterManager.h"
+#include "../TShared/NetworkMessage_AnimationStart.h"
 
 #define nej false
 #define ja true
@@ -98,6 +99,13 @@ void CEnemy::DoDamageHighlight(const float aDeltaTime)
 	}
 }
 
+void CEnemy::ChangeClientAnimation(const eComponentMessageType aMessageType) const
+{
+	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+	animationMessage->Init(GetNetworkID(), aMessageType);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
+}
+
 void CEnemy::SetHighlight(const CU::Vector4f& aColor, float aIntensity)
 {
 	CHighlightComponent highlight;
@@ -159,7 +167,7 @@ void CEnemy::DoSplatter()
 		myBloodSplatterTimer = .25f;
 		SComponentQuestionData questionData;
 		GetParent()->AskComponents(eComponentQuestionType::eLastHitNormal, questionData);
-		const CU::Vector3f normal = questionData.myVector3f;
+		const CU::Vector3f normal = -questionData.myVector3f;
 		GetParent()->AskComponents(eComponentQuestionType::eLastHitPosition, questionData);
 		const CU::Vector3f position = questionData.myVector3f;
 
@@ -373,6 +381,25 @@ const CU::Vector3f CEnemy::GetNearestJumpPosition()
 	{
 		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(true);
 	}
-
+	/*float distance = CU::Vector3f(playerPos - GetParent()->GetWorldPosition()).Length();
+	if (distance > 1000.0f)
+	{
+		playerPos = GetParent()->GetWorldPosition();
+	}*/
 	return playerPos;
+}
+
+void CEnemy::playerDontFuckTHisUp()
+{
+	if(ourPlayerObjects.IsInitialized() == true)
+	{
+		ourPlayerObjects.RemoveAll();
+		ourPlayerObjects.Destroy();
+	}
+
+	if (ourEnemyRunTowardsComponents.IsInitialized() == true)
+	{
+		ourEnemyRunTowardsComponents.RemoveAll();
+		ourEnemyRunTowardsComponents.Destroy();
+	}
 }

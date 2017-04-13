@@ -2,6 +2,8 @@
 #include "DamageOnCollisionComponent.h"
 #include "DamageOnCollisionCollidedObjectData.h"
 #include "PollingStation.h"
+#include "..\Audio\AudioInterface.h"
+#include "../TClient/ClientMessageManager.h"
 
 CDamageOnCollisionComponent::CDamageOnCollisionComponent()
 {
@@ -33,6 +35,10 @@ void CDamageOnCollisionComponent::Receive(const eComponentMessageType aMessageTy
 			{
 				AddToActiveList(aMessageData.myComponent->GetParent());
 				DealDamage(myActiveCollidedWithObjectsDataList.Size() - 1);
+				if(CClientMessageManager::GetInstance() != nullptr)
+				{
+					Audio::CAudioInterface::GetInstance()->PostEvent("Player_Hurt_FromSlime");
+				}
 			}
 			else
 			{
