@@ -88,7 +88,7 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myImpBluePrint.wanderDistance = impstats.at("FleeDistance").GetFloat();
 	myImpBluePrint.wanderAngle = impstats.at("FleeAngle").GetFloat();
 
-	myImpBluePrint.shootingRange = 0;
+	myImpBluePrint.shootingRange = 20.0f;
 
 
 	CU::CJsonValue revenantStats = value.at(alevel).at("Revenant");
@@ -102,7 +102,8 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myRevenantBluePrint.chargeAirBarrageAttackDuration = revenantStats.at("ChargeBarrageAttackDuration").GetFloat();
 	myRevenantBluePrint.chargeMeleeAttackDuration = revenantStats.at("ChargeMeleeAttackDuration").GetFloat();
 	myRevenantBluePrint.chargeRangedAttackAttackDuration = revenantStats.at("ChargeRangedAttackDuration").GetFloat();
-	
+	myRevenantBluePrint.shootingRange = 20.0f;
+
 	CU::CJsonValue pinkyStats = value.at(alevel).at("Pinky");
 
 	myPinkyBluePrint.Health = pinkyStats.at("Health").GetInt();
