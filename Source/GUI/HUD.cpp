@@ -170,14 +170,24 @@ void CHUD::UpdateWeapon()
 
 	if (ammoQuestion.myAmmoLeftData->ammoLeft != myCurrentAmmo || ammoQuestion.myAmmoLeftData->maxAmmo != myCurrentMaxAmmo)
 	{
-		myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
-		myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
+		if (std::string(ammoQuestion.myAmmoLeftData->weaponName) != "MeleeWeapon")
+		{
+			myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
+			myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
 
-		std::wstring ammoString = std::to_wstring(myCurrentAmmo);
-		ammoString += L"/";
-		ammoString += std::to_wstring(myCurrentMaxAmmo);
-		myAmmoNumber.SetText(ammoString);
-		myWeaponHUDHasChanged = true;
+			std::wstring ammoString = std::to_wstring(myCurrentAmmo);
+			ammoString += L"/";
+			ammoString += std::to_wstring(myCurrentMaxAmmo);
+			myAmmoNumber.SetText(ammoString);
+			myWeaponHUDHasChanged = true;
+		}
+		else
+		{
+			myCurrentAmmo = ammoQuestion.myAmmoLeftData->ammoLeft;
+			myCurrentMaxAmmo = ammoQuestion.myAmmoLeftData->maxAmmo;
+			myAmmoNumber.SetText(L"");
+			myWeaponHUDHasChanged = true;
+		}
 	}
 
 	if (myWeaponIndexes.at(ammoQuestion.myAmmoLeftData->weaponName) != myCurrentWeapon)
