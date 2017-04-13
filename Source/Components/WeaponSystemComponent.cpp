@@ -42,6 +42,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 		break;
 	case eComponentMessageType::eKeyReleased:
 		HandleKeyReleased(aMessageData);
+		if (myActiveWeaponIndex == 0 && myIsShooting == false)
+		{
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+			Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start");
+		}
 		break;
 	//case eComponentMessageType::eTryToShoot:
 	//{
@@ -85,7 +90,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 
 				CU::Vector3f shootDirection = targetPosition - shootPosition;
 				shootDirection.Normalize();
-				myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
+				//myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
 
 				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
@@ -377,6 +382,11 @@ void CWeaponSystemComponent::AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAm
 void CWeaponSystemComponent::ChangeWeapon2(unsigned int aIndex)
 {
 	ChangeWeaponLocal(aIndex);
+	if (aIndex != 1) // just to be safe
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Stop");
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Loop_Stop");
+	}
 }
 
 void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)

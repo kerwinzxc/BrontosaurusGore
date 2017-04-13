@@ -222,6 +222,9 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 	CGameObject* parent = GetCurrentObject();
 	CU::Vector3f scale = parent->GetToWorldTransform().GetScale();
 	CU::Vector3f parentPos = parent->GetToWorldTransform().GetPosition();
+	parent->GetLocalTransform().GetPosition().z += 20.0f;
+	GET_SERVERLOADMANAGER(loadManager);
+	short levelIndex = loadManager.GetCurrentGameServer().GetCurrentLevelIndex();
 
 	SBoxColliderData data;
 	data.IsTrigger = someData.myData.at("isTrigger").GetBool();
@@ -234,6 +237,10 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
+	if(levelIndex == 1)
+	{
+		//data.center.z += 20;
+	}
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myHalfExtent = someData.myData.at("size").GetVector3f("xyz") * scale * 0.5f;
 
