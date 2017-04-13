@@ -28,6 +28,7 @@ public:
 	void SetDepthStuff(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResource);
 private:
 	void SetBlendParticlesState();
+	void SetSpriteBlendState();
 	void InitPointLightModel();
 
 	void SortParticles(CU::GrowingArray<SParticle, unsigned, false> &aGrowings);
