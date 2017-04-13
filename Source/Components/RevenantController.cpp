@@ -237,6 +237,10 @@ void CRevenantController::Update(const float aDeltaTime)
 			if (myJumpPointPosition == CU::Vector3f::Zero)
 			{
 				myJumpPointPosition = GetNearestJumpPosition();
+				if(myJumpPointPosition == GetParent()->GetWorldPosition())
+				{
+					myIsAtJumpPoint = true;
+				}
 			}
 			CU::Vector3f position = GetParent()->GetLocalTransform().GetPosition();
 			CU::Vector3f targetPosition = myJumpPointPosition;
