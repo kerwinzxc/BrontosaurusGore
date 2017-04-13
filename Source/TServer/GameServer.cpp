@@ -58,6 +58,7 @@ CGameServer::CGameServer():
 	myPlayersNetworkComponents.Init(5);
 
 	myThreadID = std::this_thread::get_id();
+	myLevelIndex = -1;
 }
 
 
@@ -103,9 +104,9 @@ void CGameServer::Load(const int aLevelIndex)
 
 	CU::CJsonValue levelsArray = levelsFile.at("levels");
 
-	int myLevelIndex = aLevelIndex;
+	myLevelIndex = aLevelIndex;
 	std::string levelPath = "Json/Levels/";
-	levelPath += levelsArray[myLevelIndex].GetString();
+	levelPath += levelsArray[myLevelIndex].GetString(); 
 	levelPath += "/LevelData.json";
 
 	const KLoader::eError loadError = loader.LoadFile(levelPath);

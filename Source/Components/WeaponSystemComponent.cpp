@@ -85,7 +85,7 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 
 				CU::Vector3f shootDirection = targetPosition - shootPosition;
 				shootDirection.Normalize();
-				myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
+				//myWeapons[myActiveWeaponIndex]->Shoot(shootDirection);
 
 				CNetworkMessage_WeaponShoot* shootMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_WeaponShoot>(ID_ALL);
 
