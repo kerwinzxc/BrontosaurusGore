@@ -47,5 +47,5 @@ void CNetworkmessage_PickupArmor::DoDeserialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myNetworkID = deserialize<int>(aStream);
-	myNetworkID = deserialize<short>(aStream);
+	myReplenishAmount = deserialize<short>(aStream);
 }

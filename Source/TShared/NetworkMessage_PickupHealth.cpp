@@ -40,12 +40,12 @@ void CNetworkMessage_PickupHealth::DoSerialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoSerialize(aStream);
 	serialize(myNetworkID, aStream);
-	serialize(myNetworkID, aStream);
+	serialize(myReplenishAmount, aStream);
 }
 
 void CNetworkMessage_PickupHealth::DoDeserialize(StreamType & aStream)
 {
 	CImportantNetworkMessage::DoDeserialize(aStream);
 	myNetworkID = deserialize<int>(aStream);
-	myNetworkID = deserialize<short>(aStream);
+	myReplenishAmount = deserialize<short>(aStream);
 }
