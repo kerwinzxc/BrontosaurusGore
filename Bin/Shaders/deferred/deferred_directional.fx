@@ -238,12 +238,11 @@ float ShadowBuffer(float3 worldPosition, float depth, float2 uv)
 
 	//float shadowMapDepth = shadowBuffer.SampleLevel(samplerPointWrap, texCoord, 0).x;
 
-	float3 normal = deferred_normal.SampleLevel(samplerWrap, uv, 0).xyz;
-	float bias = dot(directionalLight.direction, normal);
+	//float3 normal = deferred_normal.SampleLevel(samplerWrap, uv, 0).xyz;
+	//float bias = dot(directionalLight.direction, normal);
 				//max(0.05 * (1.0 - dot(normal, directionalLight.direction)), 0.005);
-	bias = clamp(bias , 0.008f, 0.04f);
-
-
+	//bias = clamp(bias , 0.008f, 0.002f);
+	float bias = 0.0f;
 	//if (shadowMapDepth < pixelPosCascade.z - bias && shadowMapDepth != 0.f)
 	//{
 	//	output = 0.0f;
