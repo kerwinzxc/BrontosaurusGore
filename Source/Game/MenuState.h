@@ -51,7 +51,10 @@ private:
 	bool SetCurrentTextInput(std::string aTexINputIndex);
 	bool CheckIp(std::string aTextInput);
 	bool SetName(std::string aTextInput);
+	bool SetIp(std::string aTextInput);
+	bool Conect(std::string notusese);
 
+	void GetIPAddress();
 	CU::GrowingArray<STextInput> myTextInputs;
 	int myCurrentTextInput;
 
@@ -60,6 +63,7 @@ private:
 
 	CMenuManager myManager;
 	bool myIsInFocus;
+	std::wstring myThisComputersIP;
 	static char ourMenuesToPop;
 
 	bool myBlinkeyBool;

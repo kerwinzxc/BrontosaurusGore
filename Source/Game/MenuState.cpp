@@ -281,6 +281,11 @@ void CMenuState::LoadElement(const CU::CJsonValue& aJsonValue, const std::string
 				myTextInputs[currentTextInput].myTextInstance = myManager.GetTextInstance(textInputTextInstanceIndex);
 				myTextInputs[currentTextInput].myTextInstance->SetColor({ 0.f,0.f,0.f,1.f });
 			}
+			else if (subString == L"IP")
+			{
+				GetIPAddress();
+				myManager.GetTextInstance(myManager.CreateText(fontName, textPosition, myThisComputersIP, 2, alignment))->SetColor({0.f, 0.f, 0.f , 1.f});
+			}
 		}
 		else
 		{
@@ -400,4 +405,80 @@ bool CMenuState::SetName(std::string aTextInput)
 	const int index = stoi(aTextInput);
 	myName = CU::StringHelper::WStringToString(myTextInputs[index].myTextInstance->GetTextLines()[0]);
 	return true;
+}
+
+bool CMenuState::SetIp(std::string aTextInput)
+{
+	const int index = stoi(aTextInput);
+	myIp = CU::StringHelper::WStringToString(myTextInputs[index].myTextInstance->GetTextLines()[0]);
+	return true;
+}
+
+bool CMenuState::Conect(std::string aTextInput)
+{
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, myIp));
+	return true;
+}
+#include <algorithm>
+#include <Iphlpapi.h>
+#pragma comment(lib, "IPHLPAPI.lib")
+
+void CMenuState::GetIPAddress()
+{
+	PIP_ADAPTER_ADDRESSES addresses = nullptr;
+	ULONG bufferSize = sizeof(IP_ADAPTER_ADDRESSES);
+	ULONG result = ERROR_SUCCESS;
+	bool errorOccured = false;
+
+	do
+	{
+		addresses = (PIP_ADAPTER_ADDRESSES)malloc(bufferSize);
+		if (addresses == nullptr)
+		{
+			break;
+		}
+
+		result = GetAdaptersAddresses(AF_INET,
+			GAA_FLAG_SKIP_ANYCAST |
+			GAA_FLAG_SKIP_MULTICAST |
+			GAA_FLAG_SKIP_DNS_SERVER |
+			GAA_FLAG_SKIP_FRIENDLY_NAME, nullptr, addresses, &bufferSize);
+
+		if (result == ERROR_BUFFER_OVERFLOW)
+		{
+			free(addresses);
+			addresses = nullptr;
+		}
+	} while (result == ERROR_BUFFER_OVERFLOW);
+	//addresses->FirstUnicastAddress->Address.lpSockaddr->sa_family;
+
+	do
+	{
+		if (result == ERROR_SUCCESS)
+		{
+			if (!addresses || !addresses->FirstUnicastAddress || !addresses->FirstUnicastAddress->Address.lpSockaddr)
+			{
+				errorOccured = true;
+				break;
+			}
+
+			SOCKADDR_IN* ipv4 = reinterpret_cast<SOCKADDR_IN*>(addresses->FirstUnicastAddress->Address.lpSockaddr);
+
+			char strBuffer[INET_ADDRSTRLEN] = {};
+			if (inet_ntop(AF_INET, &(ipv4->sin_addr), strBuffer, INET_ADDRSTRLEN) == nullptr)
+			{
+				errorOccured = true;
+				//WSAGetLastError();
+				break;
+			}
+
+			myThisComputersIP = std::wstring(std::begin(strBuffer), std::end(strBuffer));
+		}
+	} while (false);
+
+	if (errorOccured)
+	{
+		myThisComputersIP.clear();
+		myThisComputersIP = L"error";
+	}
 }
