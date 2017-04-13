@@ -94,6 +94,7 @@
 #include "AnimationComponent.h"
 #include "LutComponent.h"
 #include "PointLightComponentManager.h"
+#include "Renderer.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -313,6 +314,7 @@ void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
+	RENDERER.ClearGui();
 }
 
 void CPlayState::Pause()
