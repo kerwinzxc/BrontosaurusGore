@@ -10,6 +10,7 @@
 #include "HighlightComponent.h"
 #include "EnemyRunTowardsComponent.h"
 #include "ParticleEmitterManager.h"
+#include "../TShared/NetworkMessage_AnimationStart.h"
 
 #define nej false
 #define ja true
@@ -96,6 +97,13 @@ void CEnemy::DoDamageHighlight(const float aDeltaTime)
 		myDoingHighlight = false;
 		SetHighlight(CU::Vector4f(0, 0, 0, 0), 0.f);
 	}
+}
+
+void CEnemy::ChangeClientAnimation(const eComponentMessageType aMessageType) const
+{
+	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+	animationMessage->Init(GetNetworkID(), aMessageType);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
 }
 
 void CEnemy::SetHighlight(const CU::Vector4f& aColor, float aIntensity)

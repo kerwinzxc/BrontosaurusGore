@@ -17,6 +17,7 @@ public:
 	void GiveWeapon(const char* aWeaponName);
 	void AddWeapon(CWeapon* aWeapon, SAmmoData* aTemporaryAmmoData);
 	bool Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData& aQuestionData) override;
+	void ChangeWeaponCallback(unsigned aIndex);
 private:
 	void HandleKeyPressed(const SComponentMessageData& aMessageData);
 	void HandleKeyReleased(const SComponentMessageData& aMessageData);
