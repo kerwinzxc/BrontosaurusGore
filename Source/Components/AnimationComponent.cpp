@@ -57,7 +57,7 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 
 	if (speed > 0.01f && currentAnimation->myAnimationKey == eAnimationState::idle01)
 	{
-		auto& it = myAnimationStates.find("moving");
+		auto it = myAnimationStates.find("moving");
 		if (it != myAnimationStates.end())
 		{
 			currentAnimation = &it->second;
@@ -94,32 +94,29 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	if (myAnimationStates.empty()) return;
-
-	auto animationEnd = myAnimationStates.end();
-	auto it = animationEnd;
-
+	const eAnimationState lastAnimationKey = myAnimationStack.GetLast().myAnimationKey;
 	switch (aMessageType)
 	{
+	case eComponentMessageType::eRevenantStartJump:
 	case eComponentMessageType::eImpStartToJump:
 		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::jump01)
 		{
-			it = myAnimationStates.find("jump");
-			if (it != animationEnd)
-			{
-				PushAnimation(it->second);
-			}
+			TryPushAnimation("jump");
 		}
 		break;
+	case eComponentMessageType::eRevenantThrowAttack:
 	case eComponentMessageType::eImpThrowAttack:
 		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::throwAttack01)
 		{
-			it = myAnimationStates.find("ranged");
-			if (it != animationEnd)
-			{
-				PushAnimation(it->second);
-			}
+			TryPushAnimation("ranged");
 		}
 		break;
+	case eComponentMessageType::eRevenantMelee:
+		if (lastAnimationKey != eAnimationState::meleeAttack01)
+		{
+			TryPushAnimation("melee");
+		}
+		break;;
 	case eComponentMessageType::eShootWithoutAmmo:
 	case eComponentMessageType::eShoot:
 	case eComponentMessageType::eShootWithNetworking:
@@ -136,36 +133,33 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		}
 		break;
 	case eComponentMessageType::eDied:
-		it = myAnimationStates.find("death");
-		if (it != animationEnd)
-		{
-			PushAnimation(it->second);
-		}
+			TryPushAnimation("death");
 		break;
 	case eComponentMessageType::eUnequip:
-		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
-		{
-			myOnFinnishedCallback = *aMessageData.myVoidFunction;
-			break;
-		}
+		
 
-		it = myAnimationStates.find("unequip");
-		if (it != animationEnd)
+		if(TryPushAnimation("unequip") == true)
 		{
-			myModelComponent.SetVisibility(true);
-			PushAnimation(it->second);
-			myOnFinnishedCallback = *aMessageData.myVoidFunction;
+			if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
+			{
+				myOnFinnishedCallback = *aMessageData.myVoidFunction;
+				break;
+			}
 		}
+		
 		break;
 	case eComponentMessageType::eEquip:
-		it = myAnimationStates.find("equip");
-		if (it != animationEnd)
 		{
-			if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01)
+			
+			std::map<std::basic_string<char>, SAnimation>::iterator it = myAnimationStates.find("equip");
+			if (it != myAnimationStates.end())
 			{
-				myAnimationStack.Pop();
+				if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01)
+				{
+					myAnimationStack.Pop();
+				}
+				PushAnimation(it->second);
 			}
-			PushAnimation(it->second);
 		}
 		break;
 	}
@@ -192,6 +186,17 @@ void CAnimationComponent::UpdateAnimations(const CU::Time aDeltaTime)
 	{
 		animationComponent->Update(aDeltaTime);
 	}
+}
+
+bool CAnimationComponent::TryPushAnimation(const std::string& aStr)
+{
+	std::map<std::basic_string<char>, SAnimation>::iterator it = myAnimationStates.find(aStr);
+	if (it != myAnimationStates.end())
+	{
+		PushAnimation(it->second);
+		return true;
+	}
+	return false;
 }
 
 void CAnimationComponent::PushAnimation(const SAnimation& aAnimation)

@@ -35,7 +35,6 @@ private:
 	void InitiateWander();
 	bool CanChangeState();
 	eMessageReturn DoEvent(const CResetToCheckPointMessage& aResetToCheckPointMessage) override;
-	void ChangeClientAnimation(const eComponentMessageType aMessageType) const;
 
 private:
 	CU::Vector3f myWanderToPosition;

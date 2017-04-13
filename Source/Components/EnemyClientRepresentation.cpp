@@ -49,7 +49,9 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
 	}
-
+	SComponentMessageData updateData;
+	updateData.myFloat = aDeltaTime;
+	GetParent()->NotifyComponents(eComponentMessageType::eUpdatePinky, updateData);
 	if (myIsAlive == false)
 	{
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
