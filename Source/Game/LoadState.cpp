@@ -55,7 +55,7 @@ void CLoadState::Init()
 	}
 
 	myLoadingAnimation.Init(new CSpriteInstance("Sprites/LoadingScreen/Loading.dds", { 512.f / WINDOW_SIZE.x, 128.f / WINDOW_SIZE.y }));
-
+	Audio::CAudioInterface::GetInstance()->PostEvent("Stop_Music");
 	std::string BGMusic;
 	BGMusic = "Music_Level" + std::to_string(myLevelIndex + 1);
 	Audio::CAudioInterface::GetInstance()->PostEvent(BGMusic.c_str());

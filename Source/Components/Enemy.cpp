@@ -159,7 +159,7 @@ void CEnemy::DoSplatter()
 		myBloodSplatterTimer = .25f;
 		SComponentQuestionData questionData;
 		GetParent()->AskComponents(eComponentQuestionType::eLastHitNormal, questionData);
-		const CU::Vector3f normal = questionData.myVector3f;
+		const CU::Vector3f normal = -questionData.myVector3f;
 		GetParent()->AskComponents(eComponentQuestionType::eLastHitPosition, questionData);
 		const CU::Vector3f position = questionData.myVector3f;
 
@@ -379,8 +379,15 @@ const CU::Vector3f CEnemy::GetNearestJumpPosition()
 
 void CEnemy::playerDontFuckTHisUp()
 {
-	ourPlayerObjects.RemoveAll();
-	ourPlayerObjects.Destroy();
-	ourEnemyRunTowardsComponents.RemoveAll();
-	ourEnemyRunTowardsComponents.Destroy();
+	if(ourPlayerObjects.IsInitialized() == true)
+	{
+		ourPlayerObjects.RemoveAll();
+		ourPlayerObjects.Destroy();
+	}
+
+	if (ourEnemyRunTowardsComponents.IsInitialized() == true)
+	{
+		ourEnemyRunTowardsComponents.RemoveAll();
+		ourEnemyRunTowardsComponents.Destroy();
+	}
 }

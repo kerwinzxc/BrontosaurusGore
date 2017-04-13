@@ -11,6 +11,7 @@
 #include "ExplosionComponent.h"
 #include "ColliderComponentManager.h"
 #include "ParticleEmitterComponentManager.h"
+#include "..\Audio\AudioInterface.h"
 
 CExplosionFactory::CExplosionFactory(CExplosionComponentManager* aExplosionComponentManager)
 {
@@ -56,6 +57,8 @@ eMessageReturn CExplosionFactory::DoEvent(const CCreateExplosionMessage& aCreate
 		CreateExplosion();
 		DoEvent(aCreateExplosionMessage);
 	}
+	Audio::CAudioInterface::GetInstance()->PostEvent("Player_BFG_Explosion");
+
 	return eMessageReturn::eContinue;
 }
 
@@ -131,6 +134,4 @@ void CExplosionFactory::CreateExplosion()
 	newSexplosionData->gameObject = newExplosionObject;
 	newSexplosionData->data = nullptr;
 	myPassiveExplosions.Add(newSexplosionData);
-
-
 }

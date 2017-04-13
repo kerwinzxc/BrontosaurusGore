@@ -34,6 +34,7 @@ void CPinkyController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeSpeed = pinkyData->chargeSpeed;
 	myChargeDistance2 = pinkyData->chargeDistance * pinkyData->chargeDistance;
 	myMeleeAttackChargeDuration = pinkyData->chargeMeleeAttackDuration;
+	myMeleeAttackChargeDuration = 0.5f;
 	CEnemy::SetEnemyData(aData);
 }
 

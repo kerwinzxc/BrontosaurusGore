@@ -70,9 +70,15 @@ void CWaveManager::StartWave()
 void CWaveManager::Update()
 {
 	SComponentMessageData data; data.myInt = 10000;
+	short levelIndex = CPollingStation::GetInstance()->GetCurrentLevelIndex();
+	float zKillValue = -150.0f;
+	if (levelIndex = 3)
+	{
+		zKillValue = -1000.0f;
+	}
 	for (unsigned int i = 0; i < myEnemiesInWave.Size(); i++)
 	{
-		if (myEnemiesInWave[i]->GetParent()->GetLocalTransform().GetPosition().y < -150)
+		if (myEnemiesInWave[i]->GetParent()->GetLocalTransform().GetPosition().y < zKillValue)
 		{
 			myEnemiesInWave[i]->GetParent()->NotifyComponents(eComponentMessageType::eDied, data);
 		}

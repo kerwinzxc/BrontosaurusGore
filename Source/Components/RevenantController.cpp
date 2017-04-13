@@ -35,6 +35,9 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeMeleeAttackDuration = revenantData->chargeMeleeAttackDuration;
 	myChargeRangedAttackDuration = revenantData->chargeRangedAttackAttackDuration;
 	myChargeRangedAirBarrageAttackDuration = revenantData->chargeAirBarrageAttackDuration;
+	myChargeMeleeAttackDuration = 0.5f;
+	myChargeRangedAttackDuration = 0.1f;
+	myChargeRangedAirBarrageAttackDuration = 0.1;
 	CEnemy::SetEnemyData(aData);
 }
 
@@ -136,6 +139,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		break;
 	case eRevenantState::eUseRangedAttack:
+		LookAtPlayer();
 		ChangeWeapon(0);
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
@@ -273,6 +277,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eWaitBeforeChangingState:
 	{
+		LookAtPlayer();
 		myWaitBeforeChangingStateCountdown -= aDeltaTime;
 		if(myWaitBeforeChangingStateCountdown <= 0)
 		{

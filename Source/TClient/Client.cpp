@@ -338,8 +338,8 @@ void CClient::Update()
 					ammoData.ammoType = "PlasmaRifle";
 					break;
 				case 2:
-					break;
 					ammoData.ammoType = "PlasmaRifle";
+					break;
 				default:
 					ammoData.ammoType = "PlasmaRifle";
 					break;
