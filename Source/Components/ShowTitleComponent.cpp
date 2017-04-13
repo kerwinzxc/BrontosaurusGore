@@ -9,7 +9,8 @@ CShowTitleComponent::CShowTitleComponent()
 		CComponentManager::GetInstance().RegisterComponent(this);
 	}
 	myAlpha = -1.0f;
-	myFadeIn = false;
+	myFadeIn = false; 
+	myCurrentIndex = -1;
 }
 
 
@@ -39,6 +40,8 @@ void CShowTitleComponent::Receive(const eComponentMessageType aMessageType, cons
 	{
 	case eComponentMessageType::eOnTriggerEnter:
 		myFadeIn = true;
+		myCurrentIndex++;
+		DL_PRINT("INDEX:%d", myCurrentIndex);
 		break;
 	case eComponentMessageType::eOnTriggerExit:
 		myFadeIn = false;

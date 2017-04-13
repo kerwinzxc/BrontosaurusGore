@@ -120,7 +120,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 	, myIsCutscene(false)
-	, myTitle(nullptr)
+	, mode(0)
 {
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
@@ -231,16 +231,37 @@ void CPlayState::Load()
 
 	if (levelsArray[myLevelIndex].GetString() == "Intro")
 	{
-		myIsCutscene = 1;
+		myTitle.Init(3);
+
+		myIsCutscene = true;
+		mode = 1;
 		Audio::CAudioInterface::GetInstance()->PostEvent("Intro_Audio");
-		myTitle = new CSpriteInstance("Sprites/Menu/Main/Title/default.dds");
-		myTitle->SetPivot({ 0.5f, 0.5f });
-		myTitle->SetPosition({ 0.5f, 0.5f });
+		myTitle.Add(nullptr);
+
+		myTitle.Add(new CSpriteInstance("Sprites/Splash/timedust.dds"));
+		myTitle.GetLast()->SetPivot({ 0.5f, 0.5f });
+		myTitle.GetLast()->SetPosition({ 0.5f, 0.5f });
+
+
+		myTitle.Add(new CSpriteInstance("Sprites/Menu/Main/Title/default.dds"));
+		myTitle.GetLast()->SetPivot({ 0.5f, 0.5f });
+		myTitle.GetLast()->SetPosition({ 0.5f, 0.5f });
 	}
 	else if (levelsArray[myLevelIndex].GetString() == "Outro")
 	{
-		myIsCutscene = 2;
-		
+		myTitle.Init(3);
+		myIsCutscene = true;
+		mode = 2;
+		myTitle.Add(new CSpriteInstance("Sprites/Splash/credits.dds"));
+		myTitle.GetLast()->SetPivot({ 0.5f, 0.5f });
+		myTitle.GetLast()->SetPosition({ 0.5f, 0.5f });
+
+
+		myTitle.Add(new CSpriteInstance("Sprites/Splash/timedust.dds"));
+		myTitle.GetLast()->SetPivot({ 0.5f, 0.5f });
+		myTitle.GetLast()->SetPosition({ 0.5f, 0.5f });
+
+
 		Audio::CAudioInterface::GetInstance()->PostEvent("Outro_Audio");
 	}
 
@@ -281,7 +302,7 @@ void CPlayState::Load()
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
-	if (!myIsCutscene)
+	if (myIsCutscene)
 	{
 		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
 	}
@@ -328,12 +349,15 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 
 	if (myIsCutscene)
 	{
-		if (myTitle)
+		if (myTitleComponent)
 		{
-			if (myTitleComponent)
+			myTitleComponent->Update(aDeltaTime.GetSeconds());
+			if (myTitleComponent->GetIndex() < myTitle.Size())
 			{
-				myTitleComponent->Update(aDeltaTime.GetSeconds());
-				myTitle->SetAlpha(myTitleComponent->GetAlpha());
+				if (myTitle[myTitleComponent->GetIndex()])
+				{
+					myTitle[myTitleComponent->GetIndex()]->SetAlpha(myTitleComponent->GetAlpha());
+				}
 			}
 		}
 	}
@@ -350,8 +374,12 @@ void CPlayState::Render()
 
 	if (myIsCutscene == true)
 	{
-		if(myTitle)
-			myTitle->Render();
+		if (myTitleComponent->GetIndex() < myTitle.Size())
+		{
+			if(myTitle[myTitleComponent->GetIndex()])
+				myTitle[myTitleComponent->GetIndex()]->Render();
+
+		}
 	}
 
 }
@@ -553,13 +581,9 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		playerObject->AddComponent(myMovementComponent);
 		if (myIsCutscene == true)
 		{
-			myMovementComponent->SetIntroFallMode();
-			if (myTitle)
-			{
-				myTitleComponent = new CShowTitleComponent();
-				playerObject->AddComponent(myTitleComponent);
-
-			}
+			myMovementComponent->SetIntroFallMode( mode == 1 ? -27.f : -10.f);
+			myTitleComponent = new CShowTitleComponent();
+			playerObject->AddComponent(myTitleComponent);
 		}
 
 		if (myIsCutscene == false)

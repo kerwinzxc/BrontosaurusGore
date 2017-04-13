@@ -93,7 +93,7 @@ private:
 	Physics::CPhysics* myPhysics;
 
 
-	CSpriteInstance* myTitle;
+	CU::GrowingArray<CSpriteInstance*> myTitle;
 	CShowTitleComponent* myTitleComponent;
 
 	CColliderComponentManager* myColliderComponentManager;
@@ -130,7 +130,7 @@ private:
 	std::atomic_bool myIsLoaded;
 
 	bool myIsCutscene;
-
+	int mode;
 	//Super temp ta bort när guit börjar ta form
 	//CTextInstance* myPlayerHealthText;
 	//CTextInstance* myPlayerArmorText;
