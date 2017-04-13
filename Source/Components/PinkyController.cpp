@@ -98,6 +98,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		myVelocity.z = mySpeed;
 		break;
 	case ePinkyState::eWindupCharge:
+		ChangeClientAnimation(eComponentMessageType::ePinkyLoadChange);
 		myElapsedWindupTime += aDeltaTime;
 		LookAtPlayer();
 		if(myElapsedWindupTime >= myWindupChargeTime)
@@ -113,6 +114,7 @@ void CPinkyController::Update(const float aDeltaTime)
 		myState = ePinkyState::eCharge;
 	case ePinkyState::eCharge:
 	{
+		ChangeClientAnimation(eComponentMessageType::ePinkyCharge);
 		myVelocity.z = myChargeSpeed;
 		//if(GetIfSidesAreColliding() == true)
 		myLastFramePostion.Print();

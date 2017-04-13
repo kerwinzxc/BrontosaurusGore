@@ -97,7 +97,6 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	const eAnimationState lastAnimationKey = myAnimationStack.GetLast().myAnimationKey;
 	switch (aMessageType)
 	{
-	case eComponentMessageType::eRevenantStartJump:
 	case eComponentMessageType::eImpStartToJump:
 		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::jump01)
 		{
@@ -116,11 +115,42 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		{
 			TryPushAnimation("melee");
 		}
-		break;;
+		break;
+	case eComponentMessageType::eRevenantStartJump:
+		if (lastAnimationKey != eAnimationState::jumpLift01)
+		{
+			TryPushAnimation("jumpLift01");
+		}
+		break;
+	case eComponentMessageType::eRevenantLand:
+		if (lastAnimationKey != eAnimationState::jumpLanding01)
+		{
+			TryPushAnimation("jumpLanding01");
+		}
+		break;
+	case eComponentMessageType::eRevenantAttackAir:
+		if (lastAnimationKey != eAnimationState::jumpAttackOnly01 && lastAnimationKey != eAnimationState::jumpLift01 && lastAnimationKey != eAnimationState::meleeAttack01)
+		{
+			TryPushAnimation("jumpAttackOnly01");
+		}
+		break;
+	case eComponentMessageType::ePinkyCharge:
+		if (lastAnimationKey != eAnimationState::chargeRun01)
+		{
+			TryPushAnimation("chargeRun01");
+		}
+		break;
+	case eComponentMessageType::ePinkyLoadChange:
+		if (lastAnimationKey != eAnimationState::chargeStart01)
+		{
+			TryPushAnimation("chargeStart01");
+		}
+		break;
+
 	case eComponentMessageType::eShootWithoutAmmo:
 	case eComponentMessageType::eShoot:
 	case eComponentMessageType::eShootWithNetworking:
-		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::shot01)
+		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::shot01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::meleeAttack01)
 		{
 			if (myAnimationStack.GetLast().myIsLooping)
 			{

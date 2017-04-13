@@ -111,6 +111,31 @@ namespace AnimationComponentLoader
 				CU::CJsonValue rangedObject = statesObject["melee"];
 				LoadSingleAnimation("melee", rangedObject, aModelComponent, aAnimationStates);
 			}
+			if (statesObject.HasKey("beginfly"))
+			{
+				CU::CJsonValue rangedObject = statesObject["beginfly"];
+				LoadSingleAnimation("beginfly", rangedObject, aModelComponent, aAnimationStates);
+			}
+			if (statesObject.HasKey("endfly"))
+			{
+				CU::CJsonValue rangedObject = statesObject["endfly"];
+				LoadSingleAnimation("endfly", rangedObject, aModelComponent, aAnimationStates);
+			}
+			if (statesObject.HasKey("flyattack"))
+			{
+				CU::CJsonValue rangedObject = statesObject["flyattack"];
+				LoadSingleAnimation("flyattack", rangedObject, aModelComponent, aAnimationStates);
+			}
+			if (statesObject.HasKey("chargeStart"))
+			{
+				CU::CJsonValue rangedObject = statesObject["chargeStart"];
+				LoadSingleAnimation("chargeStart", rangedObject, aModelComponent, aAnimationStates);
+			}
+			if (statesObject.HasKey("chargeRun"))
+			{
+				CU::CJsonValue rangedObject = statesObject["chargeRun"];
+				LoadSingleAnimation("chargeRun", rangedObject, aModelComponent, aAnimationStates);
+			}
 		}
 	}
 
