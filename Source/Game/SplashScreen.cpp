@@ -52,7 +52,9 @@ void CSplashScreenState::Render()
 
 void CSplashScreenState::AddPicture(const char* aPath)
 {	// 								             size           pos			Pivot				rect					 colour
-	mySprites.Add(new CSpriteInstance(aPath, { 1.f, 1.f }, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f, 1.f, 1.f }, { 1.f, 1.f, 1.f, 0.f }));
+	mySprites.Add(new CSpriteInstance(aPath));
+	mySprites.GetLast()->SetPosition({ 0.5f, 0.5f });
+	mySprites.GetLast()->SetPivot({ 0.5f, 0.5f });
 }
 
 void CSplashScreenState::UserWantsToContinue()
