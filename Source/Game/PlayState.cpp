@@ -94,7 +94,10 @@
 #include "AnimationComponent.h"
 #include "LutComponent.h"
 #include "PointLightComponentManager.h"
+#include "BrontosaurusEngine/SpriteInstance.h"
+#include "ShowTitleComponent.h"
 #include "Renderer.h"
+#include "MenuState.h"
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -104,6 +107,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myModelComponentManager(nullptr)
 	, myMovementComponent(nullptr)
 	, myCameraComponent(nullptr)
+	, myIsInfocus(false)
 	, myAmmoComponentManager(nullptr)
 	, myWeaponFactory(nullptr)
 	, myWeaponSystemManager(nullptr)
@@ -116,6 +120,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 	, myIsCutscene(false)
+	, myTitle(nullptr)
 {
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
@@ -226,8 +231,17 @@ void CPlayState::Load()
 
 	if (levelsArray[myLevelIndex].GetString() == "Intro")
 	{
-		myIsCutscene = true;
+		myIsCutscene = 1;
 		Audio::CAudioInterface::GetInstance()->PostEvent("Intro_Audio");
+		myTitle = new CSpriteInstance("Sprites/Menu/Main/Title/default.dds");
+		myTitle->SetPivot({ 0.5f, 0.5f });
+		myTitle->SetPosition({ 0.5f, 0.5f });
+	}
+	else if (levelsArray[myLevelIndex].GetString() == "Outro")
+	{
+		myIsCutscene = 2;
+		
+		Audio::CAudioInterface::GetInstance()->PostEvent("Outro_Audio");
 	}
 
 	Lights::SDirectionalLight dirLight;
@@ -244,21 +258,21 @@ void CPlayState::Load()
 		myWeaponFactory->LoadWeapons();
 
 	}
-	
+
 	CreatePlayer(playerCamera.GetCamera()); // Hard codes Player!;
 
 
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
-	
+
 	if (myIsCutscene == false)
 	{
 		myHUD.LoadHUD();
 	}
 
 	myIsLoaded = true;
-	
+
 	CEnemyFactory::GetInstance()->LoadBluePrints(levelsArray.at(myLevelIndex).GetString());
 
 	// Get time to load the level:
@@ -303,7 +317,7 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	}
 
 	CTumbleweedFactory::GetInstance()->Update(aDeltaTime.GetSeconds());
-	
+
 	CAnimationComponent::UpdateAnimations(aDeltaTime);
 	myScene->Update(aDeltaTime);
 	if (myPhysicsScene->Simulate(aDeltaTime) == true)
@@ -311,6 +325,19 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 		myColliderComponentManager->Update();
 	}
 	myPlayerLut->Update(aDeltaTime.GetSeconds());
+
+	if (myIsCutscene)
+	{
+		if (myTitle)
+		{
+			if (myTitleComponent)
+			{
+				myTitleComponent->Update(aDeltaTime.GetSeconds());
+				myTitle->SetAlpha(myTitleComponent->GetAlpha());
+			}
+		}
+	}
+
 	return myStatus;
 }
 
@@ -318,29 +345,43 @@ void CPlayState::Render()
 {
 	myScene->Render();
 
-	if(myIsCutscene == false)
+	if (myIsCutscene == false)
 		myHUD.Render();
+
+	if (myIsCutscene == true)
+	{
+		if(myTitle)
+			myTitle->Render();
+	}
+
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
+	myIsInfocus = true;
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
+	myIsInfocus = false;
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 	RENDERER.ClearGui();
 }
 
 void CPlayState::Pause()
 {
-	myStateStack.PushState(new CPauseMenuState(myStateStack));
+	myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/PauseMenu.json"));
 }
 
 CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
+	if (myIsInfocus == false)
+	{
+		return CU::eInputReturn::ePassOn;
+	}
+
 	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
 	{
 		Pause();
@@ -349,7 +390,7 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 	{
 		CU::CInputMessenger::RecieveInput(aInputMessage);
 	}
-	
+
 	return CU::eInputReturn::eKeepSecret;
 }
 
@@ -402,7 +443,7 @@ void CPlayState::CreateManagersAndFactories()
 	CPickupComponentManager::Create();
 	CEnemyClientRepresentationManager::Create();
 	CEnemyFactory::Create(*myEnemyComponentManager, *myGameObjectManager, *myWeaponSystemManager, *myColliderComponentManager);
-	
+
 	myExplosionComponentManager = new CExplosionComponentManager();
 	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
 	CTumbleweedFactory::CreateInstance();
@@ -417,7 +458,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	transformation.RotateAroundAxis(3.14, CU::Axees::Y);
 	transformation.SetPosition(0, -1.8, 0);
 	modelObject->SetWorldTransformation(transformation);
-	
+
 	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Animations/M_Player_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
@@ -464,7 +505,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	otherPlayer->AddComponent(modelObject);
 	otherPlayer->AddComponent(playerReciver);
 	CPollingStation::GetInstance()->AddPlayerObject(otherPlayer);
-	
+
 
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new COtherPlayerSpawned(playerReciver));
 }
@@ -513,6 +554,12 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		if (myIsCutscene == true)
 		{
 			myMovementComponent->SetIntroFallMode();
+			if (myTitle)
+			{
+				myTitleComponent = new CShowTitleComponent();
+				playerObject->AddComponent(myTitleComponent);
+
+			}
 		}
 
 		if (myIsCutscene == false)
@@ -526,7 +573,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 
 		myPlayerLut = new CLutComponent();
 		playerObject->AddComponent(myPlayerLut);
-		
+
 
 		//addHandGunData.myString = "MeleeWeapon";
 		//playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
@@ -546,7 +593,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		controllerDesc.radius = 0.5f;
 		controllerDesc.halfHeight = 2.f;
 		controllerDesc.center.y = -3.0f;
-		
+
 		float rad = 45.f;
 		DEGREES_TO_RADIANS(rad);
 		controllerDesc.slopeLimit = rad;
@@ -585,7 +632,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 		data.IsTrigger = false;
 		CColliderComponent* collider = myColliderComponentManager->CreateComponent(&data ,playerObject->GetId());*/
 
-		
+
 
 		//CGameObject* enemyObject = myGameObjectManager->CreateGameObject();
 		//CModelComponent* enemyModelComponent = myModelComponentManager->CreateComponent("Models/Meshes/M_Enemy_DollarDragon_01.fbx");
@@ -606,12 +653,12 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 			sphereColliderData.myRadius = 0.5f;
 			CColliderComponent* enemySphereColiider = myColliderComponentManager->CreateComponent(&sphereColliderData);
 			enemyObject->AddComponent(enemySphereColiider);*/
-		/*CCheckPointComponent* enemyRespanwsPlayerLol = new CCheckPointComponent();
-		enemyRespanwsPlayerLol->SetCheckPointPosition(CU::Vector3f::Zero);
-		enemyObject->AddComponent(enemyRespanwsPlayerLol);
-		enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
-		enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
-		
+			/*CCheckPointComponent* enemyRespanwsPlayerLol = new CCheckPointComponent();
+			enemyRespanwsPlayerLol->SetCheckPointPosition(CU::Vector3f::Zero);
+			enemyObject->AddComponent(enemyRespanwsPlayerLol);
+			enemyObject->SetWorldPosition(CU::Vector3f(0.0f, 3.0f, 0.0f));
+			enemyObject->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());*/
+
 	}
 }
 

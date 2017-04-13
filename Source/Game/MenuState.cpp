@@ -112,6 +112,7 @@ void CMenuState::Render()
 
 void CMenuState::OnEnter(const bool aLetThroughRender)
 {
+	RENDERER.ClearGui();
 	myManager.UpdateMousePosition(myManager.GetMopusePosition());
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eCharPressed);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -121,7 +122,6 @@ void CMenuState::OnEnter(const bool aLetThroughRender)
 void CMenuState::OnExit(const bool aLetThroughRender)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
-	RENDERER.ClearGui();
 	myIsInFocus = false;
 }
 
@@ -333,6 +333,7 @@ bool CMenuState::PushLevel(std::string aLevelIndexString)
 	CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
 	netowrkMessageMessage->myLevelIndex = std::stoi(aLevelIndexString);
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netowrkMessageMessage));
+	RENDERER.ClearGui();
 	return true;
 }
 
