@@ -162,7 +162,11 @@ int LoadCharacterController(KLoader::SLoadedComponentData someData)
 	data.minMoveDistance = someData.myData.at("minMoveDistance").GetFloat();
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.radius = someData.myData.at("radius").GetFloat();
-	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
+	data.radius += 1.7f;
+	float height = someData.myData.at("height").GetFloat();
+	height += 0.7f;
+	height /= 2.0f;
+	data.halfHeight = height;
 	
 	CCharacterControllerComponent* component = colliderMgr->CreateCharacterControllerComponent(data, parent->GetId());
 	return component->GetId();
@@ -301,6 +305,7 @@ int LoadCharacterControllerServer(KLoader::SLoadedComponentData someData)
 	data.center.z *= -1; // ska vara med?
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.radius = someData.myData.at("radius").GetFloat();
+	data.radius -= 0.5f;
 	data.halfHeight = someData.myData.at("height").GetFloat() / 2.0f;
 
 	CCharacterControllerComponent* component = colliderMan->CreateCharacterControllerComponent(data, parent->GetId());

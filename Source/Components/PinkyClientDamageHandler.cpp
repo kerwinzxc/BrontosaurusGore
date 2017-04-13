@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "PinkyClientDamageHandler.h"
-
+#include "PollingStation.h"
 
 CPinkyClientDamageHandler::CPinkyClientDamageHandler()
 {
 	myCountDown = 0.0f;
+	myCollidedObjects.Init(10);
 }
 
 
@@ -16,21 +17,22 @@ void CPinkyClientDamageHandler::Receive(const eComponentMessageType aMessageType
 {
 	switch (aMessageType)
 	{
-	case eComponentMessageType::eOnCollisionEnter:
-	{
-		if(myCountDown <= 0.0f)
-		{
-			myCountDown = 1.5f;
-			CGameObject* hitObject = aMessageData.myComponent->GetParent();
-			SComponentMessageData damageData;
-			damageData.myInt = 50.0f;
-			hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
-		}
-		break;
-	}
 	case eComponentMessageType::eUpdatePinky:
 	{
 		myCountDown -= aMessageData.myFloat;
+		DL_PRINT("countdown %f", myCountDown);
+		float playerDistance = CU::Vector3f(GetParent()->GetWorldPosition() - CPollingStation::GetInstance()->GetPlayerObject()->GetWorldPosition()).Length();
+		if(playerDistance < 2.0f)
+		{
+
+				if (myCountDown <= 0.0f)
+				{
+					myCountDown = 1.5f;
+					SComponentMessageData damageData;
+					damageData.myInt = 50.0f;
+					CPollingStation::GetInstance()->GetPlayerObject()->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+				}
+		}
 		break;
 	}
 	default:

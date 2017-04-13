@@ -46,6 +46,7 @@ private:
 	bool mySHouldntExist;
 	healthPoint myChargeDamage;
 	CU::Vector3f myStartChargeLocation;
+	CU::Vector3f myLastFramePostion;
 };
 
 inline void CPinkyController::Sthap()
