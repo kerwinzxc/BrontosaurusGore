@@ -23,7 +23,7 @@ void CPinkyClientDamageHandler::Receive(const eComponentMessageType aMessageType
 			myCountDown = 1.5f;
 			CGameObject* hitObject = aMessageData.myComponent->GetParent();
 			SComponentMessageData damageData;
-			damageData.myInt = 75.0f;
+			damageData.myInt = 50.0f;
 			hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
 		}
 		break;
