@@ -38,6 +38,7 @@ CMenuState::CMenuState(StateStack& aStateStack, std::string aFile) : State(aStat
 	myManager.AddAction("ConectLocal", [this](std::string string)-> bool { return ConnectLocal(string); });
 	myManager.AddAction("SelectTextInput", [this](std::string string)-> bool { return SetCurrentTextInput(string); });
 	myManager.AddAction("CheckIp", [this](std::string string)-> bool { return CheckIp(string); });
+	myManager.AddAction("SetName", [this](std::string string)-> bool { return SetName(string); });
 
 	MenuLoad(aFile);
 }
@@ -112,7 +113,7 @@ void CMenuState::Render()
 
 void CMenuState::OnEnter(const bool aLetThroughRender)
 {
-	RENDERER.ClearGui();
+
 	myManager.UpdateMousePosition(myManager.GetMopusePosition());
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eCharPressed);
 	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
@@ -121,6 +122,7 @@ void CMenuState::OnEnter(const bool aLetThroughRender)
 
 void CMenuState::OnExit(const bool aLetThroughRender)
 {
+	RENDERER.ClearGui();
 	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 	myIsInFocus = false;
 }
@@ -361,7 +363,7 @@ bool CMenuState::StartServer(std::string /*notUsed*/)
 
 bool CMenuState::ConnectLocal(std::string anIp)
 {
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage("YouAreAlone", "127.0.0.1"));
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, "127.0.0.1"));
 	return true;
 }
 
@@ -390,5 +392,12 @@ bool CMenuState::CheckIp(std::string aTextInput)
 		}
 	}
 
+	return true;
+}
+
+bool CMenuState::SetName(std::string aTextInput)
+{
+	const int index = stoi(aTextInput);
+	myName = CU::StringHelper::WStringToString(myTextInputs[index].myTextInstance->GetTextLines()[0]);
 	return true;
 }

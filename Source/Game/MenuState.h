@@ -47,9 +47,10 @@ private:
 	bool PopMenues(std::string aNumberOfMenues);
 	bool PushLevel(std::string aLevelIndexString);
 	static bool StartServer(std::string notUsed);
-	static bool ConnectLocal(std::string anIp);
+	bool ConnectLocal(std::string anIp);
 	bool SetCurrentTextInput(std::string aTexINputIndex);
 	bool CheckIp(std::string aTextInput);
+	bool SetName(std::string aTextInput);
 
 	CU::GrowingArray<STextInput> myTextInputs;
 	int myCurrentTextInput;
@@ -64,8 +65,8 @@ private:
 	bool myBlinkeyBool;
 	float myBlinkeyTimer;
 
-	std::wstring myName;
-	std::wstring myIp;
+	std::string myName;
+	std::string myIp;
 };
 
 inline bool CMenuState::GetLetThroughRender() const
