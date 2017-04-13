@@ -115,7 +115,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 
 	
 	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc,newProjectileObject->GetId());
-	//newProjectileObject->AddComponent(projectileSphereCollider);
+	newProjectileObject->AddComponent(projectileSphereCollider);
 
 	SSphereColliderData sphereColliderDescTrigger;
 	sphereColliderDescTrigger.myRadius = .1f;
