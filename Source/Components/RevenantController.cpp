@@ -139,6 +139,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 		break;
 	case eRevenantState::eUseRangedAttack:
+		LookAtPlayer();
 		ChangeWeapon(0);
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
@@ -276,6 +277,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eWaitBeforeChangingState:
 	{
+		LookAtPlayer();
 		myWaitBeforeChangingStateCountdown -= aDeltaTime;
 		if(myWaitBeforeChangingStateCountdown <= 0)
 		{
