@@ -106,6 +106,7 @@ enum class eComponentMessageType
 	eSetLastHitNormal,
 	eSetLastHitPosition,
 	eDoStuffBeforeDie,
+	eUpdatePinky,
 	eLength,
 };
 

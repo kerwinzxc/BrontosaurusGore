@@ -4,6 +4,7 @@
 
 CPinkyClientDamageHandler::CPinkyClientDamageHandler()
 {
+	myCountDown = 0.0f;
 }
 
 
@@ -17,10 +18,19 @@ void CPinkyClientDamageHandler::Receive(const eComponentMessageType aMessageType
 	{
 	case eComponentMessageType::eOnCollisionEnter:
 	{
-		CGameObject* hitObject = aMessageData.myComponent->GetParent();
-		SComponentMessageData damageData;
-		damageData.myInt = 75.0f;
-		hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+		if(myCountDown <= 0.0f)
+		{
+			myCountDown = 1.5f;
+			CGameObject* hitObject = aMessageData.myComponent->GetParent();
+			SComponentMessageData damageData;
+			damageData.myInt = 75.0f;
+			hitObject->NotifyComponents(eComponentMessageType::eTakeDamage, damageData);
+		}
+		break;
+	}
+	case eComponentMessageType::eUpdatePinky:
+	{
+		myCountDown -= aMessageData.myFloat;
 		break;
 	}
 	default:
