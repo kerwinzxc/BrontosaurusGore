@@ -18,6 +18,8 @@ namespace Physics
 	class CPhysics;
 }
 
+class CShowTitleComponent;
+
 class CLutComponent;
 class CGameObjectManager;
 class CScene;
@@ -43,6 +45,7 @@ class CScriptComponentManager;
 class CExplosionFactory;
 class CExplosionComponentManager;
 class CTextInstance;
+class CSpriteInstance;
 class CDamageOnCollisionComponentManager;
 class CGameObject;
 
@@ -89,6 +92,9 @@ private:
 	Physics::CPhysicsScene* myPhysicsScene;
 	Physics::CPhysics* myPhysics;
 
+
+	CSpriteInstance* myTitle;
+	CShowTitleComponent* myTitleComponent;
 
 	CColliderComponentManager* myColliderComponentManager;
 
