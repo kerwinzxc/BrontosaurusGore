@@ -24,7 +24,8 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "ThreadedPostmaster/Postmaster.h"
 #include "CommonUtilities/CommonUtilities.h"
-
+#include "PinkyClientDamageHandler.h"
+#include "ComponentManager.h"
 
 CEnemyFactory* CEnemyFactory::ourInstance = nullptr;
 
@@ -117,6 +118,7 @@ void CEnemyFactory::LoadBluePrints(const std::string & alevel)
 	myPinkyBluePrint.chargeSpeed = pinkyStats.at("ChargeSpeed").GetFloat();
 	myPinkyBluePrint.windupChargeTime = pinkyStats.at("ChargingChargeDuration").GetFloat();
 	myPinkyBluePrint.chargeDamage = pinkyStats.at("ChargeDamage").GetFloat();
+	myPinkyBluePrint.shootingRange = 20.0f;
 }
 
 CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3f & aPosition)
@@ -246,9 +248,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	break;
 	case eEnemyTypes::ePinky:
 	{
-		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Wagon_Wheel_01.fbx");
+		model = CModelComponentManager::GetInstance().CreateComponent("Models/Meshes/M_Enemy_Pinky_01.fbx");
 		controllerDesc.halfHeight = 1.47f;
-		controllerDesc.radius = 1.08f;
+		controllerDesc.radius = 2.08f;
 		controllerDesc.center.y = -0.88f;
 	}
 	break;
@@ -270,6 +272,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	CCharacterControllerComponent* CollisionController = myColliderManager.CreateCharacterControllerComponent(controllerDesc, repesention->GetId());
 	repesention->AddComponent(CollisionController);
+	CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
+	CComponentManager::GetInstance().RegisterComponent(damaageHandler);
+	repesention->AddComponent(damaageHandler);
 
 	DL_PRINT("EnemyRepesentationNetworkID:");
 	DL_PRINT(std::to_string(enemy->GetNetworkID()).c_str());

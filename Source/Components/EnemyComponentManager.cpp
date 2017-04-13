@@ -115,6 +115,7 @@ CEnemy* CEnemyComponentManager::CreateComponent(const SEnemyBlueprint* anEnemyBl
 		enemy->SetEnemyData(anEnemyBlueprint);
 
 		myEnemies.Add(enemy);
+		
 
 		CComponentManager::GetInstance().RegisterComponent(enemy);
 
