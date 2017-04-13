@@ -49,7 +49,9 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
 	}
-
+	SComponentMessageData updateData;
+	updateData.myFloat = aDeltaTime;
+	GetParent()->NotifyComponents(eComponentMessageType::eUpdatePinky, updateData);
 	if (myIsAlive == false)
 	{
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
@@ -73,11 +75,6 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	{
 	case eComponentMessageType::eTakeDamage:
 	case eComponentMessageType::eTookDamage:
-		DL_PRINT("Wants to take damage");
-		if(myIsAlive == false)
-		{
-			DL_PRINT("dead enemy wants to take damage");
-		}
 		DoSplatter();
 		StartHighlight();
 		break;

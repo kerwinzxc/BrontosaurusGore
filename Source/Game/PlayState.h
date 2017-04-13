@@ -121,6 +121,7 @@ private:
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;
 	class CCameraComponent* myCameraComponent;
+	bool myIsInfocus;
 	friend struct SEncapsulationBreaker;
 
 	CLutComponent* myPlayerLut;

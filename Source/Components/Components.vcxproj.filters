@@ -84,7 +84,7 @@
     <ClCompile Include="TumbleweedFactory.cpp" />
     <ClCompile Include="ArenaTriggerComponentManager.cpp" />
     <ClCompile Include="LutComponent.cpp" />
-    <ClCompile Include="ShowTitleComponent.cpp" />
+    <ClCompile Include="PinkyClientDamageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -192,6 +192,6 @@
     <ClInclude Include="WeaponPickupData.h" />
     <ClInclude Include="ArenaTriggerComponentManager.h" />
     <ClInclude Include="LutComponent.h" />
-    <ClInclude Include="ShowTitleComponent.h" />
+    <ClInclude Include="PinkyClientDamageHandler.h" />
   </ItemGroup>
 </Project>
