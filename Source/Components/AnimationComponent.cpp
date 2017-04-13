@@ -94,7 +94,7 @@ void CAnimationComponent::Update(const CU::Time aDeltaTime)
 void CAnimationComponent::Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData)
 {
 	if (myAnimationStates.empty()) return;
-
+	const eAnimationState lastAnimationKey = myAnimationStack.GetLast().myAnimationKey;
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eRevenantStartJump:
@@ -112,7 +112,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		}
 		break;
 	case eComponentMessageType::eRevenantMelee:
-		if (myAnimationStack.GetLast().myAnimationKey != eAnimationState::meleeAttack01)
+		if (lastAnimationKey != eAnimationState::meleeAttack01)
 		{
 			TryPushAnimation("melee");
 		}
@@ -136,13 +136,16 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 			TryPushAnimation("death");
 		break;
 	case eComponentMessageType::eUnequip:
-		if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
-		{
-			myOnFinnishedCallback = *aMessageData.myVoidFunction;
-			break;
-		}
+		
 
-		TryPushAnimation("unequip");
+		if(TryPushAnimation("unequip") == true)
+		{
+			if (myAnimationStack.GetLast().myAnimationKey == eAnimationState::unequip01 || myAnimationStack.GetLast().myAnimationKey == eAnimationState::equip01)
+			{
+				myOnFinnishedCallback = *aMessageData.myVoidFunction;
+				break;
+			}
+		}
 		
 		break;
 	case eComponentMessageType::eEquip:
@@ -185,13 +188,15 @@ void CAnimationComponent::UpdateAnimations(const CU::Time aDeltaTime)
 	}
 }
 
-void CAnimationComponent::TryPushAnimation(const std::string& aStr)
+bool CAnimationComponent::TryPushAnimation(const std::string& aStr)
 {
-	std::map<std::basic_string<char>, SAnimation>::iterator it = myAnimationStates.find("ranged");
+	std::map<std::basic_string<char>, SAnimation>::iterator it = myAnimationStates.find(aStr);
 	if (it != myAnimationStates.end())
 	{
 		PushAnimation(it->second);
+		return true;
 	}
+	return false;
 }
 
 void CAnimationComponent::PushAnimation(const SAnimation& aAnimation)

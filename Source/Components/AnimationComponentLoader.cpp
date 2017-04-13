@@ -102,7 +102,7 @@ namespace AnimationComponentLoader
 
 			if (statesObject.HasKey("die"))
 			{
-				CU::CJsonValue rangedObject = statesObject["ranged"];
+				CU::CJsonValue rangedObject = statesObject["die"];
 				LoadRangedAttack(rangedObject, aModelComponent, aAnimationStates);
 			}
 

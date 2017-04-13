@@ -28,7 +28,7 @@ public:
 	static void UpdateAnimations(const CU::Time aDeltaTime);
 
 private:
-	void TryPushAnimation(const std::string& aStr);
+	bool TryPushAnimation(const std::string& aStr);
 	void PushAnimation(const SAnimation& aAnimation);
 
 	std::function<void(void)> myOnFinnishedCallback;
