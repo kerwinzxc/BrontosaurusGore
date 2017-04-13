@@ -115,26 +115,41 @@ CWeaponPickupComponent* CPickupComponentManager::GetWeaponPickupComponent(const 
 
 void CPickupComponentManager::DeactivateHealthPack(const int aId)
 {
-	myHealthPacks.at(aId)->SetActive(false);
+	if (myHealthPacks.find(aId) != myHealthPacks.end())
+	{
+		myHealthPacks.at(aId)->SetActive(false);
+	}
 }
 
 void CPickupComponentManager::DeactivateAmmoPack(const int aId)
 {
-	myAmmoPacks.at(aId)->SetActive(false);
+	if (myAmmoPacks.find(aId) != myAmmoPacks.end())
+	{
+		myAmmoPacks.at(aId)->SetActive(false);
+	}
 }
 
 void CPickupComponentManager::DeactivateArmorPack(const int aId)
 {
-	myArmorPacks.at(aId)->SetActive(false);
+	if(myArmorPacks.find(aId) != myArmorPacks.end())
+	{
+		myArmorPacks.at(aId)->SetActive(false);
+	}
 }
 
 void CPickupComponentManager::DeactivateKeyPickup(const int aId)
 {
-	myKeyPickups.at(aId)->SetActive(false);
+	if (myKeyPickups.find(aId) != myKeyPickups.end())
+	{
+		myKeyPickups.at(aId)->SetActive(false);
+	}
 }
 void CPickupComponentManager::DeactivateWeaponPickup(const int aId)
 {
-	myWeaponPickups.at(aId)->SetActive(false);
+	if (myWeaponPickups.find(aId) != myWeaponPickups.end())
+	{
+		myWeaponPickups.at(aId)->SetActive(false);
+	}
 }
 
 void CPickupComponentManager::Update(const float aDeltaTime)
@@ -160,6 +175,8 @@ void CPickupComponentManager::Update(const float aDeltaTime)
 		comp.second->Update(aDeltaTime);
 	}
 }
+
+
 
 CPickupComponentManager::CPickupComponentManager()
 {

@@ -35,6 +35,9 @@ void CRevenantController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeMeleeAttackDuration = revenantData->chargeMeleeAttackDuration;
 	myChargeRangedAttackDuration = revenantData->chargeRangedAttackAttackDuration;
 	myChargeRangedAirBarrageAttackDuration = revenantData->chargeAirBarrageAttackDuration;
+	myChargeMeleeAttackDuration = 0.5f;
+	myChargeRangedAttackDuration = 0.1f;
+	myChargeRangedAirBarrageAttackDuration = 0.1;
 	CEnemy::SetEnemyData(aData);
 }
 
