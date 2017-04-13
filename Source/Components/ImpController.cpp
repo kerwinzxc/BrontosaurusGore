@@ -302,10 +302,15 @@ void CImpController::ApplyJumpForce(float aJumpHeight)
 {
 	if(myIsJumping == false) 
 	{
-		myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
-		myIsJumping = true;
+		float yPosition = GetParent()->GetWorldPosition().y;
+		if(yPosition < ClosestPlayerPosition().y || yPosition < myWanderToPosition.y)
+		{
+			myJumpForce = sqrtf((gravityAcceleration)* aJumpHeight * 2);
+			myIsJumping = true;
 
-		ChangeClientAnimation(eComponentMessageType::eImpStartToJump);
+			ChangeClientAnimation(eComponentMessageType::eImpStartToJump);
+		
+		}
 		//CNetworkMessage_AnimationStart* jumpMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
 		//jumpMessage->Init(GetNetworkID(), eComponentMessageType::eImpStartToJump);
 		//Postmaster::Threaded::CPostmaster::GetInstance().BroadcastLocal(new CSendNetworkMessageMessage(jumpMessage));
@@ -344,6 +349,10 @@ void CImpController::InitiateWander()
 	myState = eImpState::eRunAfterShooting;
 	myUsedAttackSinceLastRunning = 0;
 	myWanderToPosition = GetNearestJumpPosition();
+	if(myWanderToPosition == GetParent()->GetWorldPosition())
+	{
+		myState = eImpState::eIdle;
+	}
 }
 
 bool CImpController::CanChangeState()
