@@ -294,9 +294,12 @@ void CClient::Update()
 					break;
 				case CNetworkMessage_WeaponShoot::Shooter::Enemy:
 				{
-					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
-					target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
-					target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					if (CEnemyClientRepresentationManager::CheckIfCreated() == true)
+					{
+						CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
+						target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
+						target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+					}
 				}
 				break;
 				default: break;

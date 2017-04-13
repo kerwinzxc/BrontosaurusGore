@@ -89,7 +89,7 @@ void CProjectileFactory::Init(CGameObjectManager* aGameObjectManager, CModelComp
 void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 {
 	CGameObject* newProjectileObject = myGameObjectManagerPointer->CreateGameObject();
-	newProjectileObject->GetLocalTransform().Scale(CU::Vector3f(1, 1, 1));
+	newProjectileObject->GetLocalTransform().Scale(CU::Vector3f(0.1f, 0.1f, 0.1f));
 	CProjectileComponent* tempProjectileComponent = myProjectileComponentManager->CreateAndRegisterComponent();
 	newProjectileObject->AddComponent(tempProjectileComponent);
 	if (!myPassiveProjectiles[aIndex]->projectileName.empty())
@@ -115,7 +115,7 @@ void CProjectileFactory::CreateProjectile(unsigned int aIndex)
 
 	
 	CColliderComponent* projectileSphereCollider = myColliderComponentManagerPointer->CreateComponent(&sphereColliderDesc,newProjectileObject->GetId());
-	newProjectileObject->AddComponent(projectileSphereCollider);
+	//newProjectileObject->AddComponent(projectileSphereCollider);
 
 	SSphereColliderData sphereColliderDescTrigger;
 	sphereColliderDescTrigger.myRadius = .1f;
