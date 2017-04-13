@@ -49,6 +49,8 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myTextInstance->SetPosition({ 0.5f, 0.2f });
 	myIdleCountdown = timeUntilIdle;
 	myIdleThingCountdown = originalTimeUntilIdleThing;
+
+	myUseConstantVelosity = false;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -134,6 +136,11 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 #endif
 
 	
+}
+
+void CMovementComponent::SetIntroFallMode()
+{
+	myUseConstantVelosity = true;
 }
 
 void CMovementComponent::SwapMovementMode()
@@ -246,7 +253,15 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 	//{
 	//	myJumpForce = 0.0f;
 	//}
-	myVelocity.y += myJumpForce;
+	if (myUseConstantVelosity == false)
+	{
+		myVelocity.y += myJumpForce;
+	}
+	else
+	{
+		myVelocity.y = -27.f;
+		myIdleThingCountdown = 1.0f;
+	}
 
 	SComponentQuestionData groundeddata;
 	if (GetParent()->AskComponents(eComponentQuestionType::ePhysicsControllerConstraints, groundeddata) == true)
