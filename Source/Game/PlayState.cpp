@@ -236,7 +236,7 @@ void CPlayState::Load()
 	myScene->AddDirectionalLight(dirLight);
 	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
 	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, myIsCutscene ? 1000.f : 500.f);
+	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, myIsCutscene ? 2000.f : 500.f);
 
 	if (myIsCutscene == false)
 	{
