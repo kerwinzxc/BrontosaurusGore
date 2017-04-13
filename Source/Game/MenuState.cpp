@@ -389,9 +389,9 @@ bool CMenuState::CheckIp(std::string aTextInput)
 
 	CTextInstance& textInstance = *myTextInputs[index].myTextInstance;
 
-	for (int i = 0; i < textInstance.GetTextLines()[i].length(); ++i)
+	for (int i = 0; i < textInstance.GetTextLines()[0].length(); ++i)
 	{
-		if (ipCheck.find(textInstance.GetTextLines()[i].at(i)) == std::wstring::npos)
+		if (ipCheck.find(textInstance.GetTextLines()[0].at(i)) == std::wstring::npos)
 		{
 			myTextInputs[index].myInputIsValid = false;
 			myCurrentTextInput = -1;
