@@ -36,7 +36,7 @@ private:
 	void UpdateCameraBuffer(const CU::Matrix44f& aMatrix44, const CU::Matrix44f& aProjectionInverse);
 
 	
-	void SetSRV();
+	void SetSRV(bool aUseAlpha = true);
 	void SetCBuffer();
 	void DoAmbientLighting();
 	void RenderDirectionalLight(SRenderMessage* aRenderMessage);
