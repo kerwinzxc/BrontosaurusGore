@@ -119,8 +119,6 @@ void CPinkyController::Update(const float aDeltaTime)
 		GetParent()->GetWorldPosition().Print();
 		float distance = CU::Vector3f(myLastFramePostion - GetParent()->GetWorldPosition()).Length();
 		float minmoveChargesak = myChargeSpeed * aDeltaTime * 0.1f;
-		DL_PRINT("distance %f", distance);
-		DL_PRINT("minmoveChargesak %f", minmoveChargesak);
 		if(distance < minmoveChargesak)
 		{
 			myIsCharging = false;
