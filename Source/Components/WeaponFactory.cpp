@@ -200,6 +200,7 @@ void CWeaponFactory::LoadWeaponsFromJsonValue(const CU::CJsonValue& aJsonValue, 
 			SExplosionData* newExplosionData = new SExplosionData();
 			newExplosionData->explosionParticles.Init(1);
 			newExplosionData->radius = aJsonValue[i].at("ExplosionRange").GetFloat();
+			newExplosionData->radius *= newExplosionData->radius;
 			newExplosionData->knockBackForce = aJsonValue[i].at("ExplosionKnockBackForce").GetFloat();
 			newExplosionData->damage = static_cast<healthPoint>(aJsonValue[i].at("ExplosionDamage").GetFloat());
 			newProjectileData->explosionData = newExplosionData;

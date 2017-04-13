@@ -122,6 +122,8 @@ private:
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
 
+	bool myIsCutscene;
+
 	//Super temp ta bort när guit börjar ta form
 	//CTextInstance* myPlayerHealthText;
 	//CTextInstance* myPlayerArmorText;
