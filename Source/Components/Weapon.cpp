@@ -23,6 +23,7 @@ CWeapon::CWeapon(SWeaponData* aWeaponData, Physics::CPhysicsScene* aPhysicsScene
 	myPhysicsScene = aPhysicsScene;
 	mySoundDirection = { 0.0f, 0.0f, 1.0f };
 	myDeltaTime = 0.0f;
+	myClickSoundCoolDown = 0.0f;
 	if (Audio::CAudioInterface::GetInstance() != nullptr)
 	{
 		myAudioId = Audio::CAudioInterface::GetInstance()->RegisterGameObject();
@@ -51,11 +52,6 @@ void CWeapon::TryToShoot(const CU::Vector3f& aDirection)
 
 void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 {
-	static float cooldowntimer = 0.0f;
-	if (cooldowntimer > 0.0f)
-	{
-		cooldowntimer -= myDeltaTime;
-	}
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
 		if (aHaveAmmo == true)
@@ -169,9 +165,16 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 		}
 		else
 		{
-			if (cooldowntimer <= 0)
+			if (myClickSoundCoolDown <= 0)
 			{
-				cooldowntimer = 0.125f;
+				if (myWeaponData->name == "Shotgun")
+				{
+					myClickSoundCoolDown = myWeaponData->fireRate - 0.3f;
+				}
+				else
+				{
+					myClickSoundCoolDown = myWeaponData->fireRate;
+				}
 				Audio::CAudioInterface::GetInstance()->PostEvent("Player_OutOfAmmo");
 			}
 		}
@@ -181,6 +184,10 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 void CWeapon::Update(float aDeltaTime)
 {
 	myDeltaTime = aDeltaTime;
+	if (myClickSoundCoolDown > 0)
+	{
+		myClickSoundCoolDown -= aDeltaTime;
+	}
 	if (myAudioId != 0)
 	{
 		const CU::Matrix44f transform = myUser->GetToWorldTransform();
