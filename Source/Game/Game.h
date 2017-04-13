@@ -8,6 +8,8 @@ namespace CU
 	class Time;
 }
 
+class CSplashScreenState;
+
 class CGame
 {
 public:
@@ -19,6 +21,7 @@ public:
 	void Render();
 
 private:
+	CSplashScreenState* mySplashScreenState;
 	StateStack myStateStack;
 	CClient myClient;
 	CGameEventMessenger myGameEventMessenger;
