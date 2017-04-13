@@ -73,11 +73,6 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	{
 	case eComponentMessageType::eTakeDamage:
 	case eComponentMessageType::eTookDamage:
-		DL_PRINT("Wants to take damage");
-		if(myIsAlive == false)
-		{
-			DL_PRINT("dead enemy wants to take damage");
-		}
 		DoSplatter();
 		StartHighlight();
 		break;
