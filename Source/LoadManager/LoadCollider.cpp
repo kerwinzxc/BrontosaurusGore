@@ -9,6 +9,7 @@
 #include "RigidBodyComponent.h"
 #include "Physics\PhysicsCharacterController.h"
 #include "CharacterControllerComponent.h"
+#include "../Game/PollingStation.h"
 
 #define TO_RADIANS(x) (x) * (3.1415f / 180.f)
 
@@ -241,7 +242,11 @@ int LoadBoxColliderServer(KLoader::SLoadedComponentData someData)
 	data.center = someData.myData.at("center").GetVector3f("xyz");
 	data.center.x *= -1;
 	data.center.z *= -1;
-	parent->GetLocalTransform().GetPosition().z -= 20.0f;
+
+	if(levelIndex < 3)
+	{
+		parent->GetLocalTransform().GetPosition().z -= 20.0f;
+	}
 
 	data.center = data.center * parent->GetToWorldTransform().GetRotation();
 	data.myHalfExtent = someData.myData.at("size").GetVector3f("xyz") * scale * 0.5f;
