@@ -8,7 +8,7 @@ CShowTitleComponent::CShowTitleComponent()
 	{
 		CComponentManager::GetInstance().RegisterComponent(this);
 	}
-	myAlpha = 0.0f;
+	myAlpha = -1.0f;
 	myFadeIn = false;
 }
 
