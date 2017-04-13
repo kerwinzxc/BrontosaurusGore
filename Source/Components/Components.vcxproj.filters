@@ -83,6 +83,8 @@
     <ClCompile Include="TumbleweedController.cpp" />
     <ClCompile Include="TumbleweedFactory.cpp" />
     <ClCompile Include="ArenaTriggerComponentManager.cpp" />
+    <ClCompile Include="LutComponent.cpp" />
+    <ClCompile Include="ShowTitleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -189,5 +191,7 @@
     <ClInclude Include="TumbleweedFactory.h" />
     <ClInclude Include="WeaponPickupData.h" />
     <ClInclude Include="ArenaTriggerComponentManager.h" />
+    <ClInclude Include="LutComponent.h" />
+    <ClInclude Include="ShowTitleComponent.h" />
   </ItemGroup>
 </Project>
