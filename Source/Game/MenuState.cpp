@@ -27,16 +27,17 @@ char CMenuState::ourMenuesToPop = 0;
 
 CMenuState::CMenuState(StateStack& aStateStack, std::string aFile) : State(aStateStack, eInputMessengerType::eMainMenu), myTextInputs(2), myCurrentTextInput(-1), myShowStateBelow(false), myPointerSprite(nullptr), myIsInFocus(false), myBlinkeyBool(true), myBlinkeyTimer(0)
 {
-	std::function<bool(std::string)> temp = [this](std::string string)->bool { return PushTempLobby(string); };
+	std::function<bool(std::string)> temp = [this](std::string string)-> bool { return PushTempLobby(string); };
 
 	myManager.AddAction("ExitGame", bind(&CMenuState::ExitGame, std::placeholders::_1));
-	myManager.AddAction("PushTempLobby", [this](std::string string)->bool { return PushTempLobby(string); });
-	myManager.AddAction("PushMenu", [this](std::string string)->bool { return PushMenu(string); });
-	myManager.AddAction("PopMenues", [this](std::string string)->bool { return PopMenues(string); });
-	myManager.AddAction("PushLevel", [this](std::string string)->bool { return PushLevel(string); });
-	myManager.AddAction("StartServer", [this](std::string string)->bool { return StartServer(string); });
-	myManager.AddAction("ConectLocal", [this](std::string string)->bool { return ConnectLocal(string); });
-	myManager.AddAction("SelectTextInput", [this](std::string string)->bool { return SetCurrentTextInput(string); });
+	myManager.AddAction("PushTempLobby", [this](std::string string)-> bool { return PushTempLobby(string); });
+	myManager.AddAction("PushMenu", [this](std::string string)-> bool { return PushMenu(string); });
+	myManager.AddAction("PopMenues", [this](std::string string)-> bool { return PopMenues(string); });
+	myManager.AddAction("PushLevel", [this](std::string string)-> bool { return PushLevel(string); });
+	myManager.AddAction("StartServer", [this](std::string string)-> bool { return StartServer(string); });
+	myManager.AddAction("ConectLocal", [this](std::string string)-> bool { return ConnectLocal(string); });
+	myManager.AddAction("SelectTextInput", [this](std::string string)-> bool { return SetCurrentTextInput(string); });
+	myManager.AddAction("CheckIp", [this](std::string string)-> bool { return CheckIp(string); });
 
 	MenuLoad(aFile);
 }
@@ -75,9 +76,22 @@ eStateStatus CMenuState::Update(const CU::Time& aDeltaTime)
 void CMenuState::Render()
 {
 	std::wstring oldString;
+	std::wstring otherOldString;
+	int otherOldStringIndex = -1;
+
+	for (int i = 0; i < myTextInputs.Size(); ++i)
+	{
+		if (myTextInputs[i].myInputIsValid == false)
+		{
+			otherOldString = myTextInputs[i].myTextInstance->GetTextLines()[0];
+			otherOldStringIndex = i;
+			myTextInputs[i].myTextInstance->SetTextLine(0, L"Incorect input");
+		}
+	}
+
 	if (myCurrentTextInput > -1 && myBlinkeyBool == true)
 	{
-		CTextInstance* currentTextInstance = myTextInputs[myCurrentTextInput];
+		CTextInstance* currentTextInstance = myTextInputs[myCurrentTextInput].myTextInstance;
 		oldString = currentTextInstance->GetTextLines()[0];
 		currentTextInstance->SetTextLine(0, oldString + L"I");
 	}
@@ -86,8 +100,13 @@ void CMenuState::Render()
 
 	if (myCurrentTextInput >= 0 && myBlinkeyBool == true)
 	{
-		CTextInstance* currentTextInstance = myTextInputs[myCurrentTextInput];
+		CTextInstance* currentTextInstance = myTextInputs[myCurrentTextInput].myTextInstance;
 		currentTextInstance->SetTextLine(0, oldString);
+	}
+
+	if (otherOldStringIndex > -1)
+	{
+		myTextInputs[otherOldStringIndex].myTextInstance->SetTextLine(0, otherOldString);
 	}
 }
 
@@ -137,7 +156,7 @@ CU::eInputReturn CMenuState::RecieveInput(const CU::SInputMessage& aInputMessage
 		}
 		if (aInputMessage.myKey == CU::eKeys::BACK && myCurrentTextInput > -1)
 		{
-			CTextInstance& currentTextInput = *myTextInputs[myCurrentTextInput];
+			CTextInstance& currentTextInput = *myTextInputs[myCurrentTextInput].myTextInstance;
 			currentTextInput.SetTextLine(0, currentTextInput.GetTextLines()[0].substr(0, currentTextInput.GetTextLines()[0].length() - 1));
 		}
 		break;
@@ -155,7 +174,7 @@ eMessageReturn CMenuState::DoEvent(const KeyCharPressed& aCharPressed)
 		return eMessageReturn::eContinue;
 	}
 
-	CTextInstance* textInstance = myTextInputs.At(myCurrentTextInput);
+	CTextInstance* textInstance = myTextInputs.At(myCurrentTextInput).myTextInstance;
 
 
 	if (aCharPressed.GetKey() != 0x08 && aCharPressed.GetKey() != 0x0D)
@@ -253,12 +272,12 @@ void CMenuState::LoadElement(const CU::CJsonValue& aJsonValue, const std::string
 
 				while (myTextInputs.Size() < currentTextInput + 1)
 				{
-					myTextInputs.Add(nullptr);
+					myTextInputs.Add(STextInput());
 				}
 
 				const int textInputTextInstanceIndex = myManager.CreateText(fontName, textPosition, L"", 2, alignment);
-				myTextInputs[currentTextInput] = myManager.GetTextInstance(textInputTextInstanceIndex);
-				myTextInputs[currentTextInput]->SetColor({ 0.f,0.f,0.f,1.f });
+				myTextInputs[currentTextInput].myTextInstance = myManager.GetTextInstance(textInputTextInstanceIndex);
+				myTextInputs[currentTextInput].myTextInstance->SetColor({ 0.f,0.f,0.f,1.f });
 			}
 		}
 		else
@@ -348,10 +367,27 @@ bool CMenuState::ConnectLocal(std::string anIp)
 bool CMenuState::SetCurrentTextInput(std::string aTexINputIndex)
 {
 	myCurrentTextInput = stoi(aTexINputIndex);
+	myTextInputs[myCurrentTextInput].myInputIsValid = true;
 	return true;
 }
 
 bool CMenuState::CheckIp(std::string aTextInput)
 {
+	const std::wstring ipCheck = L"1234567890.";
+
+	const int index = stoi(aTextInput);
+
+	CTextInstance& textInstance = *myTextInputs[index].myTextInstance;
+
+	for (int i = 0; i < textInstance.GetTextLines()[i].length(); ++i)
+	{
+		if (ipCheck.find(textInstance.GetTextLines()[i].at(i)) == std::wstring::npos)
+		{
+			myTextInputs[index].myInputIsValid = false;
+			myCurrentTextInput = -1;
+			return false;
+		}
+	}
+
 	return true;
 }

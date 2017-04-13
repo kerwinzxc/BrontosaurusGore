@@ -4,6 +4,16 @@
 #include "JsonValue.h"
 #include "ThreadedPostmaster/Subscriber.h"
 
+struct STextInput
+{
+	STextInput(): myInputIsValid(true), myTextInstance(nullptr)
+	{
+	}
+
+	bool myInputIsValid;
+	CTextInstance* myTextInstance;
+};
+
 class CMenuState :public State, Postmaster::ISubscriber
 {
 public:
@@ -41,7 +51,7 @@ private:
 	bool SetCurrentTextInput(std::string aTexINputIndex);
 	bool CheckIp(std::string aTextInput);
 
-	CU::GrowingArray<CTextInstance*> myTextInputs;
+	CU::GrowingArray<STextInput> myTextInputs;
 	int myCurrentTextInput;
 
 	bool myShowStateBelow;
