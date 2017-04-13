@@ -2,6 +2,7 @@
 #include "EnemyClientRepresentation.h"
 #include "../ThreadedPostmaster/Postmaster.h"
 #include "../ThreadedPostmaster/AddToCheckPointResetList.h"
+#include "PollingStation.h"
 
 CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const eEnemyTypes aType)
 	:CEnemy(anId, aType)
@@ -108,7 +109,13 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 
 void CEnemyClientRepresentation::CheckIfOutOfBounds()
 {
-	if (GetParent()->GetWorldPosition().y < -100.0f)
+	short levelIndex = CPollingStation::GetInstance()->GetCurrentLevelIndex();
+	float zKillValue = -100.0f;
+	if(levelIndex = 3)
+	{
+		zKillValue = -1000.0f;
+	}
+	if (GetParent()->GetWorldPosition().y < zKillValue)
 	{
 		SComponentQuestionData healthQuestionData;
 		if(GetParent()->AskComponents(eComponentQuestionType::eGetHealth, healthQuestionData) == true)

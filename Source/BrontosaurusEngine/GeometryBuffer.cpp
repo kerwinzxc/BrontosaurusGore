@@ -59,6 +59,7 @@ void CGeometryBuffer::UnbindInput()
 	myFramework->GetDeviceContext()->PSSetShaderResources(1, 5, srvs);
 }
 
+
 void CGeometryBuffer::UnbindOutput()
 {
 	ID3D11RenderTargetView* rtvs[6];
