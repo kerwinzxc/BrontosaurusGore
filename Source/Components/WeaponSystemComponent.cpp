@@ -398,11 +398,9 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
 			{
 				CWeapon* nextWeapon = myWeapons[aIndex];
-				unsigned short& activeWeaponIndex = myActiveWeaponIndex;
-				auto onUnequippedCallback = [nextWeapon, &activeWeaponIndex, aIndex]()
+				auto onUnequippedCallback = [nextWeapon, this, aIndex]()
 				{
-					nextWeapon->Equip();
-					activeWeaponIndex = aIndex;
+					this->ChangeWeaponCallback(aIndex);
 				};
 
 				myWeapons[myActiveWeaponIndex]->Unequip(onUnequippedCallback);
@@ -415,6 +413,7 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 				nextWeapon->Equip();
 				activeWeaponIndex = aIndex;
 			}
+			
 		}
 	}
 }
@@ -456,6 +455,12 @@ bool CWeaponSystemComponent::Answer(const eComponentQuestionType aQuestionType, 
 		break;
 	}
 	return false;
+}
+
+void CWeaponSystemComponent::ChangeWeaponCallback(unsigned aIndex)
+{
+	myActiveWeaponIndex = aIndex;
+	myWeapons[myActiveWeaponIndex]->Equip();
 }
 
 bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)

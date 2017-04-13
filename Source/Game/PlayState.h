@@ -115,12 +115,15 @@ private:
 	CMovementComponent* myMovementComponent;
 	CCheckPointSystem* myCheckPointSystem;
 	class CCameraComponent* myCameraComponent;
+	bool myIsInfocus;
 	friend struct SEncapsulationBreaker;
 
 	CLutComponent* myPlayerLut;
 
 	int myLevelIndex;
 	std::atomic_bool myIsLoaded;
+
+	bool myIsCutscene;
 
 	//Super temp ta bort när guit börjar ta form
 	//CTextInstance* myPlayerHealthText;

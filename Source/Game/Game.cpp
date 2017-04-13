@@ -2,7 +2,7 @@
 #include "Game.h" 
 
 //STATES
-//#include "SplashScreen.h"
+#include "SplashScreen.h"
 #include "TempLobbyState.h"
 
 #include "CommonUtilities/CommandLineManager.h"
@@ -39,13 +39,20 @@ void CGame::Init()
 	myGameEventMessenger.Init({ 0.5f, 0.1f });
 	myClient.StartClient();
 
+
+	if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
+	{
+		mySplashScreenState = new CSplashScreenState(myStateStack);
+
+		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash1.dds");
+		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash2.dds");
+		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash3.dds");
+		myStateStack.PushState(mySplashScreenState);
+	}
+
 	//myStateStack.PushState(new CTempLobbyState(myStateStack));
 	myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/MainMenu.json"));
 
-	//if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
-	//{
-	//	myStateStack.PushState(new CSplashScreenState(myStateStack));
-	//}
 }
 
 bool CGame::Update(const CU::Time& aDeltaTime)

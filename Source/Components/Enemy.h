@@ -39,7 +39,9 @@ public:
 	inline const unsigned short GetNetworkID() const;
 	
 	void DoDamageHighlight(const float aDeltaTime);
+
 protected:
+	void ChangeClientAnimation(const eComponentMessageType aMessageType) const;
 	void SetHighlight(const CU::Vector4f& aColor, float aIntensity);
 	void CheckForNewTransformation(const float aDeltaTime);
 	void SendTransformationToServer();

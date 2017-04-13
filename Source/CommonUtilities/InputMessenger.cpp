@@ -2,7 +2,7 @@
 #include "InputMessenger.h"
 #include "InputListener.h"
 #include "EInputReturn.h"
-#include "..\BrontosaurusEngine\InputManager.h"
+#include "../BrontosaurusEngine/InputManager.h"
 
 namespace CU
 {
@@ -31,7 +31,7 @@ namespace CU
 			inputManager->Neglect(*this);
 		}
 
-		assert(ourInstances[static_cast<int>(myMessengerType)] == this && "Forgot to set the instance?");
+		//assert(ourInstances[static_cast<int>(myMessengerType)] == this && "Forgot to set the instance?");
 		ourInstances[static_cast<int>(myMessengerType)] = nullptr;
 	}
 
