@@ -111,9 +111,10 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, myScriptComponentManager(nullptr)
-	,myExplosionComponentManager(nullptr)
-	,myExplosionFactory(nullptr)
+	, myExplosionComponentManager(nullptr)
+	, myExplosionFactory(nullptr)
 	, myIsLoaded(false)
+	, myIsCutscene(false)
 {
 	myPhysicsScene = nullptr;
 	myPhysics = nullptr;
@@ -209,22 +210,9 @@ void CPlayState::Load()
 	levelPath += levelsArray[myLevelIndex].GetString();
 	levelPath += "/LevelData.json";
 
+
 	CreateManagersAndFactories();
 	LoadManagerGuard loadManagerGuard(*this, *myScene);
-
-	Lights::SDirectionalLight dirLight;
-	dirLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	dirLight.direction = { -1.0f, -1.0f, 1.0f, 1.0f };
-	dirLight.shadowIndex = 0;
-	myScene->AddDirectionalLight(dirLight);
-
-
-	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
-	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
-	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, 500.f);
-
-	myWeaponFactory->LoadWeapons();
-
 
 	//real loading:		as opposed to fake loading
 	KLoader::CKevinLoader &loader = KLoader::CKevinLoader::GetInstance();
@@ -235,13 +223,38 @@ void CPlayState::Load()
 		DL_MESSAGE_BOX("Loading Failed");
 	}
 
+	if (levelsArray[myLevelIndex].GetString() == "Intro")
+	{
+		myIsCutscene = true;
+		Audio::CAudioInterface::GetInstance()->PostEvent("Intro_Audio");
+	}
+
+	Lights::SDirectionalLight dirLight;
+	dirLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	dirLight.direction = { -1.0f, -1.0f, 1.0f, 1.0f };
+	dirLight.shadowIndex = 0;
+	myScene->AddDirectionalLight(dirLight);
+	myScene->AddCamera(CScene::eCameraType::ePlayerOneCamera);
+	CRenderCamera& playerCamera = myScene->GetRenderCamera(CScene::eCameraType::ePlayerOneCamera);
+	playerCamera.InitPerspective(90, WINDOW_SIZE_F.x, WINDOW_SIZE_F.y, 0.1f, myIsCutscene ? 1000.f : 500.f);
+
+	if (myIsCutscene == false)
+	{
+		myWeaponFactory->LoadWeapons();
+
+	}
+	
 	CreatePlayer(playerCamera.GetCamera()); // Hard codes Player!;
+
 
 
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
 	
-	myHUD.LoadHUD();
+	if (myIsCutscene == false)
+	{
+		myHUD.LoadHUD();
+	}
 
 	myIsLoaded = true;
 	
@@ -253,7 +266,10 @@ void CPlayState::Load()
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
-	Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+	if (!myIsCutscene)
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
+	}
 }
 
 void CPlayState::Init()
@@ -280,10 +296,10 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
-	myHUD.Update(aDeltaTime);
-
-	//TA BORT SENARE NÄR DET FINNS RIKTIGT GUI - johan
-
+	if (myIsCutscene == false)
+	{
+		myHUD.Update(aDeltaTime);
+	}
 
 	CTumbleweedFactory::GetInstance()->Update(aDeltaTime.GetSeconds());
 	
@@ -301,7 +317,8 @@ void CPlayState::Render()
 {
 	myScene->Render();
 
-	myHUD.Render();
+	if(myIsCutscene == false)
+		myHUD.Render();
 }
 
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
@@ -481,22 +498,33 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 			CPollingStation::GetInstance()->AddPlayerObject(playerObject);
 		}
 
-		CInputComponent* inputComponent = new CInputComponent();
-		CComponentManager::GetInstance().RegisterComponent(inputComponent);
-		playerObject->AddComponent(inputComponent);
+
+		if (myIsCutscene == false)
+		{
+			CInputComponent* inputComponent = new CInputComponent();
+			CComponentManager::GetInstance().RegisterComponent(inputComponent);
+			playerObject->AddComponent(inputComponent);
+		}
 
 		myMovementComponent = myMovementComponentManager->CreateAndRegisterComponent();
 		playerObject->AddComponent(myMovementComponent);
+		if (myIsCutscene == true)
+		{
+			myMovementComponent->SetIntroFallMode();
+		}
 
-		CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
-		CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
-		playerObject->AddComponent(weaponSystenComponent);
-		playerObject->AddComponent(ammoComponent);
+		if (myIsCutscene == false)
+		{
+			CWeaponSystemComponent* weaponSystenComponent = myWeaponSystemManager->CreateAndRegisterComponent();
+			CAmmoComponent* ammoComponent = myAmmoComponentManager->CreateAndRegisterComponent();
+			playerObject->AddComponent(weaponSystenComponent);
+			playerObject->AddComponent(ammoComponent);
+			GivePlayerWeapons(playerObject);
+		}
 
 		myPlayerLut = new CLutComponent();
 		playerObject->AddComponent(myPlayerLut);
 		
-		GivePlayerWeapons(playerObject);
 
 		//addHandGunData.myString = "MeleeWeapon";
 		//playerObject->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addHandGunData);
