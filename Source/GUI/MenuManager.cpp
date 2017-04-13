@@ -251,7 +251,10 @@ void CMenuManager::MouseReleased()
 	{
 		for (int i = 0; i < myClickAreas[myCurentlyHoveredClickarea].myActions.Size(); ++i)
 		{
-			myClickAreas[myCurentlyHoveredClickarea].myActions[i]();
+			if (myClickAreas[myCurentlyHoveredClickarea].myActions[i]() == false)
+			{
+				break;
+			}
 		}
 	}
 }
@@ -261,9 +264,14 @@ const SMenuSprite& CMenuManager::GetSprite(unsigned aSpriteId)
 	return mySpriteInstances.At(aSpriteId);
 }
 
-void CMenuManager::AddAction(const std::string &aActionName, const std::function<void(std::string)> &aFunction)
+void CMenuManager::AddAction(const std::string &aActionName, const std::function<bool(std::string)> &aFunction)
 {
 	myActions[aActionName] = aFunction;
+}
+
+CTextInstance* CMenuManager::GetTextInstance(const int aTextInputTextInstanceIndex)
+{
+	return myTextInstances[aTextInputTextInstanceIndex];
 }
 
 CSpriteInstance* CMenuManager::ChoseSpriteInstance(const SMenuSprite& aMenuSprite)

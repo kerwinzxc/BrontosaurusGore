@@ -3,6 +3,7 @@
 #include "BrontosaurusEngine/TextInstance.h"
 #include "GUIElement.h"
 #include "CommonUtilities.h"
+#include "binary_tree.h"
 
 
 enum class eMenuThingType
@@ -25,7 +26,7 @@ struct SClickArea
 {
 	int mySpriteID;
 	CU::Vector4f myRect;
-	CU::GrowingArray<std::function<void(void)>> myActions;
+	CU::GrowingArray<std::function<bool(void)>> myActions;
 };
 
 struct SLayerData
@@ -71,11 +72,12 @@ public:
 
 	const SMenuSprite& GetSprite(unsigned aSpriteId);
 
-	void AddAction(const std::string& aActionName, const std::function<void(std::string)>& aFunction);
+	void AddAction(const std::string& aActionName, const std::function<bool(std::string)>& aFunction);
+	CTextInstance* GetTextInstance(const int aTextInputTextInstanceIndex);
 private:
 	static CSpriteInstance* ChoseSpriteInstance(const SMenuSprite& aMenuSprite);
 
-	std::map<std::string, std::function<void(std::string)>> myActions;
+	std::map<std::string, std::function<bool(std::string)>> myActions;
 
 	CU::GrowingArray<SMenuSprite> mySpriteInstances;
 	CU::GrowingArray<CTextInstance*> myTextInstances;
