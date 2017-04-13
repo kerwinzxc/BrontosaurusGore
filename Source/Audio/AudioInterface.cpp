@@ -131,7 +131,7 @@ namespace Audio
 
 	void CAudioInterface::PostEvent(const char* aEvent)
 	{
-		PostEvent(aEvent, myGameObjectID);
+ 		PostEvent(aEvent, myGameObjectID);
 	}
 
 	void CAudioInterface::SetErrorCallBack(callback_function aErrorCallback)
