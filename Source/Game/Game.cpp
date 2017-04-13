@@ -39,6 +39,7 @@ void CGame::Init()
 	myGameEventMessenger.Init({ 0.5f, 0.1f });
 	myClient.StartClient();
 
+	myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/MainMenu.json"));
 
 	if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
 	{
@@ -51,8 +52,6 @@ void CGame::Init()
 	}
 
 	//myStateStack.PushState(new CTempLobbyState(myStateStack));
-	myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/MainMenu.json"));
-
 }
 
 bool CGame::Update(const CU::Time& aDeltaTime)
