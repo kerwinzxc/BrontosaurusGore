@@ -82,7 +82,7 @@ private:
 	CU::GrowingArray<SClickArea> myClickAreas;
 	CU::GrowingArray<SLayerData> myLayers;
 
-	CU::Vector2f myMousePosition;
+	static CU::Vector2f ourMousePosition;
 	CSpriteInstance* myPointerSprite;
 
 	bool myShouldRender;
@@ -94,18 +94,18 @@ private:
 
 inline void CMenuManager::UpdateMousePosition(const CU::Vector2f& aPosition)
 {
-	myMousePosition = aPosition;
+	ourMousePosition = aPosition;
 
-	myMousePosition.x = CLAMP(myMousePosition.x, 0, 1);
-	myMousePosition.y = CLAMP(myMousePosition.y, 0, 1);
+	ourMousePosition.x = CLAMP(ourMousePosition.x, 0, 1);
+	ourMousePosition.y = CLAMP(ourMousePosition.y, 0, 1);
 
 	if (myPointerSprite != nullptr)
 	{
-		myPointerSprite->SetPosition(myMousePosition);
+		myPointerSprite->SetPosition(ourMousePosition);
 	}
 }
 
 inline CU::Vector2f CMenuManager::GetMopusePosition() const
 {
-	return myMousePosition;
+	return ourMousePosition;
 }

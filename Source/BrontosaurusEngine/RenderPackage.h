@@ -31,6 +31,7 @@ public:
 	void Clear(const float aDepthValue = 1.0f);
 	void Activate();
 	void Activate(CRenderPackage & aRenderPackage);
+	void ActivateToDepth();
 	ID3D11ShaderResourceView*& GetDepthResource();
 	ID3D11ShaderResourceView*& GetResource();
 	ID3D11RenderTargetView*& GetRenderTargetView();
@@ -44,15 +45,21 @@ public:
 	void SaveToFile(const char* aPath);
 	inline bool IsInit();
 	void operator= (const CRenderPackage& aLeft);
+	
 private:
 	void CreateTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat);
+	void CreateDepthTexture2D(const int aWidth, const int aHeight, DXGI_FORMAT aFormat);
 
 private:
 	ID3D11Texture2D* myTexture;
+	ID3D11Texture2D* myDepthTexture;
 
 	ID3D11ShaderResourceView* myDepthResource;
 	ID3D11ShaderResourceView* myResource;
+
 	ID3D11RenderTargetView* myTarget;
+	ID3D11RenderTargetView* myDepthTarget;
+
 	ID3D11DepthStencilView* myDepth;
 	D3D11_VIEWPORT* myViewport;
 

@@ -35,6 +35,8 @@ private:
 	static void StartServer(std::string notUsed);
 	static void ConnectLocal(std::string anIp);
 
+	CU::GrowingArray<CTextInstance*> myTextInputs;
+
 	bool myShowStateBelow;
 	CSpriteInstance* myPointerSprite;
 

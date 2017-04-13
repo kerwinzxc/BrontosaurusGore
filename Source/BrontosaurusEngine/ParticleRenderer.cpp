@@ -66,14 +66,19 @@ void CParticleRenderer::AddRenderMessage(SRenderMessage* aMessage)
 	}
 }
 
-void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResourceView)
+void CParticleRenderer::DoRenderQueue(ID3D11ShaderResourceView* aDepthResource)
 {
-	myDepthStencilResourceToUse = aDepthResourceView;
+	myDepthStencilResourceToUse = aDepthResource;
 	myInteremediate.Clear();
 	//UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
 	for (int i = 0; i < myParticleMessages.Size(); ++i)
 	{
 		SetBlendParticlesState();
+
+		if (mySecondaryDepthStencil != nullptr)
+		{
+			DEVICE_CONTEXT->PSSetShaderResources(20, 1,& mySecondaryDepthStencil);
+		}
 		
 		SRenderParticlesMessage* msg = static_cast<SRenderParticlesMessage*>(myParticleMessages[i]);
 		CParticleEmitter* emitter = CParticleEmitterManager::GetInstance().GetEmitter(msg->particleEmitter);
@@ -82,9 +87,9 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 		{
 		case CParticleEmitter::RenderMode::eMetaBall: 
 			ClearParticleTargets();
-			SetParticleTargets(aDepthStencilView);
+			SetParticleTargets(myUseDepthStencil);
 			emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
-			CreateSurface(aDepthStencilView);
+			CreateSurface(myUseDepthStencil);
 			DoLight(); 
 			ToIntermediate();
 			break;
@@ -100,14 +105,14 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 				changeStateMessage.mySamplerState = eSamplerState::eClamp;
 				mySharedRenderer.SetStates(&changeStateMessage);
 
-				DEVICE_CONTEXT->OMSetRenderTargets(1, &myInteremediate.GetRenderTargetView(), aDepthStencilView);
+				DEVICE_CONTEXT->OMSetRenderTargets(1, &myInteremediate.GetRenderTargetView(), myUseDepthStencil);
 
 				emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
 			}
 			break;
 		case CParticleEmitter::RenderMode::eNURBSSphere: 
 			ClearParticleTargets();
-			SetParticleTargets(aDepthStencilView);
+			SetParticleTargets(myUseDepthStencil);
 			emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
 			DoLight();
 			ToIntermediate();
@@ -123,6 +128,14 @@ void CParticleRenderer::DoRenderQueue(ID3D11DepthStencilView* aDepthStencilView,
 CRenderPackage& CParticleRenderer::GetIntermediatePackage()
 {
 	return myInteremediate;
+}
+
+
+
+void CParticleRenderer::SetDepthStuff(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResource)
+{
+	myUseDepthStencil = aDepthStencilView;
+	mySecondaryDepthStencil = aDepthResource;
 }
 
 void CParticleRenderer::SetBlendParticlesState()

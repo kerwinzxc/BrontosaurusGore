@@ -1310,7 +1310,9 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 		changeStateMessage.mySamplerState = eSamplerState::eClamp;
 		SetStates(&changeStateMessage);
 		myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
-		myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetDepthStencil(), myDeferredRenderer.GetDepthResource());
+		//myParticleRenderer.CombineDepthStencils(myDeferredRenderer.GetFirstPackage(), myDeferredRenderer.GetSecondPackage());
+		myParticleRenderer.SetDepthStuff(myDeferredRenderer.GetFirstPackage().GetDepthStencilView(), myDeferredRenderer.GetSecondPackage().GetDepthResource());
+		myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetFirstPackage().GetDepthResource());
 		myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
 	}
 
