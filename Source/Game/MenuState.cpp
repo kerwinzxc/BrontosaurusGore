@@ -22,6 +22,7 @@
 #include "TClient/ClientMessageManager.h"
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "PostMaster/KeyCharPressed.h"
+#include "ThreadedPostmaster/LoadLevelMessage.h"
 
 char CMenuState::ourMenuesToPop = 0;
 
@@ -198,7 +199,9 @@ eMessageReturn CMenuState::DoEvent(const CConectedMessage& aCharPressed)
 
 eMessageReturn CMenuState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
 {
+	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
 	return eMessageReturn::eContinue;
+
 }
 
 eAlignment CMenuState::LoadAlignment(const CU::CJsonValue& aJsonValue)

@@ -84,7 +84,7 @@ eMessageReturn StateStack::DoEvent(const ::PushState& aPushState)
 	//	PushState(new LevelSelectState(*this));
 	//	break;
 	case PushState::eState::eMenu:
-		PushState(new CMenuState(*this ,"Json/Menu/LevelSelect.json"));
+		PushState(new CMenuState(*this ,"Json/Menu/LevelSelectMenu.json"));
 	default: 
 		break;
 	}
