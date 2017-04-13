@@ -27,6 +27,9 @@ namespace AnimationComponentLoader
 	void LoadJump(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 	void LoadRangedAttack(const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates);
 
+
+	void LoadSingleAnimation(const std::string& aType, const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aMap);
+
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
 	{
 		//CU::GrowingArray<eAnimationState> animationStates;
@@ -95,6 +98,18 @@ namespace AnimationComponentLoader
 			{
 				CU::CJsonValue rangedObject = statesObject["ranged"];
 				LoadRangedAttack(rangedObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("die"))
+			{
+				CU::CJsonValue rangedObject = statesObject["ranged"];
+				LoadRangedAttack(rangedObject, aModelComponent, aAnimationStates);
+			}
+
+			if (statesObject.HasKey("melee"))
+			{
+				CU::CJsonValue rangedObject = statesObject["melee"];
+				LoadSingleAnimation("melee", rangedObject, aModelComponent, aAnimationStates);
 			}
 		}
 	}
@@ -306,6 +321,42 @@ namespace AnimationComponentLoader
 
 
 			aAnimationStates["ranged"] = rangedAttackState;
+		}
+	}
+
+	void LoadSingleAnimation(const std::string& aType, const CU::CJsonValue& aJsonValue, const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aMap)
+	{
+		SAnimation rangedAttackState;
+		int animationKey = SAnimationState::AnimationStates.Find(aJsonValue["animation"].GetString());
+		if (animationKey != SAnimationState::AnimationStates.FoundNone)
+		{
+			rangedAttackState.myAnimationKey = static_cast<eAnimationState>(animationKey);
+			int nextAnimationKey = SAnimationState::AnimationStates.Find(aJsonValue["nextAnimation"].GetString());
+			if (nextAnimationKey != SAnimationState::AnimationStates.FoundNone)
+			{
+				rangedAttackState.myNextAnimationKey = static_cast<eAnimationState>(nextAnimationKey);
+			}
+			else
+			{
+				rangedAttackState.myNextAnimationKey = eAnimationState::none;
+			}
+
+			rangedAttackState.myIsLooping = aJsonValue["loop"].GetBool();
+			if (rangedAttackState.myIsLooping)
+			{
+				if (aJsonValue.HasKey("coolDownTime"))
+				{
+					rangedAttackState.myCoolDownTime = aJsonValue["coolDownTime"].GetFloat();
+				}
+			}
+			else
+			{
+				int animation = SAnimationState::AnimationStates.Find(aJsonValue["animation"].GetString());
+				rangedAttackState.myCoolDownTime = aModelComponent.GetAnimationDuration(static_cast<eAnimationState>(animation));
+			}
+
+
+			aMap[aType] = rangedAttackState;
 		}
 	}
 }

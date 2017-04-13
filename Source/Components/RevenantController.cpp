@@ -135,8 +135,11 @@ void CRevenantController::Update(const float aDeltaTime)
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+
+			ChangeClientAnimation(eComponentMessageType::eRevenantMelee);
 			myState = eRevenantState::eIdle;
 		}
+
 		break;
 	case eRevenantState::eUseRangedAttack:
 		LookAtPlayer();
@@ -144,6 +147,8 @@ void CRevenantController::Update(const float aDeltaTime)
 		if (GetParent()->AskComponents(eComponentQuestionType::eCanShoot, SComponentQuestionData()) == true)
 		{
 			Attack();
+
+			ChangeClientAnimation(eComponentMessageType::eRevenantThrowAttack);
 			myUsedAttacksSinceLastStateChange++;
 			myState = eRevenantState::eChargingRangedAttack;
 			if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)

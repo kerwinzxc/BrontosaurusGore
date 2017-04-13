@@ -106,6 +106,9 @@ enum class eComponentMessageType
 	eSetLastHitNormal,
 	eSetLastHitPosition,
 	eDoStuffBeforeDie,
+	eRevenantMelee,
+	eRevenantStartJump,
+	eRevenantThrowAttack,
 	eLength,
 };
 

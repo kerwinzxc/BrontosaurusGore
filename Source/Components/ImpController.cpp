@@ -381,10 +381,3 @@ eMessageReturn CImpController::DoEvent(const CResetToCheckPointMessage& aResetTo
 	myIsJumping = false;
 	return CEnemy::DoEvent(aResetToCheckPointMessage);
 }
-
-void CImpController::ChangeClientAnimation(const eComponentMessageType aMessageType) const
-{
-	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
-	animationMessage->Init(GetNetworkID(), aMessageType);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
-}
