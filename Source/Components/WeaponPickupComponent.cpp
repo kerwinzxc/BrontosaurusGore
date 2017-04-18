@@ -57,7 +57,7 @@ void CWeaponPickupComponent::DoMyEffect()
 
 	if (myWeaponPickup == "PlasmaRifle")
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a Plasme Rifle"));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up a Gatling Gun"));
 	}
 	else if (myWeaponPickup == "BFG")
 	{

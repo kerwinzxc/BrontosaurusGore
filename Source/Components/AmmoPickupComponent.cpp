@@ -73,7 +73,7 @@ void CAmmoPickupComponent::DoMyEffect()
 
 	if (myPickupData.ammoType == "PlasmaRifle")
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Plasma Rifle ammo!"));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Gatling gun ammo!"));
 		return;
 	}
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + CU::StringToWString(myPickupData.ammoType) + L" ammo!"));
