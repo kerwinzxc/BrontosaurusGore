@@ -136,7 +136,7 @@ void CHUD::UpdateHealthAndArmour()
 		numberString += std::to_wstring(myCurrentMaxHealth);
 
 		myHealthNumber.SetText(numberString);
-		myHealthBar->SetLevel(myCurrentHealth / myCurrentMaxHealth);
+		myHealthBar->SetLevel(static_cast<float>(myCurrentHealth) / myCurrentMaxHealth);
 
 		myHealthAndArmourHasChanged = true;
 	}
@@ -156,7 +156,7 @@ void CHUD::UpdateHealthAndArmour()
 		armourString += std::to_wstring(myCurrentMaxArmour);
 
 		myArmourNumber.SetText(armourString);
-		myArmourBar->SetLevel(myCurrentArmour / myCurrentMaxArmour);
+		myArmourBar->SetLevel(static_cast<float>(myCurrentArmour) / myCurrentMaxArmour);
 
 		myHealthAndArmourHasChanged = true;
 	}

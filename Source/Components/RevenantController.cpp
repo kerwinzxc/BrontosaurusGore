@@ -176,8 +176,11 @@ void CRevenantController::Update(const float aDeltaTime)
 	{
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantAttackAir);
 		if(myFlightForce <= 0.0f)
 		{
+
 			myState = eRevenantState::eFlyHover;
 			myElapsedHoverTime = 0.0f;
 		}
@@ -224,6 +227,7 @@ void CRevenantController::Update(const float aDeltaTime)
 			myFlightForce -= gravityAcceleration * aDeltaTime;
 			if (CheckIfInAir() == false)
 			{
+				ChangeClientAnimation(eComponentMessageType::eRevenantLand);
 				myIsflying = false;
 				myFlightForce = 0.0f;
 			}
@@ -233,6 +237,10 @@ void CRevenantController::Update(const float aDeltaTime)
 			if (myJumpPointPosition == CU::Vector3f::Zero)
 			{
 				myJumpPointPosition = GetNearestJumpPosition();
+				if(myJumpPointPosition == GetParent()->GetWorldPosition())
+				{
+					myIsAtJumpPoint = true;
+				}
 			}
 			CU::Vector3f position = GetParent()->GetLocalTransform().GetPosition();
 			CU::Vector3f targetPosition = myJumpPointPosition;
@@ -417,11 +425,15 @@ void CRevenantController::StartCharginRangedAttack()
 	unsigned short randomNumber = rand() % 5;
 	if (randomNumber == 0)
 	{
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantStartJump);
 		myState = eRevenantState::eFlyAscend;
 		ApplyFlightForce();
 	}
 	if (myToPlayer.y > 2.0f)
 	{
+
+		ChangeClientAnimation(eComponentMessageType::eRevenantStartJump);
 		myState = eRevenantState::eFlyAscend;
 		ApplyFlightForce();
 	}

@@ -20,7 +20,6 @@ void CPinkyClientDamageHandler::Receive(const eComponentMessageType aMessageType
 	case eComponentMessageType::eUpdatePinky:
 	{
 		myCountDown -= aMessageData.myFloat;
-		DL_PRINT("countdown %f", myCountDown);
 		float playerDistance = CU::Vector3f(GetParent()->GetWorldPosition() - CPollingStation::GetInstance()->GetPlayerObject()->GetWorldPosition()).Length();
 		if(playerDistance < 2.0f)
 		{
