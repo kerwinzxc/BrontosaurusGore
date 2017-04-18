@@ -294,7 +294,7 @@ SSlua::ArgumentList GetMessageData(const SSlua::ArgumentList& aArgumentList)
 	CU::ToLowerCase(stringArg);
 	if (stringArg == "number")
 	{
-		messageData.Add(ssLuaNumber(realData->myInt));
+		messageData.Add(ssLuaNumber(static_cast<double>(realData->myInt)));
 		return messageData;
 	}
 	else if (stringArg == "string")
@@ -308,12 +308,12 @@ SSlua::ArgumentList GetMessageData(const SSlua::ArgumentList& aArgumentList)
 	}
 	else if (stringArg == "gameobject")
 	{
-		messageData.Add(ssLuaNumber(realData->myGameObject->GetId()));
+		messageData.Add(ssLuaNumber(static_cast<double>(realData->myGameObject->GetId())));
 		return messageData;
 	}
 	else if (stringArg == "component")
 	{
-		messageData.Add(ssLuaNumber(realData->myComponent->GetId()));
+		messageData.Add(ssLuaNumber(static_cast<double>(realData->myComponent->GetId())));
 		return messageData;
 	}
 

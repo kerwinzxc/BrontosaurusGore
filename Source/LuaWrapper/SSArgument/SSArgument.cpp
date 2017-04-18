@@ -222,12 +222,12 @@ const short SSArgument::GetShort() const
 
 const int SSArgument::GetInt() const
 {
-	return static_cast<short>(GetDouble());
+	return static_cast<int>(GetDouble());
 }
 
 const unsigned int SSArgument::GetUInt() const
 {
-	return static_cast<short>(GetDouble());
+	return static_cast<unsigned int>(GetDouble());
 }
 
 const double SSArgument::GetDouble() const
@@ -242,17 +242,17 @@ const double SSArgument::GetDouble() const
 
 const float SSArgument::GetFloat() const
 {
-	return static_cast<short>(GetDouble());
+	return static_cast<float>(GetDouble());
 }
 
 const unsigned short SSArgument::GetUShort() const
 {
-	return static_cast<short>(GetDouble());
+	return static_cast<unsigned short>(GetDouble());
 }
 
 ssLuaNumber SSArgument::GetNumber() const
 {
-	return static_cast<short>(GetDouble());
+	return static_cast<ssLuaNumber>(GetDouble());
 }
 
 ssLuaString SSArgument::GetString() const

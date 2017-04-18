@@ -25,6 +25,9 @@ CRenderCamera::CRenderCamera(const bool aDeferred /*= true*/)
 CRenderCamera::~CRenderCamera()
 {
 	myRenderQueue.DeleteAll();
+	//SAFE_DELETE(myGbuffer);
+	//SAFE_RELEASE(myShadowPS);
+	//SAFE_RELEASE(myShadowPSInstanced);
 }
 
 void CRenderCamera::InitPerspective(const float aFov, const float aWidth, const float aHeight, const float aFar, const float aNear, ID3D11Texture2D* aTexture , DXGI_FORMAT aFormat /*= DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM*/)
@@ -46,7 +49,6 @@ void CRenderCamera::ShadowInit()
 	myIsShadowCamera = true;
 	myShadowPS = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3);
 	myShadowPSInstanced = SHADERMGR->LoadPixelShader(L"Shaders/shadow.fx", 3 | EModelBluePrint_Instance);
-
 }
 
 void CRenderCamera::SetViewport(const CU::Vector4f& aRect)

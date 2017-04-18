@@ -19,11 +19,10 @@ public:
 		eDepth		= (1 << 4),
 		eALL		= (1 << 5) - 1
 	};
-	
-
 
 public:
 	CGeometryBuffer();
+	CGeometryBuffer(const CGeometryBuffer& aOther) = delete;
 	~CGeometryBuffer();
 
 	void Init(const CU::Vector2ui & aSize, CDXFramework* aFramework, ID3D11Texture2D * aTexture = nullptr, DXGI_FORMAT aFormat = DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -37,7 +36,20 @@ public:
 	CRenderPackage& GetRenderPackage(const EGeometryPackage aPackageType);
 
 	bool IsInited();
+	inline short AddRef();
+	inline short DecRef();
 private:
 	CU::StaticArray<CRenderPackage, NUM_GB_PACKAGES> myPackages;
 	CDXFramework* myFramework;
+	short refcount;
 };
+
+inline short CGeometryBuffer::AddRef()
+{
+	return ++refcount;
+}
+
+inline short CGeometryBuffer::DecRef()
+{
+	return --refcount;
+}

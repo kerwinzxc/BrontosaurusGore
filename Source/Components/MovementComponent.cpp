@@ -51,6 +51,7 @@ CMovementComponent::CMovementComponent() : myJumpForce(0), myMovementMode(Moveme
 	myIdleThingCountdown = originalTimeUntilIdleThing;
 
 	myUseConstantVelosity = false;
+	mykokoVelocity = 0.0f;
 }
 
 CMovementComponent::~CMovementComponent()
@@ -138,8 +139,9 @@ void CMovementComponent::Update(const CU::Time aDeltaTime)
 	
 }
 
-void CMovementComponent::SetIntroFallMode()
+void CMovementComponent::SetIntroFallMode(const float aSpeed)
 {
+	mykokoVelocity = aSpeed;
 	myUseConstantVelosity = true;
 }
 
@@ -259,7 +261,7 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 	}
 	else
 	{
-		myVelocity.y = -27.f;
+		myVelocity.y = mykokoVelocity;//-27.f;
 		myIdleThingCountdown = 1.0f;
 	}
 
@@ -281,7 +283,6 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 		}
 	}
 
-
 	CU::Matrix44f& parentTransform = GetParent()->GetLocalTransform();
 	CU::Matrix44f rotation = parentTransform.GetRotation();
 	rotation.myForwardVector.y = 0.f;
@@ -292,9 +293,29 @@ void CMovementComponent::DefaultMovement(const CU::Time& aDeltaTime)
 
 	if (GetParent()->AskComponents(eComponentQuestionType::eMovePhysicsController, data) == true)
 	{
+
+		int index = CPollingStation::GetInstance()->GetCurrentLevelIndex();
 		parentTransform.SetPosition(data.myVector3f);
-		if ((parentTransform.GetPosition().y < -100.0f && CPollingStation::GetInstance()->GetCurrentLevelIndex() != 3) ||
-			(parentTransform.GetPosition().y < -1000.0f && CPollingStation::GetInstance()->GetCurrentLevelIndex() == 3))
+
+		bool killMe = false;
+		float y = parentTransform.GetPosition().y;
+
+		if (index == 3 || index == 5)
+		{
+			if (y < -1000.f)
+			{
+				killMe = true;
+			}
+		}
+		else 
+		{
+			if (y < -100.f)
+			{
+				killMe = true;
+			}
+		}
+
+		if (killMe)
 		{
 			SComponentMessageData takeDamageData;
 			takeDamageData.myInt = 10000;

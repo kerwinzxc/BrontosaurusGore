@@ -121,7 +121,7 @@ void CSurface::Activate()
 const CU::Vector2ui& CSurface::GetTextureSize() const
 {
 	assert(myTextures.Size() > 0 && "should not get texture size from surface of no textures");
-	if (myTextures.Empty())
+	if (myTextures.Empty() || myTextures.GetFirst() == nullptr)
 	{
 		return CU::Vector2ui::Zero;
 	}
@@ -131,9 +131,9 @@ const CU::Vector2ui& CSurface::GetTextureSize() const
 
 CU::Vector2f CSurface::GetTextureSizeFloat() const
 {
-	if (myTextures.Size() > 0)
+	if (myTextures.Size() > 0 && myTextures.GetFirst() != nullptr)
 	{
-		return CU::Vector2f(myTextures[0]->GetSize());
+		return CU::Vector2f(myTextures.GetFirst()->GetSize());
 	}
 
 	return CU::Vector2f::Zero;

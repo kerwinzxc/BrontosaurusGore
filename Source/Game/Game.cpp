@@ -45,9 +45,8 @@ void CGame::Init()
 	{
 		mySplashScreenState = new CSplashScreenState(myStateStack);
 
-		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash1.dds");
-		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash2.dds");
-		mySplashScreenState->AddPicture("Sprites/SplashScreen/Splash3.dds");
+		mySplashScreenState->AddPicture("Sprites/Splash/tga.dds");
+		mySplashScreenState->AddPicture("Sprites/Splash/timedust.dds");
 		myStateStack.PushState(mySplashScreenState);
 	}
 
