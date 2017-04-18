@@ -68,6 +68,11 @@ CComponent* CComponentManager::GetComponent(ComponentId anId)
 		DL_ASSERT("trying to get the null compmonent");
 	}
 
+	if (!myComponents.HasIndex(anId))
+	{
+		return nullptr;
+	}
+
 	if (myComponents[anId] == nullptr)
 	{
 		DL_PRINT_WARNING("Warning trying to use a removed component at %d may get access violation", anId);
