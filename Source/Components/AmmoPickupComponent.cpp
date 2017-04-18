@@ -76,5 +76,10 @@ void CAmmoPickupComponent::DoMyEffect()
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Gatling gun ammo!"));
 		return;
 	}
+	if (myPickupData.ammoType == "BGF")
+	{
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + L"Hand cannon ammo!"));
+		return;
+	}
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up " + std::to_wstring(myPickupData.replenishAmount) + L" " + CU::StringToWString(myPickupData.ammoType) + L" ammo!"));
 }

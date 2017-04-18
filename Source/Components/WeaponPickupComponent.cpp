@@ -61,7 +61,7 @@ void CWeaponPickupComponent::DoMyEffect()
 	}
 	else if (myWeaponPickup == "BFG")
 	{
-		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up the BFG"));
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"You picked up the Hand cannon"));
 	}
 	else
 	{
