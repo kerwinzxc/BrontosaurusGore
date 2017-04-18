@@ -302,7 +302,7 @@ void CPlayState::Load()
 	GAMEPLAY_LOG("Game Inited in %f ms", time);
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 
-	if (myIsCutscene)
+	if (!myIsCutscene)
 	{
 		Audio::CAudioInterface::GetInstance()->PostEvent("Player_Chainsaw_Throttle_Start"); // gör possitionerat.
 	}
