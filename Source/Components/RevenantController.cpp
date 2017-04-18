@@ -49,10 +49,18 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	if(myChillAtJumpPointCountDown > 0)
 	{
+		myIsflying = false;
 		myChillAtJumpPointCountDown -= aDeltaTime;
 		if(myChillAtJumpPointCountDown <= 0)
 		{
 			myIsAtJumpPoint = false;
+		}
+	}
+	if(myIsAtJumpPoint == true)
+	{
+		if(myState != eRevenantState::eUseRangedAttack && myState != eRevenantState::eWaitBeforeChangingState)
+		{
+			StartCharginRangedAttack();
 		}
 	}
 	UpdateBaseMemberVars(aDeltaTime);
@@ -174,6 +182,10 @@ void CRevenantController::Update(const float aDeltaTime)
 		}
 	case eRevenantState::eFlyAscend:
 	{
+		if(myIsAtJumpPoint == true)
+		{
+		
+		}
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 
@@ -207,6 +219,7 @@ void CRevenantController::Update(const float aDeltaTime)
 				myElapsedHoverTime = 0.0f;
 				myState = eRevenantState::eFlyDescend;
 				myUsedAttacksSinceLastStateChange = 0;
+				myWaitBeforeChangingStateCountdown = 3.0f;
 			}
 		/*	myElapsedHoverTime += aDeltaTime;
 			if(myElapsedHoverTime >= myHoverTime)
@@ -263,6 +276,14 @@ void CRevenantController::Update(const float aDeltaTime)
 				myChillAtJumpPointCountDown = rand() % 7 + 3;
 			}
 
+			myWaitBeforeChangingStateCountdown -= aDeltaTime;
+			if(myWaitBeforeChangingStateCountdown <= 0.0f)
+			{
+				DL_PRINT("stopped chasing jumpPoint");
+				LookAtPlayer();
+				myIsAtJumpPoint = true;
+				myChillAtJumpPointCountDown = rand() % 7 + 3;
+			}
 		}
 		break;
 	}
@@ -423,6 +444,10 @@ eMessageReturn CRevenantController::DoEvent(const CResetToCheckPointMessage& aRe
 void CRevenantController::StartCharginRangedAttack()
 {
 	myState = eRevenantState::eChargingRangedAttack;
+	if(myIsAtJumpPoint == true)
+	{
+		return;
+	}
 	unsigned short randomNumber = rand() % 5;
 	if (randomNumber == 0)
 	{

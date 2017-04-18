@@ -48,6 +48,7 @@ private:
 	float myElapsedChargeMeleeAttackTime;
 	float myChillAtJumpPointCountDown;
 	float myWaitBeforeChangingStateCountdown;
+	float myWaitUntilStopFlyingCountdown;
 	unsigned short myAttacksUntilChangingStates;
 	unsigned short myUsedAttacksSinceLastStateChange;
 	eRevenantState myState;
