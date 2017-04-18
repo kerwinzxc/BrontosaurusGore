@@ -332,14 +332,12 @@ void CHUD::SetAmmoHudRect()
 	
 	//const unsigned immageIndex = myCurrentWeapon + offset;
 
+	const int xIndexs = imageIndex % 3;
+	const int yINdex = imageIndex / 3;
+
 	const CU::Vector2f &frameSize = myFrameSize;
-
-	const float newX = frameSize.x * imageIndex;
-	const int newRow = newX;
-
-	const int largeX = newX * 1000;
-	const float finalX = static_cast<float>(largeX % 1000) / 1000;
-	const float finalY = static_cast<float>(newRow) * frameSize.y;
+	const float finalX = frameSize.x * xIndexs;
+	const float finalY = yINdex* frameSize.y;
 
 	CU::Vector4f rect(CU::Vector4f(MIN(finalX, 1), MIN(1 - (finalY + frameSize.y), 1), MIN(finalX + frameSize.x, 1), MIN(1 - finalY, 1)));
 	myWeaponSprite->SetRect(rect);
