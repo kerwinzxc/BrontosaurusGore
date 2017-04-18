@@ -42,6 +42,7 @@ public:
 
 protected:
 	void ChangeClientAnimation(const eComponentMessageType aMessageType) const;
+	void FreeJumpPoint();
 	void SetHighlight(const CU::Vector4f& aColor, float aIntensity);
 	void CheckForNewTransformation(const float aDeltaTime);
 	void SendTransformationToServer();

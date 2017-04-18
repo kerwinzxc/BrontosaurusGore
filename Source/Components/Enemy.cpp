@@ -341,10 +341,7 @@ void CEnemy::AddEnemyRunTowardsComponent(CEnemyRunTowardsComponent* aEnemyRunTow
 const CU::Vector3f CEnemy::GetNearestJumpPosition()
 {
 	const CU::Vector3f position = GetParent()->GetWorldPosition();
-	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
-	{
-		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(false);
-	}
+	FreeJumpPoint();
 
 	if (ourEnemyRunTowardsComponents.IsInitialized() == false || ourEnemyRunTowardsComponents.Size() == 0)
 	{
@@ -401,5 +398,13 @@ void CEnemy::playerDontFuckTHisUp()
 	{
 		ourEnemyRunTowardsComponents.RemoveAll();
 		ourEnemyRunTowardsComponents.Destroy();
+	}
+}
+
+void CEnemy::FreeJumpPoint()
+{
+	if (ourEnemyRunTowardsComponents.HasIndex(myRunTowardsComponentIndex) == true)
+	{
+		ourEnemyRunTowardsComponents[myRunTowardsComponentIndex]->SetIsOccupied(false);
 	}
 }

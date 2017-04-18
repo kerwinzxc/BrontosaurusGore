@@ -312,6 +312,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 	{
 	case eComponentMessageType::eDied:
 	{
+		FreeJumpPoint();
 		myIsDead = true;
 		myState = eRevenantState::eDead;
 		myIsflying = false;
