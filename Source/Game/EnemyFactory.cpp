@@ -278,7 +278,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 
 	DL_PRINT("EnemyRepesentationNetworkID:");
 	DL_PRINT(std::to_string(enemy->GetNetworkID()).c_str());
+	repesention->GetLocalTransform().SetPosition(aPosition);
 	repesention->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
-
+	repesention->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+	enemy->SetFutureMatrix(repesention->GetLocalTransform());
 	return enemy;
 }
