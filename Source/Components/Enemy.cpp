@@ -366,11 +366,11 @@ const CU::Vector3f CEnemy::GetNearestJumpPosition()
 		{
 			CEnemyRunTowardsComponent*const enemyRunTowardsComponent = ourEnemyRunTowardsComponents[i];
 			const CU::Vector3f newPlayerPos = enemyRunTowardsComponent->GetParent()->GetWorldPosition();
-			/*float distance = CU::Vector3f(newPlayerPos - GetParent()->GetWorldPosition()).Length();
+			float distance = CU::Vector3f(newPlayerPos - GetParent()->GetWorldPosition()).Length();
 			if (distance > 1000.0f)
 			{
 				continue;
-			}*/
+			}
 			if ((position - playerPos).Length2() > (position - newPlayerPos).Length2())
 			{
 				playerPos = newPlayerPos;
