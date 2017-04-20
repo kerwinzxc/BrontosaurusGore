@@ -299,7 +299,7 @@ void CClient::Update()
 					{
 						CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(shoot->GetId());
 						target.GetParent()->NotifyComponents(eComponentMessageType::eSelectWeapon, data2);
-						target.GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, data);
+						target.GetParent()->NotifyComponents(eComponentMessageType::eChargeShootWithNetworking, data);
 					}
 				}
 				break;

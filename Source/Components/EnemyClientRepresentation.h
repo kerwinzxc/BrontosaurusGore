@@ -21,8 +21,11 @@ protected:
 	void DoDeathEffect() override;
 	unsigned myComponentId;
 	CU::Matrix44f myFutureMatrix;
+	CU::Vector3f myShootDirection;
 	float myPositionInterpolationSpeed;
 	float myRotationInterpolationSpeed;
+	float myShootChargeCountDown;
+	short myAmountOfCuedShots;
 	eEnemyTypes myType;
 	bool myIsAlive;
 };

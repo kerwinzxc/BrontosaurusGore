@@ -114,6 +114,7 @@ enum class eComponentMessageType
 	eRevenantAttackAir,
 	ePinkyCharge,
 	ePinkyLoadChange,
+	eChargeShootWithNetworking,
 	eLength,
 };
 

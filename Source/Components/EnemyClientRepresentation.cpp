@@ -12,6 +12,8 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myRotationInterpolationSpeed = 7.1f;
 	myType = aType;
 	myIsAlive = true;
+	myShootChargeCountDown = 0.0f;
+	myAmountOfCuedShots = 0;
 }
 
 
@@ -48,6 +50,21 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
+	}
+	if(myShootChargeCountDown > 0.0f)
+	{
+		myShootChargeCountDown -= aDeltaTime;
+		if(myShootChargeCountDown <= 0.0f)
+		{
+			SComponentMessageData shotData;
+			shotData.myVector3f = myShootDirection;
+			GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, shotData);
+			if(myAmountOfCuedShots > 0)
+			{
+				myAmountOfCuedShots--;
+				myShootChargeCountDown = 1.1f;
+			}
+		}
 	}
 	SComponentMessageData updateData;
 	updateData.myFloat = aDeltaTime;
@@ -100,6 +117,19 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 		myIsAlive = true;
+	}
+	case eComponentMessageType::eChargeShootWithNetworking :
+	{
+		myShootDirection = aMessageData.myVector3f;
+		if(myShootChargeCountDown > 0)
+		{
+			myAmountOfCuedShots++;
+		}
+		else
+		{
+			myShootChargeCountDown = 1.1f;
+		}
+		break;
 	}
 	}
 }
