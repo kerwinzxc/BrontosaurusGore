@@ -172,10 +172,10 @@ void CImpController::Update(const float aDeltaTime)
 		}
 		if(GetIfSidesAreColliding() == true)
 		{
-			if (myIsJumping == true)
+			/*if (myIsJumping == true)
 			{
 				InitiateWander();
-			}
+			}*/
 			ApplyJumpForce(myJumpHeight);
 		}
 		break;
@@ -249,6 +249,7 @@ void CImpController::SetEnemyData(const SEnemyBlueprint* aData)
 	myChargeMeleeAttackDuration = 0.5f;
 	myChargeRangedAttackDuration = impData->chargeAttackDuration;
 	myChargeRangedAttackDuration = 0.1f;
+	myWanderDuration = 2.0f;
 	CEnemy::SetEnemyData(aData);
 }
 
