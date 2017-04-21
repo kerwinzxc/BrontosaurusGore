@@ -23,7 +23,7 @@ public:
 
 
 	
-	void DoRenderQueue(ID3D11ShaderResourceView* aDepthResource);
+	void DoRenderQueue(ID3D11ShaderResourceView* aDepthResource, CRenderPackage* aTarget);
 	CRenderPackage& GetIntermediatePackage();
 	void SetDepthStuff(ID3D11DepthStencilView* aDepthStencilView, ID3D11ShaderResourceView* aDepthResource);
 private:
@@ -70,7 +70,7 @@ private:
 		CRenderPackage sulfaceAlpha;
 	}myParticleGBuffer;
 
-	CRenderPackage myInteremediate;
+	CRenderPackage* myInteremediate;
 	CRenderPackage myTempIntermediate;
 	CRenderPackage myProcessed;
 

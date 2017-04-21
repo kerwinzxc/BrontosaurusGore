@@ -571,22 +571,13 @@ void CRenderer::CreateBlendStates()
 	{
 		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
 		blendDesc_AlphaBlend.AlphaToCoverageEnable = FALSE;
-		blendDesc_AlphaBlend.IndependentBlendEnable = FALSE;
-		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
-		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
 		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
 		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
 		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
 
@@ -742,6 +733,40 @@ void CRenderer::CreateBlendStates()
 		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
 		myBlendStates[static_cast<int>(eBlendState::eEndBlend)] = blendState;
 	}
+
+	{
+		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
+
+		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_MAX;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_INV_DEST_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
+		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eMaxColorBlend)] = blendState;
+	}
+
+	{
+		D3D11_BLEND_DESC blendDesc_AlphaBlend = {};
+
+		blendDesc_AlphaBlend.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc_AlphaBlend.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc_AlphaBlend.RenderTarget[0].RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+		result = DEVICE->CreateBlendState(&blendDesc_AlphaBlend, &blendState);
+		CHECK_RESULT(result, "Failed to create Alpha Blend State.");
+		myBlendStates[static_cast<int>(eBlendState::eStamp)] = blendState;
+	}
 }
 
 void CRenderer::CreateDepthStencilStates()
@@ -840,6 +865,8 @@ void CRenderer::CreateDepthStencilStates()
 		CHECK_RESULT(result, "Failed to create Depth Stencil State.");
 		myDepthStencilStates[static_cast<int>(eDepthStencilState::eReadOnly)] = depthStencilState;
 	}
+
+
 }
 
 void CRenderer::CreateSamplerStates()
@@ -1311,9 +1338,8 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 		SetStates(&changeStateMessage);
 		myDeferredRenderer.UpdateCameraBuffer(myCamera.GetTransformation(), myCamera.GetProjectionInverse());
 		//myParticleRenderer.CombineDepthStencils(myDeferredRenderer.GetFirstPackage(), myDeferredRenderer.GetSecondPackage());
-		myParticleRenderer.SetDepthStuff(myDeferredRenderer.GetFirstPackage().GetDepthStencilView(), myDeferredRenderer.GetSecondPackage().GetDepthResource());
-		myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetFirstPackage().GetDepthResource());
 		myDeferredRenderer.DoLightingPass(myFullScreenHelper, *this);
+		
 	}
 
 	changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
@@ -1336,8 +1362,11 @@ void CRenderer::RenderCameraQueue(SRenderCameraQueueMessage* msg, int & aDrawCal
 		DEVICE_CONTEXT->PSSetShaderResources(1, 3, SRV);
 		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eFog);
 
+		myParticleRenderer.SetDepthStuff(myDeferredRenderer.GetFirstPackage().GetDepthStencilView(), myDeferredRenderer.GetSecondPackage().GetDepthResource());
+		myParticleRenderer.DoRenderQueue(myDeferredRenderer.GetFirstPackage().GetDepthResource(), &msg->myRenderCamera.GetRenderPackage());
 
-		myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
+
+		//myFullScreenHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleRenderer.GetIntermediatePackage());
 	}
 	else
 	{

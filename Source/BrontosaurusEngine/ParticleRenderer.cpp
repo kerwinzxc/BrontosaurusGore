@@ -10,7 +10,7 @@
 #include "ShaderManager.h"
 #include "../BrontosaurusEngine/EmitterData.h"
 
-CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper) : mySharedRenderer(aRenderer), mySharedHelper(aHelper)
+CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aHelper) : mySharedRenderer(aRenderer), mySharedHelper(aHelper), myInteremediate(nullptr)
 {
 	CU::Vector2ui windowSize = CEngine::GetInstance()->GetWindowSize();
 	myParticleGBuffer.diffuse.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -24,7 +24,7 @@ CParticleRenderer::CParticleRenderer(CRenderer& aRenderer, CFullScreenHelper& aH
 	myParticleGBuffer.sulfaceAlpha.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myProcessed.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
-	myInteremediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
+	//myInteremediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	myTempIntermediate.Init(windowSize, nullptr, DXGI_FORMAT_R8G8B8A8_UNORM);
 	myParticleMessages.Init(10);
@@ -66,10 +66,17 @@ void CParticleRenderer::AddRenderMessage(SRenderMessage* aMessage)
 	}
 }
 
-void CParticleRenderer::DoRenderQueue(ID3D11ShaderResourceView* aDepthResource)
+void CParticleRenderer::DoRenderQueue(ID3D11ShaderResourceView* aDepthResource, CRenderPackage* aTarget)
 {
+	if(aTarget == nullptr)
+	{
+		return;
+	}
+
+	myInteremediate = aTarget;
+
 	myDepthStencilResourceToUse = aDepthResource;
-	myInteremediate.Clear();
+	//myInteremediate.Clear();
 	//UpdateCameraBuffer(mySharedRenderer.GetCamera().GetTransformation(), mySharedRenderer.GetCamera().GetProjectionInverse());
 	for (int i = 0; i < myParticleMessages.Size(); ++i)
 	{
@@ -97,19 +104,24 @@ void CParticleRenderer::DoRenderQueue(ID3D11ShaderResourceView* aDepthResource)
 		case CParticleEmitter::RenderMode::eBillboard:
 			{
 				SetSpriteBlendState();
+				myParticleGBuffer.diffuse.Clear();
+
+				DEVICE_CONTEXT->OMSetRenderTargets(1, &myParticleGBuffer.diffuse.GetRenderTargetView(), myUseDepthStencil);
+
+				emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
+
 				SChangeStatesMessage changeStateMessage;
-				/*myTempIntermediate.Clear();
-				myTempIntermediate.Activate();
-				mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myInteremediate);*/
 				changeStateMessage.myRasterizerState = eRasterizerState::eNoCulling;
 				changeStateMessage.myDepthStencilState = eDepthStencilState::eDisableDepth;
 				changeStateMessage.myBlendState = eBlendState::eAlphaBlend;
 				changeStateMessage.mySamplerState = eSamplerState::eClamp;
 				mySharedRenderer.SetStates(&changeStateMessage);
+				
+				myInteremediate->Activate();
 
-				DEVICE_CONTEXT->OMSetRenderTargets(1, &myInteremediate.GetRenderTargetView(), myUseDepthStencil);
+				mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eCopy, &myParticleGBuffer.diffuse);
 
-				emitter->Render(msg->toWorld, msg->particleList, emitter->GetRenderMode());
+				
 			}
 			break;
 		case CParticleEmitter::RenderMode::eNURBSSphere: 
@@ -131,7 +143,7 @@ void CParticleRenderer::DoRenderQueue(ID3D11ShaderResourceView* aDepthResource)
 
 CRenderPackage& CParticleRenderer::GetIntermediatePackage()
 {
-	return myInteremediate;
+	return *myInteremediate;
 }
 
 
@@ -157,7 +169,7 @@ void CParticleRenderer::SetSpriteBlendState()
 	SChangeStatesMessage changeStateMessage = {};
 	changeStateMessage.myRasterizerState = eRasterizerState::eDefault;
 	changeStateMessage.myDepthStencilState = eDepthStencilState::eReadOnly;
-	changeStateMessage.myBlendState = eBlendState::eOverlay;
+	changeStateMessage.myBlendState = eBlendState::eMaxColorBlend;
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
 }
@@ -340,7 +352,7 @@ void CParticleRenderer::ToIntermediate()
 	changeStateMessage.mySamplerState = eSamplerState::eClamp;
 	mySharedRenderer.SetStates(&changeStateMessage);
 	//TODO: Find right way to mix these
-	myInteremediate.Activate();
+	myInteremediate->Activate();
 	mySharedHelper.DoEffect(CFullScreenHelper::eEffectType::eAlphaBlend, &myProcessed, &myParticleGBuffer.alpha);
 }
 
