@@ -362,6 +362,12 @@ bool CMenuState::StartServer(std::string /*notUsed*/)
 #endif
 
 	processName += ".exe";
+
+	if (WindowsHelper::ProgramIsActive(processName))
+	{
+		return true;
+	}
+
 	if (!WindowsHelper::StartProgram(processName))
 	{
 		DL_MESSAGE_BOX("Failed to start server, failed to build TServer_Application?\n%s", processName.c_str());

@@ -98,6 +98,8 @@
 #include "ShowTitleComponent.h"
 #include "Renderer.h"
 #include "MenuState.h"
+#include "ThreadedPostmaster/GameEventMessage.h"
+#include <LuaWrapper/SSlua/SSlua.h>
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
@@ -120,6 +122,9 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	, myExplosionFactory(nullptr)
 	, myIsLoaded(false)
 	, myIsCutscene(false)
+	, myPressedAnyKey(false)
+	, myPressedEscDuringCutscene(false)
+	, myPressEscTimer(0.f)
 	, mode(0)
 {
 	myPhysicsScene = nullptr;
@@ -351,6 +356,32 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	{
 		if (myTitleComponent)
 		{
+			if (myPressEscTimer >= 0.f)
+			{
+				myPressEscTimer -= aDeltaTime.GetSeconds();
+				if (myPressedEscDuringCutscene)
+				{
+					if (mode == 1)
+					{
+						//change level
+						SSlua::LuaWrapper::GetInstance().DoString("ChangeLevel(0)");
+					}
+					else if (mode == 2)
+					{
+						//go to credits and stuff
+					}
+				}
+			}
+
+			if (myPressedAnyKey && myPressEscTimer <= 0.f)
+			{
+				myPressedAnyKey = false/*!true*/;
+				myPressEscTimer = 2.f;
+
+				CGameEventMessage* pressToSkipMessage = new CGameEventMessage(L"Press ESC to skip cut scene");
+				Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(pressToSkipMessage);
+			}
+
 			myTitleComponent->Update(aDeltaTime.GetSeconds());
 			if (myTitleComponent->GetIndex() < myTitle.Size())
 			{
@@ -362,6 +393,8 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 		}
 	}
 
+	myPressedEscDuringCutscene = false;
+
 	return myStatus;
 }
 
@@ -370,15 +403,18 @@ void CPlayState::Render()
 	myScene->Render();
 
 	if (myIsCutscene == false)
+	{
 		myHUD.Render();
+	}
 
 	if (myIsCutscene == true)
 	{
 		if (myTitleComponent->GetIndex() < myTitle.Size())
 		{
-			if(myTitle[myTitleComponent->GetIndex()])
+			if (myTitle[myTitleComponent->GetIndex()])
+			{
 				myTitle[myTitleComponent->GetIndex()]->Render();
-
+			}
 		}
 	}
 
@@ -409,10 +445,21 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 	{
 		return CU::eInputReturn::ePassOn;
 	}
+	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	{
+		myPressedAnyKey = true;
+	}
 
 	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed && aInputMessage.myKey == CU::eKeys::ESCAPE)
 	{
-		Pause();
+		if (myPressEscTimer >= 0.f && myIsCutscene)
+		{
+			myPressedEscDuringCutscene = true;
+		}
+		else
+		{
+			Pause();
+		}
 	}
 	else
 	{

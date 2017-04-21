@@ -130,6 +130,9 @@ private:
 	std::atomic_bool myIsLoaded;
 
 	bool myIsCutscene;
+	bool myPressedAnyKey;
+	bool myPressedEscDuringCutscene;
+	float myPressEscTimer;
 	int mode;
 	//Super temp ta bort när guit börjar ta form
 	//CTextInstance* myPlayerHealthText;

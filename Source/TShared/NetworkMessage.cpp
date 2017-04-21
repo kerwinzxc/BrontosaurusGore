@@ -31,8 +31,11 @@ void CNetworkMessage::UnpackMessage()
 {
 	if (myIsPacked == true)
 	{
-		DoDeserialize(myStream);
-		myIsPacked = false;
+		if (myStream.empty() == false)
+		{
+			DoDeserialize(myStream);
+			myIsPacked = false;
+		}
 		return;
 	}
 	DL_ASSERT("Message was not packed");
@@ -40,6 +43,7 @@ void CNetworkMessage::UnpackMessage()
 
 void CNetworkMessage::SetData(const char* someData, unsigned dataSize)
 {
+	assert(dataSize > 0);
 	myStream.assign(someData, someData + dataSize);
 }
 
