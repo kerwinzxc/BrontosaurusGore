@@ -507,6 +507,10 @@ void CClient::Update()
 			case ePackageType::eSetRepesentationActive:
 			{
 				CNetworkMessage_SetIsRepesentationActive* setmessage = currentMessage->CastTo<CNetworkMessage_SetIsRepesentationActive>();
+				if (CEnemyClientRepresentationManager::CheckIfCreated() == false)
+				{
+					return;
+				}
 				if (setmessage->GetActive() == Ja)
 				{
 					DL_PRINT("Representation Activated");
@@ -524,6 +528,10 @@ void CClient::Update()
 				data.myInt = changeMessage->GetWeaponIndex();
 				if (changeMessage->GetShooter() == CNetworkMessage_WeaponChange::Shooter::Enemy)
 				{
+					if (CEnemyClientRepresentationManager::CheckIfCreated() == false)
+					{
+						return;
+					}
 					CEnemyClientRepresentationManager::GetInstance().GetRepresentation(changeMessage->GetId()).GetParent()->NotifyComponents(eComponentMessageType::eServerChangeWeapon, data);
 					break;
 				}
@@ -533,6 +541,10 @@ void CClient::Update()
 			case ePackageType::eAnimationStart:
 			{
 				CNetworkMessage_AnimationStart* animationMessage = currentMessage->CastTo<CNetworkMessage_AnimationStart>();
+				if(CEnemyClientRepresentationManager::CheckIfCreated() == false)
+				{
+					return;
+				}
 				CEnemyClientRepresentation& enemy = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(animationMessage->GetEnemyID());
 				enemy.GetParent()->NotifyComponents(animationMessage->GetAnimation(), SComponentMessageData());
 			}
