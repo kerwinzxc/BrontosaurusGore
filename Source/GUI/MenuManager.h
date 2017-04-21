@@ -92,6 +92,8 @@ private:
 	SGUIElement myGUIElement;
 	int myCurentlyHoveredClickarea;
 	bool myMouseIsPressed;
+	bool myHasPlayedHoverSound;
+	bool myHasPlayedClickSound;
 };
 
 inline void CMenuManager::UpdateMousePosition(const CU::Vector2f& aPosition)
