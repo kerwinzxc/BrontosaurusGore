@@ -19,6 +19,8 @@ enum class eBlendState
 	eOverlay,
 	eEmilBlend,
 	eEndBlend,
+	eMaxColorBlend,
+	eStamp,
 	eSize,
 };
 
