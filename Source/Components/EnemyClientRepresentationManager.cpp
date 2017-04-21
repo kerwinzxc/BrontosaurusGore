@@ -100,3 +100,12 @@ void CEnemyClientRepresentationManager::Init(CWeaponSystemManager* aWeaponSystem
 		}
 	}
 }
+
+bool CEnemyClientRepresentationManager::CheckIfRepresentationExists(unsigned short aId)
+{
+	if(myRepresentations.find(aId) == myRepresentations.end())
+	{
+		return false;
+	}
+	return true;
+}
