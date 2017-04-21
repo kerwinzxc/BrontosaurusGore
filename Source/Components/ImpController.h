@@ -13,6 +13,7 @@ enum class eImpState
 	eChargingMeleeAttack,
 	eChase,
 	eWaitAfterMeleeAttack,
+	eWaitAfterRangedAttack,
 	eDead
 };
 class CImpController : public CEnemy

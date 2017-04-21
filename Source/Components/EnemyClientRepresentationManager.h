@@ -9,6 +9,7 @@ public:
 	static CEnemyClientRepresentationManager& GetInstance();
 	inline static bool CheckIfCreated();
 	CEnemyClientRepresentation& CreateAndRegister();
+	bool CheckIfRepresentationExists(unsigned short aId);
 	CEnemyClientRepresentation& GetRepresentation(unsigned short aId);
 	void Update(const CU::Time& aDeltaTime);
 	void Init(CWeaponSystemManager* aWeaponSystemManagerPointer);

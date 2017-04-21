@@ -126,7 +126,8 @@ void CImpController::Update(const float aDeltaTime)
 		{
 			Attack();
 			ChangeClientAnimation(eComponentMessageType::eImpThrowAttack);
-			myState = eImpState::eIdle;
+			myState = eImpState::eWaitAfterRangedAttack;
+			myWaitAfterAttackCountDown = 1.1f;
 			myUsedAttackSinceLastRunning++;
 			if (myAttacksUntillRunningAway <= myUsedAttackSinceLastRunning)
 			{
@@ -206,6 +207,16 @@ void CImpController::Update(const float aDeltaTime)
 		if(myWaitAfterAttackCountDown <= 0.0f)
 		{
 			InitiateWander();
+		}
+		break;
+	}
+	case eImpState::eWaitAfterRangedAttack:
+	{
+		myWaitAfterAttackCountDown -= aDeltaTime;
+		if (myWaitAfterAttackCountDown <= 0.0f)
+		{
+			myWaitAfterAttackCountDown = 0.0f;
+			myState = eImpState::eIdle;
 		}
 		break;
 	}
@@ -376,6 +387,9 @@ bool CImpController::CanChangeState()
 		return false;
 		break;
 	case eImpState::eWaitAfterMeleeAttack:
+		return false;
+		break;
+	case eImpState::eWaitAfterRangedAttack:
 		return false;
 		break;
 	default:
