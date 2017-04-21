@@ -139,6 +139,10 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 				/*rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundY(rotatedRadians.x);
 				rotatedDirection = rotatedDirection * CU::Matrix33f::CreateRotateAroundX(rotatedRadians.y);
 				rotatedDirection.Normalize();*/
+				if(myWeaponData->name == "Shotgun")
+				{
+					continue;
+				}
 				if (CProjectileFactory::GetInstance() != nullptr)
 				{
 					CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
