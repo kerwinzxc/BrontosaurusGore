@@ -146,7 +146,7 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 				CGameObject* markerObject = myGameObjectManagerPointer->CreateGameObject();
 				markerObject->AddComponent(newMarkerModel);
 				cameraObjectQuestionData.myGameObject->AddComponent(markerObject);
-				markerObject->Move(CU::Vector3f(0.0f, 0.5f, 2.0f));
+				markerObject->Move(CU::Vector3f(0.0f, 0.9f, 2.0f));
 				CMarkerComponent* markerComponent = new CMarkerComponent();
 				markerObject->AddComponent(markerComponent);
 				if(CComponentManager::GetInstancePtr() != nullptr)
