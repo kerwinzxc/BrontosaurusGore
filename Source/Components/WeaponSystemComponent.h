@@ -25,6 +25,8 @@ private:
 	void ChangeWeapon(unsigned int aIndex);
 	void ChangeWeapon2(unsigned int aIndex);
 	void ChangeWeaponLocal(unsigned int aIndex);
+	bool CanChangeWeapon(unsigned int aIndex);
+private:
 
 	bool CheckIfAlreadyHaveWeapon(const char* aWeaponName);
 	CU::GrowingArray<CWeapon*> myWeapons;
