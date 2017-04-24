@@ -54,6 +54,11 @@ void CMarkerComponent::Receive(const eComponentMessageType aMessageType, const S
 		myIsVisible = aMessageData.myBool;
 		break;
 	}
+	case eComponentMessageType::eDied:
+	{
+		myIsVisible = false;
+		break;
+	}
 	default:
 		break;
 	}
