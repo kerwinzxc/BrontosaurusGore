@@ -85,6 +85,9 @@
     <ClCompile Include="ArenaTriggerComponentManager.cpp" />
     <ClCompile Include="LutComponent.cpp" />
     <ClCompile Include="PinkyClientDamageHandler.cpp" />
+    <ClCompile Include="ShowTitleComponent.cpp" />
+    <ClCompile Include="MarkerComponent.cpp" />
+    <ClCompile Include="MarkerComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AmmoCheckData.h" />
@@ -193,5 +196,8 @@
     <ClInclude Include="ArenaTriggerComponentManager.h" />
     <ClInclude Include="LutComponent.h" />
     <ClInclude Include="PinkyClientDamageHandler.h" />
+    <ClInclude Include="ShowTitleComponent.h" />
+    <ClInclude Include="MarkerComponent.h" />
+    <ClInclude Include="MarkerComponentManager.h" />
   </ItemGroup>
 </Project>

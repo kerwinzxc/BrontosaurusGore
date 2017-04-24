@@ -42,5 +42,6 @@ private:
 	CGameObjectManager* myGameObjectManagerPointer;
 	CModelComponentManager* myModelComponentManagerPointer;
 	Physics::CPhysicsScene* myPhysicsScene;
+	bool myHaveGivenPlayerMarkerThingie;
 };
 

@@ -7,8 +7,8 @@
 #include "../TShared/NetworkMessage_SetCheckpointMessage.h"
 #include "../ThreadedPostmaster/SendNetowrkMessageMessage.h"
 
-CCheckPointComponent::CCheckPointComponent(const unsigned char aId)
-	:myId(aId)
+CCheckPointComponent::CCheckPointComponent(const unsigned char aId, const short aIndex)
+	:myId(aId), myIndex(aIndex)
 {
 	myHaveBeenActivated = false;
 }

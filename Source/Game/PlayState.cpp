@@ -37,6 +37,7 @@
 #include "../Components/CheckpointComponentManager.h"
 #include "EnemyFactory.h"
 #include "TumbleweedFactory.h"
+#include "Components/MarkerComponentManager.h"
 //#include "../GUI/GUIManager.h"
 
 #include "LoadManager/LoadManager.h"
@@ -162,6 +163,7 @@ CPlayState::~CPlayState()
 	SAFE_DELETE(myPhysicsScene);
 	SAFE_DELETE(myGameObjectManager);
 	CTumbleweedFactory::DestroyInstance();
+	CMarkerComponentManager::DestroyInstance();
 	//SAFE_DELETE(myPhysics); // kanske? nope foundation förstör den
 	//Physics::CFoundation::Destroy(); desstroy this lator
 
@@ -329,7 +331,11 @@ eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 	myDamageOnCollisionComponentManager->Update(aDeltaTime);
 	CEnemyClientRepresentationManager::GetInstance().Update(aDeltaTime);
 	CPickupComponentManager::GetInstance()->Update(aDeltaTime.GetSeconds());
-
+	if(CMarkerComponentManager::GetInstance() != nullptr)
+	{
+	
+		CMarkerComponentManager::GetInstance()->Update(aDeltaTime.GetSeconds());
+	}
 	CDoorManager::GetInstance()->Update(aDeltaTime);
 
 	if (myIsCutscene == false)
@@ -476,6 +482,7 @@ void CPlayState::CreateManagersAndFactories()
 	myExplosionFactory = new CExplosionFactory(myExplosionComponentManager);
 	CTumbleweedFactory::CreateInstance();
 	CTumbleweedFactory::GetInstance()->Init(myGameObjectManager, myColliderComponentManager);
+	CMarkerComponentManager::CreateInstance();
 }
 
 void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
@@ -593,6 +600,7 @@ void CPlayState::CreatePlayer(CU::Camera& aCamera)
 			playerObject->AddComponent(weaponSystenComponent);
 			playerObject->AddComponent(ammoComponent);
 			GivePlayerWeapons(playerObject);
+
 		}
 
 		myPlayerLut = new CLutComponent();

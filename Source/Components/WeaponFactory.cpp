@@ -11,6 +11,8 @@
 #include "ModelComponentManager.h"
 #include "GameObjectManager.h"
 #include "ExplosionData.h"
+#include "MarkerComponent.h"
+#include "MarkerComponentManager.h"
 
 CWeaponFactory::CWeaponFactory(): myPhysicsScene(nullptr)
 {
@@ -19,7 +21,7 @@ CWeaponFactory::CWeaponFactory(): myPhysicsScene(nullptr)
 	myWeaponList.Init(200);
 	myGameObjectManagerPointer = nullptr;
 	myModelComponentManagerPointer = nullptr;
-
+	myHaveGivenPlayerMarkerThingie = false;
 	
 }
 
@@ -132,6 +134,36 @@ void CWeaponFactory::MakeWeaponModel(CGameObject* aOwner, CWeapon* aWeapon)
 		std::string playerHandsPath = aWeapon->GetData()->modelFilePath;
 		size_t pos = playerHandsPath.find_last_of('/');
 		playerHandsPath.insert(pos + 2, "_WeaponPlayer_01");
+
+		if(myHaveGivenPlayerMarkerThingie == false)
+		{
+			if(CMarkerComponentManager::GetInstance() != nullptr)
+			{
+				CModelComponent* newMarkerModel = myModelComponentManagerPointer->CreateComponent("Models/Meshes/M_NavigationArrow.fbx");
+				newMarkerModel->SetIgnoreDepth(true);
+
+				myHaveGivenPlayerMarkerThingie = true;
+				CGameObject* markerObject = myGameObjectManagerPointer->CreateGameObject();
+				markerObject->AddComponent(newMarkerModel);
+				cameraObjectQuestionData.myGameObject->AddComponent(markerObject);
+				markerObject->Move(CU::Vector3f(0.0f, 0.5f, 2.0f));
+				CMarkerComponent* markerComponent = new CMarkerComponent();
+				markerObject->AddComponent(markerComponent);
+				if(CComponentManager::GetInstancePtr() != nullptr)
+				{				
+					CComponentManager::GetInstancePtr()->RegisterComponent(markerComponent);
+				}
+				else
+				{
+					DL_PRINT_WARNING("CCOmponentMnager not created when setting marker");
+				}
+				CMarkerComponentManager::GetInstance()->SetMarkerObject(markerComponent);
+			}
+			else
+			{
+				DL_PRINT_WARNING("MarkerComponentManager not created when setting marker");
+			}
+		}
 		if (CU::CJsonValue::FileExists(playerHandsPath))
 		{
 			CModelComponent* handModelComponent = myModelComponentManagerPointer->CreateComponent(playerHandsPath);
