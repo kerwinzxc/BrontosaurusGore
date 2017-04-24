@@ -4,6 +4,7 @@
 #include "BrontosaurusEngine/Renderer.h"
 #include "BrontosaurusEngine/Engine.h"
 #include "JsonValue.h"
+#include "..\Audio\AudioInterface.h"
 
 CU::Vector2f CMenuManager::ourMousePosition(0.5f, 0.5f);
 
@@ -21,6 +22,8 @@ CMenuManager::CMenuManager() : myPointerSprite(nullptr), myShouldRender(true), m
 
 	myGUIElement.myOrigin = CU::Vector2f(0.5f, 0.5f);
 	myGUIElement.myScreenRect = CU::Vector4f(0.5f, 0.5f, 1.5f, 1.5f);
+	myHasPlayedHoverSound = false;
+	myHasPlayedClickSound = false;
 }
 
 
@@ -159,13 +162,17 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 				{
 					mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
 				}
-
-				
 				myCurentlyHoveredClickarea = i;
 			}
 
 			if (myMouseIsPressed == true && myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0 && mySpriteInstances[myClickAreas[i].mySpriteID].myState != eMenuButtonState::eOnClick)
 			{
+				if (myHasPlayedClickSound == false)
+				{
+					Audio::CAudioInterface::GetInstance()->PostEvent("Menu_Click");
+					myHasPlayedClickSound = true;
+				}
+			
 				mySpriteInstances[myClickAreas[i].mySpriteID].myState = eMenuButtonState::eOnClick;
 			}
 			else if (myClickAreas[i].mySpriteID >= 0)
@@ -178,13 +185,23 @@ void CMenuManager::Update(const CU::Time& aDeltaTime)
 		}
 	}
 
+
+
 	if (hasCollided == false && myCurentlyHoveredClickarea > -1)
 	{
 		if (myClickAreas[myCurentlyHoveredClickarea].mySpriteID >= 0)
 		{
 			mySpriteInstances[myClickAreas[myCurentlyHoveredClickarea].mySpriteID].myState = eMenuButtonState::eDefault;
+			myHasPlayedHoverSound = false;
+			myHasPlayedClickSound = false;
 		}
 		myCurentlyHoveredClickarea = -1;
+	}
+
+	if (hasCollided == true && myHasPlayedHoverSound == false)
+	{
+		Audio::CAudioInterface::GetInstance()->PostEvent("Menu_Hover");
+		myHasPlayedHoverSound = true;
 	}
 }
 
