@@ -148,7 +148,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SETFOCUS:
 		if (CEngine::GetInstancePtr() && CEngine::GetInstancePtr()->GetFramework() && CEngine::GetInstancePtr()->GetWindow() && CEngine::GetInstancePtr()->GetWindow()->IsFullscreen())
 		{
-			CEngine::GetInstancePtr()->GetFramework()->SetWindowed();
 			CEngine::GetInstancePtr()->GetFramework()->SetFullscreen();
 		}
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(true));
