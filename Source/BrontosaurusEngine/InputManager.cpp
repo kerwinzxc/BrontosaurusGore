@@ -123,7 +123,19 @@ void CInputManager::UpdateMouse()
 	if (myHasFocus == true)
 	{
 		CU::Vector2i windowSize(WINDOW_SIZE);
-		CU::Vector2i middleOfWindow = windowSize / 2;
+
+		static CU::Vector2i windowOffset;
+		static bool locGetRect = true;
+		if (locGetRect)
+		{
+			locGetRect = false;
+			RECT rect;
+			GetWindowRect(GetFocus(), &rect);
+			windowOffset.x = rect.left;
+			windowOffset.y = rect.top;
+		}
+
+		CU::Vector2i middleOfWindow = windowSize / 2 + windowOffset;
 		CU::Vector2i newWindowsMousePos(myDInputWrapper->GetMousePositionX(), myDInputWrapper->GetMousePositionY());
 
 		CU::Vector2f windowSizeF(windowSize);

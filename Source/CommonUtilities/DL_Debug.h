@@ -42,7 +42,7 @@ namespace DL_Debug
 	#define PHYSICS_LOG(...)
 #endif //USE_FILTERLOG
 
-#ifndef _RETAIL_BUILD
+#ifndef _RETAIL_BUILD && !defined(RETAIL)
 #define DL_ASSERT(string, ...) wchar_t assertBuffer[1024]; _wassert(DL_Debug::Debug::GetInstance()->ParseVariadicArgs(assertBuffer, string, __VA_ARGS__), __FILEW__, __LINE__)
 #define DL_PRINT(string, ...)  DL_Debug::Debug::GetInstance()->PrintMessage(string, __VA_ARGS__)
 #define DL_PRINT_VECTOR_3F(A_VECTOR) DL_PRINT("%f, %f, %f", A_VECTOR.x, A_VECTOR.y, A_VECTOR.z)
@@ -53,6 +53,7 @@ namespace DL_Debug
 #else //!_RETAIL_BUILD
 #define DL_ASSERT(string, ...) (string)
 #define DL_PRINT(string, ...)  (string)
+#define DL_PRINT_VECTOR_3F(A_VECTOR) (A_VECTOR)
 #define DL_PRINT_WARNING(string, ...) (string)
 #define DL_WRITELOG(aLogTypes, ...) (aLogTypes)
 #define DL_MESSAGE_BOX(message, ...) (message)
