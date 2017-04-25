@@ -14,6 +14,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myIsAlive = true;
 	myShootChargeCountDown = 0.0f;
 	myAmountOfCuedShots = 0;
+	myInvisibleAfterDeathCountdown = 0.0f;
 }
 
 
@@ -72,7 +73,6 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 	GetParent()->NotifyComponents(eComponentMessageType::eUpdatePinky, updateData);
 	if (myIsAlive == false)
 	{
-
 		GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
 		GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
 		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
@@ -83,6 +83,17 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
 		//GetParent()->SetWorldPosition(hellPosition);
+
+		if (myInvisibleAfterDeathCountdown > 0.0f)
+		{
+			myInvisibleAfterDeathCountdown -= aDeltaTime;
+		}
+		else
+		{
+			SComponentMessageData visibilityData;
+			visibilityData.myBool = false;
+			GetParent()->NotifyComponents(eComponentMessageType::eSetVisibility, visibilityData);
+		}
 	}
 }
 
@@ -114,6 +125,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
 		myIsAlive = false;
+		myInvisibleAfterDeathCountdown = 1.2f;
 		break;
 	}
 	case eComponentMessageType::eCheckPointReset:

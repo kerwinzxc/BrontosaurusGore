@@ -25,6 +25,7 @@ protected:
 	float myPositionInterpolationSpeed;
 	float myRotationInterpolationSpeed;
 	float myShootChargeCountDown;
+	float myInvisibleAfterDeathCountdown;
 	short myAmountOfCuedShots;
 	eEnemyTypes myType;
 	bool myIsAlive;
