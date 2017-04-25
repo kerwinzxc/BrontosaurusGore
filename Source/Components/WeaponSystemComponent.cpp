@@ -26,6 +26,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 	myTemporaryAmmoDataList.Init(5);
 
 	myIsActive = true;
+	myIsChanginWeapon = false;
 }
 
 
@@ -275,10 +276,13 @@ void CWeaponSystemComponent::Update(float aDelta)
 	{
 		if(myIsActive == true)
 		{
-			SComponentQuestionData lookatData;
-			if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraLookat, lookatData) == true)
-			{
-				myWeapons[myActiveWeaponIndex]->TryToShoot(lookatData.myVector3f);
+			if(myIsChanginWeapon == false)
+			{		
+				SComponentQuestionData lookatData;
+				if (GetParent()->AskComponents(eComponentQuestionType::eGetCameraLookat, lookatData) == true)
+				{
+					myWeapons[myActiveWeaponIndex]->TryToShoot(lookatData.myVector3f);
+				}
 			}
 		
 		}
@@ -416,6 +420,7 @@ void CWeaponSystemComponent::ChangeWeaponLocal(unsigned int aIndex)
 		{
 			if(GetParent()->AskComponents(eComponentQuestionType::eHasCameraComponent, SComponentQuestionData()) == true && myWeapons[myActiveWeaponIndex]->GetData()->name != "MeleeWeapon")
 			{
+				myIsChanginWeapon = true;
 				CWeapon* nextWeapon = myWeapons[aIndex];
 				auto onUnequippedCallback = [nextWeapon, this, aIndex]()
 				{
@@ -480,6 +485,7 @@ void CWeaponSystemComponent::ChangeWeaponCallback(unsigned aIndex)
 {
 	myActiveWeaponIndex = aIndex;
 	myWeapons[myActiveWeaponIndex]->Equip();
+	myIsChanginWeapon = false;
 }
 
 bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)
