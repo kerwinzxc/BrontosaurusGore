@@ -69,6 +69,22 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 				transform.SetPosition(position);
 			}
 
+			CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+			if (myWeaponObject != nullptr)
+			{
+				CU::Vector3f position = myWeaponObject->GetWorldPosition();
+				CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
+				localWeaponMatrix.Move(shootDisplacment);
+				position = localWeaponMatrix.GetPosition();
+				transform.SetPosition(position);
+			}
+
+			if (CClientMessageManager::GetInstance() != nullptr)
+			{
+				transform.LookAt(transform.GetPosition() + aDirection);
+				EmitParticles(transform);
+			}
+
 			for (unsigned short i = 0; i < myWeaponData->projectilesFiredPerShot; i++)
 			{
 				CU::Vector3f direction = RandomizedDirection(aDirection);
@@ -145,15 +161,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 				}
 				if (CProjectileFactory::GetInstance() != nullptr)
 				{
-					CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
-					if (myWeaponObject != nullptr)
-					{
-						CU::Vector3f position = myWeaponObject->GetWorldPosition();
-						CU::Matrix44f localWeaponMatrix = myWeaponObject->GetToWorldTransform();
-						localWeaponMatrix.Move(shootDisplacment);
-						position = localWeaponMatrix.GetPosition();
-						transform.SetPosition(position);
-					}
+					
 
 					PlaySound(SoundEvent::Fire, direction);
 					CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/transform.GetPosition());
@@ -162,11 +170,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 
 				}
 			}
-			if (CClientMessageManager::GetInstance() != nullptr)
-			{
-				transform.LookAt(transform.GetPosition() + aDirection);
-				EmitParticles(transform);
-			}
+			
 		}
 		else
 		{
@@ -226,14 +230,17 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 {
 	if (myElapsedFireTimer >= myWeaponData->fireRate)
 	{
-		CU::Vector3f shootPosition = myUser->GetWorldPosition();
 		SComponentQuestionData cameraPositionData;
-		if (myUser->AskComponents(eComponentQuestionType::eGetCameraPosition, cameraPositionData))
+		
+		const CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
+
+		CU::Matrix44f localWeaponMatrix = myUser->GetToWorldTransform();
+		localWeaponMatrix.Move(shootDisplacment);
+		if (CClientMessageManager::GetInstance() != nullptr)
 		{
-			shootPosition = cameraPositionData.myVector3f;
-			shootPosition += CU::Vector3f(0.f, 0.f, 5.f) * myUser->GetToWorldTransform().GetRotation();
+			localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
+			EmitParticles(localWeaponMatrix);
 		}
-		CU::Matrix44f localWeaponMatrix;
 		for (int i = 0; i < myWeaponData->projectilesFiredPerShot; ++i)
 		{
 			CU::Vector3f direction = RandomizedDirection(aDirection); // might wanna change this later to some raycasting stuff
@@ -244,25 +251,13 @@ void CWeapon::CosmeticShoot(const CU::Vector3f & aDirection)
 		rotatedDirection.Normalize();*/
 			if (CProjectileFactory::GetInstance() != nullptr)
 			{
-				CU::Vector3f shootDisplacment(myWeaponData->shootPositionX, myWeaponData->shootPositionY, myWeaponData->shootPositionZ);
-			
-				shootPosition = myUser->GetWorldPosition();
-				localWeaponMatrix = myUser->GetToWorldTransform();
-				localWeaponMatrix.Move(shootDisplacment);
-				shootPosition = localWeaponMatrix.GetPosition();
-
-
 				PlaySound(SoundEvent::Fire, aDirection);
-				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/shootPosition);
+				CProjectileFactory::GetInstance()->ShootProjectile(myWeaponData->projectileData, direction, /*myUser->GetWorldPosition()*/localWeaponMatrix.GetPosition());
 				
 				myElapsedFireTimer = 0.0f;
 			}
 		}
-		if(CClientMessageManager::GetInstance() != nullptr)
-		{
-			localWeaponMatrix.LookAt(localWeaponMatrix.GetPosition() + aDirection);
-			EmitParticles(localWeaponMatrix);
-		}
+		
 		
 	}
 }
@@ -281,7 +276,7 @@ const CU::Vector3f& CWeapon::GetLastHitPosition() const
 void CWeapon::EmitParticles(CU::Matrix44f aMatrix44)
 {
 	
-	aMatrix44.SetPosition(aMatrix44.GetPosition() + aMatrix44.myForwardVector * 2.5);
+	aMatrix44.SetPosition(aMatrix44.GetPosition());
 	aMatrix44.myForwardVector *= -1;
 	
 	for(int i =  0; i < myWeaponData->fireParticles.Size(); ++i)

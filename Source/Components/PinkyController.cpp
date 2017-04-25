@@ -154,6 +154,7 @@ void CPinkyController::Update(const float aDeltaTime)
 
 void CPinkyController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
+	CEnemy::Receive(aMessageType, aMessageData);
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:
