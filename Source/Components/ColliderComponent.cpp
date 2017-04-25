@@ -133,20 +133,32 @@ bool CColliderComponent::Answer(const eComponentQuestionType aQuestionType, SCom
 
 void CColliderComponent::OnTriggerEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerEnter });
+	if (aOther->GetCallbackData())
+	{
+		myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerEnter });
+	}
 }
 
 void CColliderComponent::OnTriggerExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerExit });
+	if (aOther->GetCallbackData())
+	{
+		myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnTriggerExit });
+	}
 }
 
 void CColliderComponent::OnCollisionEnter(Physics::CPhysicsCallbackActor* aOther)
 {
-	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionEnter });
+	if (aOther->GetCallbackData())
+	{
+		myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionEnter });
+	}
 }
 
 void CColliderComponent::OnCollisionExit(Physics::CPhysicsCallbackActor* aOther)
 {
-	myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionExit });
+	if (aOther->GetCallbackData())
+	{
+		myStoredCallBackDataList.Add({ aOther->GetCallbackData()->GetUserData(), eComponentMessageType::eOnCollisionExit });
+	}
 }
