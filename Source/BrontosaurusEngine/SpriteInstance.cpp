@@ -86,3 +86,8 @@ void CSpriteInstance::SetRotation(float aRotation)
 {
 	myRotation = aRotation;
 }
+
+void CSpriteInstance::Rotate(float aRotationAmmount)
+{
+	myRotation += aRotationAmmount;
+}

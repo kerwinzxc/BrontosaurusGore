@@ -36,7 +36,9 @@ public:
 	inline const CU::Vector2f& GetPivot() const;
 
 	CU::Vector2f GetTextureSize() const;
+
 	void SetRotation(float aRotation);
+	void Rotate(float aRotationAmmount);
 
 private:
 	CU::Vector2f myPosition;

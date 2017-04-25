@@ -82,12 +82,12 @@ void CSplashScreenState::UserWantsToContinue()
 
 CU::eInputReturn CSplashScreenState::RecieveInput(const CU::SInputMessage& aInputMessage)
 {
-	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	if (aInputMessage.myType != CU::eInputType::eMouseMoved && aInputMessage.myType != CU::eInputType::eScrollWheelChanged) 
 	{
-		UserWantsToContinue();
+		myIsDone = true;
 	}
 
-	return CU::eInputReturn::ePassOn;
+	return CU::eInputReturn::eKeepSecret;
 }
 
 void CSplashScreenState::FadeIn(const CU::Time& aDeltaTime)
