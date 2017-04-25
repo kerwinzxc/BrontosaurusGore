@@ -104,8 +104,8 @@ CClient::~CClient()
 
 #ifdef _DEBUG
 	processName += "Debug";
-#elif defined(RETAIL)
-	processName += "Retail";
+#elif defined(RETAIL) || defined(_RETAIL_BUILD)
+	processName = "HighDoomServer";
 #elif defined(NDEBUG)
 	processName += "Release";
 #endif

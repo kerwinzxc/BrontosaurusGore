@@ -25,14 +25,11 @@ CGame::~CGame()
 	KLoader::CKevinLoader::DestroyInstance();
 	CBackgroundLoadingManager::DestroyInstance();
 	SSlua::LuaWrapper::DestroyIfCreated();
-
-	//WindowsHelper::CloseProgram("TServer_Applictaion_x64_Release.exe");
 }
 
 
 void CGame::Init()
 {
-	//WindowsHelper::StartProgram("TServer_Applictaion_x64_Release.exe");
 	CBackgroundLoadingManager::CreateInstance();
 	KLoader::CKevinLoader::CreateInstance();
 	SSlua::LuaWrapper::GetInstance().RegisterFunctions(&ScriptLoader::RegisterLuaFunctions);
