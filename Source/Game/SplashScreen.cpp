@@ -38,8 +38,14 @@ eStateStatus CSplashScreenState::Update(const CU::Time& aDeltaTime)
 		else
 			return eStateStatus::ePop;
 	}
-
-	myFadeState == eFadeState::eFadingIn ? FadeIn(aDeltaTime) : FadeOut(aDeltaTime);
+	if (aDeltaTime.GetSeconds() > 0.5f)
+	{
+		myFadeState == eFadeState::eFadingIn ? FadeIn(0.5f) : FadeOut(0.5f);
+	}
+	else
+	{
+		myFadeState == eFadeState::eFadingIn ? FadeIn(aDeltaTime) : FadeOut(aDeltaTime);
+	}
 
 	return eStateStatus::eKeep;
 }
