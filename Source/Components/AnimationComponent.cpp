@@ -119,31 +119,31 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 	case eComponentMessageType::eRevenantStartJump:
 		if (lastAnimationKey != eAnimationState::jumpLift01)
 		{
-			TryPushAnimation("jumpLift01");
+			TryPushAnimation("beginfly");
 		}
 		break;
 	case eComponentMessageType::eRevenantLand:
 		if (lastAnimationKey != eAnimationState::jumpLanding01)
 		{
-			TryPushAnimation("jumpLanding01");
+			TryPushAnimation("endfly");
 		}
 		break;
 	case eComponentMessageType::eRevenantAttackAir:
 		if (lastAnimationKey != eAnimationState::jumpAttackOnly01 && lastAnimationKey != eAnimationState::jumpLift01 && lastAnimationKey != eAnimationState::meleeAttack01)
 		{
-			TryPushAnimation("jumpAttackOnly01");
+			TryPushAnimation("flyattack");
 		}
 		break;
 	case eComponentMessageType::ePinkyCharge:
 		if (lastAnimationKey != eAnimationState::chargeRun01)
 		{
-			TryPushAnimation("chargeRun01");
+			TryPushAnimation("chargeRun");
 		}
 		break;
 	case eComponentMessageType::ePinkyLoadChange:
 		if (lastAnimationKey != eAnimationState::chargeStart01)
 		{
-			TryPushAnimation("chargeStart01");
+			TryPushAnimation("chargeStart");
 		}
 		break;
 
@@ -163,7 +163,7 @@ void CAnimationComponent::Receive(const eComponentMessageType aMessageType, cons
 		}
 		break;
 	case eComponentMessageType::eDied:
-			TryPushAnimation("death");
+			TryPushAnimation("die");
 		break;
 	case eComponentMessageType::eUnequip:
 		

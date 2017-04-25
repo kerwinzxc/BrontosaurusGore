@@ -329,6 +329,7 @@ void CRevenantController::Update(const float aDeltaTime)
 
 void CRevenantController::Receive(const eComponentMessageType aMessageType, const SComponentMessageData & aMessageData)
 {
+	CEnemy::Receive(aMessageType, aMessageData);
 	switch (aMessageType)
 	{
 	case eComponentMessageType::eDied:

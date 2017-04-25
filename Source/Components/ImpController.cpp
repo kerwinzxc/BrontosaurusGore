@@ -275,6 +275,8 @@ void CImpController::Receive(const eComponentMessageType aMessageType, const SCo
 		myIsDead = true;
 		FreeJumpPoint();
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+
+		
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());

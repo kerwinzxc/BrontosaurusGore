@@ -101,9 +101,12 @@ void CEnemy::DoDamageHighlight(const float aDeltaTime)
 
 void CEnemy::ChangeClientAnimation(const eComponentMessageType aMessageType) const
 {
-	CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
-	animationMessage->Init(GetNetworkID(), aMessageType);
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
+	if (CServerMessageManager::GetInstance() != nullptr)
+	{
+		CNetworkMessage_AnimationStart* animationMessage = CServerMessageManager::GetInstance()->CreateMessage<CNetworkMessage_AnimationStart>(ID_ALL);
+		animationMessage->Init(GetNetworkID(), aMessageType);
+		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(animationMessage));
+	}
 }
 
 void CEnemy::SetHighlight(const CU::Vector4f& aColor, float aIntensity)
@@ -192,6 +195,9 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	{
 		myIsDead = true;
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		
+		ChangeClientAnimation(eComponentMessageType::eDied);
+		SetHighlight(CU::Vector4f(0, 0, 0, 0), 0.f);
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
