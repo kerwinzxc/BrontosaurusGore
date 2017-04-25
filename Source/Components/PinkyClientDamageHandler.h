@@ -9,6 +9,7 @@ public:
 private:
 	void Receive(const eComponentMessageType aMessageType, const SComponentMessageData& aMessageData) override;
 	float myCountDown;
+	bool myIsActive;
 	CU::GrowingArray<CGameObject*> myCollidedObjects;
 };
 
