@@ -191,7 +191,11 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 			{
 				index = 0;
 			}
-			ChangeWeapon(index);
+
+			if(CanChangeWeapon(index) == true)
+			{
+				ChangeWeapon(index);
+			}
 		
 		}
 		break;
@@ -224,7 +228,10 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eSelectWeapon:
 	{
-		ChangeWeapon(aMessageData.myInt);
+		if (CanChangeWeapon(aMessageData.myInt) == true)
+		{
+			ChangeWeapon(aMessageData.myInt);
+		}
 		break;
 	}
 	case eComponentMessageType::eServerChangeWeapon:
@@ -315,22 +322,34 @@ void CWeaponSystemComponent::HandleKeyPressed(const SComponentMessageData& aMess
 		}
 	case ePlayerControls::eChangeWeapon1:
 	{
-		ChangeWeapon(0);
+		if(CanChangeWeapon(0) == true)
+		{
+			ChangeWeapon(0);
+		}
 		break;
 	}
 	case ePlayerControls::eChangeWeapon2:
 	{
-		ChangeWeapon(1);
+		if (CanChangeWeapon(1) == true)
+		{
+			ChangeWeapon(1);
+		}
 		break;
 	}
 	case ePlayerControls::eChangeWeapon3:
 	{
-		ChangeWeapon(2);
+		if (CanChangeWeapon(2) == true)
+		{
+			ChangeWeapon(2);
+		}
 		break;
 	}
 	case ePlayerControls::eChangeWeapon4:
 	{
-		ChangeWeapon(3);
+		if (CanChangeWeapon(3) == true)
+		{
+			ChangeWeapon(3);
+		}
 		break;
 	}
 	default:
@@ -473,4 +492,14 @@ bool CWeaponSystemComponent::CheckIfAlreadyHaveWeapon(const char* aWeaponName)
 		}
 	}
 	return false;
+}
+
+bool CWeaponSystemComponent::CanChangeWeapon(unsigned int aIndex)
+{
+	if(myActiveWeaponIndex == aIndex)
+	{
+		return false;
+	}
+
+	return true;
 }

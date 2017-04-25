@@ -412,6 +412,8 @@
     <ClInclude Include="IPickupComponent.h" />
     <ClInclude Include="KeyPickupComponent.h" />
     <ClInclude Include="LutComponent.h" />
+    <ClInclude Include="MarkerComponent.h" />
+    <ClInclude Include="MarkerComponentManager.h" />
     <ClInclude Include="MeshColliderComponent.h" />
     <ClInclude Include="MovementComponentManager.h" />
     <ClInclude Include="NetworkComponent.h" />
@@ -512,6 +514,8 @@
     <ClCompile Include="IPickupComponent.cpp" />
     <ClCompile Include="KeyPickupComponent.cpp" />
     <ClCompile Include="LutComponent.cpp" />
+    <ClCompile Include="MarkerComponent.cpp" />
+    <ClCompile Include="MarkerComponentManager.cpp" />
     <ClCompile Include="MeshColliderComponent.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="MovementComponentManager.cpp" />

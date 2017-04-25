@@ -5,11 +5,12 @@ class CCheckpointComponentManager
 {
 public:
 	~CCheckpointComponentManager();
-	CCheckPointComponent* CreateAndRegisterComponent();
+	CCheckPointComponent* CreateAndRegisterComponent(short aIndex);
 	static void CreateInstance();
 	static CCheckpointComponentManager* GetInstance();
 	static void DestoryInstance();
 	inline CCheckPointComponent* GetComponent(const unsigned char aID);
+	const CU::Vector3f GetNextCheckpointPosition();
 private:
 	CCheckpointComponentManager();
 
