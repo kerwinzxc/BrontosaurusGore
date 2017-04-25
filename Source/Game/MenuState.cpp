@@ -356,7 +356,7 @@ bool CMenuState::StartServer(std::string /*notUsed*/)
 #ifdef _DEBUG
 	processName += "Debug";
 #elif defined(RETAIL)
-	processName += "Retail";
+	processName = "HighDoomServer";
 #elif defined(RELEASE)
 	processName += "Release";
 #endif

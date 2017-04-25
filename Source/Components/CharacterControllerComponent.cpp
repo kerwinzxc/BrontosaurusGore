@@ -16,6 +16,8 @@ CCharacterControllerComponent::CCharacterControllerComponent(Physics::CPhysicsCh
 
 CCharacterControllerComponent::~CCharacterControllerComponent()
 {
+	myController->SetCallbackData(nullptr);
+	SetUserData(nullptr);
 }
 
 bool CCharacterControllerComponent::Answer(const eComponentQuestionType aQuestionType, SComponentQuestionData & aQuestionData)

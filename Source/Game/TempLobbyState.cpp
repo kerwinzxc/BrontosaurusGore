@@ -156,7 +156,7 @@ void CTempLobbyState::Conect()
 #ifdef _DEBUG
 		processName += "Debug";
 #elif defined(RETAIL)
-		processName += "Retail";
+		processName = "HighDoomServer";
 #elif defined(RELEASE)
 		processName += "Release";
 #endif
