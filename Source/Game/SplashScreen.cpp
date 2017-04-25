@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "SplashScreen.h"
 
-#include "PostMaster\PostMaster.h"
 #include "BrontosaurusEngine\SpriteInstance.h"
-#include "PostMaster\Message.h"
-#include "PostMaster\Event.h"
+#include "CommonUtilities\InputMessage.h"
+#include "CommonUtilities\EInputReturn.h"
 
 #define MAX_ALPHA 1.0f
 #define MIN_APLHA 0.0f
@@ -34,9 +33,13 @@ eStateStatus CSplashScreenState::Update(const CU::Time& aDeltaTime)
 		myIsDone = false;
 
 		if (CheckIfMorePicsInArray() == true)
+		{
 			SetNextPic();
+		}
 		else
+		{
 			return eStateStatus::ePop;
+		}
 	}
 	if (aDeltaTime.GetSeconds() > 0.5f)
 	{
@@ -52,12 +55,14 @@ eStateStatus CSplashScreenState::Update(const CU::Time& aDeltaTime)
 
 void CSplashScreenState::Render()
 {
-	if(myCurrentSprite != nullptr)
+	if (myCurrentSprite != nullptr)
+	{
 		myCurrentSprite->Render();
+	}
 }
 
 void CSplashScreenState::AddPicture(const char* aPath)
-{	// 								             size           pos			Pivot				rect					 colour
+{
 	mySprites.Add(new CSpriteInstance(aPath));
 	mySprites.GetLast()->SetPosition({ 0.5f, 0.5f });
 	mySprites.GetLast()->SetPivot({ 0.5f, 0.5f });
@@ -75,12 +80,24 @@ void CSplashScreenState::UserWantsToContinue()
 	}
 }
 
+CU::eInputReturn CSplashScreenState::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	if (aInputMessage.myType == CU::eInputType::eKeyboardPressed)
+	{
+		UserWantsToContinue();
+	}
+
+	return CU::eInputReturn::ePassOn;
+}
+
 void CSplashScreenState::FadeIn(const CU::Time& aDeltaTime)
 {
 	CU::Vector4f color = myCurrentSprite->GetColor();
 
 	if (color.a < MAX_ALPHA)
+	{
 		color.a += 0.5f * aDeltaTime.GetSeconds();
+	}
 
 	if (color.a >= MAX_ALPHA)
 	{
@@ -119,7 +136,9 @@ void CSplashScreenState::SetNextPic()
 bool CSplashScreenState::CheckIfMorePicsInArray()
 {
 	if (mySprites.Find(myCurrentSprite) == mySprites.Size() - 1)
+	{
 		return false;
+	}
 
 	return true;
 }
