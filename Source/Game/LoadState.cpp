@@ -35,9 +35,13 @@ void CLoadState::Init()
 	//RENDERER.ClearRenderQueue();
 	CBackgroundLoadingManager &bLM = CBackgroundLoadingManager::GetInstance();
 
-	myLoadSprite = new CSpriteInstance("Sprites/Menu/Main/Loading/default.dds");
-	myLoadSprite->SetPivot({ 0.5f, 0.5f });
-	myLoadSprite->SetPosition({ 0.5f, 0.5f });
+	myControlSchemeSprite = new CSpriteInstance("Sprites/Menu/Main/Loading/default.dds");
+	myControlSchemeSprite->SetPivot({ 0.5f, 0.5f });
+	myControlSchemeSprite->SetPosition({ 0.5f, 0.5f });
+
+	myTDLogoSprite = new CSpriteInstance("Sprites/LoadingScreen/Rotating.dds");
+	myTDLogoSprite->SetPivot({ 0.5f, -0.5f });
+	myTDLogoSprite->SetPosition({ 0.97f, 0.90f });
 
 	if (bLM.GetIfActive() == true)
 	{
@@ -69,6 +73,7 @@ eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
 	//myLoadingAnimation.Update(aDeltaTime);
+	myTDLogoSprite->Rotate(5.f * aDeltaTime.GetSeconds());
 
 	if (myPlayState->IsLoaded() == true)
 	{
@@ -105,7 +110,8 @@ void CLoadState::Render()
 
 	RENDERER.AddRenderMessage(new SChangeStatesMessage(msg));
 	//myLoadingAnimation.Render();
-	myLoadSprite->Render();
+	myControlSchemeSprite->Render();
+	myTDLogoSprite->Render();
 }
 
 void CLoadState::OnEnter(const bool /*aLetThroughRender*/)

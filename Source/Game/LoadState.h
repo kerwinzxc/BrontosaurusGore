@@ -26,7 +26,8 @@ private:
 
 	CPlayState* myPlayState;
 	//CLoadingAnimation myLoadingAnimation;
-	CSpriteInstance* myLoadSprite;
+	CSpriteInstance* myControlSchemeSprite;
+	CSpriteInstance* myTDLogoSprite;
 
 	const int myLevelIndex;
 	bool myGotOkFromServer;
