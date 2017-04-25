@@ -5,6 +5,8 @@
 #include "BrontosaurusEngine\SpriteInstance.h"
 #include "PostMaster\Message.h"
 #include "PostMaster\Event.h"
+#include "InputMessage.h"
+#include "EInputReturn.h"
 
 #define MAX_ALPHA 1.0f
 #define MIN_APLHA 0.0f
@@ -73,6 +75,16 @@ void CSplashScreenState::UserWantsToContinue()
 	{
 		myIsDone = true;
 	}
+}
+
+CU::eInputReturn CSplashScreenState::RecieveInput(const CU::SInputMessage& aInputMessage)
+{
+	if (aInputMessage.myType != CU::eInputType::eMouseMoved && aInputMessage.myType != CU::eInputType::eScrollWheelChanged) 
+	{
+		myIsDone = true;
+	}
+
+	return CU::eInputReturn::eKeepSecret;
 }
 
 void CSplashScreenState::FadeIn(const CU::Time& aDeltaTime)
