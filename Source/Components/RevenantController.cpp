@@ -337,6 +337,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myIsDead = true;
 		myState = eRevenantState::eDead;
 		myIsflying = false;
+		myChillAtJumpPointCountDown = 0.0f;
 		myFlightForce = 0.0f;
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)

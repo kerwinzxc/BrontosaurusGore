@@ -71,6 +71,11 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 	GetParent()->NotifyComponents(eComponentMessageType::eUpdatePinky, updateData);
 	if (myIsAlive == false)
 	{
+
+		GetParent()->GetLocalTransform().Lerp(myFutureMatrix, myRotationInterpolationSpeed * aDeltaTime);
+		GetParent()->GetLocalTransform().SetPosition(GetParent()->GetLocalTransform().GetPosition().Lerp(myFutureMatrix.GetPosition(), myPositionInterpolationSpeed * aDeltaTime));
+		GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = hellPosition;
@@ -103,7 +108,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		controllerPositionData.myVector3f = hellPosition;
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
 		//GetParent()->SetWorldPosition(hellPosition);
-		myFutureMatrix.SetPosition(hellPosition);
+		//myFutureMatrix.SetPosition(hellPosition);
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(addToCheckPointMessage);
