@@ -35,7 +35,7 @@ void CLoadState::Init()
 	//RENDERER.ClearRenderQueue();
 	CBackgroundLoadingManager &bLM = CBackgroundLoadingManager::GetInstance();
 
-	myLoadSprite = new CSpriteInstance("Sprites/Menu/Main/Help/default_ControllsOnly.dds");
+	myLoadSprite = new CSpriteInstance("Sprites/Menu/Main/Loading/default.dds");
 	myLoadSprite->SetPivot({ 0.5f, 0.5f });
 	myLoadSprite->SetPosition({ 0.5f, 0.5f });
 

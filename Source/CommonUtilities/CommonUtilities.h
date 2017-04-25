@@ -17,6 +17,7 @@
 
 #define FLOAT_IS_ZERO(a) abs((a)) <= 1e-10
 #define PI 3.14159265f
+#define TAU PI * 2.f
 #define POO 2
 
 #define E_MATH 2,71828

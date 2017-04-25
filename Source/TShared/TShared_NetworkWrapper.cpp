@@ -258,21 +258,26 @@ CNetworkMessage* TShared_NetworkWrapper::Recieve(char** senderIp, char** senderP
 		return nullptr;
 	}
 
+	char* data = nullptr;
 	const unsigned dataSize = bytes - sizeof(header);
-
-	char* data = new char[dataSize];
-	ZeroMemory(data, dataSize);
-
-	errno_t bodyError = memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
-	if (bodyError != 0)
+	if (dataSize > 0)
 	{
-		DL_MESSAGE_BOX("Failed to memcpy message body to buffer, error code: %s (%d)", (bodyError == EINVAL) ? "something was null" : (bodyError == ERANGE) ? "buffer too small" : "", bodyError);
-		return nullptr;
+		data = new char[dataSize];
+		ZeroMemory(data, dataSize);
+
+		errno_t bodyError = memcpy_s(data, dataSize, &buffer[sizeof(header)], dataSize);
+		if (bodyError != 0)
+		{
+			DL_MESSAGE_BOX("Failed to memcpy message body to buffer, error code: %s (%d)", (bodyError == EINVAL) ? "something was null" : (bodyError == ERANGE) ? "buffer too small" : "", bodyError);
+			return nullptr;
+		}
 	}
 
 	CNetworkMessage* newMessage = myMessageManager->CreateMessage<CNetworkMessage>(header);
-
-	newMessage->SetData(data, dataSize);
+	if (data)
+	{
+		newMessage->SetData(data, dataSize);
+	}
 	newMessage->SetExplicitHeader(header);
 
 	delete[] data;

@@ -185,7 +185,7 @@ namespace CU
 			Init(aGrowingArray.myCapacity);
 			mySize = aGrowingArray.mySize;
 
-			Copy::DoCopy(myArray, aGrowingArray.myArray, mySize);
+			Copy::DoCopy(myArray, const_cast<const ObjectType*>(aGrowingArray.myArray), mySize);
 		}
 
 		return self;

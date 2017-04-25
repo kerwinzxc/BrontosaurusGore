@@ -4,6 +4,7 @@
 #include <map>
 #include <Windows.h>
 #include <shellapi.h>
+#include <tlhelp32.h>
 
 static std::map<std::string, PROCESS_INFORMATION> locStartedProcesses;
 
@@ -29,6 +30,41 @@ namespace WindowsHelper
 	void GoogleIt(const std::wstring& aGoogleSearch)
 	{
 		GoogleIt(std::string(aGoogleSearch.begin(), aGoogleSearch.end()));
+	}
+
+	bool ProgramIsActive(const std::string& aExePath)
+	{
+		if (locStartedProcesses.find(aExePath) != locStartedProcesses.end())
+		{
+			return true;
+		}
+
+		return ProgramIsActive(std::wstring(aExePath.begin(), aExePath.end()));
+	}
+
+	bool ProgramIsActive(const std::wstring& aExePath)
+	{
+		bool exists = false;
+
+		PROCESSENTRY32 entry;
+		entry.dwSize = sizeof(PROCESSENTRY32);
+
+		HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+		if (Process32First(snapshot, &entry))
+		{
+			do
+			{
+				if (!wcsicmp(entry.szExeFile, aExePath.c_str()))
+				{
+					exists = true;
+					break;
+				}
+			} while (Process32Next(snapshot, &entry));
+		}
+
+		CloseHandle(snapshot);
+		return exists;
 	}
 
 	bool StartProgram(const std::string& aExePath)

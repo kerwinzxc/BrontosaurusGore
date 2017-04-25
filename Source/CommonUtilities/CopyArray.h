@@ -24,6 +24,14 @@ namespace CU
 		{
 			for (SizeType i = 0; i < aElementsToCopy; ++i)
 			{
+				aCopyToArray[i] = std::move(aCopyFromArray[i]);
+			}
+		}
+
+		static void DoCopy(ObjectType aCopyToArray[], const ObjectType aCopyFromArray[], const SizeType aElementsToCopy)
+		{
+			for (SizeType i = 0; i < aElementsToCopy; ++i)
+			{
 				aCopyToArray[i] = aCopyFromArray[i];
 			}
 		}
