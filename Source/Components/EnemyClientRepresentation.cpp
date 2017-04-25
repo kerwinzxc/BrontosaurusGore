@@ -50,19 +50,20 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 
 		DoDamageHighlight(aDeltaTime);
 		CheckIfOutOfBounds();
-	}
-	if(myShootChargeCountDown > 0.0f)
-	{
-		myShootChargeCountDown -= aDeltaTime;
-		if(myShootChargeCountDown <= 0.0f)
+
+		if (myShootChargeCountDown > 0.0f)
 		{
-			SComponentMessageData shotData;
-			shotData.myVector3f = myShootDirection;
-			GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, shotData);
-			if(myAmountOfCuedShots > 0)
+			myShootChargeCountDown -= aDeltaTime;
+			if (myShootChargeCountDown <= 0.0f)
 			{
-				myAmountOfCuedShots--;
-				myShootChargeCountDown = 1.1f;
+				SComponentMessageData shotData;
+				shotData.myVector3f = myShootDirection;
+				GetParent()->NotifyComponents(eComponentMessageType::eShootWithNetworking, shotData);
+				if (myAmountOfCuedShots > 0)
+				{
+					myAmountOfCuedShots--;
+					myShootChargeCountDown = 1.1f;
+				}
 			}
 		}
 	}

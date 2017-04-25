@@ -320,6 +320,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		break;
 	}
 	case eRevenantState::eDead:
+		DL_PRINT("Im dead X_X");
 		break;
 	default:
 		break;
@@ -340,6 +341,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myIsflying = false;
 		myChillAtJumpPointCountDown = 0.0f;
 		myFlightForce = 0.0f;
+		myIsAtJumpPoint = false;
 		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
