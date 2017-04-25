@@ -9,6 +9,7 @@ CSpriteInstance::CSpriteInstance(const char* aTexturePath)
 	: mySprite(nullptr)
 	, myRect(0.f, 0.f, 1.f, 1.f)
 	, myColor(1.f, 1.f, 1.f, 1.f)
+	, myRotation(0)
 {
 	mySprite = SPRMGR.CreateSprite(aTexturePath);
 	CU::Vector2f windowSize(WINDOW_SIZE);
@@ -24,6 +25,7 @@ CSpriteInstance::CSpriteInstance(const char* aTexturePath, const CU::Vector2f& a
 	, myRect(aRect)
 	, myColor(aColour)
 	, mySprite(nullptr)
+	, myRotation(0)
 {
 	mySprite = SPRMGR.CreateSprite(aTexturePath);
 
@@ -49,6 +51,7 @@ void CSpriteInstance::Render()
 	renderMessage->myPivot = myPivot;
 	renderMessage->myColor = myColor;
 	renderMessage->mySprite = mySprite;
+	renderMessage->myRotation = myRotation;
 
 	RENDERER.AddRenderMessage(renderMessage);
 }
@@ -60,6 +63,7 @@ void CSpriteInstance::RenderToGUI(const std::wstring& anElementName)
 	renderMessage->mySize = mySize;
 	renderMessage->myRect = myRect;
 	renderMessage->myPivot = myPivot;
+	renderMessage->myRotation = myRotation;
 	renderMessage->myColor = myColor;
 	renderMessage->mySprite = mySprite;
 
@@ -76,4 +80,9 @@ CU::Vector2f CSpriteInstance::GetTextureSize() const
 	}
 
 	return CU::Vector2f::Zero;
+}
+
+void CSpriteInstance::SetRotation(float aRotation)
+{
+	myRotation = aRotation;
 }
