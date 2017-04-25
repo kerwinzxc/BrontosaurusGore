@@ -10,6 +10,8 @@ public:
 	~CWindowsWindow();
 	void Update();
 	void Close();
+
+	inline bool IsFullscreen() const;
 	inline bool GetIsWindowOpen();
 	inline HWND GetHWND();
 	inline HINSTANCE GetHinstance();
@@ -23,11 +25,16 @@ private:
 	HWND myHWnd;
 	MSG myMsg;
 	bool isWindowOpen = true;
+	bool myIsFullscreen;
 };
 
 inline bool CWindowsWindow::GetIsWindowOpen()
 {
 	return isWindowOpen;
+}
+bool CWindowsWindow::IsFullscreen() const
+{
+	return myIsFullscreen;
 }
 
 inline HWND CWindowsWindow::GetHWND()

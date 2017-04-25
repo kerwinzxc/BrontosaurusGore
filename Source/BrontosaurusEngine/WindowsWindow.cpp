@@ -13,6 +13,7 @@
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
 CWindowsWindow::CWindowsWindow(const SInitWindowParams& aInitWindowParams)
+	: myIsFullscreen(aInitWindowParams.Fullscreen)
 {
 	InitInstance(aInitWindowParams);
 }
@@ -34,8 +35,6 @@ void CWindowsWindow::Close()
 {
 	isWindowOpen = false;
 }
-
-
 
 ATOM CWindowsWindow::MyRegisterClass(HINSTANCE hInstance, const wchar_t* windowName)
 {
@@ -140,24 +139,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		break;
 	case WM_KILLFOCUS:
-	{
-		/*PostMaster* pm = PostMaster::GetInstancePtr();
-		if (pm != nullptr)
-		{
-			pm->SendLetter(Message(eMessageType::eFocusChanged, FocusChange(false)));
-		}*/
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(false));
-	}
 		break;
 	case WM_SETFOCUS:
-	{
-	/*	PostMaster* pm = PostMaster::GetInstancePtr();
-		if (pm != nullptr)
+		if (CEngine::GetInstancePtr() && CEngine::GetInstancePtr()->GetFramework() && CEngine::GetInstancePtr()->GetWindow() && CEngine::GetInstancePtr()->GetWindow()->IsFullscreen())
 		{
-			pm->SendLetter(Message(eMessageType::eFocusChanged, FocusChange(true)));
-		}*/
+			CEngine::GetInstancePtr()->GetFramework()->SetFullscreen();
+		}
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(true));
-	}
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
