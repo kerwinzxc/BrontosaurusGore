@@ -1,3 +1,5 @@
+#include "oncePerFrame.fx"
+
 struct VertexInput
 {
 	float4 position : POSITION;
@@ -15,7 +17,8 @@ cbuffer VertexConstantBuffer : register(b1)
 	float2 position;
 	float2 size;
 	float2 pivot;
-	float2 TRASH;
+	float rotation;
+	float TRASH;
 	float4 rect;
 	float4 color;
 }
@@ -25,12 +28,29 @@ SamplerState globalSamplerState;
 
 PixelInput VS_Sprite(VertexInput input)
 {	
+	
+	const float2 resolution = windowSize;
+	const float ratio = resolution.y / resolution.x;
+
 	float2 outPosition = input.position.xy;
-
+	
 	outPosition.x -= pivot.x;
-	outPosition.y += pivot.y;	
+	outPosition.y += pivot.y;
 
-	outPosition *=  size;
+	outPosition.x /= ratio;
+	outPosition *= size;
+
+	const float shaderRotation = rotation;
+	const float sinT = sin(shaderRotation);
+	const float cosT = cos(shaderRotation);
+	const float2x2 rotMat = {cosT, -sinT,
+						sinT, cosT};
+
+	
+	outPosition = mul(outPosition, rotMat);
+	outPosition.x *= ratio;
+		
+	
 
 	outPosition.x = outPosition.x + position.x;
 	outPosition.y = outPosition.y + 1.f - position.y - size.y;
@@ -59,6 +79,8 @@ float4 PS_Sprite(PixelInput input) : SV_TARGET
     float4 output = albedo.Sample(globalSamplerState, input.uv);
     //output.w = 1.0f;
 	
+	
+
     return output * input.color;
 	
 	//return float4(1.f, 1.f, 0.f, 1.f);

@@ -36,7 +36,7 @@ public:
 	inline const CU::Vector2f& GetPivot() const;
 
 	CU::Vector2f GetTextureSize() const;
-
+	void SetRotation(float aRotation);
 
 private:
 	CU::Vector2f myPosition;
@@ -44,6 +44,7 @@ private:
 	CU::Vector2f myPivot;
 	CU::Vector4f myRect;
 	CU::Vector4f myColor;
+	float myRotation;
 
 	CSprite* mySprite;
 };
