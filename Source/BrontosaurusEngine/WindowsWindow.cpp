@@ -139,11 +139,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		break;
 	case WM_KILLFOCUS:
+		if (CEngine::GetInstancePtr() && CEngine::GetInstancePtr()->GetFramework() && CEngine::GetInstancePtr()->GetWindow() && CEngine::GetInstancePtr()->GetWindow()->IsFullscreen())
+		{
+			CEngine::GetInstancePtr()->GetFramework()->SetWindowed();
+		}
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(false));
 		break;
 	case WM_SETFOCUS:
 		if (CEngine::GetInstancePtr() && CEngine::GetInstancePtr()->GetFramework() && CEngine::GetInstancePtr()->GetWindow() && CEngine::GetInstancePtr()->GetWindow()->IsFullscreen())
 		{
+			CEngine::GetInstancePtr()->GetFramework()->SetWindowed();
 			CEngine::GetInstancePtr()->GetFramework()->SetFullscreen();
 		}
 		Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new FocusChange(true));

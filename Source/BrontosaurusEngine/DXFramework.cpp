@@ -239,6 +239,11 @@ void CDXFramework::SetFullscreen()
 	mySwapchain->SetFullscreenState(true, nullptr);
 }
 
+void CDXFramework::SetWindowed()
+{
+	mySwapchain->SetFullscreenState(false, nullptr);
+}
+
 void CDXFramework::DisableDepthStencil()
 {
 	myDeviceContext->OMSetRenderTargets(1, &myRenderTargetView, NULL);

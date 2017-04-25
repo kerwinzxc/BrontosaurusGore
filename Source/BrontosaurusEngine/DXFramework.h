@@ -25,6 +25,7 @@ public:
 	bool Initialize(const int aWidth, const int aHeight, const bool aIsFullScreen, const bool aUseVsync, HWND aHWND);
 
 	void SetFullscreen();
+	void SetWindowed();
 	void DisableDepthStencil();
 	void EnableDepthStencil();
 
