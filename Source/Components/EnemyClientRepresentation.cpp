@@ -76,7 +76,7 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		controllerPositionData.myVector3f = hellPosition;
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
-		GetParent()->SetWorldPosition(hellPosition);
+		//GetParent()->SetWorldPosition(hellPosition);
 	}
 }
 
@@ -102,7 +102,7 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = hellPosition;
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
-		GetParent()->SetWorldPosition(hellPosition);
+		//GetParent()->SetWorldPosition(hellPosition);
 		myFutureMatrix.SetPosition(hellPosition);
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 		CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());

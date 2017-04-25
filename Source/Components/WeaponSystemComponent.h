@@ -35,5 +35,6 @@ private:
 	unsigned short myActiveWeaponIndex;
 	bool myIsShooting;
 	bool myIsActive;
+	bool myIsChanginWeapon;
 };
 

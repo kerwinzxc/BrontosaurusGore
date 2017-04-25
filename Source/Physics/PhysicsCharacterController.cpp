@@ -10,7 +10,9 @@ namespace Physics
 {
 	CPhysicsCharacterController::CPhysicsCharacterController(physx::PxController * aPxController, const SCharacterControllerDesc & aData)
 	{
-		
+		myCollisionFlags = 0;
+		myIsGrounded = true;
+		myParentId = 0;
 		myData = aData;
 		myController = aPxController;
 		myController->getActor()->userData = this;
@@ -19,6 +21,10 @@ namespace Physics
 	CPhysicsCharacterController::~CPhysicsCharacterController()
 	{
 		//myController->release();
+		if (myController && myController->getActor())
+		{
+			myController->getActor()->userData = nullptr;
+		}
 		myController = nullptr;
 	}
 
