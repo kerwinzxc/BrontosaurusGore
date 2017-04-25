@@ -35,6 +35,9 @@ void CLoadState::Init()
 	//RENDERER.ClearRenderQueue();
 	CBackgroundLoadingManager &bLM = CBackgroundLoadingManager::GetInstance();
 
+	myLoadSprite = new CSpriteInstance("Sprites/Menu/Main/Help/default_ControllsOnly.dds");
+	myLoadSprite->SetPivot({ 0.5f, 0.5f });
+	myLoadSprite->SetPosition({ 0.5f, 0.5f });
 
 	if (bLM.GetIfActive() == true)
 	{
@@ -54,7 +57,6 @@ void CLoadState::Init()
 		myPlayState = bLM.GetPlaystate();
 	}
 
-	myLoadingAnimation.Init(new CSpriteInstance("Sprites/LoadingScreen/Loading.dds", { 512.f / WINDOW_SIZE.x, 128.f / WINDOW_SIZE.y }));
 	Audio::CAudioInterface::GetInstance()->PostEvent("Stop_Music");
 	std::string BGMusic;
 	BGMusic = "Music_Level" + std::to_string(myLevelIndex + 1);
@@ -66,7 +68,7 @@ void CLoadState::Init()
 eStateStatus CLoadState::Update(const CU::Time& aDeltaTime)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().GetThreadOffice().HandleMessages();
-	myLoadingAnimation.Update(aDeltaTime);
+	//myLoadingAnimation.Update(aDeltaTime);
 
 	if (myPlayState->IsLoaded() == true)
 	{
@@ -102,9 +104,8 @@ void CLoadState::Render()
 
 
 	RENDERER.AddRenderMessage(new SChangeStatesMessage(msg));
-	myLoadingAnimation.Render();
-
-
+	//myLoadingAnimation.Render();
+	myLoadSprite->Render();
 }
 
 void CLoadState::OnEnter(const bool /*aLetThroughRender*/)

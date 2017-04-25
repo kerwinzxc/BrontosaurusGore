@@ -5,6 +5,7 @@
 
 class StateStack;
 class CPlayState;
+class CSpriteInstance;
 
 class CLoadState :public State, Postmaster::ISubscriber
 {
@@ -24,7 +25,8 @@ public:
 private:
 
 	CPlayState* myPlayState;
-	CLoadingAnimation myLoadingAnimation;
+	//CLoadingAnimation myLoadingAnimation;
+	CSpriteInstance* myLoadSprite;
 
 	const int myLevelIndex;
 	bool myGotOkFromServer;
