@@ -234,6 +234,11 @@ bool CDXFramework::Initialize(const int aWidth, const int aHeight, const bool aI
 	return true;
 }
 
+void CDXFramework::SetFullscreen()
+{
+	mySwapchain->SetFullscreenState(true, nullptr);
+}
+
 void CDXFramework::DisableDepthStencil()
 {
 	myDeviceContext->OMSetRenderTargets(1, &myRenderTargetView, NULL);

@@ -27,7 +27,7 @@ public:
 	void AddPicture(const char* aPath);
 	void UserWantsToContinue();
 
-	virtual CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
+	CU::eInputReturn RecieveInput(const CU::SInputMessage& aInputMessage) override;
 
 private:
 	void FadeIn(const CU::Time& aDeltaTime);

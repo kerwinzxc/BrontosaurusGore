@@ -39,6 +39,11 @@ CEngine* CEngine::GetInstance()
 	return myInstance;
 }
 
+CEngine* CEngine::GetInstancePtr()
+{
+	return myInstance;
+}
+
 void CEngine::DestroyInstance()
 {
 	SAFE_DELETE(myInstance);

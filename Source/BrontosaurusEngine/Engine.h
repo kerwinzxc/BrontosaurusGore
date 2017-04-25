@@ -76,6 +76,7 @@ class CEngine
 {
 public:
 	static CEngine* GetInstance();
+	static CEngine* GetInstancePtr();
 	static void DestroyInstance();
 	void Init(SInitEngineParams& aInitEngineParams);
 	void Start();

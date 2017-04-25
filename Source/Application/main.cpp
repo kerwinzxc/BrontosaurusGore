@@ -60,7 +60,7 @@ void Init(int argc, char* argv[])
 		engineParams.myWindowParams.Height = 1080;
 		engineParams.myWindowParams.Name = L"HighDoom";
 		engineParams.myWindowParams.Title = L"HighDoom";
-		engineParams.myWindowParams.Fullscreen = false;
+		engineParams.myWindowParams.Fullscreen = true;
 		engineParams.myThreadRender = true;
 		engineParams.myUseVsync = false;
 
