@@ -210,7 +210,7 @@ bool CGameServer::Update(CU::Time aDeltaTime)
 
 	CPollingStation* instance = CPollingStation::GetInstance();
 	
-	if (myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
+	if (myIsLoaded == true && myPhysicsScene->Simulate(aDeltaTime + (updateFrequecy / 1000.0f)) == true)
 	{
 		myColliderComponentManager->Update();
 	}

@@ -462,7 +462,7 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 		{
 			myPressedEscDuringCutscene = true;
 		}
-		else
+		else if (!myIsCutscene)
 		{
 			Pause();
 		}
