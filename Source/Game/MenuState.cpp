@@ -73,7 +73,7 @@ eStateStatus CMenuState::Update(const CU::Time& aDeltaTime)
 	}
 	else
 	{
-		return eStateStatus::eKeep;
+		return myStatus;
 	}
 }
 

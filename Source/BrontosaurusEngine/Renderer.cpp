@@ -1130,7 +1130,7 @@ bool CRenderer::HandleRenderMessage(SRenderMessage * aRenderMesage, int & aDrawC
 	{
 		myGUIRenderer.GetCurrentPackage().Activate();
 		SRenderSpriteMessage* msg = static_cast<SRenderSpriteMessage*>(aRenderMesage);
-		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRect, msg->myColor);
+		msg->mySprite->Render(msg->myPosition, msg->mySize, msg->myPivot, msg->myRotation, msg->myRect, msg->myColor);
 		++aDrawCallCount;
 
 		if (mySettings.Motionblur == true) renderTo->Activate(myMotionBlurData.velocityPackage);

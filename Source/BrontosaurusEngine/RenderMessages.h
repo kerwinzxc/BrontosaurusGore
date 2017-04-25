@@ -308,6 +308,7 @@ struct SRenderSpriteMessage : SRenderMessage
 	CU::Vector4f myRect;
 	CU::Vector4f myColor;
 	CSprite* mySprite;
+	float myRotation;
 };
 
 struct SRenderSkyboxMessage : SRenderMessage
