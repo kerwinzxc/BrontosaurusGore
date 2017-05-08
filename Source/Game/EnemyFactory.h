@@ -24,7 +24,7 @@ public:
 	CEnemy* CreateImp(const SImpBlueprint* aData,const CU::Vector3f& aPosition);
 	CEnemy* CreateRevenant(const SRevenantBlueprint* aData);
 	CEnemy* CreatePinky(const SPinkyBlueprint* aData); // skapar ett lill finger
-	CEnemy* CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition);
+	CEnemy* CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition, bool aShouldReset);
 	
 
 private:

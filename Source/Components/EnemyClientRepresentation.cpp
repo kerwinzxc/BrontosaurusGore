@@ -15,6 +15,7 @@ CEnemyClientRepresentation::CEnemyClientRepresentation(unsigned int anId, const 
 	myShootChargeCountDown = 0.0f;
 	myAmountOfCuedShots = 0;
 	myInvisibleAfterDeathCountdown = 0.0f;
+	myShouldReset = true;
 }
 
 
@@ -130,11 +131,24 @@ void CEnemyClientRepresentation::Receive(const eComponentMessageType aMessageTyp
 	}
 	case eComponentMessageType::eCheckPointReset:
 	{
-		SComponentMessageData controllerPositionData;
-		controllerPositionData.myVector3f = GetParent()->GetWorldPosition();
-		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
-		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
-		myIsAlive = true;
+		if(myShouldReset == true)
+		{
+			SComponentMessageData controllerPositionData;
+			controllerPositionData.myVector3f = GetParent()->GetWorldPosition();
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+			myIsAlive = true;	
+		}
+		else
+		{
+			CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
+			SComponentMessageData controllerPositionData;
+			controllerPositionData.myVector3f = hellPosition;
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
+			GetParent()->SetWorldPosition(hellPosition);
+			myFutureMatrix.SetPosition(hellPosition);
+			GetParent()->NotifyOnlyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+		}
 	}
 	case eComponentMessageType::eChargeShootWithNetworking :
 	{
@@ -215,4 +229,9 @@ bool CEnemyClientRepresentation::Answer(const eComponentQuestionType aQuestionTy
 	default:
 		break;
 	}
+}
+
+void CEnemyClientRepresentation::DeactivateReset()
+{
+	myShouldReset = false;
 }

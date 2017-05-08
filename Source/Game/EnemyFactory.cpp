@@ -206,7 +206,7 @@ CEnemy * CEnemyFactory::CreateEnemy(const eEnemyTypes & aType, const CU::Vector3
 	return controller;
 }
 
-CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition)
+CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyTypes aType, const CU::Vector3f& aPosition, bool aShouldReset)
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
 	repesention->GetLocalTransform().SetPosition(aPosition);
@@ -282,5 +282,9 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 	repesention->NotifyComponents(eComponentMessageType::eObjectDone, SComponentMessageData());
 	repesention->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 	enemy->SetFutureMatrix(repesention->GetLocalTransform());
+	if(aShouldReset == false)
+	{
+		enemy->DeactivateReset();
+	}
 	return enemy;
 }
