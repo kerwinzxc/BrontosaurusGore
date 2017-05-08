@@ -66,7 +66,6 @@ namespace RealLauncher
             //myBrontoSaurusThread.Start();
             //timer1.Start();
             //running = true;
-
             int wh = 0;
             int ww = 0;
             bool fullscreen = FullScreen.Checked;
@@ -113,6 +112,16 @@ namespace RealLauncher
         private void PlayButtonDefault_MouseLeave(object sender, EventArgs e)
         {
             PlayButtonClick.Visible = false;
+        }
+
+        private void PlayButtonClick_MouseDown(object sender, MouseEventArgs e)
+        {
+            PlayButtonClick.BackgroundImage = ((System.Drawing.Image)(Properties.Resources.play_active));
+        }
+
+        private void PlayButtonClick_MouseUp(object sender, MouseEventArgs e)
+        {
+            PlayButtonClick.BackgroundImage = ((System.Drawing.Image)(Properties.Resources.play_hover));
         }
 
         //private void timer2_Tick(object sender, EventArgs e)

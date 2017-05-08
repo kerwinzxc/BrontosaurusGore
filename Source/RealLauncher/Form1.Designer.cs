@@ -110,7 +110,7 @@
             // PlayButtonClick
             // 
             this.PlayButtonClick.BackColor = System.Drawing.Color.Transparent;
-            this.PlayButtonClick.BackgroundImage = global::RealLauncher.Properties.Resources.play_active;
+            this.PlayButtonClick.BackgroundImage = global::RealLauncher.Properties.Resources.play_hover;
             this.PlayButtonClick.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.PlayButtonClick.Location = new System.Drawing.Point(0, -1);
             this.PlayButtonClick.Name = "PlayButtonClick";
@@ -118,7 +118,9 @@
             this.PlayButtonClick.TabIndex = 6;
             this.PlayButtonClick.TabStop = false;
             this.PlayButtonClick.Click += new System.EventHandler(this.button1_Click);
+            this.PlayButtonClick.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PlayButtonClick_MouseDown);
             this.PlayButtonClick.MouseLeave += new System.EventHandler(this.PlayButtonDefault_MouseLeave);
+            this.PlayButtonClick.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PlayButtonClick_MouseUp);
             // 
             // Form1
             // 
