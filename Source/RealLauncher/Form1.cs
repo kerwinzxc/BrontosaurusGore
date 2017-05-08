@@ -23,7 +23,7 @@ namespace RealLauncher
             InitializeComponent();
             myScreen.FillResulotions();
             //timer2.Start();
-
+            PlayButtonClick.Visible = false;
             for (int i = 0; i < myScreen.myResolutions.Count; i++)
             {
                 if (!comboBox1.Items.Contains(myScreen.myResolutions[i].width.ToString() + "X" + myScreen.myResolutions[i].height.ToString()))
@@ -85,7 +85,7 @@ namespace RealLauncher
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.CreateNoWindow = false;
             startinfo.UseShellExecute = false;
-            startinfo.FileName = "./BrontosaurusGore_Retail.exe";
+            startinfo.FileName = "./HighDoom.exe";
             startinfo.Arguments = "-height " + wh + " -width " + ww + " -fullscreen " + fullscreen;
             Process.Start(startinfo);
 
@@ -100,9 +100,45 @@ namespace RealLauncher
             //}
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
+        private void PlayButtonDefault_MouseEnter(object sender, EventArgs e)
         {
-            Refresh();
+            if(PlayButtonClick.Visible == false)
+            {
+                PlayButtonClick.Visible = true;
+                PlayButtonClick.Refresh();
+            }
+            
         }
+
+        private void PlayButtonDefault_MouseLeave(object sender, EventArgs e)
+        {
+            PlayButtonClick.Visible = false;
+        }
+
+        //private void timer2_Tick(object sender, EventArgs e)
+        //{
+        //    button1.Refresh();
+        //}
+
+        //private void button1_MouseDown(object sender, MouseEventArgs e)
+        //{
+        //    button1.BackgroundImage = ((System.Drawing.Image)(Properties.Resources.play_active));
+        //}
+
+        //private void button1_MouseUp(object sender, MouseEventArgs e)
+        //{
+        //    button1.BackgroundImage = ((System.Drawing.Image)(Properties.Resources.play_default));
+        //}
+
+        //private void button1_Paint(object sender, PaintEventArgs e)
+        //{
+
+        //    Bitmap bmp = Properties.Resources.Untitled_1;
+        //    bmp.MakeTransparent(Color.White);
+        //    int x = (button1.Width - bmp.Width) / 2;
+        //    int y = (button1.Height - bmp.Height) / 2;
+        //    e.Graphics.DrawImage(bmp, x, y);
+        //}
+
     }
 }
