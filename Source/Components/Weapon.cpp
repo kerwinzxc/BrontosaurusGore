@@ -157,6 +157,7 @@ void CWeapon::Shoot(const CU::Vector3f& aDirection, const bool aHaveAmmo)
 				rotatedDirection.Normalize();*/
 				if(myWeaponData->name == "Shotgun")
 				{
+					PlaySound(SoundEvent::Fire, direction);
 					continue;
 				}
 				if (CProjectileFactory::GetInstance() != nullptr)
