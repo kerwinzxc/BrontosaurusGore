@@ -156,7 +156,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		{
 			Attack();
 
-			ChangeClientAnimation(eComponentMessageType::eRevenantThrowAttack);
+			ChangeClientAnimation(eComponentMessageType::eRevenantMelee);
 			myUsedAttacksSinceLastStateChange++;
 			myState = eRevenantState::eChargingRangedAttack;
 			if (myUsedAttacksSinceLastStateChange >= myAttacksUntilChangingStates)
@@ -189,7 +189,7 @@ void CRevenantController::Update(const float aDeltaTime)
 		LookAtPlayer();
 		myFlightForce -= gravityAcceleration * aDeltaTime;
 
-		ChangeClientAnimation(eComponentMessageType::eRevenantAttackAir);
+		ChangeClientAnimation(eComponentMessageType::eRevenantMelee);
 		if(myFlightForce <= 0.0f)
 		{
 
@@ -300,6 +300,7 @@ void CRevenantController::Update(const float aDeltaTime)
 	}
 	case eRevenantState::eChargingRangedAttack:
 	{
+		ChangeClientAnimation(eComponentMessageType::eRevenantMelee);
 		LookAtPlayer();
 		myElapsedChargeRangedAttackTime += aDeltaTime;
 		if (myElapsedChargeRangedAttackTime >= myChargeRangedAttackDuration)
