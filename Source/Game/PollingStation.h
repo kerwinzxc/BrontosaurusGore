@@ -7,6 +7,7 @@ class CPollingStation
 public:
 	CPollingStation();
 	~CPollingStation();
+	static bool CheckInstance();
 
 	static CPollingStation* GetInstance();
 

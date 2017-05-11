@@ -53,6 +53,7 @@ private:
 	bool SetName(std::string aTextInput);
 	bool SetIp(std::string aTextInput);
 	bool Conect(std::string notusese);
+	bool SwapLevel(std::string levelndex);
 
 	void GetIPAddress();
 	CU::GrowingArray<STextInput> myTextInputs;

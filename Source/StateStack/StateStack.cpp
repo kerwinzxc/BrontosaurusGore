@@ -96,7 +96,7 @@ eMessageReturn StateStack::DoEvent(const CChangeLevel& aChangeLevelMessage)
 {
 	SwapState(aChangeLevelMessage.CreateLoadState(*this));
 	
-	return eMessageReturn::eStop;
+	return eMessageReturn::eContinue;
 }
 
 eMessageReturn StateStack::DoEvent(const CQuitGame& aQuitGameMessage)
@@ -190,7 +190,8 @@ void StateStack::Pop()
 {
 	myStates.GetLast()->OnExit(false);
 	bool letThroughRender = myStates.GetLast()->GetLetThroughRender();
-	delete myStates.Pop();
+	State* stateToBePopped = myStates.Pop();
+	delete stateToBePopped;
 
 	if (myStates.Size() > 0)
 	{

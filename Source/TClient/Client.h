@@ -39,7 +39,7 @@ public:
 	eMessageReturn DoEvent(const CPlayerPositionMessage& aMessage)override;
 	eMessageReturn DoEvent(const COtherPlayerSpawned& aMassage)override;
 	eMessageReturn DoEvent(const CChangeLevel& aChangeLevelMessage) override;
-
+	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage)override;
 
 	bool IsRunning();
 private:

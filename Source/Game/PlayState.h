@@ -122,6 +122,8 @@ private:
 	CCheckPointSystem* myCheckPointSystem;
 	class CCameraComponent* myCameraComponent;
 	bool myIsInfocus;
+	int myWindowToSwapTo;
+	int myLevelToSwapTo;
 	friend struct SEncapsulationBreaker;
 
 	CLutComponent* myPlayerLut;

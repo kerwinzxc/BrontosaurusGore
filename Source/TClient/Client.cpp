@@ -273,6 +273,7 @@ void CClient::Update()
 			break;
 			case ePackageType::eLoadLevel:
 			{
+				
 				myNetworkRecieverComponents.clear();
 				CNetworkMessage_LoadLevel *loadLevelMessage = currentMessage->CastTo<CNetworkMessage_LoadLevel>();
 				myCanUpdateEnemytransfromation = false;
@@ -658,6 +659,13 @@ eMessageReturn CClient::DoEvent(const COtherPlayerSpawned& aMassage)
 }
 
 eMessageReturn CClient::DoEvent(const CChangeLevel& aChangeLevelMessage)
+{
+	myCanUpdateEnemytransfromation = false;
+	myNetworkRecieverComponents.clear();
+	return eMessageReturn::eContinue;
+}
+
+eMessageReturn CClient::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
 {
 	myCanUpdateEnemytransfromation = false;
 	myNetworkRecieverComponents.clear();

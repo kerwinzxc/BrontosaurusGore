@@ -23,6 +23,7 @@
 #include "ThreadedPostmaster/SendNetowrkMessageMessage.h"
 #include "PostMaster/KeyCharPressed.h"
 #include "ThreadedPostmaster/LoadLevelMessage.h"
+#include "PostMaster/ChangeLevel.h"
 
 char CMenuState::ourMenuesToPop = 0;
 
@@ -42,6 +43,7 @@ CMenuState::CMenuState(StateStack& aStateStack, std::string aFile) : State(aStat
 	myManager.AddAction("SetName", [this](std::string string)-> bool { return SetName(string); });
 	myManager.AddAction("Conect", [this](std::string string)-> bool { return Conect(string); });
 	myManager.AddAction("SetIp", [this](std::string string)-> bool { return SetIp(string); });
+	myManager.AddAction("SwapLevel", [this](std::string string)-> bool { return SwapLevel(string); });
 
 	MenuLoad(aFile);
 }
@@ -199,9 +201,11 @@ eMessageReturn CMenuState::DoEvent(const CConectedMessage& aCharPressed)
 
 eMessageReturn CMenuState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
 {
-	myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	if (ourMenuesToPop == 0)
+	{
+		myStateStack.PushState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	}
 	return eMessageReturn::eContinue;
-
 }
 
 eAlignment CMenuState::LoadAlignment(const CU::CJsonValue& aJsonValue)
@@ -428,6 +432,15 @@ bool CMenuState::SetIp(std::string aTextInput)
 bool CMenuState::Conect(std::string aTextInput)
 {
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CConectMessage(myName, myIp));
+	return true;
+}
+
+bool CMenuState::SwapLevel(std::string levelndex)
+{
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CLoadLevelMessage(std::stoi(levelndex)));
+	CNetworkMessage_LoadLevel* netowrkMessageMessage = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_LoadLevel>("__All_But_Me");
+	netowrkMessageMessage->myLevelIndex = std::stoi(levelndex);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CSendNetworkMessageMessage(netowrkMessageMessage));
 	return true;
 }
 

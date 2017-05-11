@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "NetworkPlayerReciverComponent.h"
 #include "../CommonUtilities/JsonValue.h"
+#include "PollingStation.h"
 
 CNetworkPlayerReciverComponent::CNetworkPlayerReciverComponent(): myPlayerId(0)
 {
@@ -30,6 +31,11 @@ void CNetworkPlayerReciverComponent::Receive(const eComponentMessageType aMessag
 
 void CNetworkPlayerReciverComponent::Update(const CU::Time aDeltaTime)
 {
+	if (CPollingStation::CheckInstance() == false)
+	{
+		return;
+	}
+
 	GetParent()->GetLocalTransform().LerpPosition(myInterpolationPosition, myInterpolationSpeed*aDeltaTime.GetSeconds());
 	GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 }

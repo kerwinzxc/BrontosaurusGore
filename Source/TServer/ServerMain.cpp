@@ -494,7 +494,7 @@ bool CServerMain::Update()
 					myGameServer->ReInit();
 					myServerState = eServerState::eWaitingForClients;
 				}
-				if (currentMessage->GetHeader().mySenderID == ID_FREE && myServerState == eServerState::eWaitingForClients)
+				if (myServerState == eServerState::eWaitingForClients)
 				{
 					for (auto& client : myClients)
 					{

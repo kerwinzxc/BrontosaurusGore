@@ -20,6 +20,11 @@ CPollingStation::~CPollingStation()
 	ourInstance = nullptr;
 }
 
+bool CPollingStation::CheckInstance()
+{
+	return ourInstance != nullptr;
+}
+
 CPollingStation* CPollingStation::GetInstance()
 {
 	return ourInstance;

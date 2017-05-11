@@ -104,23 +104,24 @@
 
 CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 	: State(aStateStack, eInputMessengerType::ePlayState, 1)
-	, myLevelIndex(aLevelIndex)
 	, myGameObjectManager(nullptr)
 	, myScene(nullptr)
 	, myModelComponentManager(nullptr)
-	, myMovementComponent(nullptr)
-	, myCameraComponent(nullptr)
-	, myIsInfocus(false)
 	, myAmmoComponentManager(nullptr)
-	, myWeaponFactory(nullptr)
 	, myWeaponSystemManager(nullptr)
+	, myWeaponFactory(nullptr)
 	, myProjectileComponentManager(nullptr)
 	, myProjectileFactory(nullptr)
 	, myInputComponentManager(nullptr)
 	, myMovementComponentManager(nullptr)
 	, myScriptComponentManager(nullptr)
-	, myExplosionComponentManager(nullptr)
 	, myExplosionFactory(nullptr)
+	, myExplosionComponentManager(nullptr)
+	, myMovementComponent(nullptr)
+	, myCameraComponent(nullptr)
+	, myIsInfocus(false)
+	, myLevelToSwapTo(-1)
+	, myLevelIndex(aLevelIndex)
 	, myIsLoaded(false)
 	, myIsCutscene(false)
 	, myPressedAnyKey(false)
@@ -138,7 +139,7 @@ CPlayState::CPlayState(StateStack& aStateStack, const int aLevelIndex)
 CPlayState::~CPlayState()
 {
 	CParticleEmitterComponentManager::Destroy();
-
+	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
 
 	SAFE_DELETE(myScene);
 
@@ -317,6 +318,9 @@ void CPlayState::Load()
 
 void CPlayState::Init()
 {
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
+	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
+
 	myCheckPointSystem = new CCheckPointSystem();
 	myGameObjectManager->SendObjectsDoneMessage();
 	myExplosionFactory->Init(myGameObjectManager, myModelComponentManager, myColliderComponentManager);
@@ -325,6 +329,11 @@ void CPlayState::Init()
 
 eStateStatus CPlayState::Update(const CU::Time& aDeltaTime)
 {
+	if (myLevelToSwapTo > -1)
+	{
+		myStateStack.SwapState(new CLoadState(myStateStack, myLevelToSwapTo));
+	}
+
 	myMovementComponentManager->Update(aDeltaTime);
 	myEnemyComponentManager->Update(aDeltaTime.GetSeconds());
 	myWeaponSystemManager->Update(aDeltaTime);
@@ -429,14 +438,13 @@ void CPlayState::Render()
 void CPlayState::OnEnter(const bool /*aLetThroughRender*/)
 {
 	myIsInfocus = true;
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eChangeLevel);
-	Postmaster::Threaded::CPostmaster::GetInstance().Subscribe(this, eMessageType::eNetworkMessage);
+
 }
 
 void CPlayState::OnExit(const bool /*aLetThroughRender*/)
 {
 	myIsInfocus = false;
-	Postmaster::Threaded::CPostmaster::GetInstance().Unsubscribe(this);
+
 	RENDERER.ClearGui();
 }
 
@@ -472,7 +480,7 @@ CU::eInputReturn CPlayState::RecieveInput(const CU::SInputMessage& aInputMessage
 		CU::CInputMessenger::RecieveInput(aInputMessage);
 	}
 
-	return CU::eInputReturn::eKeepSecret;
+	return	 CU::eInputReturn::eKeepSecret;
 }
 
 CGameObjectManager* CPlayState::GetGameObjectManager()
@@ -482,7 +490,7 @@ CGameObjectManager* CPlayState::GetGameObjectManager()
 
 eMessageReturn CPlayState::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
 {
-	myStateStack.SwapState(new CLoadState(myStateStack, aLoadLevelMessage.myLevelIndex));
+	myLevelToSwapTo = aLoadLevelMessage.myLevelIndex;
 	return eMessageReturn::eContinue;
 }
 
