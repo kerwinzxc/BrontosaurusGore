@@ -29,6 +29,7 @@ private:
 private:
 
 	bool CheckIfAlreadyHaveWeapon(const char* aWeaponName);
+	CU::Vector3f myShouldShootThisDirectionForCosmeticShotNextFrame;
 	CU::GrowingArray<CWeapon*> myWeapons;
 	CU::GrowingArray<SAmmoData*> myTemporaryAmmoDataList;
 	CWeaponFactory* WeaponFactoryPointer;
@@ -36,5 +37,6 @@ private:
 	bool myIsShooting;
 	bool myIsActive;
 	bool myIsChanginWeapon;
+	bool myShouldShootACosmeticShotNextFrame;
 };
 

@@ -81,7 +81,10 @@ void CEnemyClientRepresentation::Update(float aDeltaTime)
 		CU::Vector3f hellPosition(-9999.0f, -99999.0f, -99999.0f);
 		SComponentMessageData controllerPositionData;
 		controllerPositionData.myVector3f = hellPosition;
-		GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+		//GetParent()->NotifyOnlyComponents(eComponentMessageType::eActivate, SComponentMessageData());
+		SComponentMessageData coolIcanseedeath;
+		coolIcanseedeath.myBool = true;
+		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetVisibility, coolIcanseedeath);
 		GetParent()->NotifyOnlyComponents(eComponentMessageType::eSetControllerPosition, controllerPositionData);
 		//GetParent()->SetWorldPosition(hellPosition);
 

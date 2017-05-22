@@ -27,6 +27,7 @@ CWeaponSystemComponent::CWeaponSystemComponent(CWeaponFactory& aWeaponFactoryTha
 
 	myIsActive = true;
 	myIsChanginWeapon = false;
+	myShouldShootACosmeticShotNextFrame = false;
 }
 
 
@@ -109,7 +110,9 @@ void CWeaponSystemComponent::Receive(const eComponentMessageType aMessageType, c
 	}
 	case eComponentMessageType::eShootWithNetworking:
 	{
-		myWeapons[myActiveWeaponIndex]->CosmeticShoot(aMessageData.myVector3f);
+		myShouldShootACosmeticShotNextFrame = true;
+		myShouldShootThisDirectionForCosmeticShotNextFrame = aMessageData.myVector3f;
+		//myWeapons[myActiveWeaponIndex]->CosmeticShoot(aMessageData.myVector3f);
 		break;
 	}
 	case eComponentMessageType::eAddWeaponWithoutChangingToIt:
@@ -272,6 +275,12 @@ bool CWeaponSystemComponent::WeaponIndexValid() const
 
 void CWeaponSystemComponent::Update(float aDelta)
 {
+	if(myShouldShootACosmeticShotNextFrame == true)
+	{
+		myShouldShootACosmeticShotNextFrame = false;
+		myWeapons[myActiveWeaponIndex]->CosmeticShoot(myShouldShootThisDirectionForCosmeticShotNextFrame);
+	}
+
 	if (myIsShooting == true)
 	{
 		if(myIsActive == true)

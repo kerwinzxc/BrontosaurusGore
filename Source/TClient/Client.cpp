@@ -248,7 +248,7 @@ void CClient::Update()
 					std::string errorMessage = playerControls.Parse("Json/Player/Controls.json");
 
 					myNetworkRecieverComponents.at(ID)->GetParent()->GetLocalTransform().GetPosition().InterPolateTowards(playerPosition->GetTransformation().GetPosition(), playerControls["MaxSpeed"].GetFloat());*/
-					myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+					//myNetworkRecieverComponents.at(ID)->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 				}
 			}
 			break;
@@ -267,7 +267,7 @@ void CClient::Update()
 				//CU::Vector3f temp = comp->GetParent()->GetWorldPosition();
 				comp->GetParent()->SetWorldPosition(positionMessage->GetPosition());
 				//CU::Vector3f temp2 = comp->GetParent()->GetWorldPosition();
-				comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				//comp->GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 
 			}
 			break;
@@ -457,7 +457,7 @@ void CClient::Update()
 				CNetworkMessage_EnemyPosition* message = currentMessage->CastTo<CNetworkMessage_EnemyPosition>();
 				CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 				target.GetParent()->SetWorldPosition(message->GetPosition()); // doesn't get sent anymore :/
-				target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+				//target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 			}
 			break;
 			case ePackageType::eEnemyTransformaion:
@@ -467,7 +467,7 @@ void CClient::Update()
 					CNetworkMessage_EnemyTransformation* message = currentMessage->CastTo<CNetworkMessage_EnemyTransformation>();
 					CEnemyClientRepresentation& target = CEnemyClientRepresentationManager::GetInstance().GetRepresentation(message->GetId());
 					target.SetFutureMatrix(message->GetTransformation());
-					target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
+					//target.GetParent()->NotifyComponents(eComponentMessageType::eMoving, SComponentMessageData());
 				}
 			}
 			break;

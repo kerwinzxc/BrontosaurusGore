@@ -162,7 +162,7 @@ void CPinkyController::Receive(const eComponentMessageType aMessageType, const S
 		myIsDead = true;
 		myState = ePinkyState::eDead;
 		myIsCharging = false;
-		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());

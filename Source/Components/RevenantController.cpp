@@ -343,7 +343,7 @@ void CRevenantController::Receive(const eComponentMessageType aMessageType, cons
 		myChillAtJumpPointCountDown = 0.0f;
 		myFlightForce = 0.0f;
 		myIsAtJumpPoint = false;
-		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		if (myShouldNotReset == false)
 		{
 			CAddToCheckPointResetList* addToCheckPointMessage = new CAddToCheckPointResetList(GetParent());

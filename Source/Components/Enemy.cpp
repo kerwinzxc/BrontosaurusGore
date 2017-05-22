@@ -194,7 +194,7 @@ void CEnemy::Receive(const eComponentMessageType aMessageType, const SComponentM
 	case eComponentMessageType::eDied:
 	{
 		myIsDead = true;
-		GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
+		//GetParent()->NotifyComponents(eComponentMessageType::eDeactivate, SComponentMessageData());
 		
 		ChangeClientAnimation(eComponentMessageType::eDied);
 		SetHighlight(CU::Vector4f(0, 0, 0, 0), 0.f);
