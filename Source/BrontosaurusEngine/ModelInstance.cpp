@@ -30,11 +30,6 @@ CModelInstance::CModelInstance(const std::string& aModelPath)
 	myAnimationLooping = true;
 	myIgnoreDepth = false;
 
-	if (aModelPath.find("lasma") != std::string::npos)
-	{
-		int br = 0;
-	}
-
 	CModelManager* modelManager = MODELMGR;
 	myModel = modelManager->LoadModel(aModelPath);
 	CModel* model = modelManager->GetModel(myModel);

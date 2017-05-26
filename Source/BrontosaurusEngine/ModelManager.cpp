@@ -58,7 +58,7 @@ const CModelManager::ModelId CModelManager::LoadModel(const std::string& aModelP
 		{
 			myModelList.Pop();
 			myModels.erase(aModelPath);
-			DL_PRINT_WARNING("Failed to load model %s", aModelPath.c_str());
+			//DL_PRINT_WARNING("Failed to load model %s", aModelPath.c_str());
 			return NULL_MODEL;
 		}
 

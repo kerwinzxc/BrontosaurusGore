@@ -291,7 +291,6 @@ void CPlayState::Load()
 	CreatePlayer(playerCamera.GetCamera()); // Hard codes Player!;
 
 
-
 	myScene->SetSkybox("default_cubemap.dds");
 	myScene->SetCubemap("purpleCubemap.dds");
 
@@ -550,6 +549,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	modelObject->SetWorldTransformation(transformation);
 
 	CModelComponent* model = myModelComponentManager->CreateComponent("Models/Animations/M_Player_01.fbx");
+	CModelComponent* weaponModel = myModelComponentManager->CreateComponent("Models/Animations/M_ShotgunPlayerAnim_01.fbx");
 	CNetworkPlayerReciverComponent* playerReciver = new CNetworkPlayerReciverComponent;
 	playerReciver->SetPlayerID(aPlayerID);
 	CComponentManager::GetInstance().RegisterComponent(playerReciver);
@@ -592,6 +592,7 @@ void CPlayState::SpawnOtherPlayer(unsigned aPlayerID)
 	otherPlayer->NotifyOnlyComponents(eComponentMessageType::eGiveAmmo, giveAmmoData);
 
 	modelObject->AddComponent(model);
+	modelObject->AddComponent(weaponModel);
 	otherPlayer->AddComponent(modelObject);
 	otherPlayer->AddComponent(playerReciver);
 	CPollingStation::GetInstance()->AddPlayerObject(otherPlayer);

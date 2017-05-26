@@ -15,7 +15,6 @@ CU::GrowingArray<CAnimationComponent*> CAnimationComponent::ourAnimations(64u);
 CAnimationComponent::CAnimationComponent(CModelComponent& aModelCompoent)
 	: myAnimationStack(4u)
 	, myModelComponent(aModelCompoent)
-	//, myUpdateHasRun(false)
 {
 	myType = eComponentType::eAnimationComponent;
 
