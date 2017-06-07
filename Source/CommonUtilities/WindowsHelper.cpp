@@ -110,6 +110,7 @@ namespace WindowsHelper
 			DL_PRINT("%s", (result) ? "true" : "false");
 			CloseHandle(it->second.hProcess);
 			CloseHandle(it->second.hThread);
+			locStartedProcesses.erase(it);
 		}
 	}
 

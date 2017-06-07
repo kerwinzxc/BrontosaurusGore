@@ -136,7 +136,6 @@ void CClient::Disconect()
 	std::cout << "Disconected from server";
 	myServerIsPinged = false;
 	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CGameEventMessage(L"Disconected From Server"));
-	//myChat.StopChat();
 }
 
 void CClient::UpdatePing(const CU::Time& aTime)
@@ -156,7 +155,7 @@ void CClient::UpdatePing(const CU::Time& aTime)
 
 void CClient::Ping()
 {
-	if (myState == eClientState::CONECTED && myServerIsPinged == false)
+	if (myState == eClientState::CONECTED && /*myServerIsPinged == false*/myServerPingTime > 0.1f)
 	{
 		CNetworkMessage_Ping* tempMessagePing = CClientMessageManager::GetInstance()->CreateMessage<CNetworkMessage_Ping>("__Server");
 
@@ -675,4 +674,30 @@ eMessageReturn CClient::DoEvent(const CLoadLevelMessage& aLoadLevelMessage)
 bool CClient::IsRunning()
 {
 	return myIsRunning;
+}
+
+void CClient::CleanUpNow()
+{
+	myServerIsPinged = false;
+
+	//std::atomic<eClientState> myState;
+	//short myId;
+
+	//std::string myName;
+	//std::string myServerIp;
+	//CU::Time myServerPingTime;
+	//bool myServerIsPinged;
+
+	//std::atomic_bool myIsRunning;
+	//std::atomic_bool myCanQuit;
+	//std::atomic_bool myCanUpdateEnemytransfromation;
+
+	//CU::Matrix44f myLatestPlayerTransform;
+
+	//std::map<unsigned int, CNetworkPlayerReciverComponent*> myNetworkRecieverComponents;
+	//bool myPlayerPositionUpdated;
+
+	//int myRoundTripTime;
+	//float myCurrentTime;
+	//CU::Time myPositionWaitTime;
 }

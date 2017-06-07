@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "BrontosaurusEngine\Brontosaurus.vcxproj", "{C5AC5F58-5B84-4A09-8E0A-0FFBA117FADE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -101,8 +101,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TServer_Applictaion", "TServer_Applictaion\TServer_Applictaion.vcxproj", "{DA850603-0B3F-4FFC-AB52-FDD5A852EA54}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ThreadedPostmaster", "ThreadedPostmaster\ThreadedPostmaster.vcxproj", "{2E206E26-7C71-4D89-9A90-2A3D0C132C9D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Container", "Container\Container.vcxproj", "{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deferred", "Deferred", "{B6224D03-7AF6-4A48-8A12-FD98FFD3BB42}"
 	ProjectSection(SolutionItems) = preProject
@@ -478,22 +476,6 @@ Global
 		{2E206E26-7C71-4D89-9A90-2A3D0C132C9D}.Retail|x64.Build.0 = Retail|x64
 		{2E206E26-7C71-4D89-9A90-2A3D0C132C9D}.Retail|x86.ActiveCfg = Release|Win32
 		{2E206E26-7C71-4D89-9A90-2A3D0C132C9D}.Retail|x86.Build.0 = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Debug|x64.ActiveCfg = Debug|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Debug|x64.Build.0 = Debug|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Debug|x86.ActiveCfg = Debug|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Debug|x86.Build.0 = Debug|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Release|Any CPU.ActiveCfg = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Release|x64.ActiveCfg = Release|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Release|x64.Build.0 = Release|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Release|x86.ActiveCfg = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Release|x86.Build.0 = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|Any CPU.ActiveCfg = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|Any CPU.Build.0 = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x64.ActiveCfg = Retail|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x64.Build.0 = Retail|x64
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x86.ActiveCfg = Release|Win32
-		{45C9B825-ABBD-43CB-A8F7-F44FA5C890A0}.Retail|x86.Build.0 = Release|Win32
 		{97047827-BF3D-478D-8467-686F75536A01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97047827-BF3D-478D-8467-686F75536A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97047827-BF3D-478D-8467-686F75536A01}.Debug|x64.ActiveCfg = Debug|Any CPU

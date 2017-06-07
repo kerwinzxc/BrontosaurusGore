@@ -1,6 +1,6 @@
 #pragma once
 #include <mutex>
-#include "Queue.h"
+#include "IQueue.h"
 #include <cassert>
 
 //TODO: Check if there is a way to make this better

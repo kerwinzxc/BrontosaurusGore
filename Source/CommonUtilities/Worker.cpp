@@ -4,8 +4,8 @@
 #include "TimerManager.h"
 #include "ThreadNamer.h"
 #include "../ThreadedPostmaster/Postmaster.h"
-#include "../BrontosaurusEngine/Engine.h"
-#include "../TServer/GameServer.h"
+//#include "../BrontosaurusEngine/Engine.h"
+//#include "../TServer/GameServer.h"
 
 namespace CU
 {

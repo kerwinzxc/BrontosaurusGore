@@ -15,6 +15,7 @@
 
 #include "../CommonUtilities/WindowsHelper.h"
 #include "MenuState.h"
+#include "EnemyClientRepresentationManager.h"
 
 CGame::CGame()
 {
@@ -36,6 +37,7 @@ void CGame::Init()
 	myGameEventMessenger.Init({ 0.5f, 0.1f });
 	myClient.StartClient();
 
+	myStateStack.SetCleanupCallback([this]() { CleanUpNow(); });
 	myStateStack.PushState(new CMenuState(myStateStack, "Json/Menu/MainMenu.json"));
 
 	if (CommandLineManager::GetInstance()->HasParameter("-skipSplashScreen") == false)
@@ -46,8 +48,6 @@ void CGame::Init()
 		mySplashScreenState->AddPicture("Sprites/Splash/timedust.dds");
 		myStateStack.PushState(mySplashScreenState);
 	}
-
-	//myStateStack.PushState(new CTempLobbyState(myStateStack));
 }
 
 bool CGame::Update(const CU::Time& aDeltaTime)
@@ -66,4 +66,10 @@ void CGame::Render()
 {
 	myStateStack.Render();
 	myGameEventMessenger.Render();
+}
+
+void CGame::CleanUpNow()
+{
+	myClient.CleanUpNow();
+	CEnemyClientRepresentationManager::GetInstance().CleanUpRepresentations();
 }

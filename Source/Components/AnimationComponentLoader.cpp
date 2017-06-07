@@ -32,10 +32,12 @@ namespace AnimationComponentLoader
 
 	void LoadAnimations(const CModelComponent& aModelComponent, std::map<std::string, SAnimation>& aAnimationStates)
 	{
-		//CU::GrowingArray<eAnimationState> animationStates;
-		//if (aModelComponent.GetAnimationStates(animationStates))
 		{
 			const std::string& filePath = aModelComponent.GetFilePath();
+			if (filePath.find("M_ShotgunPlayerAnim") != std::string::npos)
+			{
+				int br = 0;
+			}
 			std::string jsonPath = filePath;
 			if (!CU::FindAndReplace(jsonPath, "Models/Meshes", "Json/Animations"))
 			{
@@ -56,13 +58,6 @@ namespace AnimationComponentLoader
 				return;
 			}
 			CU::CJsonValue statesObject = rootObject["states"];
-
-			//if (statesObject.HasKey("idle"))
-			//{
-			//	CU::CJsonValue idleObject = statesObject["idle"];
-			//	SAnimation idleState;
-
-			//}
 
 			if (statesObject.HasKey("moving"))
 			{

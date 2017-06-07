@@ -11,6 +11,8 @@
 #include "../Game/CreditsState.h"
 #include "../Game/MenuState.h"
 
+#include "../CommonUtilities/WindowsHelper.h"
+
 StateStack::StateStack()
 	: myStates(8)
 	, mySwapStateFunction(nullptr)
@@ -101,10 +103,32 @@ eMessageReturn StateStack::DoEvent(const CChangeLevel& aChangeLevelMessage)
 
 eMessageReturn StateStack::DoEvent(const CQuitGame& aQuitGameMessage)
 {
-	for (State* state : myStates)
+	//for (State* state : myStates)
+	//{
+	//	state->SetStateStatus(eStateStatus::ePop);
+	//}
+	short i = myStates.Size() - 1;
+	while (i > 0 && !myStates.Empty())
 	{
-		state->SetStateStatus(eStateStatus::ePop);
+		myStates[i]->SetStateStatus(eStateStatus::ePop);
+		--i;
 	}
+
+	std::string processName = "TServer_Applictaion_x64_";
+
+#ifdef _DEBUG
+	processName += "Debug";
+#elif defined(RETAIL) || defined(_RETAIL_BUILD)
+	processName = "HighDoomServer";
+#elif defined(NDEBUG)
+	processName += "Release";
+#endif
+
+	processName += ".exe";
+	WindowsHelper::CloseProgram(processName);
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	myCleanUp();
 
 	return eMessageReturn::eContinue;
 }

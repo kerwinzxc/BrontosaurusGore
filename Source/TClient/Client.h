@@ -42,10 +42,14 @@ public:
 	eMessageReturn DoEvent(const CLoadLevelMessage& aLoadLevelMessage)override;
 
 	bool IsRunning();
+
+	void SetConnectionStatus(const eClientState aClientState)
+	{
+		myState = aClientState;
+	}
+	void CleanUpNow();
+
 private:
-
-	//CChat myChat;
-
 	CU::TimerManager myTimerManager;
 	CU::TimerHandle myMainTimer;
 

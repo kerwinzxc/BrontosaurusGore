@@ -5,6 +5,7 @@
 
 CDoorManager* CDoorManager::ourInstance = nullptr;
 
+static int doorID = 0;
 CDoorManager::CDoorManager()
 {
 }
@@ -16,9 +17,14 @@ CDoorManager::~CDoorManager()
 
 void CDoorManager::Create()
 {
+	doorID = 0;
 	if (ourInstance == nullptr)
 	{
 		ourInstance = new CDoorManager();
+	}
+	else
+	{
+		DL_ASSERT("health component manager not created");
 	}
 }
 
@@ -27,6 +33,10 @@ void CDoorManager::Destroy()
 	if (ourInstance != nullptr)
 	{
 		SAFE_DELETE(ourInstance);
+	}
+	else
+	{
+		DL_ASSERT("health component manager not created");
 	}
 }
 
@@ -37,7 +47,7 @@ CDoorManager* CDoorManager::GetInstance()
 
 void CDoorManager::Update(const CU::Time & aDeltaTime)
 {
-	for (auto door : myDoors)
+	for (auto& door : myDoors)
 	{
 		door.second->Update(aDeltaTime);
 	}
@@ -45,7 +55,6 @@ void CDoorManager::Update(const CU::Time & aDeltaTime)
 
 CDoorComponent * CDoorManager::CreateDoorComponent(const CU::Vector2f & aOpenDirection, const bool aIsLocked,const lockID aLockId, const bool aIsClosed, const bool aShouldResetOnPlayerDeath)
 {
-	static int doorID = 0;
 	CDoorComponent* doorComponent = new CDoorComponent();
 	doorComponent->SetIsLocked(aIsLocked);
 	doorComponent->SetIsClosed(aIsClosed);

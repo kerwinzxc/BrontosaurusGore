@@ -12,20 +12,29 @@ CEnemyClientRepresentationManager& CEnemyClientRepresentationManager::GetInstanc
 	return *ourInstance;
 }
 
+unsigned short CEnemyClientRepresentationManager::ourID = 0;
+
 CEnemyClientRepresentation& CEnemyClientRepresentationManager::CreateAndRegister()
 {
-	static unsigned short ID = 0;
-
-	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ID, eEnemyTypes::ePlaceHolder);
-	myRepresentations.emplace(ID, rep);
+	CEnemyClientRepresentation* rep = new CEnemyClientRepresentation(ourID, eEnemyTypes::ePlaceHolder);
+	myRepresentations.emplace(ourID, rep);
 	CComponentManager::GetInstance().RegisterComponent(rep);
-	ID++;
+	ourID++;
 	return *rep;
 }
 
+static CEnemyClientRepresentation ourNullClientRepresentation(-1, eEnemyTypes::ePlaceHolder);
+static CGameObject ourNullGameObject(&ourNullClientRepresentation);
+
 CEnemyClientRepresentation& CEnemyClientRepresentationManager::GetRepresentation(unsigned short aId)
 {
-	return *myRepresentations.at(aId);
+	if (myRepresentations.find(aId) != myRepresentations.end())
+	{
+		return *myRepresentations.at(aId);
+	}
+
+	DL_PRINT("nullcomponent %d", aId);
+	return ourNullClientRepresentation;
 }
 
 void CEnemyClientRepresentationManager::Create()
@@ -53,52 +62,58 @@ CEnemyClientRepresentationManager::~CEnemyClientRepresentationManager()
 
 void CEnemyClientRepresentationManager::Update(const CU::Time& aDeltaTime)
 {
-	for (auto enemyRepresentation : myRepresentations)
+	for (auto& enemyRepresentation : myRepresentations)
 	{
-		myRepresentations.at(enemyRepresentation.first)->Update(aDeltaTime.GetSeconds());
+		enemyRepresentation.second->Update(aDeltaTime.GetSeconds());
 	}
 }
 
 void CEnemyClientRepresentationManager::Init(CWeaponSystemManager* aWeaponSystemManagerPointer)
 {
 	SComponentMessageData addWeaponData;
-	for (auto enemyRepresentation : myRepresentations)
+	for (auto& enemyRepresentation : myRepresentations)
 	{
-		myRepresentations.at(enemyRepresentation.first)->Init();
-		myRepresentations.at(enemyRepresentation.first)->GetParent()->AddComponent(aWeaponSystemManagerPointer->CreateAndRegisterComponent());
-		switch (myRepresentations.at(enemyRepresentation.first)->GetEnemyType())
+		enemyRepresentation.second->Init();
+		enemyRepresentation.second->GetParent()->AddComponent(aWeaponSystemManagerPointer->CreateAndRegisterComponent());
+		switch (enemyRepresentation.second->GetEnemyType())
 		{
 		case eEnemyTypes::eImp:
 		{
 			addWeaponData.myString = "ImpMeleeAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			addWeaponData.myString = "ImpRangedAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			break;
 		}
 		case eEnemyTypes::eRevenant:
 		{
 			addWeaponData.myString = "RevenantRangedAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			addWeaponData.myString = "RevenantFlyingRangedAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			addWeaponData.myString = "RevenantMeleeAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			break;
 		}
 		case eEnemyTypes::ePinky:
 		{
 			addWeaponData.myString = "PinkyMeleeAttack";
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
+			enemyRepresentation.second->GetParent()->NotifyOnlyComponents(eComponentMessageType::eAddWeaponWithoutChangingToIt, addWeaponData);
 			CPinkyClientDamageHandler* damaageHandler = new CPinkyClientDamageHandler();
 			CComponentManager::GetInstance().RegisterComponent(damaageHandler);
-			myRepresentations.at(enemyRepresentation.first)->GetParent()->AddComponent(damaageHandler);
+			enemyRepresentation.second->GetParent()->AddComponent(damaageHandler);
 			break;
 		}
 		default:
 			break;
 		}
 	}
+}
+
+void CEnemyClientRepresentationManager::CleanUpRepresentations()
+{
+	ourID = 0;
+	myRepresentations.clear();
 }
 
 bool CEnemyClientRepresentationManager::CheckIfRepresentationExists(unsigned short aId)

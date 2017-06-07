@@ -13,10 +13,14 @@ public:
 	CEnemyClientRepresentation& GetRepresentation(unsigned short aId);
 	void Update(const CU::Time& aDeltaTime);
 	void Init(CWeaponSystemManager* aWeaponSystemManagerPointer);
+	void CleanUpRepresentations();
+
 protected:
 	std::map<unsigned short, CEnemyClientRepresentation*> myRepresentations;
 	
 	static CEnemyClientRepresentationManager* ourInstance;
+	static unsigned short ourID;
+
 	CEnemyClientRepresentationManager();
 	~CEnemyClientRepresentationManager();
 };

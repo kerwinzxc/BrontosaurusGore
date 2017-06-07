@@ -12,6 +12,9 @@ public:
 	friend class CGameObjectManager;
 	friend void CU::GrowingArray<CGameObject*>::DeleteAll();
 
+	CGameObject(CComponent* aNullComponent);
+	~CGameObject();
+
 	CU::Matrix44f &GetLocalTransform();
 	CU::Matrix44f GetToWorldTransform();
 	CU::Vector3f GetWorldPosition();
@@ -46,7 +49,6 @@ private:
 
 	CGameObject(CGameObjectManager& aManager);
 	CGameObject(const CGameObject& anObject) = delete;
-	~CGameObject();
 
 	CGameObject& operator=(const CGameObject& anObject) = delete;
 

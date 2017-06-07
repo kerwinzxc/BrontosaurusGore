@@ -9,7 +9,7 @@
 
 CU::ThreadPool* CU::ThreadPool::ourInstance = nullptr;
 
-#ifndef RETAIL
+#ifndef RETAIL && !defined(_RETAIL_BUILD)
 //#define LogThreads
 #endif
 

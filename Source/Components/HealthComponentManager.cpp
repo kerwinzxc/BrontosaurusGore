@@ -5,11 +5,18 @@
 
 CHealthComponentManager* CHealthComponentManager::ourInstance = nullptr;
 
+static unsigned short ID = 0;
 void CHealthComponentManager::Create()
 {
+	ID = 0;
 	if (ourInstance == nullptr)
 	{
 		ourInstance = new CHealthComponentManager;
+	}
+	else
+	{
+
+		DL_ASSERT("health component manager not created");
 	}
 }
 
@@ -20,6 +27,10 @@ void CHealthComponentManager::Destroy()
 		delete ourInstance;
 		ourInstance = nullptr;
 	}
+	else
+	{
+		DL_ASSERT("health component manager not created");
+	}
 }
 
 CHealthComponentManager * CHealthComponentManager::GetInstance()
@@ -29,7 +40,6 @@ CHealthComponentManager * CHealthComponentManager::GetInstance()
 
 CHealthComponent * CHealthComponentManager::CreateAndRegisterComponent()
 {
-	static unsigned short ID = 0;
 
 	CHealthComponent* health = new CHealthComponent(ID);
 

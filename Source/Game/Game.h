@@ -20,6 +20,8 @@ public:
 	bool Update(const CU::Time& aDeltaTime);
 	void Render();
 
+	void CleanUpNow();
+
 private:
 	CSplashScreenState* mySplashScreenState;
 	StateStack myStateStack;

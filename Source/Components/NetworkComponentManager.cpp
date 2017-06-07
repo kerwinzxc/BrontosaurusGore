@@ -19,6 +19,10 @@ void CNetworkComponentManager::Create()
 	{
 		ourInstance = new CNetworkComponentManager;
 	}
+	else
+	{
+		DL_ASSERT("network component manager not created");
+	}
 }
 
 void CNetworkComponentManager::Destroy()
@@ -27,6 +31,10 @@ void CNetworkComponentManager::Destroy()
 	{
 		delete ourInstance;
 		ourInstance = nullptr;
+	}
+	else
+	{
+		DL_ASSERT("newtork component manager not created");
 	}
 }
 

@@ -3,6 +3,16 @@
 #include "GameObjectManager.h"
 
 
+CGameObject::CGameObject(CComponent* aNullComponent)
+{
+	myTransformId = -1;
+	myComponents.Init(1);
+	myComponents.Add(aNullComponent);
+	aNullComponent->myParent = this;
+	myManager = nullptr;
+	myName = "null object";
+}
+
 CU::Matrix44f& CGameObject::GetLocalTransform()
 {
 	return myManager->GetTransform(*this);	

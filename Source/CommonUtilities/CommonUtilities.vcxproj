@@ -405,10 +405,12 @@
     <ClInclude Include="InputWrapper.h" />
     <ClInclude Include="Intersection.h" />
     <ClInclude Include="InvertMatrix.h" />
+    <ClInclude Include="IQueue.h" />
     <ClInclude Include="JsonValue.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="Line3D.h" />
     <ClInclude Include="line_volume.h" />
+    <ClInclude Include="LocklessQueue.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="matrix33.h" />
     <ClInclude Include="matrix44.h" />

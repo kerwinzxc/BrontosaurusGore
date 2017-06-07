@@ -327,7 +327,7 @@ bool CMenuState::PushMenu(std::string aMenu)
 
 bool CMenuState::ExitGame(std::string /* not used*/)
 {
-	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CQuitGame);
+	Postmaster::Threaded::CPostmaster::GetInstance().Broadcast(new CQuitGame());
 	return true;
 }
 

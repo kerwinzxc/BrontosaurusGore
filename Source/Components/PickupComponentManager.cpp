@@ -8,12 +8,18 @@
 
 CPickupComponentManager* CPickupComponentManager::ourInstance = nullptr;
 
+static int healthPickupID = 0;
 void CPickupComponentManager::Create()
 {
 	if(ourInstance == nullptr)
 	{
 		ourInstance = new CPickupComponentManager();
 	}
+	else
+	{
+		DL_ASSERT("hej");
+	}
+	healthPickupID = 0;
 }
 
 void CPickupComponentManager::Destroy()
@@ -22,6 +28,10 @@ void CPickupComponentManager::Destroy()
 	{
 		delete ourInstance;
 		ourInstance = nullptr;
+	}
+	else
+	{
+		DL_ASSERT("hej");
 	}
 }
 
@@ -32,7 +42,6 @@ CPickupComponentManager * CPickupComponentManager::GetInstance()
 
 CHealthPickupComponent * CPickupComponentManager::CreateHealthPickupComponent(const healthPoint aHealthAmount)
 {
-	static int healthPickupID = 0;
 	CHealthPickupComponent* healthPackComponent = new CHealthPickupComponent();
 	COMPMGR.RegisterComponent(healthPackComponent);
 	healthPackComponent->SetNetworkId(healthPickupID);

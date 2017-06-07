@@ -49,6 +49,10 @@ void CEnemyFactory::Create(CEnemyComponentManager & aEnemyManager, CGameObjectMa
 	{
 		ourInstance = new CEnemyFactory(aEnemyManager,aGameObjectManger,aWeaponSystemManager,aColliderManager);
 	}
+	else
+	{
+		DL_ASSERT("hejerf");
+	}
 }
 
 void CEnemyFactory::Destroy()
@@ -57,6 +61,10 @@ void CEnemyFactory::Destroy()
 	{
 		delete ourInstance;
 		ourInstance = nullptr;
+	}
+	else
+	{
+		DL_ASSERT("hejerf");
 	}
 }
 
@@ -210,7 +218,7 @@ CEnemy* CEnemyFactory::CreateRepesention(const short aHealthValue, const eEnemyT
 {
 	CGameObject* repesention = myGameObjectManager.CreateGameObject();
 	repesention->GetLocalTransform().SetPosition(aPosition);
-
+	DL_PRINT("createing rep");
 	CEnemyClientRepresentation* enemy = &CEnemyClientRepresentationManager::GetInstance().CreateAndRegister();
 	enemy->SetEnemyType(aType);
 	enemy->KillEverythingThenResetItAgain(true);

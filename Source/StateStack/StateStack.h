@@ -29,6 +29,11 @@ public:
 	void AddSwapStateFunction(const std::function<void(void)>& aSwapStateCunction);
 	void SwapState(State* aState);
 
+	void SetCleanupCallback(const std::function<void()>& aCleanUp)
+	{
+		myCleanUp = aCleanUp;
+	}
+
 	inline void SetShouldUpdate(bool aShouldUpdate);
 
 	eMessageReturn DoEvent(const ConsoleCalledUpon& aConsoleCalledUpon) override;
@@ -47,6 +52,7 @@ private:
 
 	CU::GrowingArray<State*, short> myStates;
 	std::function<void(void)> mySwapStateFunction;
+	std::function<void()> myCleanUp;
 
 	State* myStateToSwapTo;
 	bool myShouldUpdate;

@@ -420,6 +420,8 @@
     <ClInclude Include="growingvector.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="IQueue.h" />
+    <ClInclude Include="LocklessQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Timer.cpp">

@@ -3,10 +3,12 @@
 #include "CheckPointComponent.h"
 #include "GameObject.h"
 
+static unsigned char id = 0;
 CCheckpointComponentManager* CCheckpointComponentManager::ourInstance = nullptr;
 
 CCheckpointComponentManager::CCheckpointComponentManager()
 {
+	id = 0;
 }
 
 
@@ -16,7 +18,6 @@ CCheckpointComponentManager::~CCheckpointComponentManager()
 
 CCheckPointComponent * CCheckpointComponentManager::CreateAndRegisterComponent(short aIndex)
 {
-	static unsigned char id = 0;
 	
 	CCheckPointComponent* component = new CCheckPointComponent(id, aIndex);
 
@@ -33,6 +34,10 @@ void CCheckpointComponentManager::CreateInstance()
 	{
 		ourInstance = new CCheckpointComponentManager();
 	}
+	else
+	{
+		DL_ASSERT("check point component manager already created");
+	}
 }
 CCheckpointComponentManager* CCheckpointComponentManager::GetInstance()
 {
@@ -43,6 +48,10 @@ void CCheckpointComponentManager::DestoryInstance()
 	if(ourInstance != nullptr)
 	{
 		SAFE_DELETE(ourInstance);
+	}
+	else
+	{
+		DL_ASSERT("check point component manager not created");
 	}
 }
 
